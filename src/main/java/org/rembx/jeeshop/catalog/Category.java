@@ -24,11 +24,5 @@ public class Category {
 
     private Boolean disabled;
 
-    private Image thumbnail;
-
-    private Image smallImage;
-
-    private Image largeImage;
-
-    private Video video;
+    private Promotion promotion;
 }
