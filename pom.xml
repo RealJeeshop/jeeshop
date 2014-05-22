@@ -7,8 +7,18 @@
     <groupId>org.rembx.jeeshop</groupId>
     <artifactId>jeeshop</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
     <name>jeeshop</name>
+    <description>jeeshop parent</description>
+
+    <modules>
+        <module>catalog</module>
+        <module>order</module>
+        <module>user</module>
+        <module>backend</module>
+        <module>frontend</module>
+        <module>admin</module>
+    </modules>
 
     <properties>
 
