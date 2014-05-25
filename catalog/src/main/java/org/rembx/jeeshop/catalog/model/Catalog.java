@@ -25,6 +25,7 @@ public class Catalog {
     private String description;
 
     @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "parentCatalog")
+    @OrderColumn(name="orderIdx")
     private List<Category> rootCategories;
 
     public Catalog() {

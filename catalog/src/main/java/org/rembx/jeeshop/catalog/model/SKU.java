@@ -42,6 +42,8 @@ public class SKU {
     private Boolean disabled;
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
+            inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;
 
     /**

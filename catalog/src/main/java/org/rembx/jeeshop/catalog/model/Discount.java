@@ -39,6 +39,8 @@ public class Discount {
     private String voucherCode;
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
+            inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentation;
 
     private Double amount;
@@ -46,9 +48,15 @@ public class Discount {
     private Double discount;
 
     @ManyToMany
+    @OrderColumn(name="orderIdx")
+    @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
+            inverseJoinColumns = @JoinColumn(name = "skuId"))
     private List<SKU> skus;
 
     @ManyToMany
+    @OrderColumn(name="orderIdx")
+    @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
+            inverseJoinColumns = @JoinColumn(name = "productId"))
     private List<Product> products;
 
     private Integer usesPerCustomer;

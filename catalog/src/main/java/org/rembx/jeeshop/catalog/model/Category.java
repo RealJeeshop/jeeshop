@@ -35,9 +35,13 @@ public class Category {
     private Category parentCategory;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentCategory")
+    @OrderColumn(name="orderIdx")
     private List<Category> childCategories;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = @JoinColumn(name = "categoryId"),
+            inverseJoinColumns = @JoinColumn(name = "productId"))
+    @OrderColumn(name="orderIdx")
     private List<Product> childProducts;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -49,6 +53,8 @@ public class Category {
 
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "categoryId",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;
 
     private Boolean disabled;

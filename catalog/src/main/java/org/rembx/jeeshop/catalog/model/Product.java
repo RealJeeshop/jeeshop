@@ -26,7 +26,8 @@ public class Product {
     @Column(length = 255)
     private String description;
 
-    @OneToMany
+    @OneToMany (mappedBy = "product")
+    @OrderColumn(name="orderIdx")
     private List<SKU> childSKUs;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,9 +39,14 @@ public class Product {
     private Boolean disabled;
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;
 
     @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "discountId"))
+    @OrderColumn(name="orderIdx")
     private List <Discount> discounts;
 
     public Product() {
