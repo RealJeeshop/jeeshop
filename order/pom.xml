@@ -17,6 +17,19 @@
 
     <description>order domain</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>user</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>catalog</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
 

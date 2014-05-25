@@ -13,7 +13,7 @@ import java.util.Date;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @Column(unique = true, nullable = false, length = 50)
     @Login
@@ -42,7 +42,7 @@ public class Customer {
     private Address deliveryAddress;
     @NotNull
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date birthDate;
     @Transient
     private Integer age;

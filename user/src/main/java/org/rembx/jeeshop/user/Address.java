@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @NotNull
     @Size(min = 5, max = 50)

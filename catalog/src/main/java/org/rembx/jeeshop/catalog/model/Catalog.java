@@ -1,9 +1,6 @@
-package org.rembx.jeeshop.catalog;
+package org.rembx.jeeshop.catalog.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -11,25 +8,38 @@ import java.util.List;
 /**
  * Created by remi on 20/05/14.
  */
+@Entity
 public class Catalog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue
+    private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String name;
 
-    private List<Category> childCategories;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String description;
 
-    public Catalog(String name, List<Category> childCategories) {
-        this.name = name;
-        this.childCategories = childCategories;
+    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "parentCatalog")
+    private List<Category> rootCategories;
+
+    public Catalog() {
     }
 
-    public Integer getId() {
+    public Catalog(String name) {
+        this.name = name;
+    }
+
+    public Catalog(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -37,8 +47,20 @@ public class Catalog {
         return name;
     }
 
-    public List<Category> getChildCategories() {
-        return childCategories;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Category> getRootCategories() {
+        return rootCategories;
+    }
+
+    public void setRootCategories(List<Category> rootCategories) {
+        this.rootCategories = rootCategories;
     }
 
     @Override

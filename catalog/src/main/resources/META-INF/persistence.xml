@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <persistence-unit name="Catalog">
+        <description>This unit manages orders and customers.
+            It does not rely on any vendor-specific features and can
+            therefore be deployed to any persistence provider.
+        </description>
+        <jta-data-source>CatalogDS</jta-data-source>
+        <class>org.rembx.jeeshop.catalog.model.Catalog</class>
+        <class>org.rembx.jeeshop.catalog.model.Category</class>
+        <class>org.rembx.jeeshop.catalog.model.Product</class>
+        <class>org.rembx.jeeshop.catalog.model.SKU</class>
+        <class>org.rembx.jeeshop.catalog.model.Media</class>
+        <class>org.rembx.jeeshop.catalog.model.Presentation</class>
+        <class>org.rembx.jeeshop.catalog.model.Discount</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>

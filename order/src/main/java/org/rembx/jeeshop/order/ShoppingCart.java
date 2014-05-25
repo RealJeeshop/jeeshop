@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.order;
 
-import org.rembx.jeeshop.catalog.StockUnit;
+import org.rembx.jeeshop.catalog.model.SKU;
 
 /**
  * Created by remi on 20/05/14.
  */
 public interface ShoppingCart {
-    void add(StockUnit stockUnit, Integer quantity);
-    void remove(StockUnit stockUnit,Integer quantity);
+    void add(SKU SKU, Integer quantity);
+    void remove(SKU SKU,Integer quantity);
     void checkout();
 }

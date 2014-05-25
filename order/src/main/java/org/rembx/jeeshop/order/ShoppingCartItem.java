@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.order;
 
-import org.rembx.jeeshop.catalog.StockUnit;
+import org.rembx.jeeshop.catalog.model.SKU;
 
 /**
  * Created by remi on 21/05/14.
  */
 public class ShoppingCartItem {
-    private StockUnit stockUnit;
+    private SKU SKU;
 
     private Integer quantity;
 }

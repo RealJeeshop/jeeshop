@@ -18,6 +18,7 @@
         <module>backend</module>
         <module>frontend</module>
         <module>admin</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -35,6 +36,9 @@
         <!-- other plugin versions -->
         <version.failsafe.plugin>2.17</version.failsafe.plugin>
         <version.junit>4.11</version.junit>
+        <version.querydsl>3.3.3</version.querydsl>
+        <version.resteasy>3.0.8.Final</version.resteasy>
+        <version.hibernate>4.3.5.Final</version.hibernate>
 
     </properties>
 
@@ -63,9 +67,71 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.7</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${version.resteasy}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mysema.querydsl</groupId>
+                <artifactId>querydsl-apt</artifactId>
+                <version>${version.querydsl}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mysema.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>${version.querydsl}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${version.hibernate}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${version.hibernate}</version>
+                <scope>provided</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <build>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
 
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -102,7 +168,17 @@
             </plugin>
 
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${version.maven.war.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
 
 </project>
 
