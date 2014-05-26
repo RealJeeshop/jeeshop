@@ -56,7 +56,7 @@ public class CategoryService implements Serializable {
     }
 
     @GET
-    @Path("/{categoryId}/categories")
+    @Path("/categories/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId) {
         Category cat = entityManager.find(Category.class, categoryId);
@@ -75,7 +75,7 @@ public class CategoryService implements Serializable {
     }
 
     @GET
-    @Path("/{categoryId}/products")
+    @Path("/products/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId) {
         Category cat = entityManager.find(Category.class, categoryId);

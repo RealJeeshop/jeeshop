@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,8 @@ import java.util.Set;
  * Created by remi on 20/05/14.
  */
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Category {
 
     @Id
@@ -20,6 +23,7 @@ public class Category {
     @NotNull
     @Size(max = 100)
     @Column(nullable = false, length = 50)
+
     private String name;
 
     @Size(max = 255)
@@ -30,12 +34,14 @@ public class Category {
     @JoinTable(joinColumns = @JoinColumn(name = "parentCategoryId"),
             inverseJoinColumns = @JoinColumn(name = "childCategoryId"))
     @OrderColumn(name="orderIdx")
+    @XmlTransient
     private List<Category> childCategories;
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "categoryId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
     @OrderColumn(name="orderIdx")
+    @XmlTransient
     private List<Product> childProducts;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,10 +52,11 @@ public class Category {
     private Date endDate;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "categoryId",referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;
+
 
     private Boolean disabled;
 
@@ -96,6 +103,7 @@ public class Category {
         this.description = description;
     }
 
+    @XmlTransient
     public List<Category> getChildCategories() {
         return childCategories;
     }

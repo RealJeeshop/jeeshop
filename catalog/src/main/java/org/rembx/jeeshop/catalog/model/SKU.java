@@ -3,6 +3,10 @@ package org.rembx.jeeshop.catalog.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Currency;
 import java.util.Set;
 
@@ -10,6 +14,8 @@ import java.util.Set;
  * Created by remi on 20/05/14.
  */
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SKU {
 
     @Id
@@ -23,6 +29,7 @@ public class SKU {
 
     @ManyToOne
     @JoinColumn(name = "productId", referencedColumnName = "id")
+    @XmlTransient
     private Product product;
 
     private Double price;
@@ -41,7 +48,7 @@ public class SKU {
 
     private Boolean disabled;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;

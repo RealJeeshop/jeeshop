@@ -1,6 +1,10 @@
 package org.rembx.jeeshop.catalog.model;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +13,8 @@ import java.util.Set;
  * Created by remi on 20/05/14.
  */
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Discount {
 
     @Id
@@ -38,7 +44,7 @@ public class Discount {
 
     private String voucherCode;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentation;
@@ -51,12 +57,14 @@ public class Discount {
     @OrderColumn(name="orderIdx")
     @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
+    @XmlTransient
     private List<SKU> skus;
 
     @ManyToMany
     @OrderColumn(name="orderIdx")
     @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
+    @XmlTransient
     private List<Product> products;
 
     private Integer usesPerCustomer;

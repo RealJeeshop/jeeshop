@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,8 @@ import java.util.Set;
  * Created by remi on 20/05/14.
  */
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Product {
 
     @Id
@@ -28,6 +31,7 @@ public class Product {
 
     @OneToMany (mappedBy = "product")
     @OrderColumn(name="orderIdx")
+    @XmlTransient
     private List<SKU> childSKUs;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,7 +42,7 @@ public class Product {
 
     private Boolean disabled;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     private Set<Presentation> presentations;
@@ -47,6 +51,7 @@ public class Product {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name="orderIdx")
+    @XmlTransient
     private List <Discount> discounts;
 
     public Product() {
