@@ -14,11 +14,11 @@ import java.util.Set;
 public class Product {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(max = 100)
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(nullable = false, length = 100)
     @NotNull
     private String name;
 

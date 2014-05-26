@@ -1,11 +1,15 @@
 package org.rembx.jeeshop.catalog;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.util.TestCatalog;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -19,11 +23,17 @@ public class CategoryServiceTest {
     private CategoryService service;
 
     private TestCatalog testCatalog;
+    private static EntityManagerFactory entityManagerFactory;
+
+    @BeforeClass
+    public static void beforeClass(){
+        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
+    }
 
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        service = new CategoryService(testCatalog.getEntityManager());
+        service = new CategoryService(entityManagerFactory.createEntityManager());
     }
 
     @Test
@@ -78,6 +88,11 @@ public class CategoryServiceTest {
         assertThatCategoriesOf(categories).areVisibleChildCategoriesOfARootCategoryWithChildCategories();
     }
 
+    @Test
+    public void findCategories_shouldReturnEmptyListWhenNoChildCategories() {
+        List<Category> categories = service.findCategories(testCatalog.aCategoryWithProducts().getId());
+        assertThat(categories).isNull();
+    }
 
     @Test
     public void findProducts_shouldReturn404ExWhenCategoryNotFound() {
@@ -94,6 +109,12 @@ public class CategoryServiceTest {
         List<Product> products = service.findProducts(testCatalog.aCategoryWithProducts().getId());
         assertNotNull(products);
         assertThatProductsOf(products).areVisibleProductsOfAChildCategoryWithProducts();
+    }
+
+    @Test
+    public void findCategories_shouldReturnEmptyListWhenNoChildProducts() {
+        List<Category> categories = service.findCategories(testCatalog.aCategoryWithoutProducts().getId());
+        assertThat(categories).isNull();
     }
 
 }

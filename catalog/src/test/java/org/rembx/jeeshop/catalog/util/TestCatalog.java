@@ -28,13 +28,9 @@ public class TestCatalog {
     private final static Date Tomorrow = Timestamp.from(ZonedDateTime.now().plusDays(1).toInstant());
     private final static Date yesterday = Timestamp.from(ZonedDateTime.now().minusDays(1).toInstant());
 
-    private  EntityManager entityManager;
 
     private static Catalog catalog;
-
-    private TestCatalog(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    public static Catalog emptyCatalog;
 
     public static TestCatalog getInstance() {
         EntityManager entityManager = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME).createEntityManager();
@@ -44,17 +40,20 @@ public class TestCatalog {
 
         entityManager.getTransaction().begin();
 
+        emptyCatalog = new Catalog("empty");
+        entityManager.persist(emptyCatalog);
+
         catalog = new Catalog("test");
 
         Category rootCat1Empty = new Category("rootCat1", "Root category 1 empty", now, Tomorrow, false);
         Category rootCat2 = new Category("rootCat2", "Root category 2 with child categories", now, Tomorrow, false);
         Category rootCat3Expired = new Category("rootCat3", "Root category 3 expired", now, yesterday, false);
 
+
         Category childCat1Empty = new Category("childCat1", "Child category 1", now, Tomorrow, false);
         Category childCat2 = new Category("childCat2", "Child category 2 with products", now, Tomorrow, false);
         Category childCat3Expired = new Category("childCat3", "Child category 3 expired", now, yesterday, false);
         Category childCat4Disabled = new Category("childCat4", "Child category 4 disabled", now, Tomorrow, true);
-
 
         Product product1 = new Product("product1", now, Tomorrow, false);
         Product product2Expired = new Product("product2", now, yesterday, false);
@@ -67,17 +66,17 @@ public class TestCatalog {
         entityManager.persist(catalog);
         entityManager.getTransaction().commit();
 
-        instance = new TestCatalog(entityManager);
+        instance = new TestCatalog();
+        entityManager.close();
         return instance;
     }
 
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
 
     public Long getId(){
         return catalog.getId();
     }
+
+    public Long getEmptyCatalogId() {return emptyCatalog.getId();}
 
     public Category aRootCategoryWithChildCategories(){
         return catalog.getRootCategories().get(1);
@@ -85,6 +84,10 @@ public class TestCatalog {
 
     public Category aCategoryWithProducts(){
         return aRootCategoryWithChildCategories().getChildCategories().get(1);
+    }
+
+    public Category aCategoryWithoutProducts(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(0);
     }
 
     public Category anExpiredCategory(){

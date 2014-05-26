@@ -13,10 +13,10 @@ import java.util.Set;
 public class SKU {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String name;

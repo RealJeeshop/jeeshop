@@ -14,7 +14,7 @@ import java.util.Set;
 public class Category {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -26,19 +26,13 @@ public class Category {
     @Column(length = 255)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "catalogId", referencedColumnName = "id")
-    private Catalog parentCatalog;
-
-    @ManyToOne
-    @JoinColumn(name = "categoryId", referencedColumnName = "id")
-    private Category parentCategory;
-
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentCategory")
+    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @JoinTable(joinColumns = @JoinColumn(name = "parentCategoryId"),
+            inverseJoinColumns = @JoinColumn(name = "childCategoryId"))
     @OrderColumn(name="orderIdx")
     private List<Category> childCategories;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "categoryId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
     @OrderColumn(name="orderIdx")
@@ -102,14 +96,6 @@ public class Category {
         this.description = description;
     }
 
-    public Catalog getParentCatalog() {
-        return parentCatalog;
-    }
-
-    public void setParentCatalog(Catalog parentCatalog) {
-        this.parentCatalog = parentCatalog;
-    }
-
     public List<Category> getChildCategories() {
         return childCategories;
     }
@@ -156,14 +142,6 @@ public class Category {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
-    }
-
-    public Category getParentCategory() {
-        return parentCategory;
-    }
-
-    public void setParentCategory(Category parentCategory) {
-        this.parentCategory = parentCategory;
     }
 
     @Override

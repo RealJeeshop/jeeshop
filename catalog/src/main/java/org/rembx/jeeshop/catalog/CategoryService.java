@@ -63,6 +63,9 @@ public class CategoryService implements Serializable {
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+        if (cat.getChildCategories().isEmpty()){
+            return null;
+        }
         return new JPAQuery(entityManager)
                 .from(category).where(
                         category.disabled.isFalse(),
@@ -79,6 +82,11 @@ public class CategoryService implements Serializable {
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+
+        if (cat.getChildProducts().isEmpty()){
+            return null;
+        }
+
         return new JPAQuery(entityManager)
                 .from(product).where(
                         product.disabled.isFalse(),

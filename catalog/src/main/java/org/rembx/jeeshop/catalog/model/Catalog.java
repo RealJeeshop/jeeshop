@@ -12,7 +12,7 @@ import java.util.List;
 public class Catalog {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
@@ -24,7 +24,9 @@ public class Catalog {
     @Column(length = 255)
     private String description;
 
-    @OneToMany(cascade = {CascadeType.PERSIST}, mappedBy = "parentCatalog")
+    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @JoinTable(joinColumns = @JoinColumn(name = "catalogId"),
+            inverseJoinColumns = @JoinColumn(name = "categoryId"))
     @OrderColumn(name="orderIdx")
     private List<Category> rootCategories;
 

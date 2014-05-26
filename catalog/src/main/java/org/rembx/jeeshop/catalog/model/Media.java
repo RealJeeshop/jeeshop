@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class Media {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(max = 255)

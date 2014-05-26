@@ -12,7 +12,7 @@ import java.util.Set;
 public class Discount {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public static enum Type {
