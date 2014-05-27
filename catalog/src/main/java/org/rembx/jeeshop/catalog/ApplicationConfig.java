@@ -17,6 +17,7 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(CatalogResource.class);
         classes.add(CategoryResource.class);
+        classes.add(ProductResource.class);
         return classes;
     }
 }

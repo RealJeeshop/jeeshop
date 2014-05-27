@@ -8,6 +8,7 @@ import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.util.TestCatalog;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
@@ -33,7 +34,8 @@ public class CategoryResourceTest {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        service = new CategoryResource(entityManagerFactory.createEntityManager());
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        service = new CategoryResource(entityManager, new CatalogItemFinder(entityManager));
     }
 
     @Test
@@ -44,7 +46,7 @@ public class CategoryResourceTest {
     @Test
     public void find_withIdOfDisableCategory_ShouldThrowForbiddenException() {
         try{
-            service.find(testCatalog.aDisableCategory().getId());
+            service.find(testCatalog.aDisabledCategory().getId());
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.FORBIDDEN,e.getResponse().getStatusInfo());
@@ -91,7 +93,7 @@ public class CategoryResourceTest {
     @Test
     public void findCategories_shouldReturnEmptyListWhenNoChildCategories() {
         List<Category> categories = service.findCategories(testCatalog.aCategoryWithProducts().getId());
-        assertThat(categories).isNull();
+        assertThat(categories).isEmpty();
     }
 
     @Test
@@ -114,7 +116,7 @@ public class CategoryResourceTest {
     @Test
     public void findCategories_shouldReturnEmptyListWhenNoChildProducts() {
         List<Category> categories = service.findCategories(testCatalog.aCategoryWithoutProducts().getId());
-        assertThat(categories).isNull();
+        assertThat(categories).isEmpty();
     }
 
 }

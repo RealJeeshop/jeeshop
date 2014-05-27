@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.catalog;
 
 
-import com.mysema.query.jpa.impl.JPAQuery;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
@@ -14,13 +14,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
-import static org.rembx.jeeshop.util.DateUtil.dateToLocalDateTime;
 
 /**
  * @author remi
@@ -33,11 +31,15 @@ public class CategoryResource implements Serializable {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
+    @Inject
+    private CatalogItemFinder catalogItemFinder;
+
     public CategoryResource() {
     }
 
-    public CategoryResource(EntityManager entityManager) {
+    public CategoryResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
+        this.catalogItemFinder = catalogItemFinder;
     }
 
     @GET
@@ -49,14 +51,15 @@ public class CategoryResource implements Serializable {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (category.isDisabled() || dateToLocalDateTime(category.getEndDate()).isBefore(LocalDateTime.now()) ){
+        if (!category.isVisible()){
             throw new WebApplicationException((Response.Status.FORBIDDEN));
         }
+
         return category;
     }
 
     @GET
-    @Path("/categories/{categoryId}")
+    @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId) {
         Category cat = entityManager.find(Category.class, categoryId);
@@ -64,18 +67,13 @@ public class CategoryResource implements Serializable {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         if (cat.getChildCategories().isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
-        return new JPAQuery(entityManager)
-                .from(category).where(
-                        category.disabled.isFalse(),
-                        category.endDate.after(new Date()),
-                        category.in(cat.getChildCategories()))
-                .list(category);
+        return catalogItemFinder.findVisibleCatalogItems(category, cat.getChildCategories());
     }
 
     @GET
-    @Path("/products/{categoryId}")
+    @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId) {
         Category cat = entityManager.find(Category.class, categoryId);
@@ -84,15 +82,10 @@ public class CategoryResource implements Serializable {
         }
 
         if (cat.getChildProducts().isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
 
-        return new JPAQuery(entityManager)
-                .from(product).where(
-                        product.disabled.isFalse(),
-                        product.endDate.after(new Date()),
-                        product.in(cat.getChildProducts()))
-                .list(product);
+        return catalogItemFinder.findVisibleCatalogItems(product, cat.getChildProducts());
     }
 
 }

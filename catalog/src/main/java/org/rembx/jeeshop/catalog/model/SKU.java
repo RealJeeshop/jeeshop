@@ -1,42 +1,26 @@
 package org.rembx.jeeshop.catalog.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Currency;
+import java.util.Date;
 import java.util.Set;
 
 /**
- * Created by remi on 20/05/14.
+ * Stock keeping unit
  */
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SKU {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 50)
-    @NotNull
-    @Size(max = 50)
-    private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "productId", referencedColumnName = "id")
-    @XmlTransient
-    private Product product;
+public class SKU extends CatalogItem{
 
     private Double price;
 
     @Size(min=3, max = 3)
     @Column(length = 3)
-    private Currency currency;
+    private String currency;
 
     @Size(max = 50)
     @Column(length = 50)
@@ -46,8 +30,6 @@ public class SKU {
 
     private Integer quantity;
 
-    private Boolean disabled;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
@@ -56,35 +38,30 @@ public class SKU {
     /**
      * Calculated field true if quantity > threshold
      */
+    @Transient
     private Boolean available;
 
-    @PrePersist
-    private void prePersist() {
-        if (disabled == null) {
-            disabled = false;
-        }
-
-        available = quantity >threshold;
+    public SKU() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public SKU(String name, String description, Double price, Integer quantity, String reference,
+               Date endDate, Date startDate, Boolean disabled, Integer threshold) {
         this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.reference = reference;
+        this.disabled = disabled;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.threshold = threshold;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    private void computeAvailable() {
+        available = quantity >threshold;
     }
 
     public Double getPrice() {
@@ -95,11 +72,11 @@ public class SKU {
         this.price = price;
     }
 
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
@@ -127,14 +104,6 @@ public class SKU {
         this.quantity = quantity;
     }
 
-    public Boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
     public Set<Presentation> getPresentations() {
         return presentations;
     }
@@ -149,5 +118,35 @@ public class SKU {
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SKU sku = (SKU) o;
+
+        if (available != null ? !available.equals(sku.available) : sku.available != null) return false;
+        if (currency != null ? !currency.equals(sku.currency) : sku.currency != null) return false;
+        if (price != null ? !price.equals(sku.price) : sku.price != null) return false;
+        if (quantity != null ? !quantity.equals(sku.quantity) : sku.quantity != null) return false;
+        if (reference != null ? !reference.equals(sku.reference) : sku.reference != null) return false;
+        if (threshold != null ? !threshold.equals(sku.threshold) : sku.threshold != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
+        result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
+        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (available != null ? available.hashCode() : 0);
+        return result;
     }
 }

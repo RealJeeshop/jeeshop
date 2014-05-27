@@ -7,6 +7,7 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.util.TestCatalog;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
@@ -28,10 +29,12 @@ public class CatalogResourceTest {
     public static void beforeClass(){
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
+
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        service = new CatalogResource(entityManagerFactory.createEntityManager());
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager));
     }
 
     @Test
@@ -47,7 +50,7 @@ public class CatalogResourceTest {
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
         List<Category> categories = service.findCategories(testCatalog.getEmptyCatalogId());
-        assertThat(categories).isNull();
+        assertThat(categories).isEmpty();
     }
 
     @Test

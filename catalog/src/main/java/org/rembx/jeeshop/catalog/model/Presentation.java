@@ -3,10 +3,17 @@ package org.rembx.jeeshop.catalog.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- * Created by remi on 20/05/14.
+ * Hold presentation data associated to catalog items such as descriptions,
+ * media...
+ *
  */
 @Entity
 @XmlType
@@ -21,7 +28,6 @@ public class Presentation {
     @NotNull
     @Size(min = 5, max = 5)
     @Column(length = 5)
-
     private String locale;
 
     @Size(max = 255)
@@ -58,4 +64,43 @@ public class Presentation {
     @JoinColumn(referencedColumnName = "id")
 
     private Media video;
+
+    @OneToMany
+    @OrderColumn(name = "orderIdx")
+    private List<Media> otherMedia;
+
+    private HashMap<String,String> features;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Presentation that = (Presentation) o;
+
+        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (locale != null ? !locale.equals(that.locale) : that.locale != null) return false;
+        if (shortDescription != null ? !shortDescription.equals(that.shortDescription) : that.shortDescription != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+        return result;
+    }
 }
