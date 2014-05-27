@@ -17,9 +17,9 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.rembx.jeeshop.catalog.util.Assertions.assertThatCategoriesOf;
 
-public class CatalogServiceTest {
+public class CatalogResourceTest {
 
-    private CatalogService service;
+    private CatalogResource service;
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
@@ -31,7 +31,7 @@ public class CatalogServiceTest {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        service = new CatalogService(entityManagerFactory.createEntityManager());
+        service = new CatalogResource(entityManagerFactory.createEntityManager());
     }
 
     @Test

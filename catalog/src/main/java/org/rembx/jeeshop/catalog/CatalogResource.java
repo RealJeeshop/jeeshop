@@ -29,16 +29,16 @@ import static org.rembx.jeeshop.catalog.model.QCategory.category;
 
 @Path("/catalog")
 @Stateless
-public class CatalogService implements Serializable {
+public class CatalogResource implements Serializable {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    public CatalogService(){
+    public CatalogResource(){
 
     }
 
-    public CatalogService(EntityManager entityManager) {
+    public CatalogResource(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

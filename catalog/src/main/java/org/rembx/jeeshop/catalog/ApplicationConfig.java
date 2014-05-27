@@ -15,8 +15,8 @@ public class ApplicationConfig extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(CatalogService.class);
-        classes.add(CategoryService.class);
+        classes.add(CatalogResource.class);
+        classes.add(CategoryResource.class);
         return classes;
     }
 }

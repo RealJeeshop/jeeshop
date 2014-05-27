@@ -28,15 +28,15 @@ import static org.rembx.jeeshop.util.DateUtil.dateToLocalDateTime;
 
 @Path("/category")
 @Stateless
-public class CategoryService implements Serializable {
+public class CategoryResource implements Serializable {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    public CategoryService() {
+    public CategoryResource() {
     }
 
-    public CategoryService(EntityManager entityManager) {
+    public CategoryResource(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
