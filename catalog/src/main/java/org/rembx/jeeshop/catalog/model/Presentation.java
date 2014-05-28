@@ -36,12 +36,11 @@ public class Presentation {
     private String displayName;
 
     @Size(max = 1000)
-    @Column(length = 1000)
-
+    @Lob
     private String shortDescription;
 
-    @Size(max=10000)
-    @Column(length = 10000)
+    @Lob
+    @Column(length = 5000)
 
     private String description;
 
