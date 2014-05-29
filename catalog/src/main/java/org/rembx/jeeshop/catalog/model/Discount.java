@@ -5,9 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by remi on 20/05/14.
@@ -15,7 +13,7 @@ import java.util.Set;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Discount extends CatalogItem{
+public class Discount extends CatalogItem {
 
     public static enum Type {
         DISCOUNT_RATE,
@@ -23,7 +21,7 @@ public class Discount extends CatalogItem{
         SHIPPING_FEE_DISCOUNT_AMOUNT
     }
 
-    public static enum Trigger{
+    public static enum Trigger {
         QUANTITY_OF_PRODUCTS,
         QUANTITY_OF_CATEGORY,
         ORDER_AMOUNT
@@ -37,24 +35,19 @@ public class Discount extends CatalogItem{
 
     private String voucherCode;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
-            inverseJoinColumns = @JoinColumn(name = "presentationId"))
-    private Set<Presentation> presentation;
-
     private Double amount;
 
     private Double discount;
 
     @ManyToMany
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
     @XmlTransient
     private List<SKU> skus;
 
     @ManyToMany
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @JoinTable(joinColumns = @JoinColumn(name = "discountId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
     @XmlTransient
@@ -138,14 +131,6 @@ public class Discount extends CatalogItem{
 
     public void setUniqueUse(Boolean uniqueUse) {
         this.uniqueUse = uniqueUse;
-    }
-
-    public Set<Presentation> getPresentation() {
-        return presentation;
-    }
-
-    public void setPresentation(Set<Presentation> presentation) {
-        this.presentation = presentation;
     }
 
     public Trigger getTriggerRule() {

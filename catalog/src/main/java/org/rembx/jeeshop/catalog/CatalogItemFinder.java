@@ -13,10 +13,8 @@ import java.util.List;
 
 /**
  * Utility class for common finders on CatalogItem entities
- *
  */
 public class CatalogItemFinder {
-
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
@@ -27,16 +25,22 @@ public class CatalogItemFinder {
         this.entityManager = entityManager;
     }
 
-    public <T extends CatalogItem> List<T> findVisibleCatalogItems(EntityPathBase<T> entityPathBase, List<T> items){
+    public <T extends CatalogItem> List<T> findVisibleCatalogItems(EntityPathBase<T> entityPathBase, List<T> items, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
         Date now = new Date();
-        return new JPAQuery(entityManager)
+        List<T> results = new JPAQuery(entityManager)
                 .from(qCatalogItem).where(
                         qCatalogItem.disabled.isFalse(),
                         qCatalogItem.endDate.after(now),
                         qCatalogItem.startDate.before(now),
-                        qCatalogItem.in(items))
+                        qCatalogItem.in(items)
+                )
                 .list(entityPathBase);
+
+        results.forEach((catalogItem) -> catalogItem.setLocalizedPresentation(locale));
+
+        return results;
+
     }
 
 }

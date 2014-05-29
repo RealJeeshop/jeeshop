@@ -7,9 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -51,6 +49,13 @@ public class TestCatalog {
         Category childCat2 = new Category("childCat2", "Child category 2 with products", now, tomorrow, false);
         Category childCat3Expired = new Category("childCat3", "Child category 3 expired", now, yesterday, false);
         Category childCat4Disabled = new Category("childCat4", "Child category 4 disabled", now, tomorrow, true);
+        Category childCat5WithPresentation = new Category("childCat5", "Child category 5 with presentation", now, tomorrow, false);
+        Presentation presentationUKChildCat5 = new Presentation("en_GB","Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
+        Presentation presentationUSChildCat5 = new Presentation("en_US","Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
+        childCat5WithPresentation.setPresentationByLocale(new HashMap<String, Presentation>(){{
+            put (Locale.UK.toString(), presentationUKChildCat5);
+            put (Locale.US.toString(), presentationUSChildCat5);
+        }});
 
         Product product1 = new Product("product1", now, tomorrow, false);
         Product product2Expired = new Product("product2", now, yesterday, false);
@@ -62,7 +67,7 @@ public class TestCatalog {
         SKU sku4 = new SKU("sku4", "Sku4 not available", 10d,2, "X1213JJLB-3",  now, yesterday, false, 3);
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));
-        rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled));
+        rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation));
         childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled));
         product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4));
 
@@ -93,6 +98,10 @@ public class TestCatalog {
         return aRootCategoryWithChildCategories().getChildCategories().get(0);
     }
 
+    public Category aCategoryWithPresentation(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(4);
+    }
+
     public Category anExpiredCategory(){
         return aRootCategoryWithChildCategories().getChildCategories().get(2);
     }
@@ -113,6 +122,17 @@ public class TestCatalog {
         return aRootCategoryWithChildCategories().getChildCategories().get(1).getChildProducts().get(0);
     }
 
+    public static class CatalogItemAssert extends GenericAssert<CatalogItemAssert, CatalogItem>{
+        CatalogItemAssert(CatalogItem actual) {
+            super(CatalogItemAssert.class , actual);
+        }
+
+        public CatalogItemAssert hasLocalizedPresentationShortDescription( String locale, String text){
+            assertThat(actual.getPresentationByLocale().get(locale).getShortDescription()).isEqualTo(text);
+            assertThat(actual.getLocalizedPresentation().getShortDescription()).isEqualTo(text);
+            return this;
+        }
+    }
 
     public static class CategoriesAssert extends GenericAssert<CategoriesAssert, List<Category>> {
 
@@ -133,7 +153,7 @@ public class TestCatalog {
          */
         public CategoriesAssert areVisibleChildCategoriesOfARootCategoryWithChildCategories(){
             assertThat(actual).containsExactly(catalog.getRootCategories().get(1).getChildCategories().get(0),
-                    catalog.getRootCategories().get(1).getChildCategories().get(1));
+                    catalog.getRootCategories().get(1).getChildCategories().get(1),catalog.getRootCategories().get(1).getChildCategories().get(4));
             return this;
         }
 

@@ -37,13 +37,13 @@ public class ProductResourceTest {
 
     @Test
     public void find_withIdOfAvailableProduct_ShouldReturnExpectedProduct() {
-        assertThat(service.find(testCatalog.aProductWithSkus().getId())).isEqualTo(testCatalog.aProductWithSkus());
+        assertThat(service.find(testCatalog.aProductWithSkus().getId(),null)).isEqualTo(testCatalog.aProductWithSkus());
     }
 
     @Test
     public void find_withIdOfDisableProduct_ShouldThrowForbiddenException() {
         try{
-            service.find(testCatalog.aDisabledProduct().getId());
+            service.find(testCatalog.aDisabledProduct().getId(),null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.FORBIDDEN,e.getResponse().getStatusInfo());
@@ -53,7 +53,7 @@ public class ProductResourceTest {
     @Test
     public void find_withIdOfExpiredProduct_ShouldThrowForbiddenException() {
         try{
-            service.find(testCatalog.anExpiredProduct().getId());
+            service.find(testCatalog.anExpiredProduct().getId(),null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.FORBIDDEN,e.getResponse().getStatusInfo());
@@ -63,7 +63,7 @@ public class ProductResourceTest {
     @Test
     public void find_withUnknownProductId_ShouldThrowNotFoundException() {
         try{
-            service.find(9999L);
+            service.find(9999L,null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());

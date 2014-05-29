@@ -40,7 +40,7 @@ public class CatalogResourceTest {
     @Test
     public void findCategories_shouldReturn404ExWhenCatalogNotFound() {
         try{
-            service.findCategories(9999L);
+            service.findCategories(9999L, null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -49,13 +49,13 @@ public class CatalogResourceTest {
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
-        List<Category> categories = service.findCategories(testCatalog.getEmptyCatalogId());
+        List<Category> categories = service.findCategories(testCatalog.getEmptyCatalogId(),null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
-        List<Category> categories = service.findCategories(testCatalog.getId());
+        List<Category> categories = service.findCategories(testCatalog.getId(),null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 }

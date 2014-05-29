@@ -6,8 +6,11 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Map;
 
 import static org.rembx.jeeshop.util.DateUtil.dateToLocalDateTime;
+import static org.rembx.jeeshop.util.LocaleUtil.FALLBACK;
+import static org.rembx.jeeshop.util.LocaleUtil.getLocaleCode;
 
 /**
  * Parent class of all catalog node types
@@ -59,6 +62,16 @@ public abstract class CatalogItem {
     @Transient
     protected Boolean visible;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @JoinTable(joinColumns = @JoinColumn(name = "catalogItemId", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "presentationId"))
+    @MapKey(name = "locale")
+    @XmlTransient
+    private Map<String, Presentation> presentationByLocale;
+
+    @Transient
+    private Presentation localizedPresentation;
+
     public CatalogItem() {
     }
 
@@ -74,13 +87,23 @@ public abstract class CatalogItem {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if ( this.isDisabled() || (endDate!=null && dateToLocalDateTime(endDate).isBefore(now))
-                ||(startDate!= null && dateToLocalDateTime(startDate).isAfter(now) )){
+        if (this.isDisabled() || (endDate != null && dateToLocalDateTime(endDate).isBefore(now))
+                || (startDate != null && dateToLocalDateTime(startDate).isAfter(now))) {
             visible = false;
-        }else{
+        } else {
             visible = true;
         }
+    }
 
+    public void setLocalizedPresentation(String locale) {
+        Presentation localizedPresentation = null;
+        if (presentationByLocale != null && presentationByLocale.size() > 0) {
+            localizedPresentation = presentationByLocale.get(getLocaleCode(locale));
+        }
+        if (localizedPresentation == null && presentationByLocale.get(FALLBACK.toString()) != null) {
+            localizedPresentation = presentationByLocale.get(FALLBACK.toString());
+        }
+        setLocalizedPresentation(localizedPresentation);
     }
 
     public Long getId() {
@@ -129,6 +152,22 @@ public abstract class CatalogItem {
 
     public Boolean isVisible() {
         return visible;
+    }
+
+    public Presentation getLocalizedPresentation() {
+        return localizedPresentation;
+    }
+
+    public void setLocalizedPresentation(Presentation localizedPresentation) {
+        this.localizedPresentation = localizedPresentation;
+    }
+
+    public Map<String, Presentation> getPresentationByLocale() {
+        return presentationByLocale;
+    }
+
+    public void setPresentationByLocale(Map<String, Presentation> presentationByLocale) {
+        this.presentationByLocale = presentationByLocale;
     }
 
     @Override

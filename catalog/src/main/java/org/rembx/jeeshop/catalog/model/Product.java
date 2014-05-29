@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.catalog.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by remi on 20/05/14.
@@ -14,25 +14,20 @@ import java.util.Set;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Product extends CatalogItem{
+public class Product extends CatalogItem {
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<SKU> childSKUs;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "productId"),
-            inverseJoinColumns = @JoinColumn(name = "presentationId"))
-    private Set<Presentation> presentations;
 
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @XmlTransient
-    private List <Discount> discounts;
+    private List<Discount> discounts;
 
     public Product() {
     }
@@ -50,14 +45,6 @@ public class Product extends CatalogItem{
 
     public void setChildSKUs(List<SKU> childSKUs) {
         this.childSKUs = childSKUs;
-    }
-
-    public Set<Presentation> getPresentations() {
-        return presentations;
-    }
-
-    public void setPresentations(Set<Presentation> presentations) {
-        this.presentations = presentations;
     }
 
     public List<Discount> getDiscounts() {

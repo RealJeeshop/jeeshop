@@ -32,43 +32,48 @@ public class Presentation {
 
     @Size(max = 255)
     @Column(length = 255)
-
     private String displayName;
 
-    @Size(max = 1000)
-    @Lob
+    @Size(max = 2000)
+    @Column(length =2000)
     private String shortDescription;
 
-    @Lob
-    @Column(length = 5000)
-
+    @Size(max = 10000 )
+    @Column(length = 10000)
     private String description;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-
     private Media thumbnail;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-
     private Media smallImage;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-
     private Media largeImage;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-
     private Media video;
 
     @OneToMany
     @OrderColumn(name = "orderIdx")
+    @XmlTransient
     private List<Media> otherMedia;
 
     private HashMap<String,String> features;
+
+    public Presentation() {
+    }
+
+    public Presentation(String locale, String displayName, String shortDescription, String description) {
+        this.locale = locale;
+        this.displayName = displayName;
+        this.shortDescription = shortDescription;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
@@ -76,6 +81,86 @@ public class Presentation {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Media getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Media thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public Media getSmallImage() {
+        return smallImage;
+    }
+
+    public void setSmallImage(Media smallImage) {
+        this.smallImage = smallImage;
+    }
+
+    public Media getLargeImage() {
+        return largeImage;
+    }
+
+    public void setLargeImage(Media largeImage) {
+        this.largeImage = largeImage;
+    }
+
+    public Media getVideo() {
+        return video;
+    }
+
+    public void setVideo(Media video) {
+        this.video = video;
+    }
+
+    public List<Media> getOtherMedia() {
+        return otherMedia;
+    }
+
+    public void setOtherMedia(List<Media> otherMedia) {
+        this.otherMedia = otherMedia;
+    }
+
+    public HashMap<String, String> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(HashMap<String, String> features) {
+        this.features = features;
     }
 
     @Override
@@ -93,6 +178,8 @@ public class Presentation {
 
         return true;
     }
+
+
 
     @Override
     public int hashCode() {

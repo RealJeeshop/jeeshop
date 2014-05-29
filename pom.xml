@@ -40,6 +40,7 @@
         <version.slf4j>1.7.7</version.slf4j>
         <version.fest-assert>1.4</version.fest-assert>
         <version.mockito>1.9.5</version.mockito>
+        <version.commons-lang>2.6</version.commons-lang>
 
         <version.maven.war.plugin>2.4</version.maven.war.plugin>
         <version.failsafe.plugin>2.17</version.failsafe.plugin>
@@ -74,6 +75,7 @@
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
             <version>${version.fest-assert}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -87,6 +89,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>

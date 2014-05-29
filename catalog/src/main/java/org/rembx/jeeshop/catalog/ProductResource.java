@@ -45,7 +45,7 @@ public class ProductResource implements Serializable {
     @GET
     @Path("/{productId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Product find(@PathParam("productId") @NotNull Long productId) {
+    public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (product == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -55,13 +55,15 @@ public class ProductResource implements Serializable {
             throw new WebApplicationException((Response.Status.FORBIDDEN));
         }
 
+        product.setLocalizedPresentation(locale);
+
         return product;
     }
 
     @GET
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<SKU> findSKUs(@PathParam("productId") @NotNull Long productId) {
+    public List<SKU> findSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (product == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -70,7 +72,7 @@ public class ProductResource implements Serializable {
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(sKU, product.getChildSKUs());
+        return catalogItemFinder.findVisibleCatalogItems(sKU, product.getChildSKUs(), locale);
     }
 
 }

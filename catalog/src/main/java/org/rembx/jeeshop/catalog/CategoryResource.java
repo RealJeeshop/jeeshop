@@ -45,7 +45,7 @@ public class CategoryResource implements Serializable {
     @GET
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Category find(@PathParam("categoryId") @NotNull Long categoryId) {
+    public Category find(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
         if (category == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -55,13 +55,15 @@ public class CategoryResource implements Serializable {
             throw new WebApplicationException((Response.Status.FORBIDDEN));
         }
 
+        category.setLocalizedPresentation(locale);
+
         return category;
     }
 
     @GET
     @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId) {
+    public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -69,13 +71,13 @@ public class CategoryResource implements Serializable {
         if (cat.getChildCategories().isEmpty()){
             return new ArrayList<>();
         }
-        return catalogItemFinder.findVisibleCatalogItems(category, cat.getChildCategories());
+        return catalogItemFinder.findVisibleCatalogItems(category, cat.getChildCategories(), locale);
     }
 
     @GET
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId) {
+    public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -85,7 +87,7 @@ public class CategoryResource implements Serializable {
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(product, cat.getChildProducts());
+        return catalogItemFinder.findVisibleCatalogItems(product, cat.getChildProducts(), locale);
     }
 
 }

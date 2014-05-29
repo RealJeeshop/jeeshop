@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by remi on 20/05/14.
@@ -15,26 +14,21 @@ import java.util.Set;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Category extends CatalogItem{
+public class Category extends CatalogItem {
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "parentCategoryId"),
             inverseJoinColumns = @JoinColumn(name = "childCategoryId"))
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<Category> childCategories;
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "categoryId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<Product> childProducts;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "categoryId",referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "presentationId"))
-    private Set<Presentation> presentations;
 
     public Category() {
     }
@@ -69,14 +63,5 @@ public class Category extends CatalogItem{
     public void setChildProducts(List<Product> childProducts) {
         this.childProducts = childProducts;
     }
-
-    public Set<Presentation> getPresentations() {
-        return presentations;
-    }
-
-    public void setPresentations(Set<Presentation> presentations) {
-        this.presentations = presentations;
-    }
-
 
 }

@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Stock keeping unit
@@ -29,11 +28,6 @@ public class SKU extends CatalogItem{
     private Integer threshold;
 
     private Integer quantity;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
-            inverseJoinColumns = @JoinColumn(name = "presentationId"))
-    private Set<Presentation> presentations;
 
     /**
      * Calculated field true if quantity > threshold
@@ -102,14 +96,6 @@ public class SKU extends CatalogItem{
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Set<Presentation> getPresentations() {
-        return presentations;
-    }
-
-    public void setPresentations(Set<Presentation> presentations) {
-        this.presentations = presentations;
     }
 
     public Boolean getAvailable() {
