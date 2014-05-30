@@ -1,8 +1,6 @@
-package org.rembx.jeeshop.catalog.util;
+package org.rembx.jeeshop.catalog.test;
 
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.model.*;
 
 import java.util.List;
 
@@ -22,5 +20,16 @@ public class Assertions extends org.fest.assertions.Assertions {
     public static TestCatalog.ProductsAssert assertThatProductsOf(List<Product> products) {
         return new TestCatalog.ProductsAssert(products);
     }
+
+    public static TestCatalog.SKUsAssert assertThatSKUsOf(List<SKU> skus) {
+        return new TestCatalog.SKUsAssert(skus);
+    }
+
+
+    public static TestCatalog.SKUDiscountsAssert assertThatDiscountsOf(List<Discount> discounts) {
+        return new TestCatalog.SKUDiscountsAssert(discounts);
+    }
+
+
 
 }

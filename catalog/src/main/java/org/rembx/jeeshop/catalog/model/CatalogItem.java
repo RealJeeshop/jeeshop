@@ -60,7 +60,7 @@ public abstract class CatalogItem {
      * True when entity is visible
      */
     @Transient
-    protected Boolean visible;
+    protected boolean visible;
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "catalogItemId", referencedColumnName = "id"),
@@ -97,9 +97,13 @@ public abstract class CatalogItem {
 
     public void setLocalizedPresentation(String locale) {
         Presentation localizedPresentation = null;
-        if (presentationByLocale != null && presentationByLocale.size() > 0) {
-            localizedPresentation = presentationByLocale.get(getLocaleCode(locale));
+
+        if (presentationByLocale == null || presentationByLocale.size()==0){
+            return;
         }
+
+        localizedPresentation = presentationByLocale.get(getLocaleCode(locale));
+
         if (localizedPresentation == null && presentationByLocale.get(FALLBACK.toString()) != null) {
             localizedPresentation = presentationByLocale.get(FALLBACK.toString());
         }
@@ -150,7 +154,7 @@ public abstract class CatalogItem {
         this.endDate = endDate;
     }
 
-    public Boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 

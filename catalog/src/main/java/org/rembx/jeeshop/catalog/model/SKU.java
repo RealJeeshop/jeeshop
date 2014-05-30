@@ -4,8 +4,10 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Stock keeping unit
@@ -29,17 +31,24 @@ public class SKU extends CatalogItem{
 
     private Integer quantity;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
+            inverseJoinColumns = @JoinColumn(name = "discountId"))
+    @OrderColumn(name = "orderIdx")
+    @XmlTransient
+    private List<Discount> discounts;
+
     /**
      * Calculated field true if quantity > threshold
      */
     @Transient
-    private Boolean available;
+    private boolean available;
 
     public SKU() {
     }
 
     public SKU(String name, String description, Double price, Integer quantity, String reference,
-               Date endDate, Date startDate, Boolean disabled, Integer threshold) {
+                Date startDate, Date endDate, Boolean disabled, Integer threshold) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -98,7 +107,15 @@ public class SKU extends CatalogItem{
         this.quantity = quantity;
     }
 
-    public Boolean getAvailable() {
+    public List<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public void setDiscounts(List<Discount> discounts) {
+        this.discounts = discounts;
+    }
+
+    public Boolean isAvailable() {
         return available;
     }
 
@@ -114,7 +131,7 @@ public class SKU extends CatalogItem{
 
         SKU sku = (SKU) o;
 
-        if (available != null ? !available.equals(sku.available) : sku.available != null) return false;
+        if (available != sku.available) return false;
         if (currency != null ? !currency.equals(sku.currency) : sku.currency != null) return false;
         if (price != null ? !price.equals(sku.price) : sku.price != null) return false;
         if (quantity != null ? !quantity.equals(sku.quantity) : sku.quantity != null) return false;
@@ -132,7 +149,7 @@ public class SKU extends CatalogItem{
         result = 31 * result + (reference != null ? reference.hashCode() : 0);
         result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
         result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
-        result = 31 * result + (available != null ? available.hashCode() : 0);
+        result = 31 * result + (available ? 1 : 0);
         return result;
     }
 }

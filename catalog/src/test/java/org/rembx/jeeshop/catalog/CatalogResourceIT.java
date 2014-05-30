@@ -5,7 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.util.TestCatalog;
+import org.rembx.jeeshop.catalog.test.TestCatalog;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,9 +16,9 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static org.rembx.jeeshop.catalog.util.Assertions.assertThatCategoriesOf;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
-public class CatalogResourceTest {
+public class CatalogResourceIT {
 
     private CatalogResource service;
 

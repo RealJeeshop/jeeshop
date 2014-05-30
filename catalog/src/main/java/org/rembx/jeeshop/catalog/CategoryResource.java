@@ -4,6 +4,7 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,12 +35,16 @@ public class CategoryResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
+    @Inject
+    private CatalogItemResourceUtil catItemResUtil;
+
     public CategoryResource() {
     }
 
-    public CategoryResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public CategoryResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.catItemResUtil = catItemResUtil;
     }
 
     @GET
@@ -47,17 +52,7 @@ public class CategoryResource implements Serializable {
     @Produces(MediaType.APPLICATION_JSON)
     public Category find(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
-        if (category == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-
-        if (!category.isVisible()){
-            throw new WebApplicationException((Response.Status.FORBIDDEN));
-        }
-
-        category.setLocalizedPresentation(locale);
-
-        return category;
+        return catItemResUtil.find(category,locale);
     }
 
     @GET

@@ -98,16 +98,23 @@ public class CatalogResource implements Serializable {
         Product product1 = new Product("product1", now, tomorrow, false);
         Product product2Expired = new Product("product2", now, yesterday, false);
         Product product3Disabled = new Product("product3", now, yesterday, true);
+        Product product4 = new Product("product4", now, yesterday, false);
 
         SKU sku1 = new SKU("sku1", "Sku1 enabled", 10d,100, "X1213JJLB-1", now, tomorrow, false, 3);
         SKU sku2 = new SKU("sku2", "Sku2 disabled", 10d,100, "X1213JJLB-2", now, tomorrow, true, 3);
         SKU sku3 = new SKU("sku3", "Sku3 expired", 10d,100, "X1213JJLB-3",  now, yesterday, false, 3);
-        SKU sku4 = new SKU("sku4", "Sku4 not available", 10d,2, "X1213JJLB-3",  now, yesterday, false, 3);
+        SKU sku4 = new SKU("sku4", "Sku4 not available", 10d,2, "X1213JJLB-4",  now, tomorrow, false, 3);
+        SKU sku5 = new SKU("sku5", "Sku5 with discounts", 10d,100, "X1213JJLB-5",  now, tomorrow, false, 3);
+
+        Discount discount1 = new Discount("discount1","a discount", Discount.Type.DISCOUNT_RATE, Discount.Trigger.ORDER_AMOUNT,null, 0.1,1,true, now, tomorrow, false);
+        sku5.setDiscounts(Arrays.asList(discount1));
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));
         rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation));
-        childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled));
-        product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4));
+        childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled,product4));
+        product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4, sku5));
+
+        
         entityManager.persist(catalog);
 
     }

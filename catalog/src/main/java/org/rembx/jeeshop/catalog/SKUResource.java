@@ -2,7 +2,8 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.QDiscount;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
@@ -18,56 +19,56 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
+import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 
 /**
  * @author remi
  */
 
-@Path("/product")
+@Path("/sku")
 @Stateless
-public class ProductResource implements Serializable {
+public class SKUResource implements Serializable {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     @Inject
-    private CatalogItemFinder catalogItemFinder;
-
-    @Inject
     private CatalogItemResourceUtil catItemResUtil;
 
-    public ProductResource() {
+    @Inject
+    private CatalogItemFinder catalogItemFinder;
+
+    public SKUResource() {
 
     }
 
-    public ProductResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
+    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.catItemResUtil = catItemResUtil;
     }
 
     @GET
-    @Path("/{productId}")
+    @Path("/{skuId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
-        Product product = entityManager.find(Product.class, productId);
-        return catItemResUtil.find(product,locale);
+    public SKU find(@PathParam("skuId") @NotNull Long skuId, @QueryParam("locale") String locale) {
+        SKU sku = entityManager.find(SKU.class, skuId);
+        return catItemResUtil.find(sku,locale);
     }
 
     @GET
-    @Path("/{productId}/skus")
+    @Path("/{skuId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<SKU> findSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
-        Product product = entityManager.find(Product.class, productId);
-        if (product == null) {
+    public List<Discount> findDiscounts(@PathParam("skuId") @NotNull Long skuId) {
+        SKU sku = entityManager.find(SKU.class, skuId);
+        if (sku == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        if (product.getChildSKUs().isEmpty()) {
+        if (sku.getDiscounts().isEmpty()) {
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(sKU, product.getChildSKUs(), locale);
+        return catalogItemFinder.findVisibleCatalogItems(discount, sku.getDiscounts(),null);
     }
 
 }

@@ -4,19 +4,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.util.TestCatalog;
+import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.test.TestCatalog;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThatSKUsOf;
 
-public class ProductResourceTest {
+public class ProductResourceIT {
 
     private ProductResource service;
 
@@ -32,12 +35,13 @@ public class ProductResourceTest {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        service = new ProductResource(entityManager,new CatalogItemFinder(entityManager));
+        service = new ProductResource(entityManager,new CatalogItemFinder(entityManager),new CatalogItemResourceUtil());
     }
 
     @Test
-    public void find_withIdOfAvailableProduct_ShouldReturnExpectedProduct() {
-        assertThat(service.find(testCatalog.aProductWithSkus().getId(),null)).isEqualTo(testCatalog.aProductWithSkus());
+    public void find_withIdOfVisibleProduct_ShouldReturnExpectedProduct() {
+        assertThat(service.find(testCatalog.aProductWithSKUs().getId(),null)).isEqualTo(testCatalog.aProductWithSKUs());
+        assertThat(service.find(testCatalog.aProductWithSKUs().getId(),null).isVisible()).isTrue();
     }
 
     @Test
@@ -71,5 +75,27 @@ public class ProductResourceTest {
     }
 
 
+    @Test
+    public void findSKUs_shouldReturn404ExWhenProductNotFound() {
+        try{
+            service.findSKUs(9999L, null);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());
+        }
+    }
+
+    @Test
+    public void findSKUs_shouldNotReturnExpiredNorDisabledSKUs() {
+        List<SKU> skus = service.findSKUs(testCatalog.aProductWithSKUs().getId(), null);
+        assertNotNull(skus);
+        assertThatSKUsOf(skus).areVisibleSKUsOfAProductWithSKUs();
+    }
+
+    @Test
+    public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
+        List<SKU> skus = service.findSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
+        assertThat(skus).isEmpty();
+    }
 
 }

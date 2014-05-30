@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog.util;
+package org.rembx.jeeshop.catalog.test;
 
 import org.fest.assertions.GenericAssert;
 import org.rembx.jeeshop.catalog.model.*;
@@ -60,16 +60,21 @@ public class TestCatalog {
         Product product1 = new Product("product1", now, tomorrow, false);
         Product product2Expired = new Product("product2", now, yesterday, false);
         Product product3Disabled = new Product("product3", now, yesterday, true);
+        Product product4 = new Product("product4", now, yesterday, false);
 
         SKU sku1 = new SKU("sku1", "Sku1 enabled", 10d,100, "X1213JJLB-1", now, tomorrow, false, 3);
         SKU sku2 = new SKU("sku2", "Sku2 disabled", 10d,100, "X1213JJLB-2", now, tomorrow, true, 3);
         SKU sku3 = new SKU("sku3", "Sku3 expired", 10d,100, "X1213JJLB-3",  now, yesterday, false, 3);
-        SKU sku4 = new SKU("sku4", "Sku4 not available", 10d,2, "X1213JJLB-3",  now, yesterday, false, 3);
+        SKU sku4 = new SKU("sku4", "Sku4 not available", 10d,2, "X1213JJLB-4",  now, tomorrow, false, 3);
+        SKU sku5 = new SKU("sku5", "Sku5 with discounts", 10d,100, "X1213JJLB-5",  now, tomorrow, false, 3);
+
+        Discount discount1 = new Discount("discount1","a discount", Discount.Type.DISCOUNT_RATE, Discount.Trigger.ORDER_AMOUNT,null, 0.1,1,true, now, tomorrow, false);
+        sku5.setDiscounts(Arrays.asList(discount1));
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));
         rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation));
-        childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled));
-        product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4));
+        childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled,product4));
+        product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4, sku5));
 
         entityManager.persist(catalog);
         entityManager.getTransaction().commit();
@@ -118,8 +123,37 @@ public class TestCatalog {
         return aRootCategoryWithChildCategories().getChildCategories().get(1).getChildProducts().get(2);
     }
 
-    public Product aProductWithSkus(){
+    public Product aProductWithSKUs(){
         return aRootCategoryWithChildCategories().getChildCategories().get(1).getChildProducts().get(0);
+    }
+
+    public Product aProductWithoutSKUs(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1).getChildProducts().get(3);
+    }
+
+    public SKU aVisibleSKU(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1)
+                .getChildProducts().get(0).getChildSKUs().get(0);
+    }
+
+    public SKU aDisabledSKU(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1)
+                .getChildProducts().get(0).getChildSKUs().get(1);
+    }
+
+    public SKU anExpiredSKU(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1)
+                .getChildProducts().get(0).getChildSKUs().get(2);
+    }
+
+    public SKU aSKUNotAvailable(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1)
+                .getChildProducts().get(0).getChildSKUs().get(3);
+    }
+
+    public SKU aSKUWithDiscounts(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(1)
+                .getChildProducts().get(0).getChildSKUs().get(4);
     }
 
     public static class CatalogItemAssert extends GenericAssert<CatalogItemAssert, CatalogItem>{
@@ -166,10 +200,46 @@ public class TestCatalog {
         }
 
         /**
-         * Visible categories are not disabled and have an endDate after current date
+         * Visible products are not disabled and have an endDate after current date
          */
         public ProductsAssert areVisibleProductsOfAChildCategoryWithProducts(){
             assertThat(actual).containsExactly(catalog.getRootCategories().get(1).getChildCategories().get(1).getChildProducts().get(0));
+            return this;
+        }
+
+    }
+
+    public static class SKUsAssert extends GenericAssert<SKUsAssert, List<SKU>> {
+
+        SKUsAssert( List<SKU> actual) {
+            super(SKUsAssert.class , actual);
+        }
+
+        /**
+         * Visible skus are not disabled and have an endDate after current date
+         */
+        public SKUsAssert areVisibleSKUsOfAProductWithSKUs(){
+            assertThat(actual).containsExactly(
+                    catalog.getRootCategories().get(1).getChildCategories().get(1).getChildProducts().get(0).getChildSKUs().get(0),
+                    catalog.getRootCategories().get(1).getChildCategories().get(1).getChildProducts().get(0).getChildSKUs().get(3),
+                    catalog.getRootCategories().get(1).getChildCategories().get(1).getChildProducts().get(0).getChildSKUs().get(4));
+            return this;
+        }
+
+    }
+
+    public static class SKUDiscountsAssert extends GenericAssert<SKUDiscountsAssert, List<Discount>> {
+
+        SKUDiscountsAssert( List<Discount> actual) {
+            super(SKUDiscountsAssert.class , actual);
+        }
+
+        /**
+         * Visible discounts are not disabled and have an endDate after current date
+         */
+        public SKUDiscountsAssert areVisibleDiscountsOfASKUWithDiscounts(){
+            assertThat(actual).containsExactly(catalog.getRootCategories().get(1).getChildCategories().get(1)
+                    .getChildProducts().get(0).getChildSKUs().get(4).getDiscounts().get(0));
             return this;
         }
 

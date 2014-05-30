@@ -5,7 +5,9 @@ import com.mysema.query.types.path.EntityPathBase;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.QCatalogItem;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
@@ -17,6 +19,9 @@ import java.util.List;
 public class CatalogItemFinder {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
+
+    @Inject
+    private CatalogItemResourceUtil catItemResUtil;
 
     public CatalogItemFinder() {
     }

@@ -18,6 +18,7 @@ public class ApplicationConfig extends Application {
         classes.add(CatalogResource.class);
         classes.add(CategoryResource.class);
         classes.add(ProductResource.class);
+        classes.add(SKUResource.class);
         return classes;
     }
 }

@@ -22,7 +22,7 @@ public class Product extends CatalogItem {
     @XmlTransient
     private List<SKU> childSKUs;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")

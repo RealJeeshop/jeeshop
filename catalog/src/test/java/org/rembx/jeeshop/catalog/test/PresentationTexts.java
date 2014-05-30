@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog.util;
+package org.rembx.jeeshop.catalog.test;
 
 /**
  * Created by remi on 28/05/14.

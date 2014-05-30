@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
-import org.rembx.jeeshop.catalog.util.PresentationTexts;
-import org.rembx.jeeshop.catalog.util.TestCatalog;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
+import org.rembx.jeeshop.catalog.test.PresentationTexts;
+import org.rembx.jeeshop.catalog.test.TestCatalog;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,11 +21,11 @@ import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.rembx.jeeshop.catalog.util.Assertions.assertThat;
-import static org.rembx.jeeshop.catalog.util.Assertions.assertThatCategoriesOf;
-import static org.rembx.jeeshop.catalog.util.Assertions.assertThatProductsOf;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThatProductsOf;
 
-public class CategoryResourceTest {
+public class CategoryResourceIT {
     private CategoryResource service;
 
     private TestCatalog testCatalog;
@@ -39,12 +40,14 @@ public class CategoryResourceTest {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        service = new CategoryResource(entityManager, new CatalogItemFinder(entityManager));
+        service = new CategoryResource(entityManager, new CatalogItemFinder(entityManager),new CatalogItemResourceUtil());
     }
 
     @Test
-    public void find_withIdOfAvailableCategory_ShouldReturnExpectedCategory() {
+    public void find_withIdOfVisibleCategory_ShouldReturnExpectedCategory() {
         assertThat(service.find(testCatalog.aCategoryWithProducts().getId(),null)).isEqualTo(testCatalog.aCategoryWithProducts());
+        assertThat(service.find(testCatalog.aCategoryWithProducts().getId(),null).isVisible()).isTrue();
+
     }
 
     @Test
@@ -133,9 +136,9 @@ public class CategoryResourceTest {
     }
 
     @Test
-    public void findCategories_shouldReturnEmptyListWhenNoChildProducts() {
-        List<Category> categories = service.findCategories(testCatalog.aCategoryWithoutProducts().getId(),null);
-        assertThat(categories).isEmpty();
+    public void findProducts_shouldReturnEmptyListWhenNoChildProducts() {
+        List<Product> products = service.findProducts(testCatalog.aCategoryWithoutProducts().getId(),null);
+        assertThat(products).isEmpty();
     }
 
 }
