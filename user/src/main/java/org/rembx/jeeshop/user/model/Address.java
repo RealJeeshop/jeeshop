@@ -1,15 +1,14 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 @Entity
 public class Address {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     @Size(min = 5, max = 50)
@@ -27,10 +26,12 @@ public class Address {
     @Column(nullable = false, length = 10)
     @Size(min = 1, max = 10)
     private String zipcode;
-    @ManyToOne
     @NotNull
-    @Column(nullable = false)
+    @OneToOne
     private Country country;
+
+    public Address() {
+    }
 
     public Address(String street1, String street2, String city, String zipCode, String zipcode, Country country) {
         this.street1 = street1;
@@ -45,27 +46,7 @@ public class Address {
         return id;
     }
 
-    public String getStreet1() {
-        return street1;
-    }
 
-    public String getStreet2() {
-        return street2;
-    }
 
-    public String getCity() {
-        return city;
-    }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
 }

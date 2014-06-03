@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.order;
 
-import org.rembx.jeeshop.user.Address;
-import org.rembx.jeeshop.user.Customer;
+import org.rembx.jeeshop.user.model.Address;
+import org.rembx.jeeshop.user.model.User;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class PurchaseOrder {
 
     private enum status{CREATED, FULFILLED, ACCEPTED, REJECTED, CANCELLED, DELIVERED}
 
-    Customer customer;
+    User user;
 
     List<ShoppingCartItem> shoppingCartItems;
 

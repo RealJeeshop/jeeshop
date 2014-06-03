@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user.model;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -14,19 +14,19 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @NotNull
-@Size(min = 8, max = 50)
+@Size(min = 1, max = 50)
 @Constraint(validatedBy = {})
 @ReportAsSingleViolation
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface Password {
+public @interface Login {
 
     // ======================================
     // =             Attributes             =
     // ======================================
 
-    String message() default "password";
+    String message() default "login";
 
     Class<?>[] groups() default {};
 

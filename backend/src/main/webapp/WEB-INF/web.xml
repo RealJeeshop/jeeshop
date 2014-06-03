@@ -8,4 +8,24 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>REST services</web-resource-name>
+            <url-pattern>/rs/user/*</url-pattern>
+        </web-resource-collection>
+
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>JeeshopRealm</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>*</role-name>
+    </security-role>
+
 </web-app>

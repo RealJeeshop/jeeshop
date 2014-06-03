@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user.model;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
