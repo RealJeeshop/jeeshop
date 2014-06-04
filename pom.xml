@@ -31,6 +31,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
+
         <!-- other libs  versions -->
         <version.junit>4.11</version.junit>
         <version.querydsl>3.3.3</version.querydsl>
@@ -190,6 +191,16 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>openshift</id>
+            <properties>
+                <maven.compiler.executable>${env.OPENSHIFT_WILDFLY_DIR}usr/lib/jvm/jdk1.8.0_05/bin/javac</maven.compiler.executable>
+                <maven.compiler.fork>true</maven.compiler.fork>
+            </properties>
+        </profile>
+    </profiles>
 
 
 </project>

@@ -45,6 +45,7 @@ folder. -->
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <configuration>
+                        <warName>ROOT.war</warName>
                         <outputDirectory>deployments</outputDirectory>
                     </configuration>
                 </plugin>
