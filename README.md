@@ -1,4 +1,4 @@
-jeeshop (Work In Progress)
+Jeeshop (Work In Progress)
 =======
 
 # Description
@@ -7,26 +7,26 @@ TODO
 TODO
 # Deployment
 Jeeshop components can be deployed to any Java EE 7 compatible server.
-## Wildfly 8 configuration
+## Wildfly 8
 ### Datasource
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * UserDS
 * CatalogDS
 
 
-Sample of configurations for a standalone server and a MySQL database:
+Sample of configuration for a standalone server with datasources referencing a single jeeshop database:
   ```xml
   <xa-datasource jndi-name="java:/CatalogDS" pool-name="CatalogDS" enabled="true">
       <xa-datasource-property name="ServerName">
           localhost
       </xa-datasource-property>
       <xa-datasource-property name="DatabaseName">
-          catalog
+          jeeshop
       </xa-datasource-property>
       <driver>mysql</driver>
       <security>
-          <user-name>testapp</user-name>
-          <password>testapp</password>
+          <user-name>jeeshop</user-name>
+          <password>test</password>
       </security>
       <validation>
           <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
@@ -38,12 +38,12 @@ Sample of configurations for a standalone server and a MySQL database:
           localhost
       </xa-datasource-property>
       <xa-datasource-property name="DatabaseName">
-          user
+          jeeshop
       </xa-datasource-property>
       <driver>mysql</driver>
       <security>
-          <user-name>testapp</user-name>
-          <password>testapp</password>
+          <user-name>jeeshop</user-name>
+          <password>test</password>
       </security>
       <validation>
           <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
