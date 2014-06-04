@@ -1,6 +1,5 @@
-jeeshop
+jeeshop (Work In Progress)
 =======
-Work In Progress
 
 # Description
 TODO
