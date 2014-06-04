@@ -6,6 +6,7 @@ import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -50,6 +51,7 @@ public class CategoryResource implements Serializable {
     @GET
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Category find(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
         return catItemResUtil.find(category,locale);
@@ -58,6 +60,7 @@ public class CategoryResource implements Serializable {
     @GET
     @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {
@@ -72,6 +75,7 @@ public class CategoryResource implements Serializable {
     @GET
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {

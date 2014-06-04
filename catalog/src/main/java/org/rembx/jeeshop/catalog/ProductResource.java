@@ -6,6 +6,7 @@ import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -50,6 +51,7 @@ public class ProductResource implements Serializable {
     @GET
     @Path("/{productId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         return catItemResUtil.find(product,locale);
@@ -58,6 +60,7 @@ public class ProductResource implements Serializable {
     @GET
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<SKU> findSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (product == null) {

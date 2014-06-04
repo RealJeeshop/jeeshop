@@ -7,6 +7,7 @@ import org.rembx.jeeshop.catalog.model.QDiscount;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -51,6 +52,7 @@ public class SKUResource implements Serializable {
     @GET
     @Path("/{skuId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public SKU find(@PathParam("skuId") @NotNull Long skuId, @QueryParam("locale") String locale) {
         SKU sku = entityManager.find(SKU.class, skuId);
         return catItemResUtil.find(sku,locale);
@@ -59,6 +61,7 @@ public class SKUResource implements Serializable {
     @GET
     @Path("/{skuId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<Discount> findDiscounts(@PathParam("skuId") @NotNull Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         if (sku == null) {

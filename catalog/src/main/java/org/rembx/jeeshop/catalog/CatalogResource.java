@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.*;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -44,6 +45,7 @@ public class CatalogResource implements Serializable {
     @GET
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
@@ -70,6 +72,7 @@ public class CatalogResource implements Serializable {
     @GET
     @Path("/toto")
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public void toto() {
 
         Date now = Timestamp.from(ZonedDateTime.now().toInstant());
