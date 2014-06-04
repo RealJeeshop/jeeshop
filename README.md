@@ -6,8 +6,8 @@ TODO
 # Modules
 TODO
 # Deployment
-Jeeshop components can be deployed to any Java EE 7 compliant server.
-## Wildfly 8 configurations
+Jeeshop components can be deployed to any Java EE 7 compatible server.
+## Wildfly 8 configuration
 ### Datasource
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * UserDS
@@ -59,6 +59,7 @@ Sample of configurations for a standalone server and a MySQL database:
 
 ### Security domain configuration
 A security domain named "jeeshop" has to be created. 
+
 Sample of configuration for a standalone server: (TODO chose encryption mechanism / algo)
   ```xml
   <security-domain name="jeeshop">
