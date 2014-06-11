@@ -184,6 +184,7 @@
         </pluginManagement>
     </build>
 
+    <!--
     <profiles>
         <profile>
             <id>openshift</id>
@@ -192,7 +193,7 @@
                 <maven.compiler.fork>true</maven.compiler.fork>
             </properties>
         </profile>
-    </profiles>
+    </profiles>-->
 
 
 </project>

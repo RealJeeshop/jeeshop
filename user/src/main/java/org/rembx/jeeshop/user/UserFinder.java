@@ -6,11 +6,12 @@ import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 import static org.rembx.jeeshop.user.model.QUser.user;
 
 /**
- * Created by remi on 01/06/14.
+ * User finder utility
  */
 public class UserFinder {
 
@@ -31,4 +32,15 @@ public class UserFinder {
                 .singleResult(user);
     }
 
+    public List<User> findAll(Integer offset, Integer limit) {
+        JPAQuery query = new JPAQuery(entityManager).from(user);
+
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        return query.list(user);
+
+    }
 }

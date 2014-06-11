@@ -30,6 +30,14 @@ public class Country {
     public Country() {
     }
 
+    public Country(String isoCode, String name, String printableName, String iso3, String numcode) {
+        this.isoCode = isoCode;
+        this.name = name;
+        this.printableName = printableName;
+        this.iso3 = iso3;
+        this.numcode = numcode;
+    }
+
     public Long getId() {
         return id;
     }

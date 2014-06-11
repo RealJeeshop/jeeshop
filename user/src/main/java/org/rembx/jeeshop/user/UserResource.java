@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
 /**
  * Customer resource
@@ -29,7 +30,7 @@ public class UserResource {
     @Resource
     private SessionContext sessionContext;
 
-    @PersistenceContext(name= UserPersistenceUnit.NAME)
+    @PersistenceContext(name = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     @Inject
@@ -43,6 +44,14 @@ public class UserResource {
         this.userFinder = userFinder;
     }
 
+
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(Roles.ADMIN)// TODO paginate
+    public List<User> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        return userFinder.findAll(start, size);
+    }
 
     @GET
     @Path("/{customerId}")
