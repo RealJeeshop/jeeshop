@@ -39,6 +39,13 @@
                     <warName>${project.parent.artifactId}-${project.artifactId}</warName>
                 </configuration>
             </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <configuration>
+                        <filename>${project.parent.artifactId}-${project.artifactId}.war</filename>
+                    </configuration>
+                </plugin>
         </plugins>
     </build>
 
