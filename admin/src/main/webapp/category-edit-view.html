@@ -1,0 +1,22 @@
+<!--  Catalog edit-view  -->
+<h4>Root categories of catalog #1</h4>
+<table class="table table-striped" ng-controller="CatalogController as catalog">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>StartDate</th>
+        <th>EndDate</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="category in catalog.categories">
+        <td>{{category.id}}</td>
+        <td>{{category.name}}</td>
+        <td>{{category.description}}</td>
+        <td>{{category.startDate|date : 'medium'}}</td>
+        <td>{{category.endDate|date : 'medium'}}</td>
+    </tr>
+    </tbody>
+</table>

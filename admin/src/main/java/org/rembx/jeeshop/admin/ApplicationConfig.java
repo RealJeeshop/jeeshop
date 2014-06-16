@@ -1,4 +1,4 @@
-package org.remb.jeeshop.backend;
+package org.rembx.jeeshop.admin;
 
 import org.rembx.jeeshop.catalog.CatalogResource;
 import org.rembx.jeeshop.catalog.CategoryResource;

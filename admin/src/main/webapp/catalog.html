@@ -1,0 +1,35 @@
+<div>
+    <h1 class="page-header">Catalog</h1>
+
+    <section ng-controller="TabController as tab">
+        <ul class="nav nav-pills">
+            <li ng-class="{ active:tab.isSelected(1) }">
+                <a href ng-click="tab.selectTab(1)">Catalogs</a>
+            </li>
+            <li ng-class="{ active:tab.isSelected(2) }">
+                <a href ng-click="tab.selectTab(2)">Categories</a>
+            </li>
+            <li ng-class="{ active:tab.isSelected(3) }">
+                <a href ng-click="tab.selectTab(3)">Products</a>
+            </li>
+            <li ng-class="{ active:tab.isSelected(4) }">
+                <a href ng-click="tab.selectTab(4)">SKUs</a>
+            </li>
+            <li ng-class="{ active:tab.isSelected(5) }">
+                <a href ng-click="tab.selectTab(5)">Discounts</a>
+            </li>
+        </ul>
+
+        <div catalog-edit-view ng-show="tab.isSelected(1)"></div>
+
+       <div category-edit-view ng-show="tab.isSelected(2)"></div>
+
+        <!--<div product-edit-view ng-show="tab.selectTab(3)"></div>
+
+        <div sku-edit-view ng-show="tab.selectTab(4)"></div>
+
+        <div discount-edit-view ng-show="tab.selectTab(5)"></div>-->
+
+    </section>
+
+</div>

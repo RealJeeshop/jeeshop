@@ -1,7 +1,20 @@
 (function (){
-    var app = angular.module('admin',[]);
+    var app = angular.module('admin',['admin-catalog']);
+
     app.controller('AdminController', function(){
         this.product = gem;
+    });
+
+    app.controller('RowController', function(){
+        this.rowId = 'overview';
+
+        this.selectRow = function(setId){
+            this.rowId = setId;
+        };
+
+        this.isSelected = function(checkId){
+            return this.rowId === checkId;
+        };
     });
 
     var gem = {

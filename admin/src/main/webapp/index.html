@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+    <html lang="en" ng-app="admin">
 <head>
+    <title>Jeeshop Administration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -18,7 +19,7 @@
 
 </head>
 
-<body>
+<body ng-contoller="AdminController as adminCtrl">
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -46,191 +47,56 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" ng-controller="RowController as rowCtrl">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Overview</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Users</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Orders</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Catalog</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Inventory</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Analytics</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Newsletters</a></li>
+                <li ng-class="{ active:rowCtrl.isSelected('overview') }">
+                    <a href ng-click="rowCtrl.selectRow('overview')">Overview</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('users') }">
+                    <a href ng-click="rowCtrl.selectRow('users')">Users</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('orders') }">
+                    <a href ng-click="rowCtrl.selectRow('orders')">Orders</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('catalog') }">
+                    <a href ng-click="rowCtrl.selectRow('catalog')">Catalog</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('inventory') }">
+                    <a href ng-click="rowCtrl.selectRow('inventory')">Inventory</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('statistics') }">
+                    <a href ng-click="rowCtrl.selectRow('statistics')">Analytics</a>
+                </li>
+                <li ng-class="{ active:rowCtrl.isSelected('newsletters') }">
+                    <a href ng-click="rowCtrl.selectRow('newsletters')">Newsletters</a>
+                </li>
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Administration</h1>
-
-            <div class="row placeholders">
+            <div class="row placeholders" ng-show="rowCtrl.isSelected('overview')">
                 <div class="col-xs-6 col-sm-3 placeholder">
                     <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Something else</span>
+                    <h4>Catalog</h4>
+                    <span class="text-muted">Manage your Catalog</span>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
                     <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Something else</span>
+                    <h4>Orders</h4>
+                    <span class="text-muted">Watch last orders</span>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
                     <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Something else</span>
+                    <h4>Users</h4>
+                    <span class="text-muted">Administer users</span>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
                     <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Something else</span>
+                    <h4>Statistics</h4>
+                    <span class="text-muted">Watch usage statistics</span>
                 </div>
             </div>
-
-            <h2 class="sub-header">Last orders</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>User</th>
-                        <th>Product(s)</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>999</td>
-                        <td>John Smith</td>
-                        <td>Hyper Bike VTT 33</td>
-                        <td>Pending</td>
-                        <td>2014-06-11 19h32:56</td>
-                    </tr>
-                    <tr>
-                        <td>998</td>
-                        <td>Rachel Doe</td>
-                        <td>Mega Bike VTC Move</td>
-                        <td>Complete</td>
-                        <td>2014-06-11 19h32:56</td>
-                    </tr>
-                    <tr>
-                        <td>997</td>
-                        <td>Angelina Gomez</td>
-                        <td>Left hand brackets</td>
-                        <td>Fullfilled</td>
-                        <td>2014-06-11 19h32:56</td>
-                    </tr>
-                    <tr>
-                        <td>996</td>
-                        <td>Mike Heinz</td>
-                        <td>Hyper swim VTT, Left hand brackets ... </td>
-                        <td>Fullfilled</td>
-                        <td>2014-06-11 19h32:56</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>libero</td>
-                        <td>Sed</td>
-                        <td>cursus</td>
-                        <td>ante</td>
-                    </tr>
-                    <tr>
-                        <td>1,004</td>
-                        <td>dapibus</td>
-                        <td>diam</td>
-                        <td>Sed</td>
-                        <td>nisi</td>
-                    </tr>
-                    <tr>
-                        <td>1,005</td>
-                        <td>Nulla</td>
-                        <td>quis</td>
-                        <td>sem</td>
-                        <td>at</td>
-                    </tr>
-                    <tr>
-                        <td>1,006</td>
-                        <td>nibh</td>
-                        <td>elementum</td>
-                        <td>imperdiet</td>
-                        <td>Duis</td>
-                    </tr>
-                    <tr>
-                        <td>1,007</td>
-                        <td>sagittis</td>
-                        <td>ipsum</td>
-                        <td>Praesent</td>
-                        <td>mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,008</td>
-                        <td>Fusce</td>
-                        <td>nec</td>
-                        <td>tellus</td>
-                        <td>sed</td>
-                    </tr>
-                    <tr>
-                        <td>1,009</td>
-                        <td>augue</td>
-                        <td>semper</td>
-                        <td>porta</td>
-                        <td>Mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,010</td>
-                        <td>massa</td>
-                        <td>Vestibulum</td>
-                        <td>lacinia</td>
-                        <td>arcu</td>
-                    </tr>
-                    <tr>
-                        <td>1,011</td>
-                        <td>eget</td>
-                        <td>nulla</td>
-                        <td>Class</td>
-                        <td>aptent</td>
-                    </tr>
-                    <tr>
-                        <td>1,012</td>
-                        <td>taciti</td>
-                        <td>sociosqu</td>
-                        <td>ad</td>
-                        <td>litora</td>
-                    </tr>
-                    <tr>
-                        <td>1,013</td>
-                        <td>torquent</td>
-                        <td>per</td>
-                        <td>conubia</td>
-                        <td>nostra</td>
-                    </tr>
-                    <tr>
-                        <td>1,014</td>
-                        <td>per</td>
-                        <td>inceptos</td>
-                        <td>himenaeos</td>
-                        <td>Curabitur</td>
-                    </tr>
-                    <tr>
-                        <td>1,015</td>
-                        <td>sodales</td>
-                        <td>ligula</td>
-                        <td>in</td>
-                        <td>libero</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div class="table-responsive" ng-show="rowCtrl.isSelected(rowCtrl.rowId)" ng-include="rowCtrl.rowId+'.html'"/>
         </div>
     </div>
 </div>
@@ -239,7 +105,8 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/docs.min.js"></script>
+<script type="text/javascript" src="js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
-
 </body>
 </html>
