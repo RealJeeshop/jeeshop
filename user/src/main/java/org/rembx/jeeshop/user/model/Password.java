@@ -14,7 +14,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @NotNull
-@Size(min = 8, max = 50)
+@Size(min = 8, max = 100)
 @Constraint(validatedBy = {})
 @ReportAsSingleViolation
 @Target({METHOD, FIELD})

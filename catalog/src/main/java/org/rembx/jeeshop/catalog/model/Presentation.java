@@ -58,7 +58,9 @@ public class Presentation {
     @JoinColumn(referencedColumnName = "id")
     private Media video;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "presentationId"),
+            inverseJoinColumns = @JoinColumn(name = "mediaId"))
     @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<Media> otherMedia;

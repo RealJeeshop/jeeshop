@@ -21,10 +21,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 255)
     @Login
     private String login;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     @Password
     @XmlTransient
     private String password;

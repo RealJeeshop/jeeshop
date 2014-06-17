@@ -8,11 +8,10 @@ TODO
 # Deployment
 Jeeshop components can be deployed to any Java EE 7 compatible server.
 ## Wildfly 8
-### Datasource
+### Datasources
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * UserDS
 * CatalogDS
-
 
 Sample of configuration for a standalone server with datasources referencing a single jeeshop database:
   ```xml
@@ -58,7 +57,9 @@ Sample of configuration for a standalone server with datasources referencing a s
   
 
 ### Security domain configuration
-A security domain named "jeeshop" has to be created. 
+A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
+
+TODO, documentation of SSL configuration for securing channels.
 
 Sample of configuration for a standalone server: (TODO chose encryption mechanism / algo)
   ```xml
@@ -68,7 +69,7 @@ Sample of configuration for a standalone server: (TODO chose encryption mechanis
               <module-option name="dsJndiName" value="java:/UserDS"/>
               <module-option name="principalsQuery" value="select password from User where login = ?"/>
               <module-option name="rolesQuery" value="select role,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
-              <module-option name="hashAlgorithm" value="MD5"/>
+              <module-option name="hashAlgorithm" value="SHA-256"/>
               <module-option name="hashEncoding" value="base64"/>
               <module-option name="unauthenticatedIdentity" value="guest"/>
           </login-module>
@@ -76,3 +77,7 @@ Sample of configuration for a standalone server: (TODO chose encryption mechanis
   </security-domain>
   ```
   
+## Database setup
+Database installation scripts are provided in ./install/db directory
+
+By default, all tables are created in a single script, ie for a single database referenced in server datasources configuration. See "Datasources" section above.

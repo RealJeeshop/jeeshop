@@ -30,7 +30,7 @@ public class UserResource {
     @Resource
     private SessionContext sessionContext;
 
-    @PersistenceContext(name = UserPersistenceUnit.NAME)
+    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     @Inject
@@ -56,7 +56,7 @@ public class UserResource {
     @GET
     @Path("/{customerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(Roles.USER)
+    @RolesAllowed(Roles.ADMIN)
     public User findById(@PathParam("customerId") @NotNull Long customerId) {
 
         User user = entityManager.find(User.class, customerId);

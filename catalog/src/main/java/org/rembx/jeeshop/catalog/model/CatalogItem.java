@@ -27,7 +27,7 @@ public abstract class CatalogItem {
     /**
      * Technical name
      */
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     protected String name;
