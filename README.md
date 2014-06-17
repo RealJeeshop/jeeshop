@@ -61,7 +61,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 
 TODO, documentation of SSL configuration for securing channels.
 
-Sample of configuration for a standalone server: (TODO chose encryption mechanism / algo)
+Sample of configuration for a standalone server:
   ```xml
   <security-domain name="jeeshop">
       <authentication>
