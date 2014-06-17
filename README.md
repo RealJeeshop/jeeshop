@@ -80,8 +80,9 @@ Sample of configuration for a standalone server:
 ## Database setup
 Database installation scripts are provided in ./install/db directory
 
-By default, all tables are created in a single script, ie for a single database referenced in server datasources configuration. See "Datasources" section above.
-
 * jeeshop-install.sql contains table creation instructions. It also creates a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see section above)
 * jeeshop-drop.sql empties database
 * demo-catalog-data contains jeeshop fake demonstration catalog data
+
+Notes:
+By default, all tables are created in a single script, ie for a single database referenced in server datasources configuration. See "Datasources" section above.
