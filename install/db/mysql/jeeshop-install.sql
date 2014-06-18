@@ -305,8 +305,8 @@ ALTER TABLE User_Role
 INSERT INTO jeeshop.User (birthDate, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
 VALUES ('2014-06-18 00:00:00', 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
-INSERT INTO jeeshop.Role (role) VALUES ('user');
-INSERT INTO jeeshop.Role (role) VALUES ('admin');
+INSERT INTO jeeshop.Role (id, role) VALUES (1, 'user');
+INSERT INTO jeeshop.Role (id, role) VALUES (2, 'admin');
 
 INSERT INTO jeeshop.User_Role (userId ,roleId) VALUES ('1', '1');
 INSERT INTO jeeshop.User_Role (userId ,roleId) VALUES ('1', '2');
