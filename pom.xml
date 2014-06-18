@@ -15,8 +15,7 @@
         <module>catalog</module>
         <module>order</module>
         <module>user</module>
-        <module>backend</module>
-        <module>frontend</module>
+        <module>store</module>
         <module>admin</module>
         <module>common</module>
     </modules>
