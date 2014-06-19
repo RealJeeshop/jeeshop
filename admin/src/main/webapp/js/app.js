@@ -1,5 +1,5 @@
 (function (){
-    var app = angular.module('admin',['admin-catalog']);
+    var app = angular.module('admin',['admin-catalog','admin-login']);
 
     app.controller('AdminController', function(){
         this.product = gem;
