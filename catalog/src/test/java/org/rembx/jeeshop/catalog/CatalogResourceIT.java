@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
@@ -57,5 +58,17 @@ public class CatalogResourceIT {
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
         List<Category> categories = service.findCategories(testCatalog.getId(),null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
+    }
+
+    @Test
+    public void findAll_shouldReturnNoneEmptyList() {
+        assertThat(service.findAll(null, null)).isNotEmpty();
+    }
+
+    @Test
+    public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
+        List<Catalog> catalogs = service.findAll(0, 1);
+        assertThat(catalogs).isNotEmpty();
+        assertThat(catalogs).isNotEmpty();
     }
 }

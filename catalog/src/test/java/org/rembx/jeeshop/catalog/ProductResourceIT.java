@@ -78,7 +78,7 @@ public class ProductResourceIT {
     @Test
     public void findSKUs_shouldReturn404ExWhenProductNotFound() {
         try{
-            service.findSKUs(9999L, null);
+            service.findChildSKUs(9999L, null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());
@@ -87,14 +87,14 @@ public class ProductResourceIT {
 
     @Test
     public void findSKUs_shouldNotReturnExpiredNorDisabledSKUs() {
-        List<SKU> skus = service.findSKUs(testCatalog.aProductWithSKUs().getId(), null);
+        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithSKUs().getId(), null);
         assertNotNull(skus);
         assertThatSKUsOf(skus).areVisibleSKUsOfAProductWithSKUs();
     }
 
     @Test
     public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
-        List<SKU> skus = service.findSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
+        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
         assertThat(skus).isEmpty();
     }
 

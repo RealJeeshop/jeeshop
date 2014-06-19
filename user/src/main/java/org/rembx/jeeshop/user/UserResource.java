@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.user;
 
-import org.rembx.jeeshop.user.model.Roles;
+import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
@@ -48,7 +48,7 @@ public class UserResource {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(Roles.ADMIN)// TODO paginate
+    @RolesAllowed(JeeshopRoles.ADMIN)// TODO paginate
     public List<User> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         return userFinder.findAll(start, size);
     }
@@ -56,7 +56,7 @@ public class UserResource {
     @GET
     @Path("/{customerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(Roles.ADMIN)
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public User findById(@PathParam("customerId") @NotNull Long customerId) {
 
         User user = entityManager.find(User.class, customerId);
@@ -71,7 +71,7 @@ public class UserResource {
     @GET
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({Roles.USER, Roles.ADMIN})
+    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
     public User findCurrentUser(@Context SecurityContext sec) {
 
         User user = userFinder.findByLogin(sec.getUserPrincipal().getName());

@@ -26,7 +26,7 @@ import static org.rembx.jeeshop.catalog.model.QProduct.product;
  * @author remi
  */
 
-@Path("/category")
+@Path("/categories")
 @Stateless
 public class CategoryResource implements Serializable {
 
@@ -61,7 +61,7 @@ public class CategoryResource implements Serializable {
     @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Category> findCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+    public List<Category> findChildCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -76,7 +76,7 @@ public class CategoryResource implements Serializable {
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Product> findProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+    public List<Product> findChildProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);

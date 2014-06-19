@@ -48,4 +48,18 @@ public class CatalogItemFinder {
 
     }
 
+    public <T extends CatalogItem> List<T> findAll(EntityPathBase<T> entityPathBase, Integer offset, Integer limit) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+
+        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
+
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        return query.list(entityPathBase);
+
+    }
+
 }

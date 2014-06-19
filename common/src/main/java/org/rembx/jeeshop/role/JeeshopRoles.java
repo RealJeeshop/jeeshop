@@ -1,9 +1,9 @@
-package org.rembx.jeeshop.user.model;
+package org.rembx.jeeshop.role;
 
 /**
  * Created by remi on 25/05/14.
  */
-public interface Roles {
+public interface JeeshopRoles {
 
     public final static String USER = "user";
     public final static String ADMIN = "admin";

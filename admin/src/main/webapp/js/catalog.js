@@ -13,28 +13,35 @@
         };
     });
 
-    app.controller('CatalogController', ['$http', function($http){
+    app.controller('CatalogsController', ['$http', function($http){
+        var catalog = this;
+        catalog.catalogs = [];
+        $http.get('rs/catalogs').success(function(data){
+            catalog.catalogs=data;
+        });
+    }]);
+
+    app.controller('CategoriesController', ['$http', function($http){
         var catalog = this;
         catalog.categories = [];
-        // TODO implement service to return several catalogs
-        $http.get('rs/catalog/1/categories').success(function(data){
+        $http.get('rs/categories').success(function(data){
             catalog.categories=data;
         });
     }]);
 
 
 
-    app.directive("catalogEditView", function() {
+    app.directive("catalogs", function() {
           return {
             restrict:"A",
-            templateUrl: "catalog-edit-view.html"
+            templateUrl: "modules/catalog/catalogs.html"
           };
      });
 
-    app.directive("categoryEditView", function() {
+    app.directive("categories", function() {
         return {
             restrict:"A",
-            templateUrl: "category-edit-view.html"
+            templateUrl: "modules/catalog/categories.html"
         };
     });
 

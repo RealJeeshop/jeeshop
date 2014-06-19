@@ -96,7 +96,7 @@
                     <span class="text-muted">Watch usage statistics</span>
                 </div>
             </div>
-            <div class="table-responsive" ng-show="rowCtrl.isSelected(rowCtrl.rowId)" ng-include="rowCtrl.rowId+'.html'"/>
+            <div class="table-responsive" ng-show="rowCtrl.isSelected(rowCtrl.rowId)" ng-include="'modules/'+rowCtrl.rowId+'/index.html'"/>
         </div>
     </div>
 </div>

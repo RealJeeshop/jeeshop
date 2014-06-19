@@ -1,0 +1,25 @@
+<h4>Catalogs</h4>
+<table class="table table-striped" ng-controller="CatalogsController as catalogsCtrl">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>StartDate</th>
+        <th>EndDate</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="catalog in catalogsCtrl.catalogs">
+        <td>{{catalog.id}}</td>
+        <td>{{catalog.name}}</td>
+        <td>{{catalog.description}}</td>
+        <td>{{catalog.startDate|date : 'medium'}}</td>
+        <td>{{catalog.endDate|date : 'medium'}}</td>
+        <td>
+            <a>Edit</a>&nbsp;<a>Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>

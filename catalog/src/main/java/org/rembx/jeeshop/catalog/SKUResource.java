@@ -26,7 +26,7 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
  * @author remi
  */
 
-@Path("/sku")
+@Path("/skus")
 @Stateless
 public class SKUResource implements Serializable {
 

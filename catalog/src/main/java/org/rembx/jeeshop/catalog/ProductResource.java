@@ -25,7 +25,7 @@ import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
  * @author remi
  */
 
-@Path("/product")
+@Path("/products")
 @Stateless
 public class ProductResource implements Serializable {
 
@@ -61,7 +61,7 @@ public class ProductResource implements Serializable {
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<SKU> findSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
+    public List<SKU> findChildSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (product == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);

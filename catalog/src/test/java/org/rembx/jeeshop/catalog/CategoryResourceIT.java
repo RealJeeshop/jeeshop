@@ -98,7 +98,7 @@ public class CategoryResourceIT {
     @Test
     public void findCategories_shouldReturn404ExWhenCategoryNotFound() {
         try{
-            service.findCategories(9999L,null);
+            service.findChildCategories(9999L, null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());
@@ -107,21 +107,21 @@ public class CategoryResourceIT {
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledCategories() {
-        List<Category> categories = service.findCategories(testCatalog.aRootCategoryWithChildCategories().getId(),null);
+        List<Category> categories = service.findChildCategories(testCatalog.aRootCategoryWithChildCategories().getId(), null);
         assertNotNull(categories);
         assertThatCategoriesOf(categories).areVisibleChildCategoriesOfARootCategoryWithChildCategories();
     }
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenNoChildCategories() {
-        List<Category> categories = service.findCategories(testCatalog.aCategoryWithProducts().getId(),null);
+        List<Category> categories = service.findChildCategories(testCatalog.aCategoryWithProducts().getId(), null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findProducts_shouldReturn404ExWhenCategoryNotFound() {
         try{
-            service.findProducts(9999L,null);
+            service.findChildProducts(9999L, null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());
@@ -130,14 +130,14 @@ public class CategoryResourceIT {
 
     @Test
     public void findProducts_shouldNotReturnExpiredNorDisabledProducts() {
-        List<Product> products = service.findProducts(testCatalog.aCategoryWithProducts().getId(),null);
+        List<Product> products = service.findChildProducts(testCatalog.aCategoryWithProducts().getId(), null);
         assertNotNull(products);
         assertThatProductsOf(products).areVisibleProductsOfAChildCategoryWithProducts();
     }
 
     @Test
     public void findProducts_shouldReturnEmptyListWhenNoChildProducts() {
-        List<Product> products = service.findProducts(testCatalog.aCategoryWithoutProducts().getId(),null);
+        List<Product> products = service.findChildProducts(testCatalog.aCategoryWithoutProducts().getId(), null);
         assertThat(products).isEmpty();
     }
 
