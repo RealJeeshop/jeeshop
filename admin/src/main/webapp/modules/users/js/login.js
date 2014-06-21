@@ -1,32 +1,65 @@
 (function (){
     var app = angular.module('admin-login',[]);
 
-    app.controller('LoginController', ['$http', function($http){
+    app.controller('LoginController', ['AuthService', function(AuthService){
         var login = this;
-        login.authWrapper = {
-            logged:false,
-            login:null,
-            authorization:null
-        };
 
         login.credentials = {}
+        login.authenticationFailed = false;
 
         this.login = function (){
-            var stringView= new StringView(login.credentials.login + ':' + login.credentials.password);
-            var encoded = stringView.toBase64();
-            $http.defaults.headers.common.Authorization = 'Basic ' + encoded;
-
-            $http.head('rs/user').success(function(data){
-                login.authWrapper.logged = true;
-                login.authWrapper.login = login.credentials.login;
-            });
+            AuthService.login(login.credentials);
         };
 
         this.logout = function (){
-            login.authWrapper.logged = false;
-            login.authWrapper.login = login.credentials.login;
-            $http.defaults.headers.common.Authorization = null;
+            AuthService.logout(login.credentials);
+        };
+
+        this.isAuthenticated = function(){
+            return AuthService.isAuthenticated();
+        };
+
+        this.hasAuthenticationFailed = function(){
+            return AuthService.hasAuthenticationFailed();
         };
     }]);
+
+    app.factory('AuthService', ['$http', function ($http) {
+        var auth = this;
+        auth.wrapper = {
+            logged:false,
+            login:null,
+            hasAuthenticationFailed:false
+        };
+
+        return {
+            login: function (credentials) {
+                var stringView= new StringView(credentials.login + ':' + credentials.password);
+                var encoded = stringView.toBase64();
+                $http.defaults.headers.common.Authorization = 'Basic ' + encoded;
+                var success = false;
+                $http.head('rs/user').
+                    success(function(data){
+                        auth.wrapper.logged = true;
+                        auth.wrapper.login = credentials.login;
+                    }).
+                    error(function(data){
+                        auth.wrapper.hasAuthenticationFailed = true;
+                    });
+            },
+            isAuthenticated: function () {
+                return auth.wrapper.logged === true;
+            },
+            hasAuthenticationFailed: function () {
+                return auth.wrapper.hasAuthenticationFailed;
+            },
+            logout: function () {
+                auth.wrapper.logged = false;
+                auth.wrapper.login = null;
+            }
+        };
+    }]);
+
+
 
 })();

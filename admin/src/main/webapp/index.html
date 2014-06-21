@@ -21,7 +21,7 @@
 
 <body ng-contoller="AdminController as adminCtrl">
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" >
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -32,25 +32,25 @@
             </button>
             <a class="navbar-brand" href="#"><em>Jeeshop Admin</em></a>
         </div>
-        <div class="navbar-collapse collapse"  ng-controller="LoginController as loginCtrl">
+        <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl" >
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Profile</a></li>
                 <li><a href="#">Help</a></li>
             </ul>
-            <form class="navbar-form navbar-right"  name="loginForm" ng-submit="loginCtrl.login()" ng-hide="loginCtrl.authWrapper.logged">
-                <input type="text" class="form-control" placeholder="user name..." ng-model="loginCtrl.credentials.login" ng-required="true"/>
-                <input type="password" class="form-control" placeholder="password..." ng-model="loginCtrl.credentials.password" ng-required="true"/>
+
+            <form class="navbar-form navbar-right"  name="loginForm" ng-submit="loginCtrl.login()" ng-hide="loginCtrl.isAuthenticated()">
+                <input type="text" class="form-control" name="login" placeholder="user name..." ng-model="loginCtrl.credentials.login" ng-required="true"/>
+                <input type="password" class="form-control" name="password" placeholder="password..." ng-model="loginCtrl.credentials.password" ng-required="true"/>
                 <input type="submit" class="form-control" value="ok"/>
             </form>
 
-            <ul ng-show="loginCtrl.authWrapper.logged" class="nav navbar-nav navbar-right">
-                <li><a href="#">Welcome {{loginCtrl.authWrapper.login}}!</a></li>
+            <ul ng-show="loginCtrl.isAuthenticated()" class="nav navbar-nav navbar-right">
+                <li><a href="#">Welcome {{loginCtrl.credentials.login}}!</a></li>
                 <li><a href="#" ng-click="loginCtrl.logout()">Logout</a></li>
 
             </ul>
-
         </div>
     </div>
 </div>
@@ -58,26 +58,26 @@
 <div class="container-fluid">
     <div class="row" ng-controller="RowController as rowCtrl">
         <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
+            <ul class="nav nav-sidebar" ng-controller="LoginController as loginCtrl" >
                 <li ng-class="{ active:rowCtrl.isSelected('overview') }">
                     <a href ng-click="rowCtrl.selectRow('overview')">Overview</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('users') }">
+                <li ng-class="{ active:rowCtrl.isSelected('users') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('users')">Users</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('orders') }">
+                <li ng-class="{ active:rowCtrl.isSelected('orders') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('orders')">Orders</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('catalog') }">
+                <li ng-class="{ active:rowCtrl.isSelected('catalog') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('catalog')">Catalog</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('inventory') }">
+                <li ng-class="{ active:rowCtrl.isSelected('inventory') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('inventory')">Inventory</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('statistics') }">
+                <li ng-class="{ active:rowCtrl.isSelected('statistics') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('statistics')">Analytics</a>
                 </li>
-                <li ng-class="{ active:rowCtrl.isSelected('newsletters') }">
+                <li ng-class="{ active:rowCtrl.isSelected('newsletters') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="rowCtrl.selectRow('newsletters')">Newsletters</a>
                 </li>
             </ul>
@@ -114,8 +114,9 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="js/stringview.js"></script>
-<script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/docs.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
 <script type="text/javascript" src="modules/users/js/login.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
