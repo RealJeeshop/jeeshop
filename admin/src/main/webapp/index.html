@@ -41,6 +41,7 @@
             </ul>
 
             <form class="navbar-form navbar-right"  name="loginForm" ng-submit="loginCtrl.login()" ng-hide="loginCtrl.isAuthenticated()">
+                <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
                 <input type="text" class="form-control" name="login" placeholder="user name..." ng-model="loginCtrl.credentials.login" ng-required="true"/>
                 <input type="password" class="form-control" name="password" placeholder="password..." ng-model="loginCtrl.credentials.password" ng-required="true"/>
                 <input type="submit" class="form-control" value="ok"/>
@@ -49,7 +50,6 @@
             <ul ng-show="loginCtrl.isAuthenticated()" class="nav navbar-nav navbar-right">
                 <li><a href="#">Welcome {{loginCtrl.credentials.login}}!</a></li>
                 <li><a href="#" ng-click="loginCtrl.logout()">Logout</a></li>
-
             </ul>
         </div>
     </div>
@@ -116,7 +116,7 @@
 <script type="text/javascript" src="js/stringview.js"></script>
 <script type="text/javascript" src="js/docs.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+<!--<script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>-->
 <script type="text/javascript" src="modules/users/js/login.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>

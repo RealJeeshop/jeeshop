@@ -42,6 +42,7 @@
                     success(function(data){
                         auth.wrapper.logged = true;
                         auth.wrapper.login = credentials.login;
+                        auth.wrapper.hasAuthenticationFailed = false;
                     }).
                     error(function(data){
                         auth.wrapper.hasAuthenticationFailed = true;
@@ -56,6 +57,7 @@
             logout: function () {
                 auth.wrapper.logged = false;
                 auth.wrapper.login = null;
+                $http.defaults.headers.common.Authorization=null;
             }
         };
     }]);
