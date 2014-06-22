@@ -5,8 +5,10 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -19,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 
 /**
@@ -46,6 +49,14 @@ public class ProductResource implements Serializable {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.catItemResUtil = catItemResUtil;
+    }
+
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public List<Product> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        return catalogItemFinder.findAll(product, start, size);
     }
 
     @GET

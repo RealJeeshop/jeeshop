@@ -1,0 +1,25 @@
+<h4>Catalogs</h4>
+<table class="table table-striped" ng-controller="SKUsController as skusCtrl">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>StartDate</th>
+        <th>EndDate</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="sku in skusCtrl.skus">
+        <td>{{sku.id}}</td>
+        <td>{{sku.name}}</td>
+        <td>{{sku.description}}</td>
+        <td>{{sku.startDate|date : 'medium'}}</td>
+        <td>{{sku.endDate|date : 'medium'}}</td>
+        <td>
+            <a>Edit</a>&nbsp;<a>Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>

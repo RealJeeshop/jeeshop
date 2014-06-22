@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
@@ -96,6 +97,18 @@ public class ProductResourceIT {
     public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
         List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
         assertThat(skus).isEmpty();
+    }
+
+    @Test
+    public void findAll_shouldReturnNoneEmptyList() {
+        assertThat(service.findAll(null, null)).isNotEmpty();
+    }
+
+    @Test
+    public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
+        List<Product> categories = service.findAll(0, 1);
+        assertThat(categories).isNotEmpty();
+        assertThat(categories).hasSize(1);
     }
 
 }

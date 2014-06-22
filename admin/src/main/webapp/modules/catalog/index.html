@@ -1,5 +1,5 @@
 <div>
-    <h1 class="page-header">Catalog</h1>
+    <h1 class="page-header">Catalog Management</h1>
 
     <section ng-controller="TabController as tab">
         <ul class="nav nav-pills">
@@ -24,11 +24,11 @@
 
         <div categories ng-show="tab.isSelected(2)"></div>
 
-        <!--<div product-edit-view ng-show="tab.selectTab(3)"></div>
+        <div products ng-show="tab.isSelected(3)"></div>
 
-        <div sku-edit-view ng-show="tab.selectTab(4)"></div>
+        <div skus ng-show="tab.isSelected(4)"></div>
 
-        <div discount-edit-view ng-show="tab.selectTab(5)"></div>-->
+        <!--<div discount-edit-view ng-show="tab.selectTab(5)"></div>-->
 
     </section>
 

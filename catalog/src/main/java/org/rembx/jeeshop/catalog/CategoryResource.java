@@ -5,8 +5,10 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -46,6 +48,14 @@ public class CategoryResource implements Serializable {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.catItemResUtil = catItemResUtil;
+    }
+
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public List<Category> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        return catalogItemFinder.findAll(category, start, size);
     }
 
     @GET

@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
@@ -97,5 +98,17 @@ public class SKUResourceIT {
         List<Discount> discounts = service.findDiscounts(testCatalog.aSKUWithDiscounts().getId());
         assertNotNull(discounts);
         assertThatDiscountsOf(discounts).areVisibleDiscountsOfASKUWithDiscounts();
+    }
+
+    @Test
+    public void findAll_shouldReturnNoneEmptyList() {
+        assertThat(service.findAll(null, null)).isNotEmpty();
+    }
+
+    @Test
+    public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
+        List<SKU> categories = service.findAll(0, 1);
+        assertThat(categories).isNotEmpty();
+        assertThat(categories).hasSize(1);
     }
 }

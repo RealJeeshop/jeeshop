@@ -69,6 +69,6 @@ public class CatalogResourceIT {
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
         List<Catalog> catalogs = service.findAll(0, 1);
         assertThat(catalogs).isNotEmpty();
-        assertThat(catalogs).isNotEmpty();
+        assertThat(catalogs).hasSize(1);
     }
 }

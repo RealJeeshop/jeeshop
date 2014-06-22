@@ -6,9 +6,9 @@ import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.catalog.test.PresentationTexts;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,12 +18,9 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
-import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
-import static org.rembx.jeeshop.catalog.test.Assertions.assertThatProductsOf;
+import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
 public class CategoryResourceIT {
     private CategoryResource service;
@@ -139,6 +136,18 @@ public class CategoryResourceIT {
     public void findProducts_shouldReturnEmptyListWhenNoChildProducts() {
         List<Product> products = service.findChildProducts(testCatalog.aCategoryWithoutProducts().getId(), null);
         assertThat(products).isEmpty();
+    }
+
+    @Test
+    public void findAll_shouldReturnNoneEmptyList() {
+        assertThat(service.findAll(null, null)).isNotEmpty();
+    }
+
+    @Test
+    public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
+        List<Category> categories = service.findAll(0, 1);
+        assertThat(categories).isNotEmpty();
+        assertThat(categories).hasSize(1);
     }
 
 }

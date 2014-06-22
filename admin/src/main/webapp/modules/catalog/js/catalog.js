@@ -14,22 +14,36 @@
     });
 
     app.controller('CatalogsController', ['$http', function($http){
-        var catalog = this;
-        catalog.catalogs = [];
+        var ctrl = this;
+        ctrl.catalogs = [];
         $http.get('rs/catalogs').success(function(data){
-            catalog.catalogs=data;
+            ctrl.catalogs=data;
         });
     }]);
 
     app.controller('CategoriesController', ['$http', function($http){
-        var catalog = this;
-        catalog.categories = [];
+        var ctrl = this;
+        ctrl.categories = [];
         $http.get('rs/categories').success(function(data){
-            catalog.categories=data;
+            ctrl.categories=data;
         });
     }]);
 
+    app.controller('ProductsController', ['$http', function($http){
+        var ctrl = this;
+        ctrl.products = [];
+        $http.get('rs/products').success(function(data){
+            ctrl.products=data;
+        });
+    }]);
 
+    app.controller('SKUsController', ['$http', function($http){
+        var ctrl = this;
+        ctrl.skus = [];
+        $http.get('rs/skus').success(function(data){
+            ctrl.skus=data;
+        });
+    }]);
 
     app.directive("catalogs", function() {
           return {
@@ -42,6 +56,20 @@
         return {
             restrict:"A",
             templateUrl: "modules/catalog/categories.html"
+        };
+    });
+
+    app.directive("products", function() {
+        return {
+            restrict:"A",
+            templateUrl: "modules/catalog/products.html"
+        };
+    });
+
+    app.directive("skus", function() {
+        return {
+            restrict:"A",
+            templateUrl: "modules/catalog/skus.html"
         };
     });
 
