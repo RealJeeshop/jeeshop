@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
+import org.rembx.jeeshop.catalog.test.Assertions;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,7 +37,7 @@ public class CatalogResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager));
+        service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager), new CatalogItemResourceUtil());
     }
 
     @Test
@@ -70,5 +72,12 @@ public class CatalogResourceIT {
         List<Catalog> catalogs = service.findAll(0, 1);
         assertThat(catalogs).isNotEmpty();
         assertThat(catalogs).hasSize(1);
+    }
+
+    @Test
+    public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
+        Catalog catalog = service.find(testCatalog.getId(), null);
+        Assertions.assertThat(catalog).isNotNull();
+        Assertions.assertThat(catalog.isVisible()).isTrue();
     }
 }

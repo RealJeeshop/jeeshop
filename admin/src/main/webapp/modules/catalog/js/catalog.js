@@ -1,4 +1,5 @@
 (function (){
+
     var app = angular.module('admin-catalog',[]);
 
     app.controller('TabController', function(){
@@ -13,64 +14,34 @@
         };
     });
 
-    app.controller('CatalogsController', ['$http', function($http){
-        var ctrl = this;
-        ctrl.catalogs = [];
-        $http.get('rs/catalogs').success(function(data){
-            ctrl.catalogs=data;
-        });
-    }]);
-
-    app.controller('CategoriesController', ['$http', function($http){
-        var ctrl = this;
-        ctrl.categories = [];
-        $http.get('rs/categories').success(function(data){
-            ctrl.categories=data;
-        });
-    }]);
-
-    app.controller('ProductsController', ['$http', function($http){
-        var ctrl = this;
-        ctrl.products = [];
-        $http.get('rs/products').success(function(data){
-            ctrl.products=data;
-        });
-    }]);
-
-    app.controller('SKUsController', ['$http', function($http){
-        var ctrl = this;
-        ctrl.skus = [];
-        $http.get('rs/skus').success(function(data){
-            ctrl.skus=data;
-        });
-    }]);
-
-    app.directive("catalogs", function() {
-          return {
-            restrict:"A",
-            templateUrl: "modules/catalog/catalogs.html"
-          };
-     });
-
-    app.directive("categories", function() {
+    app.directive("getCatalogEntries", ['$http', function($http) {
         return {
             restrict:"A",
-            templateUrl: "modules/catalog/categories.html"
-        };
-    });
+            scope: {
+                resource: "@resourceType"
+            },
+            controller: function($http, $scope) {
+                var ctrl = this;
+                ctrl.mode = 'list';
+                ctrl.entries = [];
+                ctrl.entryId = null;
+                ctrl.currentEntry={};
+                ctrl.resourceType = $scope.resource;
 
-    app.directive("products", function() {
-        return {
-            restrict:"A",
-            templateUrl: "modules/catalog/products.html"
-        };
-    });
+                $http.get('rs/'+$scope.resource).success(function(data){
+                    ctrl.entries=data;
+                });
 
-    app.directive("skus", function() {
-        return {
-            restrict:"A",
-            templateUrl: "modules/catalog/skus.html"
+                this.selectEntry = function(id){
+                    ctrl.mode='edit';
+                    $http.get('rs/'+ctrl.resourceType+'/'+id).success(function(data){
+                        ctrl.currentEntry=data;
+                    });
+                }
+            },
+            controllerAs: 'catalogEntriesCtrl',
+            templateUrl: "modules/catalog/catalog-entries.html"
         };
-    });
+     }]);
 
 })();

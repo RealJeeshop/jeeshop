@@ -42,8 +42,9 @@ public class CategoryResourceIT {
 
     @Test
     public void find_withIdOfVisibleCategory_ShouldReturnExpectedCategory() {
-        assertThat(service.find(testCatalog.aCategoryWithProducts().getId(),null)).isEqualTo(testCatalog.aCategoryWithProducts());
-        assertThat(service.find(testCatalog.aCategoryWithProducts().getId(),null).isVisible()).isTrue();
+        Category category = service.find(testCatalog.aCategoryWithProducts().getId(), null);
+        assertThat(category).isEqualTo(testCatalog.aCategoryWithProducts());
+        assertThat(category.isVisible()).isTrue();
 
     }
 

@@ -1,6 +1,4 @@
 <div>
-    <h1 class="page-header">Catalog Management</h1>
-
     <section ng-controller="TabController as tab">
         <ul class="nav nav-pills">
             <li ng-class="{ active:tab.isSelected(1) }">
@@ -19,17 +17,11 @@
                 <a href ng-click="tab.selectTab(5)">Discounts</a>
             </li>
         </ul>
-
-        <div catalogs ng-show="tab.isSelected(1)"></div>
-
-        <div categories ng-show="tab.isSelected(2)"></div>
-
-        <div products ng-show="tab.isSelected(3)"></div>
-
-        <div skus ng-show="tab.isSelected(4)"></div>
-
+        <div get-catalog-entries ng-show="tab.isSelected(1)" resource-type="catalogs"></div>
+        <div get-catalog-entries ng-show="tab.isSelected(2)" resource-type="categories"></div>
+        <div get-catalog-entries ng-show="tab.isSelected(3)" resource-type="products"></div>
+        <div get-catalog-entries ng-show="tab.isSelected(4)" resource-type="skus"></div>
         <!--<div discount-edit-view ng-show="tab.selectTab(5)"></div>-->
-
     </section>
 
 </div>

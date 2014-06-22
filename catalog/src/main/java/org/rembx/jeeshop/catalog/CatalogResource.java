@@ -1,11 +1,16 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.model.Catalog;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Category;
+import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -15,7 +20,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
@@ -34,13 +40,20 @@ public class CatalogResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
+    @Inject
+    private CatalogItemResourceUtil catItemResUtil;
+
+    @Resource
+    private SessionContext sessionContext;
+
     public CatalogResource(){
 
     }
 
-    public CatalogResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public CatalogResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catalogItemResourceUtil) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.catItemResUtil = catalogItemResourceUtil;
     }
 
 
@@ -53,9 +66,19 @@ public class CatalogResource implements Serializable {
     }
 
     @GET
+    @Path("/{catalogId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({JeeshopRoles.ADMIN, JeeshopRoles.USER})
+    public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+
+        return catItemResUtil.find(catalog, locale);
+    }
+
+    @GET
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @PermitAll()
     public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
@@ -63,11 +86,16 @@ public class CatalogResource implements Serializable {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (catalog.getRootCategories().isEmpty()){
+        List<Category> rootCategories = catalog.getRootCategories();
+        if (rootCategories.isEmpty()){
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(category, catalog.getRootCategories(), locale);
+        if (sessionContext != null && sessionContext.getCallerPrincipal().getName().equals(JeeshopRoles.ADMIN)){
+            return rootCategories;
+        }else{
+            return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);
+        }
 
     }
 

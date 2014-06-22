@@ -1,25 +1,16 @@
 (function (){
     var app = angular.module('admin',['admin-catalog','admin-login']);
 
-    app.controller('AdminController', function(){
-        this.product = gem;
-    });
+    app.controller('SideMenuController', function(){
+        this.entryId = 'overview';
 
-    app.controller('RowController', function(){
-        this.rowId = 'overview';
-
-        this.selectRow = function(setId){
-            this.rowId = setId;
+        this.selectEntry = function(setId){
+            this.entryId = setId;
         };
 
         this.isSelected = function(checkId){
-            return this.rowId === checkId;
+            return this.entryId === checkId;
         };
     });
 
-    var gem = {
-        name:'Toto',
-        price:'2.95 &euro;',
-        description:'tata titi'
-    }
 })();
