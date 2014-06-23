@@ -7,8 +7,10 @@ import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 /**
  * @author remi
@@ -40,6 +43,9 @@ public class ProductResource implements Serializable {
 
     @Inject
     private CatalogItemResourceUtil catItemResUtil;
+
+    @Resource
+    private SessionContext sessionContext;
 
     public ProductResource() {
 
@@ -65,7 +71,10 @@ public class ProductResource implements Serializable {
     @PermitAll
     public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
-        return catItemResUtil.find(product,locale);
+        if (isAdminUser(sessionContext))
+            return product;
+        else
+            return catItemResUtil.filterVisible(product, locale);
     }
 
     @GET
@@ -77,11 +86,15 @@ public class ProductResource implements Serializable {
         if (product == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        if (product.getChildSKUs().isEmpty()) {
+        List<SKU> childSKUs = product.getChildSKUs();
+        if (childSKUs.isEmpty()) {
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(sKU, product.getChildSKUs(), locale);
+        if (isAdminUser(sessionContext))
+            return childSKUs;
+        else
+            return catalogItemFinder.findVisibleCatalogItems(sKU, childSKUs, locale);
     }
 
 }

@@ -7,6 +7,7 @@ import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -19,9 +20,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 /**
  * @author remi
@@ -40,7 +41,16 @@ public class SKUResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
+    @Inject
+    private SessionContext sessionContext;
+
     public SKUResource() {
+    }
+
+    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
+        this.entityManager = entityManager;
+        this.catalogItemFinder = catalogItemFinder;
+        this.catItemResUtil = catItemResUtil;
     }
 
     @GET
@@ -51,19 +61,16 @@ public class SKUResource implements Serializable {
         return catalogItemFinder.findAll(sKU, start, size);
     }
 
-    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
-        this.entityManager = entityManager;
-        this.catalogItemFinder = catalogItemFinder;
-        this.catItemResUtil = catItemResUtil;
-    }
-
     @GET
     @Path("/{skuId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public SKU find(@PathParam("skuId") @NotNull Long skuId, @QueryParam("locale") String locale) {
         SKU sku = entityManager.find(SKU.class, skuId);
-        return catItemResUtil.find(sku, locale);
+        if (isAdminUser(sessionContext))
+            return sku;
+        else
+        return catItemResUtil.filterVisible(sku, locale);
     }
 
     @GET
@@ -75,11 +82,15 @@ public class SKUResource implements Serializable {
         if (sku == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        if (sku.getDiscounts().isEmpty()) {
+        List<Discount> discounts = sku.getDiscounts();
+        if (discounts.isEmpty()) {
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(discount, sku.getDiscounts(), null);
+        if (isAdminUser(sessionContext))
+            return discounts;
+        else
+            return catalogItemFinder.findVisibleCatalogItems(discount, discounts, null);
     }
 
 }

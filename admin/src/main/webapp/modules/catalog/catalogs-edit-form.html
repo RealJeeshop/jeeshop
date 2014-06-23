@@ -1,3 +1,32 @@
 <h4 class="page-header">
     Edition of catalog #{{catalogEntriesCtrl.currentEntry.id}}
 </h4>
+
+<div class="text-left">
+    <form name="catalogForm" ng-controller="CatalogEntryController as catalogEntryCtrl"
+          ng-submit="catalogForm.$valid && editEntry()" novalidate>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" ng-model="catalogEntryCtrl.entry.name" required="true"
+                   placeholder="Name..."/>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Description</label>
+            <input type="text" class="form-control" id="description" ng-model="catalogEntryCtrl.entry.description"
+                   required="false" placeholder="Description..."/>
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="catalogEntryCtrl.enty.disabled">Disabled
+            </label>
+
+            <p class="help-block">Check to prevent this entry to appear in store</p>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="submit"/>
+    </form>
+
+</div>

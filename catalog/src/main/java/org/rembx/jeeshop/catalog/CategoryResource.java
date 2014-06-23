@@ -7,8 +7,10 @@ import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 /**
  * @author remi
@@ -40,6 +43,9 @@ public class CategoryResource implements Serializable {
 
     @Inject
     private CatalogItemResourceUtil catItemResUtil;
+
+    @Resource
+    private SessionContext sessionContext;
 
     public CategoryResource() {
     }
@@ -64,7 +70,10 @@ public class CategoryResource implements Serializable {
     @PermitAll
     public Category find(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
-        return catItemResUtil.find(category,locale);
+        if (isAdminUser(sessionContext))
+            return category;
+        else
+            return catItemResUtil.filterVisible(category, locale);
     }
 
     @GET
@@ -76,10 +85,15 @@ public class CategoryResource implements Serializable {
         if (cat == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        if (cat.getChildCategories().isEmpty()){
+        List<Category> childCategories = cat.getChildCategories();
+        if (childCategories.isEmpty()){
             return new ArrayList<>();
         }
-        return catalogItemFinder.findVisibleCatalogItems(category, cat.getChildCategories(), locale);
+
+        if (isAdminUser(sessionContext))
+            return childCategories;
+        else
+            return catalogItemFinder.findVisibleCatalogItems(category, childCategories, locale);
     }
 
     @GET
@@ -92,11 +106,16 @@ public class CategoryResource implements Serializable {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (cat.getChildProducts().isEmpty()){
+        List<Product> childProducts = cat.getChildProducts();
+
+        if (childProducts.isEmpty()){
             return new ArrayList<>();
         }
 
-        return catalogItemFinder.findVisibleCatalogItems(product, cat.getChildProducts(), locale);
+        if (isAdminUser(sessionContext))
+            return childProducts;
+        else
+            return catalogItemFinder.findVisibleCatalogItems(product, childProducts, locale);
     }
 
 }

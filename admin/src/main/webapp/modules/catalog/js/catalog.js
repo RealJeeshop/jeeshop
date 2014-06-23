@@ -14,6 +14,15 @@
         };
     });
 
+    app.controller('CatalogEntryController', function(){
+
+        this.entry = {};
+
+        this.editEntry = function(){
+            alert("to be implemented");
+        };
+    });
+
     app.directive("getCatalogEntries", ['$http', function($http) {
         return {
             restrict:"A",

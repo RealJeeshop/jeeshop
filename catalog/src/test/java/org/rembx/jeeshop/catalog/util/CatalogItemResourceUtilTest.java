@@ -30,13 +30,13 @@ public class CatalogItemResourceUtilTest {
 
     @Test
     public void find_VisibleCatalogItem_ShouldReturnExpectedProduct() {
-        assertThat(instance.find(visibleCatalogItem, null)).isEqualTo(visibleCatalogItem);
+        assertThat(instance.filterVisible(visibleCatalogItem, null)).isEqualTo(visibleCatalogItem);
     }
 
     @Test
     public void find_NotVisibleCatalogItem_ShouldThrowForbiddenException() {
         try {
-            instance.find(new Catalog(), null);
+            instance.filterVisible(new Catalog(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertEquals(Response.Status.FORBIDDEN, e.getResponse().getStatusInfo());
@@ -46,7 +46,7 @@ public class CatalogItemResourceUtilTest {
     @Test
     public void find_NullCatalogItem_ShouldThrowNotFoundException() {
         try {
-            instance.find(null, null);
+            instance.filterVisible(null, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertEquals(Response.Status.NOT_FOUND, e.getResponse().getStatusInfo());

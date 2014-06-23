@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 /**
  * @author remi
@@ -72,7 +73,10 @@ public class CatalogResource implements Serializable {
     public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
-        return catItemResUtil.find(catalog, locale);
+        if (isAdminUser(sessionContext))
+            return catItemResUtil.filterVisible(catalog, locale);
+        else
+            return catalog;
     }
 
     @GET
@@ -91,7 +95,7 @@ public class CatalogResource implements Serializable {
             return new ArrayList<>();
         }
 
-        if (sessionContext != null && sessionContext.getCallerPrincipal().getName().equals(JeeshopRoles.ADMIN)){
+        if (isAdminUser(sessionContext)){
             return rootCategories;
         }else{
             return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);

@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
  */
 public class CatalogItemResourceUtil {
 
-    public <T extends CatalogItem> T find(T catalogItem, String locale){
+    public <T extends CatalogItem> T filterVisible(T catalogItem, String locale){
 
         if (catalogItem == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
