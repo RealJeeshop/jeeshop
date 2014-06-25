@@ -4,7 +4,6 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -41,9 +40,6 @@ public class CatalogResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
-    @Inject
-    private CatalogItemResourceUtil catItemResUtil;
-
     @Resource
     private SessionContext sessionContext;
 
@@ -51,10 +47,9 @@ public class CatalogResource implements Serializable {
 
     }
 
-    public CatalogResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catalogItemResourceUtil) {
+    public CatalogResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
-        this.catItemResUtil = catalogItemResourceUtil;
     }
 
 
@@ -74,15 +69,15 @@ public class CatalogResource implements Serializable {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
         if (isAdminUser(sessionContext))
-            return catItemResUtil.filterVisible(catalog, locale);
-        else
             return catalog;
+        else
+            return catalogItemFinder.filterVisible(catalog, locale);
     }
 
     @GET
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll()
+    @PermitAll
     public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);

@@ -8,7 +8,6 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.test.Assertions;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -37,7 +36,7 @@ public class CatalogResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager), new CatalogItemResourceUtil());
+        service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager));
     }
 
     @Test

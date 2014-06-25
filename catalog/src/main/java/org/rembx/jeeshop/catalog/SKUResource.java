@@ -1,8 +1,9 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.*;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
@@ -36,9 +37,6 @@ public class SKUResource implements Serializable {
     private EntityManager entityManager;
 
     @Inject
-    private CatalogItemResourceUtil catItemResUtil;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
 
     @Inject
@@ -47,10 +45,9 @@ public class SKUResource implements Serializable {
     public SKUResource() {
     }
 
-    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
+    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
-        this.catItemResUtil = catItemResUtil;
     }
 
     @GET
@@ -70,7 +67,7 @@ public class SKUResource implements Serializable {
         if (isAdminUser(sessionContext))
             return sku;
         else
-        return catItemResUtil.filterVisible(sku, locale);
+        return catalogItemFinder.filterVisible(sku, locale);
     }
 
     @GET

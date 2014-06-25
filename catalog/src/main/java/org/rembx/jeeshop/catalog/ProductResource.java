@@ -4,7 +4,6 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -41,9 +40,6 @@ public class ProductResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
-    @Inject
-    private CatalogItemResourceUtil catItemResUtil;
-
     @Resource
     private SessionContext sessionContext;
 
@@ -51,10 +47,9 @@ public class ProductResource implements Serializable {
 
     }
 
-    public ProductResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder, CatalogItemResourceUtil catItemResUtil) {
+    public ProductResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
-        this.catItemResUtil = catItemResUtil;
     }
 
     @GET
@@ -74,7 +69,7 @@ public class ProductResource implements Serializable {
         if (isAdminUser(sessionContext))
             return product;
         else
-            return catItemResUtil.filterVisible(product, locale);
+            return catalogItemFinder.filterVisible(product, locale);
     }
 
     @GET

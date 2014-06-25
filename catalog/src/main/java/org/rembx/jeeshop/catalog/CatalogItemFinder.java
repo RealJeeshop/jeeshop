@@ -5,11 +5,11 @@ import com.mysema.query.types.path.EntityPathBase;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.QCatalogItem;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +19,6 @@ import java.util.List;
 public class CatalogItemFinder {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    @Inject
-    private CatalogItemResourceUtil catItemResUtil;
 
     public CatalogItemFinder() {
     }
@@ -60,6 +57,21 @@ public class CatalogItemFinder {
 
         return query.list(entityPathBase);
 
+    }
+
+    public <T extends CatalogItem> T filterVisible(T catalogItem, String locale){
+
+        if (catalogItem == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        if (!catalogItem.isVisible()){
+            throw new WebApplicationException((Response.Status.FORBIDDEN));
+        }
+
+        catalogItem.setLocalizedPresentation(locale);
+
+        return catalogItem;
     }
 
 }

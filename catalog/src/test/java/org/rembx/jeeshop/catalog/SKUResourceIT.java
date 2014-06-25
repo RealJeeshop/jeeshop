@@ -7,7 +7,6 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
-import org.rembx.jeeshop.catalog.util.CatalogItemResourceUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,7 +35,7 @@ public class SKUResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        service = new SKUResource(entityManager, new CatalogItemFinder(entityManager), new CatalogItemResourceUtil());
+        service = new SKUResource(entityManager, new CatalogItemFinder(entityManager));
     }
 
     @Test

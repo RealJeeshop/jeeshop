@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog.util;
+package org.rembx.jeeshop.catalog;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,9 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class CatalogItemResourceUtilTest {
+public class CatalogItemFinderTest {
+
+    private CatalogItemFinder instance;
 
     CatalogItem visibleCatalogItem = new CatalogItem() {
         @Override
@@ -21,12 +23,12 @@ public class CatalogItemResourceUtilTest {
         }
     };
 
-    CatalogItemResourceUtil instance;
 
     @Before
     public void setup() {
-        instance = new CatalogItemResourceUtil();
+        instance = new CatalogItemFinder();
     }
+
 
     @Test
     public void find_VisibleCatalogItem_ShouldReturnExpectedProduct() {
@@ -52,6 +54,5 @@ public class CatalogItemResourceUtilTest {
             assertEquals(Response.Status.NOT_FOUND, e.getResponse().getStatusInfo());
         }
     }
-
 
 }
