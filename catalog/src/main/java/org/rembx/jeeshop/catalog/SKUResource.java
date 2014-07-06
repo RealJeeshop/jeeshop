@@ -6,6 +6,7 @@ import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
@@ -39,7 +40,7 @@ public class SKUResource implements Serializable {
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
-    @Inject
+    @Resource
     private SessionContext sessionContext;
 
     public SKUResource() {
