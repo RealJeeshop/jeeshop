@@ -79,4 +79,29 @@ public class CatalogResourceIT {
         Assertions.assertThat(catalog).isNotNull();
         Assertions.assertThat(catalog.isVisible()).isTrue();
     }
+
+    @Test
+    public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategories() {
+        Catalog catalog = service.find(testCatalog.getId(), null);
+
+        Catalog detachedCatalogToModify = new Catalog(1L,catalog.getName());
+        detachedCatalogToModify.setDescription(catalog.getDescription());
+
+        service.modify(detachedCatalogToModify);
+
+        assertThat(catalog.getRootCategories()).isNotEmpty();
+
+    }
+
+    @Test
+    public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
+
+        Catalog detachedCatalogToModify = new Catalog(9999L,null);
+        try {
+            service.modify(detachedCatalogToModify);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
 }

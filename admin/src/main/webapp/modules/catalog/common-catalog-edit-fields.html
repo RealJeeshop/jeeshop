@@ -1,0 +1,64 @@
+<div class="alert alert-success alert-dismissible" ng-show="catalogEntryCtrl.hasSucceed">Update complete</div>
+
+<div class="row">
+    <div class="form-group col-md-6">
+        <label>Computed visibility:</label>&nbsp;
+        <span ng-show="catalogEntryCtrl.entry.visible" style="color:green">visible</span>
+        <span ng-hide="catalogEntryCtrl.entry.visible" style="color:red">not visible</span>
+        <p class="help-block">When not visible, entry will not be available for store</p>
+    </div>
+    <div class="form-group col-md-6 text-right">
+        <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.exit()"><i
+                class="glyphicon glyphicon-remove"></i></button>
+    </div>
+</div>
+<div class="row">
+
+    <div class="form-group col-md-6">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" ng-model="catalogEntryCtrl.entry.name" required="true"
+               placeholder="Name..."/>
+    </div>
+
+    <div class="form-group col-md-6">
+        <label for="name">Description</label>
+        <textarea class="form-control" id="description" ng-model="catalogEntryCtrl.entry.description"
+                  placeholder="Description..." rows="2"></textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6" ng-controller="DatepickerDemoCtrl">
+        <label for="startDate">Start Date</label>
+
+        <p class="input-group">
+            <input type="text" id="startDate" class="form-control" datepicker-popup min-date="minDate"
+                   ng-model="catalogEntryCtrl.entry.startDate"
+                   is-open="opened" datepicker-options="dateOptions" close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+        </p>
+    </div>
+
+    <div class="col-md-6" ng-controller="DatepickerDemoCtrl">
+        <label for="startDate">End Date</label>
+
+        <p class="input-group">
+            <input type="text" id="endDate" class="form-control" datepicker-popup min-date="minDate"
+                   ng-model="catalogEntryCtrl.entry.endDate"
+                   is-open="opened" datepicker-options="dateOptions" close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+        </p>
+    </div>
+</div>
+
+<div class="checkbox">
+    <label><input type="checkbox" ng-model="catalogEntryCtrl.entry.disabled"/>Disabled</label>
+
+    <p class="help-block">Check to prevent this entry to appear in store</p>
+</div>

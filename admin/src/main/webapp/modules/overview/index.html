@@ -1,1 +1,29 @@
-<h3>Not implemented yet</h3>
+<h4>Welcome to Jeeshop Admin</h4>
+<p class="help-block" ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.isAuthenticated()">Please login to manage online store</p>
+<br/>
+<div class="row placeholders" ng-show="sideMenuCtrl.isSelected('overview')">
+    <div class="col-xs-6 col-sm-3 placeholder">
+        <img data-src="holder.js/200x200/auto/sky" class="img-responsive"
+             alt="Generic placeholder thumbnail">
+        <h4>Catalog</h4>
+        <span class="text-muted">Manage your Catalog</span>
+    </div>
+    <div class="col-xs-6 col-sm-3 placeholder">
+        <img data-src="holder.js/200x200/auto/vine" class="img-responsive"
+             alt="Generic placeholder thumbnail">
+        <h4>Orders</h4>
+        <span class="text-muted">Watch last orders</span>
+    </div>
+    <div class="col-xs-6 col-sm-3 placeholder">
+        <img data-src="holder.js/200x200/auto/sky" class="img-responsive"
+             alt="Generic placeholder thumbnail">
+        <h4>Users</h4>
+        <span class="text-muted">Administer users</span>
+    </div>
+    <div class="col-xs-6 col-sm-3 placeholder">
+        <img data-src="holder.js/200x200/auto/vine" class="img-responsive"
+             alt="Generic placeholder thumbnail">
+        <h4>Statistics</h4>
+        <span class="text-muted">Watch usage statistics</span>
+    </div>
+</div>

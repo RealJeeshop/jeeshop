@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -76,6 +76,7 @@ public abstract class CatalogItem {
     }
 
     @PrePersist
+    @PreUpdate
     protected void computeDisabled() {
         if (disabled == null) {
             disabled = false;
@@ -83,9 +84,11 @@ public abstract class CatalogItem {
     }
 
     @PostLoad
+    @PostPersist
+    @PostUpdate
     protected void computeIsVisible() {
 
-        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
 
         if (this.isDisabled() || (endDate != null && dateToLocalDateTime(endDate).isBefore(now))
                 || (startDate != null && dateToLocalDateTime(startDate).isAfter(now))) {

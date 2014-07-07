@@ -1,5 +1,5 @@
-<div class="table-responsive text-center">
-    <div ng-show="catalogEntriesCtrl.mode === 'list'">
+<div class="table-responsive text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
+    <div ng-hide="catalogEntryCtrl.editing">
         <table class="table table-striped table-hover text-left">
             <thead>
             <tr>
@@ -14,7 +14,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="entry in catalogEntriesCtrl.entries" ng-click="catalogEntriesCtrl.selectEntry(entry.id)">
+            <tr ng-repeat="entry in catalogEntriesCtrl.entries"  ng-click="catalogEntryCtrl.selectEntry(entry.id)">
                 <td>{{entry.id}}</td>
                 <td>{{entry.name}}</td>
                 <td>{{entry.description}}</td>
@@ -38,7 +38,8 @@
             <li class="disabled"><a href="#">&raquo;</a></li>
         </ul>
     </div>
-    <div ng-show="catalogEntriesCtrl.mode === 'edit'"
+
+    <div ng-show="catalogEntryCtrl.editing"
          ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-edit-form.html'">
     </div>
 </div>

@@ -52,6 +52,20 @@ public class CatalogResource implements Serializable {
         this.catalogItemFinder = catalogItemFinder;
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Catalog modify(Catalog catalog){
+        Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
+        if (originalCatalog == null){
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        catalog.setRootCategories(originalCatalog.getRootCategories());
+
+        return  entityManager.merge(catalog);
+    }
+
 
     @GET
     @Path("/")

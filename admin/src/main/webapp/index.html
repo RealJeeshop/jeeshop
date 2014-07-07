@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-    <html lang="en" ng-app="admin">
+<html lang="en" ng-app="admin">
 <head>
     <title>Jeeshop - Administer your store</title>
     <meta charset="utf-8">
@@ -22,7 +22,7 @@
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" >
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -33,7 +33,7 @@
             </button>
             <a class="navbar-brand" href="#"><em>Jeeshop Admin</em></a>
         </div>
-        <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl" >
+        <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl">
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Settings</a></li>
@@ -41,10 +41,13 @@
                 <li><a href="#">Help</a></li>
             </ul>
 
-            <form class="navbar-form navbar-right"  name="loginForm" ng-submit="loginCtrl.login()" ng-hide="loginCtrl.isAuthenticated()">
+            <form class="navbar-form navbar-right" name="loginForm" ng-submit="loginCtrl.login()"
+                  ng-hide="loginCtrl.isAuthenticated()">
                 <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
-                <input type="text" class="form-control" name="login" placeholder="User name..." ng-model="loginCtrl.credentials.login" ng-required="true"/>
-                <input type="password" class="form-control" name="password" placeholder="Password..." ng-model="loginCtrl.credentials.password" ng-required="true"/>
+                <input type="text" class="form-control" name="login" placeholder="User name..."
+                       ng-model="loginCtrl.credentials.login" ng-required="true"/>
+                <input type="password" class="form-control" name="password" placeholder="Password..."
+                       ng-model="loginCtrl.credentials.password" ng-required="true"/>
                 <input type="submit" class="form-control" value="ok"/>
             </form>
 
@@ -58,55 +61,43 @@
 
 <div class="container-fluid">
     <div class="row" ng-controller="SideMenuController as sideMenuCtrl">
-        <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar" ng-controller="LoginController as loginCtrl" >
+        <div class="col-sm-3 col-md-2 sidebar" ng-controller="LoginController as loginCtrl">
+            <ul class="nav nav-sidebar">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('overview')">Overview</a>
+                </li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }" ng-show="loginCtrl.isAuthenticated()">
+                    <a href ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('users') }" ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="sideMenuCtrl.selectEntry('users')">Users</a>
                 </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }" ng-show="loginCtrl.isAuthenticated()">
-                    <a href ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" ng-show="loginCtrl.isAuthenticated()" title="Manage your catalog entries">
-                    <a href ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }" ng-show="loginCtrl.isAuthenticated()">
-                    <a href ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }" ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }"
+                    ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="sideMenuCtrl.selectEntry('statistics')">Analytics</a>
                 </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }" ng-show="loginCtrl.isAuthenticated()">
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" ng-show="loginCtrl.isAuthenticated()"
+                    title="Manage your catalog entries">
+                    <a href ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a>
+                </li>
+                <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }"
+                    ng-show="loginCtrl.isAuthenticated()">
+                    <a href ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a>
+                </li>
+
+                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }"
+                    ng-show="loginCtrl.isAuthenticated()">
                     <a href ng-click="sideMenuCtrl.selectEntry('newsletters')">Newsletters</a>
                 </li>
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <div class="row placeholders" ng-show="sideMenuCtrl.isSelected('overview')">
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Catalog</h4>
-                    <span class="text-muted">Manage your Catalog</span>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Orders</h4>
-                    <span class="text-muted">Watch last orders</span>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Users</h4>
-                    <span class="text-muted">Administer users</span>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                    <h4>Statistics</h4>
-                    <span class="text-muted">Watch usage statistics</span>
-                </div>
-            </div>
-            <div class="table-responsive" ng-show="sideMenuCtrl.isSelected(sideMenuCtrl.entryId)" ng-include="'modules/'+sideMenuCtrl.entryId+'/index.html'"/>
+            <div class="table-responsive" ng-show="sideMenuCtrl.isSelected(sideMenuCtrl.entryId)"
+                 ng-include="'modules/'+sideMenuCtrl.entryId+'/index.html'"/>
         </div>
     </div>
 </div>
@@ -117,7 +108,7 @@
 <script type="text/javascript" src="js/stringview-min.js"></script>
 <script type="text/javascript" src="js/docs.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
-<!--<script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>-->
+<script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
 <script type="text/javascript" src="modules/users/js/login.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>

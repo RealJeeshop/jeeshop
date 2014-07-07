@@ -1,5 +1,5 @@
 (function (){
-    var app = angular.module('admin',['admin-catalog','admin-login']);
+    var app = angular.module('admin',['ui.bootstrap','admin-catalog','admin-login']);
 
     app.controller('SideMenuController', function(){
         this.entryId = 'overview';
@@ -13,4 +13,30 @@
         };
     });
 
+    app.controller('DatepickerDemoCtrl',function ($scope) {
+        $scope.date =
+        $scope.today = function() {
+         $scope.dt = new Date();
+        };
+
+        $scope.clear = function () {
+         $scope.dt = null;
+        };
+
+        $scope.toggleMin = function() {
+         $scope.minDate = $scope.minDate ? null : new Date();
+        };
+        $scope.toggleMin();
+
+        $scope.open = function($event) {
+         $event.preventDefault();
+         $event.stopPropagation();
+
+         $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+         startingDay: 1
+        };
+    });
 })();

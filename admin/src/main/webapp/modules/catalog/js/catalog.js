@@ -14,16 +14,50 @@
         };
     });
 
-    app.controller('CatalogEntryController', function(){
+    app.controller('CatalogEntryController', ['$http','$scope', function($http,$scope){
+        var ctrl = this;
 
-        this.entry = {};
+        ctrl.editing=false;
+        ctrl.hasSucceed=false;
+
+        this.selectEntry = function(id){
+            ctrl.editing=true;
+            $http.get('rs/'+$scope.resource+'/'+id)
+            .success(function(data){
+                ctrl.entry=data;
+            })
+            .error(function(data){
+                ctrl.entry={};
+            });
+        };
 
         this.editEntry = function(){
-            alert("to be implemented");
+            $http.put('rs/'+$scope.resource,ctrl.entry)
+            .success(function(data){
+                ctrl.entry=data;
+                ctrl.hasSucceed=true;
+            })
+            .error(function(data){
+                ctrl.entry={};
+                ctrl.hasSucceed=false;
+            });
         };
-    });
 
-    app.directive("getCatalogEntries", ['$http', function($http) {
+        this.exit = function(){
+            ctrl.entry={};
+            ctrl.editing = false;
+            ctrl.hasSucceed=false;
+        };
+    }]);
+
+    app.directive("commonCatalogEditFields", function() {
+        return {
+            restrict:"A",
+            templateUrl: "modules/catalog/common-catalog-edit-fields.html"
+        };
+     });
+
+    app.directive("getCatalogEntries", ['$http', function($http, $scope) {
         return {
             restrict:"A",
             scope: {
@@ -31,22 +65,12 @@
             },
             controller: function($http, $scope) {
                 var ctrl = this;
-                ctrl.mode = 'list';
                 ctrl.entries = [];
-                ctrl.entryId = null;
-                ctrl.currentEntry={};
                 ctrl.resourceType = $scope.resource;
 
                 $http.get('rs/'+$scope.resource).success(function(data){
                     ctrl.entries=data;
                 });
-
-                this.selectEntry = function(id){
-                    ctrl.mode='edit';
-                    $http.get('rs/'+ctrl.resourceType+'/'+id).success(function(data){
-                        ctrl.currentEntry=data;
-                    });
-                }
             },
             controllerAs: 'catalogEntriesCtrl',
             templateUrl: "modules/catalog/catalog-entries.html"

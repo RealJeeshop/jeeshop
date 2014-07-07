@@ -3,6 +3,7 @@ package org.rembx.jeeshop.util;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
@@ -10,8 +11,8 @@ import java.util.Date;
  */
 public class DateUtil {
 
-    public static LocalDateTime dateToLocalDateTime(Date date){
+    public static ZonedDateTime dateToLocalDateTime(Date date){
         Instant endDateInstant = Instant.ofEpochMilli(date.getTime());
-       return  LocalDateTime.ofInstant(endDateInstant, ZoneOffset.UTC);
+       return  ZonedDateTime.ofInstant(endDateInstant, ZoneOffset.UTC);
     }
 }
