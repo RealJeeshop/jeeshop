@@ -47,7 +47,6 @@ public class Category extends CatalogItem {
     }
 
 
-    @XmlTransient
     public List<Category> getChildCategories() {
         return childCategories;
     }

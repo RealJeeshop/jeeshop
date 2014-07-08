@@ -1,5 +1,5 @@
 <div class="table-responsive text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
-    <div ng-hide="catalogEntryCtrl.editing">
+    <div ng-hide="catalogEntryCtrl.isEditionModeActive">
         <table class="table table-striped table-hover text-left">
             <thead>
             <tr>
@@ -39,7 +39,7 @@
         </ul>
     </div>
 
-    <div ng-show="catalogEntryCtrl.editing"
+    <div ng-show="catalogEntryCtrl.isEditionModeActive"
          ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-edit-form.html'">
     </div>
 </div>

@@ -1,12 +1,9 @@
-<h4 class="page-header">
-    Catalog #{{catalogEntryCtrl.entry.id}}
-</h4>
 <div class="text-left">
     <form name="catalogForm"
           ng-submit="catalogForm.$valid && catalogEntryCtrl.editEntry()" novalidate>
 
         <div common-catalog-edit-fields></div>
-
+        
         <input type="submit" class="btn btn-primary" value="Save"/>
     </form>
 

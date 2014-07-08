@@ -1,15 +1,29 @@
-<div class="alert alert-success alert-dismissible" ng-show="catalogEntryCtrl.hasSucceed">Update complete</div>
+<div class="row">
+    <div class="col-md-1 text-right col-md-push-11">
+        <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.leaveEditView()"><i
+                class="glyphicon glyphicon-remove" title="Go back to entries list"></i></button>
+    </div>
+    <div class="col-md-11 col-md-pull-1 text-center">
+        <h4>Edition of catalog #{{catalogEntryCtrl.entry.id}}</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <span>
+            <alert ng-repeat="alert in catalogEntryCtrl.alerts" type="{{alert.type}}"
+                   close="catalogEntryCtrl.closeAlert($index)">{{alert.msg}}
+            </alert>
+        </span>
+    </div>
+</div>
 
 <div class="row">
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-12">
         <label>Computed visibility:</label>&nbsp;
         <span ng-show="catalogEntryCtrl.entry.visible" style="color:green">visible</span>
         <span ng-hide="catalogEntryCtrl.entry.visible" style="color:red">not visible</span>
+
         <p class="help-block">When not visible, entry will not be available for store</p>
-    </div>
-    <div class="form-group col-md-6 text-right">
-        <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.exit()"><i
-                class="glyphicon glyphicon-remove"></i></button>
     </div>
 </div>
 <div class="row">

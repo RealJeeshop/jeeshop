@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
@@ -61,7 +62,10 @@ public class CatalogResource implements Serializable {
         if (originalCatalog == null){
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        catalog.setRootCategories(originalCatalog.getRootCategories());
+
+        if (CollectionUtils.isEmpty(catalog.getRootCategories())){
+            catalog.setRootCategories(originalCatalog.getRootCategories());
+        }
 
         return  entityManager.merge(catalog);
     }
