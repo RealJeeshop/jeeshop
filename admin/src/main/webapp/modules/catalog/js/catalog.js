@@ -30,6 +30,9 @@
             $http.get('rs/' + $scope.resource + '/' + id)
                 .success(function (data) {
                     ctrl.entry = data;
+                    // hack for dates returned as timestamp by service
+                    ctrl.entry.startDate = ctrl.entry.startDate != null? new Date(ctrl.entry.startDate):null;
+                    ctrl.entry.endDate = ctrl.entry.endDate != null? new Date(ctrl.entry.endDate):null;
                 })
                 .error(function (data) {
                 });

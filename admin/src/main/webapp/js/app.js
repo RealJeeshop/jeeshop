@@ -14,19 +14,17 @@
     });
 
     app.controller('DatepickerDemoCtrl',function ($scope) {
-        $scope.date =
+
         $scope.today = function() {
-         $scope.dt = new Date();
+            $scope.dt = new Date();
         };
+        $scope.today();
 
-        $scope.clear = function () {
-         $scope.dt = null;
-        };
+        $scope.minDate = new Date();
 
-        $scope.toggleMin = function() {
-         $scope.minDate = $scope.minDate ? null : new Date();
+        $scope.getMinDate = function(aDate){
+            return aDate != null ? aDate : null;
         };
-        $scope.toggleMin();
 
         $scope.open = function($event) {
          $event.preventDefault();
