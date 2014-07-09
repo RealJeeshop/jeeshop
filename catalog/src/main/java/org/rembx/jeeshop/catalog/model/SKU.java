@@ -60,6 +60,20 @@ public class SKU extends CatalogItem{
         this.threshold = threshold;
     }
 
+    public SKU(Long id, String name, String description, Double price, Integer quantity, String reference,
+               Date startDate, Date endDate, Boolean disabled, Integer threshold) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.reference = reference;
+        this.disabled = disabled;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.threshold = threshold;
+    }
+
     @PostLoad
     @PostPersist
     @PostUpdate

@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
@@ -148,6 +149,43 @@ public class CategoryResourceIT {
         List<Category> categories = service.findAll(0, 1);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
+    }
+
+    @Test
+    public void modifyCategory_ShouldModifyCategoryAttributesAndPreserveCategoriesWhenNotProvided() {
+        Category category = service.find(testCatalog.aRootCategoryWithChildCategories().getId(), null);
+
+        Category detachedCategoryToModify = new Category(testCatalog.aRootCategoryWithChildCategories().getId(),category.getName(), category.getDescription(), category.getStartDate(), category.getEndDate(), category.isDisabled());
+
+        service.modify(detachedCategoryToModify);
+
+        assertThat(category.getChildCategories()).containsExactly(category.getChildCategories().toArray());
+
+    }
+
+    @Test
+    public void modifyCategory_ShouldModifyCategoryAttributesAndPreserveChildProductsWhenNotProvided() {
+        Category category = service.find(testCatalog.aCategoryWithProducts().getId(), null);
+
+        Category detachedCategoryToModify = new Category(testCatalog.aCategoryWithProducts().getId(),category.getName(), category.getDescription(), category.getStartDate(), category.getEndDate(), category.isDisabled());
+        detachedCategoryToModify.setDescription(category.getDescription());
+
+        service.modify(detachedCategoryToModify);
+
+        assertThat(category.getChildCategories()).containsExactly(category.getChildCategories().toArray());
+
+    }
+
+    @Test
+    public void modifyUnknownCategory_ShouldThrowNotFoundException() {
+
+        Category detachedCategoryToModify = new Category(9999L,null,null,null,null,null);
+        try {
+            service.modify(detachedCategoryToModify);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
     }
 
 }

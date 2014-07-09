@@ -81,12 +81,11 @@ public class CatalogResourceIT {
     }
 
     @Test
-    public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategories() {
+    public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
         Catalog catalog = service.find(testCatalog.getId(), null);
 
         Catalog detachedCatalogToModify = new Catalog(1L,catalog.getName());
-        detachedCatalogToModify.setDescription(catalog.getDescription());
-
+        
         service.modify(detachedCatalogToModify);
 
         assertThat(catalog.getRootCategories()).isNotEmpty();

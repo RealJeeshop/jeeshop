@@ -1,6 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
 
+import org.apache.commons.collections.CollectionUtils;
+import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
@@ -49,6 +51,27 @@ public class CategoryResource implements Serializable {
     public CategoryResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Category modify(Category category){
+        Category originalCategory = entityManager.find(Category.class, category.getId());
+        if (originalCategory == null){
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        if (CollectionUtils.isEmpty(category.getChildCategories())){
+            category.setChildCategories(originalCategory.getChildCategories());
+        }
+
+        if (CollectionUtils.isEmpty(category.getChildProducts())){
+            category.setChildProducts(originalCategory.getChildProducts());
+        }
+
+        return  entityManager.merge(category);
     }
 
     @GET

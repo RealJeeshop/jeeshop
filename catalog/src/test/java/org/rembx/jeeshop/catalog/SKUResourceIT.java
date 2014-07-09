@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
@@ -109,5 +110,17 @@ public class SKUResourceIT {
         List<SKU> categories = service.findAll(0, 1);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
+    }
+
+    @Test
+    public void modifyUnknownSKU_ShouldThrowNotFoundException() {
+
+        SKU detachedProductToModify = new SKU(9999L,null,null,null,null,null, null,null,null,null);
+        try {
+            service.modify(detachedProductToModify);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
     }
 }

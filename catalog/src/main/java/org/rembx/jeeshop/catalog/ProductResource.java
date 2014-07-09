@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
@@ -50,6 +51,27 @@ public class ProductResource implements Serializable {
     public ProductResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Product modify(Product product){
+        Product originalProduct = entityManager.find(Product.class, product.getId());
+        if (originalProduct == null){
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        if (CollectionUtils.isEmpty(product.getChildSKUs())){
+            product.setChildSKUs(originalProduct.getChildSKUs());
+        }
+
+        if (CollectionUtils.isEmpty(product.getDiscounts())){
+            product.setDiscounts(originalProduct.getDiscounts());
+        }
+
+        return  entityManager.merge(product);
     }
 
     @GET

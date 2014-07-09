@@ -110,4 +110,28 @@ public class ProductResourceIT {
         assertThat(categories).hasSize(1);
     }
 
+    @Test
+    public void modifyProduct_ShouldModifyProductAttributesAndPreserveSKUsWhenNotProvided() {
+        Product product = service.find(testCatalog.aProductWithSKUs().getId(), null);
+
+        Product detachedProductToModify = new Product(testCatalog.aProductWithSKUs().getId(), product.getName(), product.getDescription(), product.getStartDate(), product.getEndDate(), product.isDisabled());
+
+        service.modify(detachedProductToModify);
+
+        assertThat(product.getChildSKUs()).containsExactly(product.getChildSKUs().toArray());
+
+    }
+
+    @Test
+    public void modifyUnknownProduct_ShouldThrowNotFoundException() {
+
+        Product detachedProductToModify = new Product(9999L,null,null,null,null,null);
+        try {
+            service.modify(detachedProductToModify);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
+
 }

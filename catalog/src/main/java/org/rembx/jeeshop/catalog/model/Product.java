@@ -39,6 +39,14 @@ public class Product extends CatalogItem {
         this.disabled = disabled;
     }
 
+    public Product(Long id, String name, String description, Date startDate, Date endDate, Boolean disabled) {
+        this.id = id;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.disabled = disabled;
+    }
+
     public List<SKU> getChildSKUs() {
         return childSKUs;
     }

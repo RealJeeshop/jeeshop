@@ -1,8 +1,10 @@
 package org.rembx.jeeshop.catalog;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
@@ -44,6 +46,23 @@ public class SKUResource implements Serializable {
     private SessionContext sessionContext;
 
     public SKUResource() {
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public SKU modify(SKU sku){
+        SKU originalSKU = entityManager.find(SKU.class, sku.getId());
+        if (originalSKU == null){
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        if (CollectionUtils.isEmpty(sku.getDiscounts())){
+            sku.setDiscounts(originalSKU.getDiscounts());
+        }
+
+        return  entityManager.merge(sku);
     }
 
     public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {

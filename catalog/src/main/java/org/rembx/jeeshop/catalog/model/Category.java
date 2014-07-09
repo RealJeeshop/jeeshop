@@ -38,6 +38,15 @@ public class Category extends CatalogItem {
         this.description = description;
     }
 
+    public Category(Long id, String name, String description, Date startDate, Date endDate, Boolean disabled) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.disabled = disabled;
+    }
+
     public Category(String name, String description, Date startDate, Date endDate, Boolean disabled) {
         this.name = name;
         this.description = description;
