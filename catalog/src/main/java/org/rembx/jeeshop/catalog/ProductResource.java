@@ -83,6 +83,14 @@ public class ProductResource implements Serializable {
     }
 
     @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Long count() {
+        return catalogItemFinder.countAll(product);
+    }
+
+    @GET
     @Path("/{productId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll

@@ -134,4 +134,9 @@ public class ProductResourceIT {
         }
     }
 
+    @Test
+    public void countAll(){
+        assertThat(service.count()).isGreaterThan(0);
+    }
+
 }

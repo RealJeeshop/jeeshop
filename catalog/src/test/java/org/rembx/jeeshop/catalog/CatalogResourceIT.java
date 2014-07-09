@@ -103,4 +103,9 @@ public class CatalogResourceIT {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
+
+    @Test
+    public void countAll(){
+        assertThat(service.count()).isGreaterThan(0);
+    }
 }

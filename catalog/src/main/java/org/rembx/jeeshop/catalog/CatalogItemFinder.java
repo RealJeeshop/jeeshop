@@ -59,13 +59,20 @@ public class CatalogItemFinder {
 
     }
 
-    public <T extends CatalogItem> T filterVisible(T catalogItem, String locale){
+    public Long countAll(EntityPathBase<? extends CatalogItem> entityPathBase) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
+        return query.count();
+
+    }
+
+    public <T extends CatalogItem> T filterVisible(T catalogItem, String locale) {
 
         if (catalogItem == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (!catalogItem.isVisible()){
+        if (!catalogItem.isVisible()) {
             throw new WebApplicationException((Response.Status.FORBIDDEN));
         }
 

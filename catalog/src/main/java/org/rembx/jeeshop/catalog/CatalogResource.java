@@ -80,6 +80,14 @@ public class CatalogResource implements Serializable {
     }
 
     @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Long count() {
+        return catalogItemFinder.countAll(catalog);
+    }
+
+    @GET
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({JeeshopRoles.ADMIN, JeeshopRoles.USER})

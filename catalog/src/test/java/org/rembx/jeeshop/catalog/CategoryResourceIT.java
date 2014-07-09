@@ -188,4 +188,9 @@ public class CategoryResourceIT {
         }
     }
 
+    @Test
+    public void countAll(){
+        assertThat(service.count()).isGreaterThan(0);
+    }
+
 }

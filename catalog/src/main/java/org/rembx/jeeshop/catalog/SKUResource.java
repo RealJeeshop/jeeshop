@@ -4,7 +4,6 @@ package org.rembx.jeeshop.catalog;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
@@ -76,6 +75,14 @@ public class SKUResource implements Serializable {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<SKU> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         return catalogItemFinder.findAll(sKU, start, size);
+    }
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Long count() {
+        return catalogItemFinder.countAll(sKU);
     }
 
     @GET

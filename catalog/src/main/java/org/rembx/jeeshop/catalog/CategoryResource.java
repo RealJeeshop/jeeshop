@@ -2,7 +2,6 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
@@ -80,6 +79,14 @@ public class CategoryResource implements Serializable {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Category> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         return catalogItemFinder.findAll(category, start, size);
+    }
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Long count() {
+        return catalogItemFinder.countAll(category);
     }
 
     @GET

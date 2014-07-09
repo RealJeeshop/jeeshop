@@ -5,7 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
@@ -122,5 +121,10 @@ public class SKUResourceIT {
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
+    }
+
+    @Test
+    public void countAll(){
+        assertThat(service.count()).isGreaterThan(0);
     }
 }
