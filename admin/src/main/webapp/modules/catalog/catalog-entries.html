@@ -1,5 +1,12 @@
 <div class="table-responsive text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
-    <div ng-hide="catalogEntryCtrl.isEditionModeActive">
+    <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive">
+        <div class="row">
+            <div class="col-md-pull-12 text-right">
+                <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.create()"><i
+                        class="glyphicon glyphicon-plus" title="Go back to entries list"></i></button>
+            </div>
+
+        </div>
         <table class="table table-striped table-hover text-left">
             <thead>
             <tr>
@@ -39,7 +46,8 @@
         </ul>
     </div>
 
-    <div ng-show="catalogEntryCtrl.isEditionModeActive"
+    <div ng-show="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive"
          ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-edit-form.html'">
     </div>
+
 </div>

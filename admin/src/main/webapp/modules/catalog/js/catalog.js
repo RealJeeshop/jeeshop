@@ -19,20 +19,21 @@
 
         ctrl.alerts = [];
         ctrl.isEditionModeActive = false;
+        ctrl.isCreationModeActive = false;
         ctrl.entry = {};
 
-        this.closeAlert = function(index) {
+        this.closeAlert = function (index) {
             ctrl.alerts.splice(index, 1);
         };
 
         this.selectEntry = function (id) {
-            ctrl.isEditionModeActive = true;
             $http.get('rs/' + $scope.resource + '/' + id)
                 .success(function (data) {
+                    ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
                     // hack for dates returned as timestamp by service
-                    ctrl.entry.startDate = ctrl.entry.startDate != null? new Date(ctrl.entry.startDate):null;
-                    ctrl.entry.endDate = ctrl.entry.endDate != null? new Date(ctrl.entry.endDate):null;
+                    ctrl.entry.startDate = ctrl.entry.startDate != null ? new Date(ctrl.entry.startDate) : null;
+                    ctrl.entry.endDate = ctrl.entry.endDate != null ? new Date(ctrl.entry.endDate) : null;
                 })
                 .error(function (data) {
                 });
@@ -48,6 +49,10 @@
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
                 });
         };
+
+        this.create = function () {
+            ctrl.isCreationModeActive = true;
+        }
 
         this.leaveEditView = function () {
             ctrl.isEditionModeActive = false;
