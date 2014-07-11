@@ -2,7 +2,7 @@
 
     var app = angular.module('admin-catalog', []);
 
-    app.controller('TabController', function () {
+    app.controller('TabController', ['$scope', function ($scope) {
         this.tabId = 1;
 
         this.selectTab = function (setId) {
@@ -12,7 +12,7 @@
         this.isSelected = function (checkId) {
             return this.tabId === checkId;
         };
-    });
+    }]);
 
     app.controller('CatalogEntryController', ['$http', '$scope', function ($http, $scope) {
         var ctrl = this;
@@ -39,7 +39,27 @@
                 });
         };
 
-        this.editEntry = function () {
+        this.createOrEdit = function(){
+            if (ctrl.isCreationModeActive){
+                ctrl.create();
+            }else if (ctrl.isEditionModeActive){
+                ctrl.edit();
+            }
+        };
+
+        this.create = function () {
+            $http.post('rs/' + $scope.resource,ctrl.entry)
+                .success(function (data) {
+                    ctrl.entry = data;
+                    ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
+                })
+                .error(function (data) {
+                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+            });
+            $scope.findEntries();
+        };
+
+        this.edit = function () {
             $http.put('rs/' + $scope.resource, ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
@@ -47,24 +67,25 @@
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
-                });
+            });
         };
 
-        this.create = function () {
+        this.activateCreationMode = function () {
             ctrl.isCreationModeActive = true;
         }
 
         this.leaveEditView = function () {
             ctrl.isEditionModeActive = false;
+            ctrl.isCreationModeActive = false;
             ctrl.entry = {};
             ctrl.alerts = [];
         };
     }]);
 
-    app.directive("commonCatalogEditFields", function () {
+    app.directive("commonCatalogFormFields", function () {
         return {
             restrict: "A",
-            templateUrl: "modules/catalog/common-catalog-edit-fields.html"
+            templateUrl: "modules/catalog/common-catalog-form-fields.html"
         };
     });
 
@@ -78,10 +99,20 @@
                 var ctrl = this;
                 ctrl.entries = [];
                 ctrl.resourceType = $scope.resource;
+                ctrl.currentPage;
+                ctrl.totalCount = null;
 
-                $http.get('rs/' + $scope.resource).success(function (data) {
-                    ctrl.entries = data;
-                });
+                $scope.findEntries = function (){
+                    $http.get('rs/' + $scope.resource).success(function (data) {
+                        ctrl.entries = data;
+                    });
+
+                    $http.get('rs/' + $scope.resource+'/count').success(function (data) {
+                        ctrl.totalCount = data;
+                    });
+                }
+
+                $scope.findEntries();
             },
             controllerAs: 'catalogEntriesCtrl',
             templateUrl: "modules/catalog/catalog-entries.html"

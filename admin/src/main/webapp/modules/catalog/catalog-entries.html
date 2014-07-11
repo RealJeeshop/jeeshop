@@ -1,11 +1,8 @@
 <div class="table-responsive text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
     <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive">
-        <div class="row">
-            <div class="col-md-pull-12 text-right">
-                <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.create()"><i
-                        class="glyphicon glyphicon-plus" title="Go back to entries list"></i></button>
-            </div>
-
+        <div class="text-right">
+            <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.activateCreationMode()"><i
+                    class="glyphicon glyphicon-plus" title="Go back to entries list"></i></button>
         </div>
         <table class="table table-striped table-hover text-left">
             <thead>
@@ -35,19 +32,11 @@
             </tr>
             </tbody>
         </table>
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li class="disabled"><a href="#">2</a></li>
-            <li class="disabled"><a href="#">3</a></li>
-            <li class="disabled"><a href="#">4</a></li>
-            <li class="disabled"><a href="#">5</a></li>
-            <li class="disabled"><a href="#">&raquo;</a></li>
-        </ul>
+        <pagination total-items="catalogEntriesCtrl.totalCount" ng-model="catalogEntriesCtrl.currentPage" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
     </div>
 
     <div ng-show="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive"
-         ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-edit-form.html'">
+         ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-form.html'">
     </div>
 
 </div>

@@ -47,6 +47,20 @@ public class SKUResource implements Serializable {
     public SKUResource() {
     }
 
+    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+        this.entityManager = entityManager;
+        this.catalogItemFinder = catalogItemFinder;
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public SKU create(SKU sku){
+        entityManager.persist(sku);
+        return sku;
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,11 +76,6 @@ public class SKUResource implements Serializable {
         }
 
         return  entityManager.merge(sku);
-    }
-
-    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
-        this.entityManager = entityManager;
-        this.catalogItemFinder = catalogItemFinder;
     }
 
     @GET

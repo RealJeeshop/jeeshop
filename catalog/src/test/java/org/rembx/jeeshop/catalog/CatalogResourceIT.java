@@ -26,6 +26,7 @@ public class CatalogResourceIT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     @BeforeClass
     public static void beforeClass(){
@@ -35,7 +36,7 @@ public class CatalogResourceIT {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager = entityManagerFactory.createEntityManager();
         service = new CatalogResource(entityManager,new CatalogItemFinder(entityManager));
     }
 
@@ -108,4 +109,17 @@ public class CatalogResourceIT {
     public void countAll(){
         assertThat(service.count()).isGreaterThan(0);
     }
+
+    @Test
+    public void create_shouldPersist(){
+        Catalog catalog = new Catalog("New Test Catalog");
+
+        entityManager.getTransaction().begin();
+        service.create(catalog);
+        entityManager.getTransaction().commit();
+
+        assertThat(entityManager.find(Catalog.class, catalog.getId())).isNotNull();
+        entityManager.remove(catalog);
+    }
+
 }

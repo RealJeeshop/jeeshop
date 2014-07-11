@@ -15,6 +15,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,6 +28,7 @@ public class CategoryResourceIT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     @BeforeClass
     public static void beforeClass(){
@@ -36,7 +38,7 @@ public class CategoryResourceIT {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager = entityManagerFactory.createEntityManager();
         service = new CategoryResource(entityManager, new CatalogItemFinder(entityManager));
     }
 
@@ -191,6 +193,18 @@ public class CategoryResourceIT {
     @Test
     public void countAll(){
         assertThat(service.count()).isGreaterThan(0);
+    }
+
+    @Test
+    public void create_shouldPersist(){
+        Category category = new Category("name","description",new Date(), new Date(),false);
+
+        entityManager.getTransaction().begin();
+        service.create(category);
+        entityManager.getTransaction().commit();
+
+        assertThat(entityManager.find(Category.class, category.getId())).isNotNull();
+        entityManager.remove(category);
     }
 
 }

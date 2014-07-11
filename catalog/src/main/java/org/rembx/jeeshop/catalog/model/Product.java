@@ -32,8 +32,9 @@ public class Product extends CatalogItem {
     public Product() {
     }
 
-    public Product(String name, Date startDate, Date endDate, Boolean disabled) {
+    public Product(String name, String description, Date startDate, Date endDate, Boolean disabled) {
         this.name = name;
+        this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;

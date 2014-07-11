@@ -1,8 +1,8 @@
 <div class="text-left">
     <form name="productForm"
-          ng-submit="productForm.$valid && catalogEntryCtrl.editEntry()" novalidate>
+          ng-submit="productForm.$valid && catalogEntryCtrl.createOrEdit()" novalidate>
 
-        <div common-catalog-edit-fields></div>
+        <div common-catalog-form-fields></div>
 
         <input type="submit" class="btn btn-primary" value="Save"/>
     </form>

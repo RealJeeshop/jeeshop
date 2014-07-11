@@ -11,8 +11,10 @@ import org.rembx.jeeshop.catalog.test.TestCatalog;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -25,6 +27,7 @@ public class ProductResourceIT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     @BeforeClass
     public static void beforeClass(){
@@ -34,7 +37,7 @@ public class ProductResourceIT {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager = entityManagerFactory.createEntityManager();
         service = new ProductResource(entityManager,new CatalogItemFinder(entityManager));
     }
 
@@ -137,6 +140,18 @@ public class ProductResourceIT {
     @Test
     public void countAll(){
         assertThat(service.count()).isGreaterThan(0);
+    }
+
+    @Test
+    public void create_shouldPersist(){
+        Product product = new Product("name","description",new Date(), new Date(),false);
+
+        entityManager.getTransaction().begin();
+        service.create(product);
+        entityManager.getTransaction().commit();
+
+        assertThat(entityManager.find(Product.class, product.getId())).isNotNull();
+        entityManager.remove(product);
     }
 
 }

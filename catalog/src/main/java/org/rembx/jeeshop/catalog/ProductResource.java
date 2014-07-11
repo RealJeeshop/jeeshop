@@ -53,6 +53,15 @@ public class ProductResource implements Serializable {
         this.catalogItemFinder = catalogItemFinder;
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Product create(Product product){
+        entityManager.persist(product);
+        return product;
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

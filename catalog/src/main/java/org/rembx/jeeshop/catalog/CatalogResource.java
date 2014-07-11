@@ -53,6 +53,15 @@ public class CatalogResource implements Serializable {
         this.catalogItemFinder = catalogItemFinder;
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Catalog create(Catalog catalog){
+        entityManager.persist(catalog);
+        return catalog;
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

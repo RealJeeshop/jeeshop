@@ -52,6 +52,15 @@ public class CategoryResource implements Serializable {
         this.catalogItemFinder = catalogItemFinder;
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Category create(Category category){
+        entityManager.persist(category);
+        return category;
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

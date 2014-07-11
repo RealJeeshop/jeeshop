@@ -57,10 +57,10 @@ public class TestCatalog {
             put (Locale.US.toString(), presentationUSChildCat5);
         }});
 
-        Product product1 = new Product("product1", now, tomorrow, false);
-        Product product2Expired = new Product("product2", now, yesterday, false);
-        Product product3Disabled = new Product("product3", now, yesterday, true);
-        Product product4 = new Product("product4", now, yesterday, false);
+        Product product1 = new Product("product1", "description", now, tomorrow, false);
+        Product product2Expired = new Product("product2", "description", now, yesterday, false);
+        Product product3Disabled = new Product("product3", "description", now, yesterday, true);
+        Product product4 = new Product("product4", "description", now, yesterday, false);
 
         SKU sku1 = new SKU("sku1", "Sku1 enabled", 10d,100, "X1213JJLB-1", now, tomorrow, false, 3);
         SKU sku2 = new SKU("sku2", "Sku2 disabled", 10d,100, "X1213JJLB-2", now, tomorrow, true, 3);

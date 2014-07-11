@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -25,6 +26,7 @@ public class SKUResourceIT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     @BeforeClass
     public static void beforeClass(){
@@ -34,7 +36,7 @@ public class SKUResourceIT {
     @Before
     public void setup(){
         testCatalog = TestCatalog.getInstance();
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager = entityManagerFactory.createEntityManager();
         service = new SKUResource(entityManager, new CatalogItemFinder(entityManager));
     }
 
@@ -126,5 +128,18 @@ public class SKUResourceIT {
     @Test
     public void countAll(){
         assertThat(service.count()).isGreaterThan(0);
+    }
+
+    @Test
+    public void create_shouldPersist(){
+        SKU sku = new SKU("name", "description", 1.0, 2, "reference",
+                new Date(), new Date(), false, 1);
+
+        entityManager.getTransaction().begin();
+        service.create(sku);
+        entityManager.getTransaction().commit();
+
+        assertThat(entityManager.find(SKU.class, sku.getId())).isNotNull();
+        entityManager.remove(sku);
     }
 }

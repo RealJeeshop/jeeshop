@@ -3,8 +3,11 @@
         <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.leaveEditView()"><i
                 class="glyphicon glyphicon-remove" title="Go back to entries list"></i></button>
     </div>
-    <div class="col-md-11 col-md-pull-1 text-center">
+    <div class="col-md-11 col-md-pull-1 text-center" ng-show="catalogEntryCtrl.isEditionModeActive">
         <h4>Edition of entry #{{catalogEntryCtrl.entry.id}} from {{catalogEntriesCtrl.resourceType}}</h4>
+    </div>
+    <div class="col-md-11 col-md-pull-1 text-center" ng-show="catalogEntryCtrl.isCreationModeActive">
+        <h4>Add new {{catalogEntriesCtrl.resourceType}} entry</h4>
     </div>
 </div>
 <div class="row">
