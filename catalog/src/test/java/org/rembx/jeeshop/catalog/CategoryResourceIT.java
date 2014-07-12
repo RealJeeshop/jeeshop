@@ -1,9 +1,9 @@
 package org.rembx.jeeshop.catalog;
 
+import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
@@ -207,4 +207,31 @@ public class CategoryResourceIT {
         entityManager.remove(category);
     }
 
+    @Test
+    public void delete_shouldRemove(){
+
+        entityManager.getTransaction().begin();
+        Category category = new Category("Test category","");
+        entityManager.persist(category);
+        entityManager.getTransaction().commit();
+
+        entityManager.getTransaction().begin();
+        service.delete(category.getId());
+        entityManager.getTransaction().commit();
+
+        Assertions.assertThat(entityManager.find(Category.class, category.getId())).isNull();
+    }
+
+    @Test
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+
+        try {
+            entityManager.getTransaction().begin();
+            service.delete(666L);
+            entityManager.getTransaction().commit();
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
 }

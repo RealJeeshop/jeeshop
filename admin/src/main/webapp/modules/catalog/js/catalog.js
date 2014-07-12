@@ -56,7 +56,6 @@
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
             });
-            $scope.findEntries();
         };
 
         this.edit = function () {
@@ -75,6 +74,7 @@
         }
 
         this.leaveEditView = function () {
+            $scope.findEntries();
             ctrl.isEditionModeActive = false;
             ctrl.isCreationModeActive = false;
             ctrl.entry = {};
@@ -97,13 +97,17 @@
             },
             controller: function ($http, $scope) {
                 var ctrl = this;
+                ctrl.alerts=[];
                 ctrl.entries = [];
                 ctrl.resourceType = $scope.resource;
-                ctrl.currentPage;
+                ctrl.currentPage = 1;
                 ctrl.totalCount = null;
+                ctrl.pageSize = 10;
 
                 $scope.findEntries = function (){
-                    $http.get('rs/' + $scope.resource).success(function (data) {
+                    alerts = [];
+                    offset = ctrl.pageSize *(ctrl.currentPage -1);
+                    $http.get('rs/' + $scope.resource+"?start="+offset+"&size="+ctrl.pageSize).success(function (data) {
                         ctrl.entries = data;
                     });
 
@@ -113,6 +117,22 @@
                 }
 
                 $scope.findEntries();
+
+                this.pageChanged = function (){
+                    $scope.findEntries();
+                };
+
+                this.delete = function (index) {
+                    alerts = [];
+                    $http.delete('rs/' + $scope.resource+"/"+ctrl.entries[index].id)
+                        .success(function (data) {
+                            ctrl.entries.splice(index);
+                        })
+                        .error(function (data) {
+                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                    });
+                    $scope.findEntries();
+                };
             },
             controllerAs: 'catalogEntriesCtrl',
             templateUrl: "modules/catalog/catalog-entries.html"

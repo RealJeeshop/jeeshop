@@ -122,4 +122,31 @@ public class CatalogResourceIT {
         entityManager.remove(catalog);
     }
 
+    @Test
+    public void delete_shouldRemove(){
+
+        entityManager.getTransaction().begin();
+        Catalog catalog = new Catalog("Test Catalog");
+        entityManager.persist(catalog);
+        entityManager.getTransaction().commit();
+
+        entityManager.getTransaction().begin();
+        service.delete(catalog.getId());
+        entityManager.getTransaction().commit();
+
+        assertThat(entityManager.find(Catalog.class, catalog.getId())).isNull();
+    }
+
+    @Test
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+
+        try {
+            entityManager.getTransaction().begin();
+            service.delete(666L);
+            entityManager.getTransaction().commit();
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
 }

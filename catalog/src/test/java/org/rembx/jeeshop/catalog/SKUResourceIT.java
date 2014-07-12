@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
+import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -141,5 +142,33 @@ public class SKUResourceIT {
 
         assertThat(entityManager.find(SKU.class, sku.getId())).isNotNull();
         entityManager.remove(sku);
+    }
+
+    @Test
+    public void delete_shouldRemove(){
+
+        entityManager.getTransaction().begin();
+        SKU sku = new SKU("Test","",null,null,null,null,null,null,null);
+        entityManager.persist(sku);
+        entityManager.getTransaction().commit();
+
+        entityManager.getTransaction().begin();
+        service.delete(sku.getId());
+        entityManager.getTransaction().commit();
+
+        Assertions.assertThat(entityManager.find(SKU.class, sku.getId())).isNull();
+    }
+
+    @Test
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+
+        try {
+            entityManager.getTransaction().begin();
+            service.delete(666L);
+            entityManager.getTransaction().commit();
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
     }
 }

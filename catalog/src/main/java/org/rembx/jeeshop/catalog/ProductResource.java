@@ -2,9 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Product;
-import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -19,7 +17,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +30,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/products")
 @Stateless
-public class ProductResource implements Serializable {
+public class ProductResource {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -60,6 +57,20 @@ public class ProductResource implements Serializable {
     public Product create(Product product){
         entityManager.persist(product);
         return product;
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    @Path("/{productId}")
+    public void delete(@PathParam("productId") Long productId){
+        Product catalogPersisted = entityManager.find(Product.class,productId);
+        if (catalogPersisted != null){
+            entityManager.remove(catalogPersisted);
+        }else{
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
     @PUT

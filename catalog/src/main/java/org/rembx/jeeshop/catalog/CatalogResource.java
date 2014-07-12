@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/catalogs")
 @Stateless
-public class CatalogResource implements Serializable {
+public class CatalogResource {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -60,6 +59,20 @@ public class CatalogResource implements Serializable {
     public Catalog create(Catalog catalog){
         entityManager.persist(catalog);
         return catalog;
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    @Path("/{catalogId}")
+    public void delete(@PathParam("catalogId") Long catalogId){
+        Catalog catalogPersisted = entityManager.find(Catalog.class,catalogId);
+        if (catalogPersisted != null){
+            entityManager.remove(catalogPersisted);
+        }else{
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
     @PUT

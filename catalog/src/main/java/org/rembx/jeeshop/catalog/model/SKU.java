@@ -78,6 +78,12 @@ public class SKU extends CatalogItem{
     @PostPersist
     @PostUpdate
     private void computeAvailable() {
+        if (quantity==null) {
+            available = false;
+            return;
+        }
+        if (threshold == null)
+            threshold = 0;
         available = quantity >threshold;
     }
 
