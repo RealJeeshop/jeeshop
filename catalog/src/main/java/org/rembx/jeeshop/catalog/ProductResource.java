@@ -83,11 +83,19 @@ public class ProductResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (CollectionUtils.isEmpty(product.getChildSKUs())){
+        if (product.getChildSKUsIds() != null){
+            List<SKU> newSkus = new ArrayList<>();
+            product.getChildSKUsIds().forEach(skuId-> newSkus.add(entityManager.find(SKU.class, skuId)));
+            product.setChildSKUs(newSkus);
+        }else{
             product.setChildSKUs(originalProduct.getChildSKUs());
         }
 
-        if (CollectionUtils.isEmpty(product.getDiscounts())){
+        if (product.getDiscountsIds() != null){
+            List<Discount> newDiscounts = new ArrayList<>();
+            product.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            product.setDiscounts(newDiscounts);
+        }else{
             product.setDiscounts(originalProduct.getDiscounts());
         }
 

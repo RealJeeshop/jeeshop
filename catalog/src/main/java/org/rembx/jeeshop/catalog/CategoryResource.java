@@ -84,11 +84,19 @@ public class CategoryResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (CollectionUtils.isEmpty(category.getChildCategories())){
+        if (category.getChildCategoriesIds() != null){
+            List<Category> newCategories = new ArrayList<>();
+            category.getChildCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            category.setChildCategories(newCategories);
+        }else{
             category.setChildCategories(originalCategory.getChildCategories());
         }
 
-        if (CollectionUtils.isEmpty(category.getChildProducts())){
+        if (category.getChildProductsIds() != null){
+            List<Product> newProducts = new ArrayList<>();
+            category.getChildProductsIds().forEach(productId-> newProducts.add(entityManager.find(Product.class, productId)));
+            category.setChildProducts(newProducts);
+        }else{
             category.setChildProducts(originalCategory.getChildProducts());
         }
 

@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,12 +24,18 @@ public class Category extends CatalogItem {
     @XmlTransient
     private List<Category> childCategories;
 
+    @Transient
+    private List<Long> childCategoriesIds;
+
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "categoryId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))
     @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<Product> childProducts;
+
+    @Transient
+    private List<Long> childProductsIds;
 
     public Category() {
     }
@@ -55,6 +62,18 @@ public class Category extends CatalogItem {
         this.disabled = disabled;
     }
 
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    protected void fillChildsIds(){
+        childCategoriesIds = new ArrayList<>();
+        if (childCategories!=null)
+            childCategories.forEach(category->childCategoriesIds.add(category.getId()));
+
+        childProductsIds = new ArrayList<>();
+        if (childProducts!=null)
+            childProducts.forEach(product->childCategoriesIds.add(product.getId()));
+    }
 
     public List<Category> getChildCategories() {
         return childCategories;
@@ -72,4 +91,19 @@ public class Category extends CatalogItem {
         this.childProducts = childProducts;
     }
 
+    public List<Long> getChildCategoriesIds() {
+        return childCategoriesIds;
+    }
+
+    public void setChildCategoriesIds(List<Long> childCategoriesIds) {
+        this.childCategoriesIds = childCategoriesIds;
+    }
+
+    public List<Long> getChildProductsIds() {
+        return childProductsIds;
+    }
+
+    public void setChildProductsIds(List<Long> childProductsIds) {
+        this.childProductsIds = childProductsIds;
+    }
 }

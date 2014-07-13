@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,9 @@ public class Catalog extends CatalogItem{
     @XmlTransient
     private List<Category> rootCategories;
 
+    @Transient
+    private List<Long> rootCategoriesIds;
+
     public Catalog() {
     }
 
@@ -34,12 +38,29 @@ public class Catalog extends CatalogItem{
         this.name = name;
     }
 
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    protected void fillRootCategoriesId(){
+        rootCategoriesIds = new ArrayList<>();
+        if (rootCategories!=null)
+            rootCategories.forEach(category->rootCategoriesIds.add(category.getId()));
+    }
+
     public List<Category> getRootCategories() {
         return rootCategories;
     }
 
     public void setRootCategories(List<Category> rootCategories) {
         this.rootCategories = rootCategories;
+    }
+
+    public List<Long> getRootCategoriesIds() {
+        return rootCategoriesIds;
+    }
+
+    public void setRootCategoriesIds(List<Long> rootCategoriesIds) {
+        this.rootCategoriesIds = rootCategoriesIds;
     }
 
     @Override

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class SKU extends CatalogItem{
     @OrderColumn(name = "orderIdx")
     @XmlTransient
     private List<Discount> discounts;
+
+    @Transient
+    private List<Long> discountsIds;
 
     /**
      * Calculated field true if quantity > threshold
@@ -74,10 +78,11 @@ public class SKU extends CatalogItem{
         this.threshold = threshold;
     }
 
+
     @PostLoad
     @PostPersist
     @PostUpdate
-    private void computeAvailable() {
+    private void fillTransient() {
         if (quantity==null) {
             available = false;
             return;
@@ -85,6 +90,10 @@ public class SKU extends CatalogItem{
         if (threshold == null)
             threshold = 0;
         available = quantity >threshold;
+
+        discountsIds = new ArrayList<>();
+        if (discounts!=null)
+            discounts.forEach(discount->discountsIds.add(discount.getId()));
     }
 
     public Double getPrice() {
@@ -141,6 +150,14 @@ public class SKU extends CatalogItem{
 
     public void setAvailable(Boolean available) {
         this.available = available;
+    }
+
+    public List<Long> getDiscountsIds() {
+        return discountsIds;
+    }
+
+    public void setDiscountsIds(List<Long> discountsIds) {
+        this.discountsIds = discountsIds;
     }
 
     @Override

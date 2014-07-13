@@ -2,8 +2,11 @@
     <form name="catalogForm"
           ng-submit="catalogForm.$valid && catalogEntryCtrl.createOrEdit()" novalidate>
 
-        <div common-catalog-form-fields></div>
-        
+        <div common-catalog-form-fields>
+        </div>
+
+        <div class="row" catalog-relationships-form relationships-title="Root categories" relationships-property="catalogEntryCtrl.entryChilds.rootCategories"></div>
+
         <input type="submit" class="btn btn-primary" value="Save"/>
     </form>
 

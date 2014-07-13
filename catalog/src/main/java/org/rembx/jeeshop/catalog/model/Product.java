@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,9 @@ public class Product extends CatalogItem {
     @XmlTransient
     private List<SKU> childSKUs;
 
+    @Transient
+    private List<Long> childSKUsIds;
+
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
@@ -29,7 +33,23 @@ public class Product extends CatalogItem {
     @XmlTransient
     private List<Discount> discounts;
 
+    @Transient
+    private List<Long> discountsIds;
+
     public Product() {
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    protected void fillChildsIds(){
+        childSKUsIds = new ArrayList<>();
+        if (childSKUs!=null)
+            childSKUs.forEach(sku->childSKUsIds.add(sku.getId()));
+
+        discountsIds = new ArrayList<>();
+        if(discounts!=null)
+            discounts.forEach(discount->discountsIds.add(discount.getId()));
     }
 
     public Product(String name, String description, Date startDate, Date endDate, Boolean disabled) {
@@ -64,4 +84,20 @@ public class Product extends CatalogItem {
         this.discounts = discounts;
     }
 
+
+    public List<Long> getChildSKUsIds() {
+        return childSKUsIds;
+    }
+
+    public void setChildSKUsIds(List<Long> childSKUsIds) {
+        this.childSKUsIds = childSKUsIds;
+    }
+
+    public List<Long> getDiscountsIds() {
+        return discountsIds;
+    }
+
+    public void setDiscountsIds(List<Long> discountsIds) {
+        this.discountsIds = discountsIds;
+    }
 }

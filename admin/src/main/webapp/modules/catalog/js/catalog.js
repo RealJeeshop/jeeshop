@@ -21,6 +21,7 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
         ctrl.entry = {};
+        ctrl.entryChilds={};
 
         this.closeAlert = function (index) {
             ctrl.alerts.splice(index, 1);
@@ -34,12 +35,87 @@
                     // hack for dates returned as timestamp by service
                     ctrl.entry.startDate = ctrl.entry.startDate != null ? new Date(ctrl.entry.startDate) : null;
                     ctrl.entry.endDate = ctrl.entry.endDate != null ? new Date(ctrl.entry.endDate) : null;
-                })
-                .error(function (data) {
                 });
+
+            if ($scope.resource === 'catalogs'){
+                $http.get('rs/' + $scope.resource + '/' + id+'/categories')
+                    .success(function (data) {
+                        ctrl.entryChilds.rootCategories = data;
+                    });
+            }
+
+            if ($scope.resource === 'categories'){
+                $http.get('rs/' + $scope.resource + '/' + id+'/categories')
+                    .success(function (data) {
+                        ctrl.entryChilds.childCategories = data;
+                    });
+
+                $http.get('rs/' + $scope.resource + '/' + id+'/products')
+                    .success(function (data) {
+                        ctrl.entryChilds.childProducts = data;
+                    });
+            }
+
+            if ($scope.resource === 'products'){
+                $http.get('rs/' + $scope.resource + '/' + id+'/skus')
+                    .success(function (data) {
+                        ctrl.entryChilds.childSKUs = data;
+                    });
+
+                $http.get('rs/' + $scope.resource + '/' + id+'/discounts')
+                    .success(function (data) {
+                        ctrl.entryChilds.discounts = data;
+                    });
+            }
+
+            if ($scope.resource === 'skus'){
+                $http.get('rs/' + $scope.resource + '/' + id+'/discounts')
+                    .success(function (data) {
+                        ctrl.entryChilds.discounts = data;
+                    });
+            }
         };
 
         this.createOrEdit = function(){
+
+            if ($scope.resource === 'catalogs'){
+                ctrl.entry.rootCategoriesIds = new Array();
+                for (i in ctrl.entryChilds.rootCategories){
+                    ctrl.entry.rootCategoriesIds.push(ctrl.entryChilds.rootCategories[i].id);
+                }
+            }
+
+            if ($scope.resource === 'categories'){
+                ctrl.entry.childCategoriesIds = new Array();
+                for (i in ctrl.entryChilds.childCategories){
+                    ctrl.entry.childCategoriesIds.push(ctrl.entryChilds.childCategories[i].id);
+                }
+
+                ctrl.entry.childProductsIds = new Array();
+                for (i in ctrl.entryChilds.childProducts){
+                    ctrl.entry.childProductsIds.push(ctrl.entryChilds.childProducts[i].id);
+                }
+            }
+
+            if ($scope.resource === 'products'){
+                ctrl.entry.discountsIds = new Array();
+                for (i in ctrl.entryChilds.discounts){
+                    ctrl.entry.discountsIds.push(ctrl.entryChilds.discounts[i].id);
+                }
+
+                ctrl.entry.childSKUsIds = new Array();
+                for (i in ctrl.entryChilds.childSKUs){
+                    ctrl.entry.childSKUsIds.push(ctrl.entryChilds.childSKUs[i].id);
+                }
+            }
+
+            if ($scope.resource === 'skus'){
+                ctrl.entry.discountsIds = new Array();
+                for (i in ctrl.entryChilds.discounts){
+                    ctrl.entry.discountsIds.push(ctrl.entryChilds.discounts[i].id);
+                }
+            }
+
             if (ctrl.isCreationModeActive){
                 ctrl.create();
             }else if (ctrl.isEditionModeActive){
@@ -78,6 +154,7 @@
             ctrl.isEditionModeActive = false;
             ctrl.isCreationModeActive = false;
             ctrl.entry = {};
+            ctrl.entryChilds = {};
             ctrl.alerts = [];
         };
     }]);
@@ -88,6 +165,17 @@
             templateUrl: "modules/catalog/common-catalog-form-fields.html"
         };
     });
+
+    app.directive("catalogRelationshipsForm", function () {
+            return {
+                restrict: "A",
+                scope: {
+                    relationshipsTitle: "@relationshipsTitle",
+                    relationshipsProperty: "="
+                },
+                templateUrl: "modules/catalog/catalog-relationships-form.html"
+            };
+        });
 
     app.directive("getCatalogEntries", ['$http', function ($http, $scope) {
         return {

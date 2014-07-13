@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
@@ -57,6 +56,10 @@ public class CatalogResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Catalog create(Catalog catalog){
+        if (catalog.getRootCategoriesIds() != null){
+            List<Category> newCategories = new ArrayList<>();
+            catalog.getRootCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+        }
         entityManager.persist(catalog);
         return catalog;
     }
@@ -85,9 +88,14 @@ public class CatalogResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (CollectionUtils.isEmpty(catalog.getRootCategories())){
+        if (catalog.getRootCategoriesIds() != null){
+            List<Category> newCategories = new ArrayList<>();
+            catalog.getRootCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            catalog.setRootCategories(newCategories);
+        }else{
             catalog.setRootCategories(originalCatalog.getRootCategories());
         }
+
 
         return  entityManager.merge(catalog);
     }

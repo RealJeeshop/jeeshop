@@ -85,7 +85,11 @@ public class SKUResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        if (CollectionUtils.isEmpty(sku.getDiscounts())){
+        if (sku.getDiscountsIds() != null){
+            List<Discount> newDiscounts = new ArrayList<>();
+            sku.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            sku.setDiscounts(newDiscounts);
+        }else{
             sku.setDiscounts(originalSKU.getDiscounts());
         }
 
