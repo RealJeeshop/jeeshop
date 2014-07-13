@@ -1,4 +1,4 @@
-<div class="table-responsive text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
+<div class="text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
     <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive">
         <div class="text-right">
             <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.activateCreationMode()"><i
@@ -11,18 +11,18 @@
                 <option value="50">50</option>
                 <option value="100">100</option>
             </select>
-            elements par page
+            elements per page
         </div>
-        <table class="table table-striped table-hover text-left">
+        <table class="table table-striped table-hover table-condensed text-left">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Description</th>
-                    <th>StartDate</th>
-                    <th>EndDate</th>
+                    <th class="hidden-xs hidden-sm">Description</th>
+                    <th class="hidden-xs hidden-sm">StartDate</th>
+                    <th class="hidden-xs hidden-sm">EndDate</th>
                     <th>Visible</th>
-                    <th>Disabled</th>
+                    <th class="hidden-xs hidden-sm">Disabled</th>
                     <th></th>
                 </tr>
             </thead>
@@ -30,11 +30,11 @@
                 <tr ng-repeat="entry in catalogEntriesCtrl.entries"  >
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.id}}</td>
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.name}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.description}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.startDate|date : 'medium'}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.endDate|date : 'medium'}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.description}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.startDate|date : 'medium'}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.endDate|date : 'medium'}}</td>
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.visible ===true?'Yes':'No'}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.disabled === true?'Yes':'No'}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.disabled === true?'Yes':'No'}}</td>
                     <td>
                         <a ng-click="catalogEntriesCtrl.delete($index)" href="#" class="glyphicon glyphicon-trash"/>
                     </td>

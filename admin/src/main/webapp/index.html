@@ -59,46 +59,43 @@
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="LoginController as loginCtrl">
     <div class="row" ng-controller="SideMenuController as sideMenuCtrl">
-        <div class="col-sm-3 col-md-2 sidebar" ng-controller="LoginController as loginCtrl">
+        <div class="col-sm-3 col-md-2 sidebar" >
             <ul class="nav nav-sidebar">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('overview')">Overview</a>
                 </li>
             </ul>
-            <ul class="nav nav-sidebar">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }" ng-show="loginCtrl.isAuthenticated()">
+            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a>
                 </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('users') }" ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('users') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('users')">Users</a>
                 </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }"
-                    ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('statistics')">Analytics</a>
                 </li>
             </ul>
-            <ul class="nav nav-sidebar">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" ng-show="loginCtrl.isAuthenticated()"
-                    title="Manage your catalog entries">
+            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage your catalog entries">
                     <a href ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a>
                 </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }"
-                    ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a>
                 </li>
 
-                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }"
-                    ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }">
                     <a href ng-click="sideMenuCtrl.selectEntry('newsletters')">Newsletters</a>
                 </li>
             </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <div class="table-responsive" ng-show="sideMenuCtrl.isSelected(sideMenuCtrl.entryId)"
-                 ng-include="'modules/'+sideMenuCtrl.entryId+'/index.html'"/>
-        </div>
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+             ng-include="'modules/'+(loginCtrl.isAuthenticated()?sideMenuCtrl.entryId:'overview')+'/index.html'"></div>
+
+
     </div>
 </div>
 

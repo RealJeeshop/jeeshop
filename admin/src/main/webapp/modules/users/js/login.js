@@ -1,7 +1,7 @@
 (function (){
     var app = angular.module('admin-login',[]);
 
-    app.controller('LoginController', ['AuthService', function(AuthService){
+    app.controller('LoginController', ['AuthService','$scope', function(AuthService,$scope){
         var login = this;
 
         login.credentials = {}
@@ -13,6 +13,7 @@
 
         this.logout = function (){
             AuthService.logout(login.credentials);
+            login.credentials={};
         };
 
         this.isAuthenticated = function(){
