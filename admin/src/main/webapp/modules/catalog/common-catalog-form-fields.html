@@ -49,7 +49,7 @@
         <label for="startDate">Start Date</label>
 
         <p class="input-group">
-            <input type="text" id="startDate" class="form-control" datepicker-popup min-date="getMinDate(catalogEntryCtrl.entry.startDate)"
+            <input type="text" id="startDate" class="form-control" datepicker-popup min-date="minDate"
                    ng-model="catalogEntryCtrl.entry.startDate" is-open="opened" datepicker-options="dateOptions" close-text="Close"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event)"><i
@@ -62,7 +62,7 @@
         <label for="startDate">End Date</label>
 
         <p class="input-group">
-            <input type="text" id="endDate" class="form-control" datepicker-popup min-date="getMinDate(catalogEntryCtrl.entry.endDate)"
+            <input type="text" id="endDate" class="form-control" datepicker-popup min-date="minDate"
                    ng-model="catalogEntryCtrl.entry.endDate" is-open="opened" datepicker-options="dateOptions" close-text="Close"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event)"><i

@@ -22,10 +22,6 @@
 
         $scope.minDate = new Date();
 
-        $scope.getMinDate = function(aDate){
-            return aDate != null ? aDate : null;
-        };
-
         $scope.open = function($event) {
          $event.preventDefault();
          $event.stopPropagation();
