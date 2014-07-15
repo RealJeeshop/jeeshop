@@ -204,7 +204,7 @@
             $scope.initRelationshipsIdsProperty();
         };
 
-        $scope.$watch('catalogEntryCtrl.isEditionModeActive', function(){
+        $scope.$watch('catalogEntryCtrl.entry', function(){
             $scope.accordion.open = false;
           });
 

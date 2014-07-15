@@ -27,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in catalogEntriesCtrl.entries"  >
+                <tr ng-repeat="entry in catalogEntriesCtrl.entries" style="cursor:pointer" >
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.id}}</td>
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.name}}</td>
                     <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.description}}</td>
