@@ -105,14 +105,24 @@ public class ProductResourceIT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null)).isNotEmpty();
+        assertThat(service.findAll(null,null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Product> categories = service.findAll(0, 1);
+        List<Product> categories = service.findAll(null,0, 1);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
+    }
+
+    @Test
+    public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getId().toString(),null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
+    }
+
+    @Test
+    public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getName(),null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
     }
 
     @Test

@@ -1,8 +1,10 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.apache.commons.collections.CollectionUtils;
-import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -106,8 +108,11 @@ public class ProductResource {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Product> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        return catalogItemFinder.findAll(product, start, size);
+    public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        if (search!=null)
+            return catalogItemFinder.findByNameOrId(product, search, start, size);
+        else
+            return catalogItemFinder.findAll(product, start, size);
     }
 
     @GET

@@ -105,9 +105,13 @@ public class CatalogResource {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Catalog> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        return catalogItemFinder.findAll(catalog, start, size);
+    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        if (search!=null)
+            return catalogItemFinder.findByNameOrId(catalog, search, start, size);
+        else
+            return catalogItemFinder.findAll(catalog, start, size);
     }
+
 
     @GET
     @Path("/count")

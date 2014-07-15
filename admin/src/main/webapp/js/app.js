@@ -20,8 +20,6 @@
         };
         $scope.today();
 
-        $scope.minDate = new Date();
-
         $scope.open = function($event) {
          $event.preventDefault();
          $event.stopPropagation();

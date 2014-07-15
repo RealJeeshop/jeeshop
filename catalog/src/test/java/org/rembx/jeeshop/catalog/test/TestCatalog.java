@@ -89,6 +89,10 @@ public class TestCatalog {
         return catalog.getId();
     }
 
+    public static Catalog getCatalog() {
+        return catalog;
+    }
+
     public Long getEmptyCatalogId() {return emptyCatalog.getId();}
 
     public Category aRootCategoryWithChildCategories(){

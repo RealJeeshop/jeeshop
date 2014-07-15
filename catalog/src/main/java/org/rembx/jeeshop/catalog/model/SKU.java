@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class SKU extends CatalogItem{
 
     private Double price;
@@ -90,10 +91,6 @@ public class SKU extends CatalogItem{
         if (threshold == null)
             threshold = 0;
         available = quantity >threshold;
-
-        discountsIds = new ArrayList<>();
-        if (discounts!=null)
-            discounts.forEach(discount->discountsIds.add(discount.getId()));
     }
 
     public Double getPrice() {

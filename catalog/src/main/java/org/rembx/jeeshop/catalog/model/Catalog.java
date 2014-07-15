@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class Catalog extends CatalogItem{
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
@@ -36,15 +37,6 @@ public class Catalog extends CatalogItem{
     public Catalog(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    @PostLoad
-    @PostPersist
-    @PostUpdate
-    protected void fillRootCategoriesId(){
-        rootCategoriesIds = new ArrayList<>();
-        if (rootCategories!=null)
-            rootCategories.forEach(category->rootCategoriesIds.add(category.getId()));
     }
 
     public List<Category> getRootCategories() {

@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class Category extends CatalogItem {
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
@@ -60,19 +61,6 @@ public class Category extends CatalogItem {
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;
-    }
-
-    @PostLoad
-    @PostPersist
-    @PostUpdate
-    protected void fillChildsIds(){
-        childCategoriesIds = new ArrayList<>();
-        if (childCategories!=null)
-            childCategories.forEach(category->childCategoriesIds.add(category.getId()));
-
-        childProductsIds = new ArrayList<>();
-        if (childProducts!=null)
-            childProducts.forEach(product->childCategoriesIds.add(product.getId()));
     }
 
     public List<Category> getChildCategories() {

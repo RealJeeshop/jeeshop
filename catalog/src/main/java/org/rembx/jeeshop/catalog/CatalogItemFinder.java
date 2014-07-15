@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.path.EntityPathBase;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -56,7 +57,28 @@ public class CatalogItemFinder {
             query.limit(limit);
 
         return query.list(entityPathBase);
+    }
 
+    public <T extends CatalogItem> List<T> findByNameOrId(EntityPathBase<T> entityPathBase, String search, Integer offset, Integer limit) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+
+        BooleanExpression searchPredicate = qCatalogItem.name.equalsIgnoreCase(search);
+
+        try {
+            Long searchId = Long.parseLong(search);
+            searchPredicate = searchPredicate.or(qCatalogItem.id.eq(searchId));
+        } catch (NumberFormatException e) {
+        }
+
+        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem)
+                .where(searchPredicate);
+
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        return query.list(entityPathBase);
     }
 
     public Long countAll(EntityPathBase<? extends CatalogItem> entityPathBase) {

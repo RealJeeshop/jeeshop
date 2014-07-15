@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class Product extends CatalogItem {
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
@@ -37,19 +38,6 @@ public class Product extends CatalogItem {
     private List<Long> discountsIds;
 
     public Product() {
-    }
-
-    @PostLoad
-    @PostPersist
-    @PostUpdate
-    protected void fillChildsIds(){
-        childSKUsIds = new ArrayList<>();
-        if (childSKUs!=null)
-            childSKUs.forEach(sku->childSKUsIds.add(sku.getId()));
-
-        discountsIds = new ArrayList<>();
-        if(discounts!=null)
-            discounts.forEach(discount->discountsIds.add(discount.getId()));
     }
 
     public Product(String name, String description, Date startDate, Date endDate, Boolean disabled) {
