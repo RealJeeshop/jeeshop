@@ -55,6 +55,11 @@ public class SKUResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public SKU create(SKU sku){
+        if (sku.getDiscountsIds() != null){
+            List<Discount> newDiscounts = new ArrayList<>();
+            sku.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            sku.setDiscounts(newDiscounts);
+        }
         entityManager.persist(sku);
         return sku;
     }

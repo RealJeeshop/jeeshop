@@ -12,18 +12,33 @@
         });
 
     app.directive("catalogRelationshipsForm",function () {
-            return {
-                restrict: "A",
-                scope: {
-                    relationshipsTitle: "@relationshipsTitle",
-                    relationshipsProperty: "=",
-                    resource: "@resource",
-                    relationshipsParentResource: "=",
-                    relationshipsParentId: "="
-                },
-                templateUrl: "modules/catalog/catalog-relationships-accordion.html"
-            };
-        });
+        function link(scope, element, attrs) {
+              attrs.$observe('relationshipsTitle', function(value) {    // xxx est le nom de l'attribut
+                  scope.relationshipsTitle = value;
+              });
+
+              attrs.$observe('resource', function(value) {    // xxx est le nom de l'attribut
+                    scope.relationshipsResource = value;
+                });
+
+                attrs.$observe('relationshipsProperty', function(value) {    // xxx est le nom de l'attribut
+                    scope.relationshipsProperty = value;
+                });
+
+
+              /*scope.$watch(attrs.relationshipsProperty, function(value) {
+                  scope.relationshipsProperty = value;
+                });*/
+
+            }
+
+        return {
+            restrict: "A",
+            scope:true,
+            templateUrl: "modules/catalog/catalog-relationships-accordion.html",
+            link: link
+        };
+    });
 
     app.directive("getCatalogEntries", ['$http', function ($http, $scope) {
         return {
@@ -62,7 +77,7 @@
                     alerts = [];
                     $http.delete('rs/' + $scope.resource+"/"+ctrl.entries[index].id)
                         .success(function (data) {
-                            ctrl.entries.splice(index);
+                            ctrl.entries.splice(index,1);
                         })
                         .error(function (data) {
                             ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
@@ -111,53 +126,9 @@
                     ctrl.convertEntryDates();
                 });
 
-            ctrl.entryChilds.rootCategories = [];
-            ctrl.entryChilds.childCategories = [];
-            ctrl.entryChilds.childProducts = [];
-            ctrl.entryChilds.childSKUs = [];
-            ctrl.entryChilds.discounts = [];
-
         };
 
         this.createOrEdit = function(){
-
-            if ($scope.resource === 'catalogs'){
-                ctrl.entry.rootCategoriesIds = new Array();
-                for (i in ctrl.entryChilds.rootCategories){
-                    ctrl.entry.rootCategoriesIds.push(ctrl.entryChilds.rootCategories[i].id);
-                }
-            }
-
-            if ($scope.resource === 'categories'){
-                ctrl.entry.childCategoriesIds = new Array();
-                for (i in ctrl.entryChilds.childCategories){
-                    ctrl.entry.childCategoriesIds.push(ctrl.entryChilds.childCategories[i].id);
-                }
-
-                ctrl.entry.childProductsIds = new Array();
-                for (i in ctrl.entryChilds.childProducts){
-                    ctrl.entry.childProductsIds.push(ctrl.entryChilds.childProducts[i].id);
-                }
-            }
-
-            if ($scope.resource === 'products'){
-                ctrl.entry.discountsIds = new Array();
-                for (i in ctrl.entryChilds.discounts){
-                    ctrl.entry.discountsIds.push(ctrl.entryChilds.discounts[i].id);
-                }
-
-                ctrl.entry.childSKUsIds = new Array();
-                for (i in ctrl.entryChilds.childSKUs){
-                    ctrl.entry.childSKUsIds.push(ctrl.entryChilds.childSKUs[i].id);
-                }
-            }
-
-            if ($scope.resource === 'skus'){
-                ctrl.entry.discountsIds = new Array();
-                for (i in ctrl.entryChilds.discounts){
-                    ctrl.entry.discountsIds.push(ctrl.entryChilds.discounts[i].id);
-                }
-            }
 
             if (ctrl.isCreationModeActive){
                 ctrl.create();
@@ -213,20 +184,40 @@
 
     app.controller('CatalogRelationshipsController', ['$http', '$scope', '$modal', '$log', function ($http, $scope, $modal, $log) {
         var ctrl = this;
+        $scope.itemsIds = [];
+        $scope.items = [];
 
         $scope.accordion = {
             open : false
         };
 
+        $scope.initRelationshipsIdsProperty = function(){
+            $scope.itemsIds=[];
+            for (i in $scope.items){
+                $scope.itemsIds[i] = $scope.items[i].id;
+            }
+            $scope.catalogEntryCtrl.entry[$scope.relationshipsProperty] = $scope.itemsIds;
+        };
+
+        $scope.removeItem = function(index){
+            $scope.items.splice(index,1);
+            $scope.initRelationshipsIdsProperty();
+        };
+
+        $scope.$watch('catalogEntryCtrl.isEditionModeActive', function(){
+            $scope.accordion.open = false;
+          });
+
         $scope.$watch('accordion.open', function(isOpen){
             if (isOpen) {
-              $http.get('rs/' + $scope.relationshipsParentResource + '/' + $scope.relationshipsParentId +'/'+$scope.resource)
-                  .success(function (data) {
-                  for (i in data){
-                      $scope.relationshipsProperty.push(data[i]);
-                  }
-
-                  });
+                if ($scope.catalogEntryCtrl.entry.id == null){
+                    return;
+                }
+                $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id+'/'+$scope.relationshipsResource)
+                    .success(function (data) {
+                        $scope.items=data;
+                        $scope.initRelationshipsIdsProperty();
+                    });
             }
           });
 
@@ -234,31 +225,41 @@
             var modalInstance = $modal.open({
                 templateUrl: 'relationshipsSelector.html',
                 controller: ModalInstanceCtrl,
-                scope:$scope,
-                size: size
+                size: size,
+                resolve: {
+                    items: function () {
+                        return $scope.items;
+                    },
+                    itemsIds: function () {
+                        return $scope.itemsIds;
+                    },
+                    relationshipsResource: function () {
+                        return $scope.relationshipsResource;
+                    },
+                }
             });
 
             modalInstance.result.then(function (selectedItems) {
+
                 for (i in selectedItems){
-                    while(A.length > 0) {
-                        $scope.relationshipsProperty.pop();
-                    }
-                    $scope.relationshipsProperty.push(
-                    [i]);
+                    $scope.items.push(selectedItems[i]);
                 }
+                $scope.initRelationshipsIdsProperty();
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
 
-        var ModalInstanceCtrl = function ($http,$scope, $modalInstance) {
+        var ModalInstanceCtrl = function ($http,$scope, $modalInstance, items, relationshipsResource) {
 
             ctrl = this;
+            $scope.items = items;
+            $scope.relationshipsResource = relationshipsResource;
             $scope.results = [];
             $scope.selected = [];
 
             $scope.search = function(){
-                var uri = 'rs/' + $scope.resource;
+                var uri = 'rs/' + $scope.relationshipsResource;
                 if ($scope.searchValue != null && !($scope.searchValue ==="")){
                      uri = uri + '?search='+ $scope.searchValue;
                 }
@@ -270,8 +271,8 @@
 
             $scope.isAlreadyLinked = function(itemId){
                 var isLinked = false;
-                for (i in $scope.relationshipsProperty){
-                    if ($scope.relationshipsProperty[i].id ===itemId){
+                for (i in $scope.items){
+                    if ($scope.items[i].id ===itemId){
                         isLinked = true;
                         break;
                     }

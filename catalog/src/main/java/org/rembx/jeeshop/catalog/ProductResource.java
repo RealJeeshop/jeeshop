@@ -57,6 +57,16 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Product create(Product product){
+        if (product.getChildSKUsIds() != null){
+            List<SKU> newSkus = new ArrayList<>();
+            product.getChildSKUsIds().forEach(skuId-> newSkus.add(entityManager.find(SKU.class, skuId)));
+            product.setChildSKUs(newSkus);
+        }
+        if (product.getDiscountsIds() != null){
+            List<Discount> newDiscounts = new ArrayList<>();
+            product.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            product.setDiscounts(newDiscounts);
+        }
         entityManager.persist(product);
         return product;
     }

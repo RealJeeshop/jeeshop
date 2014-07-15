@@ -159,4 +159,5 @@ public class CatalogResourceIT {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
+
 }

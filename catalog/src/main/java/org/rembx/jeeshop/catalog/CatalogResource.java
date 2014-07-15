@@ -59,6 +59,7 @@ public class CatalogResource {
         if (catalog.getRootCategoriesIds() != null){
             List<Category> newCategories = new ArrayList<>();
             catalog.getRootCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            catalog.setRootCategories(newCategories);
         }
         entityManager.persist(catalog);
         return catalog;

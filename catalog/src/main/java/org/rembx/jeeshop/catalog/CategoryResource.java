@@ -55,6 +55,16 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Category create(Category category){
+        if (category.getChildCategories() != null){
+            List<Category> newCategories = new ArrayList<>();
+            category.getChildCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            category.setChildCategories(newCategories);
+        }
+        if (category.getChildProductsIds() != null){
+            List<Product> newProducts = new ArrayList<>();
+            category.getChildProductsIds().forEach(productId-> newProducts.add(entityManager.find(Product.class, productId)));
+            category.setChildProducts(newProducts);
+        }
         entityManager.persist(category);
         return category;
     }

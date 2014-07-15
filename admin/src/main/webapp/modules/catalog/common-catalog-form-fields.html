@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-md-1 text-right col-md-push-11">
         <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.leaveEditView()"><i
-                class="glyphicon glyphicon-remove" title="Go back to entries list"></i></button>
+                class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
     </div>
     <div class="col-md-11 col-md-pull-1 text-center" ng-show="catalogEntryCtrl.isEditionModeActive">
-        <h4>Edition of entry #{{catalogEntryCtrl.entry.id}} from {{catalogEntriesCtrl.resourceType}}</h4>
+        <h4>Edition of item #{{catalogEntryCtrl.entry.id}} from {{catalogEntriesCtrl.resourceType}}</h4>
     </div>
     <div class="col-md-11 col-md-pull-1 text-center" ng-show="catalogEntryCtrl.isCreationModeActive">
-        <h4>Add new {{catalogEntriesCtrl.resourceType}} entry</h4>
+        <h4>Add new {{catalogEntriesCtrl.resourceType}} item</h4>
     </div>
 </div>
 <div class="row">
