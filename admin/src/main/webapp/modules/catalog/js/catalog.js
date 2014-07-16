@@ -40,13 +40,13 @@
         };
     });
 
-    app.directive("getCatalogEntries", ['$http', function ($http, $scope) {
+    app.directive("getCatalogEntries", ['$http','$modal', function ($http, $dialog, $scope) {
         return {
             restrict: "A",
             scope: {
                 resource: "@resourceType"
             },
-            controller: function ($http, $scope) {
+            controller: function ($http, $scope, $modal) {
                 var ctrl = this;
                 ctrl.alerts=[];
                 ctrl.entries = [];
@@ -73,16 +73,27 @@
                     $scope.findEntries();
                 };
 
-                this.delete = function (index) {
-                    alerts = [];
-                    $http.delete('rs/' + $scope.resource+"/"+ctrl.entries[index].id)
-                        .success(function (data) {
-                            ctrl.entries.splice(index,1);
-                        })
-                        .error(function (data) {
-                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                this.delete = function (index,message) {
+                    var modalInstance = $modal.open({
+                    templateUrl: 'util/confirm-dialog.html',
+                    controller: function($modalInstance,$scope){
+                        $scope.modalInstance = $modalInstance;
+                        $scope.confirmMessage = message;
+                     },
+                    size: 'sm'});
+                    modalInstance.result.then(function () {
+                        ctrl.alerts = [];
+                        $http.delete('rs/' + $scope.resource+"/"+ctrl.entries[index].id)
+                            .success(function (data) {
+                                ctrl.entries.splice(index,1);
+                            })
+                            .error(function (data) {
+                                ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                        });
+                        $scope.findEntries();
+                    }, function () {
+
                     });
-                    $scope.findEntries();
                 };
             },
             controllerAs: 'catalogEntriesCtrl',

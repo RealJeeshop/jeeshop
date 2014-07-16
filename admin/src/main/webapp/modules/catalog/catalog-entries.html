@@ -36,7 +36,7 @@
                     <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.visible ===true?'Yes':'No'}}</td>
                     <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.disabled === true?'Yes':'No'}}</td>
                     <td>
-                        <a ng-click="catalogEntriesCtrl.delete($index)" href="#" class="glyphicon glyphicon-trash"/>
+                        <a ng-click="catalogEntriesCtrl.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
                     </td>
                 </tr>
             </tbody>
