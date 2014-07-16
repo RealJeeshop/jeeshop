@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.path.EntityPathBase;
+import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.QCatalogItem;
@@ -62,12 +63,12 @@ public class CatalogItemFinder {
     public <T extends CatalogItem> List<T> findByNameOrId(EntityPathBase<T> entityPathBase, String search, Integer offset, Integer limit) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
 
-        BooleanExpression searchPredicate = qCatalogItem.name.equalsIgnoreCase(search);
+        BooleanExpression searchPredicate = qCatalogItem.name.containsIgnoreCase(search)
+                .or(qCatalogItem.description.containsIgnoreCase(search));
 
-        try {
+        if (NumberUtils.isNumber(search)) {
             Long searchId = Long.parseLong(search);
-            searchPredicate = searchPredicate.or(qCatalogItem.id.eq(searchId));
-        } catch (NumberFormatException e) {
+            searchPredicate = qCatalogItem.id.eq(searchId);
         }
 
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem)
