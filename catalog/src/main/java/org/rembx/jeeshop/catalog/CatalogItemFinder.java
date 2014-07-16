@@ -52,32 +52,18 @@ public class CatalogItemFinder {
 
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
 
-        if (offset != null)
-            query.offset(offset);
-        if (limit != null)
-            query.limit(limit);
+        addOffsetAndLimitToQuery(offset, limit, query);
 
         return query.list(entityPathBase);
     }
 
-    public <T extends CatalogItem> List<T> findByNameOrId(EntityPathBase<T> entityPathBase, String search, Integer offset, Integer limit) {
+    public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPathBase<T> entityPathBase, String searchCriteria, Integer offset, Integer limit) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
 
-        BooleanExpression searchPredicate = qCatalogItem.name.containsIgnoreCase(search)
-                .or(qCatalogItem.description.containsIgnoreCase(search));
-
-        if (NumberUtils.isNumber(search)) {
-            Long searchId = Long.parseLong(search);
-            searchPredicate = qCatalogItem.id.eq(searchId);
-        }
-
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem)
-                .where(searchPredicate);
+                .where(buildSearchPredicate(searchCriteria, qCatalogItem));
 
-        if (offset != null)
-            query.offset(offset);
-        if (limit != null)
-            query.limit(limit);
+        addOffsetAndLimitToQuery(offset, limit, query);
 
         return query.list(entityPathBase);
     }
@@ -86,7 +72,32 @@ public class CatalogItemFinder {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
         return query.count();
+    }
 
+    public Long countBySearchCriteria(EntityPathBase<? extends CatalogItem> entityPathBase, String searchCriteria) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+        JPAQuery query = new JPAQuery(entityManager)
+                .from(qCatalogItem)
+                .where(buildSearchPredicate(searchCriteria, qCatalogItem));
+        return query.count();
+    }
+
+    private void addOffsetAndLimitToQuery(Integer offset, Integer limit, JPAQuery query) {
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+    }
+
+    private BooleanExpression buildSearchPredicate(String search, QCatalogItem qCatalogItem) {
+        BooleanExpression searchPredicate = qCatalogItem.name.containsIgnoreCase(search)
+                .or(qCatalogItem.description.containsIgnoreCase(search));
+
+        if (NumberUtils.isNumber(search)) {
+            Long searchId = Long.parseLong(search);
+            searchPredicate = qCatalogItem.id.eq(searchId);
+        }
+        return searchPredicate;
     }
 
     public <T extends CatalogItem> T filterVisible(T catalogItem, String locale) {

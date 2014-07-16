@@ -56,8 +56,8 @@
                 ctrl.pageSize = 10;
 
                 $scope.findEntries = function (){
-                    alerts = [];
-                    offset = ctrl.pageSize *(ctrl.currentPage -1);
+                    ctrl.alerts = [];
+                    var offset = ctrl.pageSize *(ctrl.currentPage -1);
                     $http.get('rs/' + $scope.resource+"?start="+offset+"&size="+ctrl.pageSize).success(function (data) {
                         ctrl.entries = data;
                     });
@@ -268,16 +268,32 @@
             $scope.relationshipsResource = relationshipsResource;
             $scope.results = [];
             $scope.selected = [];
+            $scope.currentPage = 1;
+            $scope.totalCount = 0;
+            $scope.pageSize = 10;
 
-            $scope.search = function(){
-                var uri = 'rs/' + $scope.relationshipsResource;
+            $scope.search = function(){ // TODO merge with catalogEntriesCtrl listing and add search to it
+                var offset = $scope.pageSize *($scope.currentPage -1);
+                var uri = 'rs/' + $scope.relationshipsResource+"?start="+offset+"&size="+$scope.pageSize;
+                var countURI = 'rs/' + $scope.relationshipsResource+'/count';
                 if ($scope.searchValue != null && !($scope.searchValue ==="")){
-                     uri = uri + '?search='+ $scope.searchValue;
+                     var searchArg = '&search='+ $scope.searchValue;
+                     uri = uri + searchArg;
+                     countURI = count + searchArg;
                 }
-                $http.get(uri)
-                    .success(function (data) {
-                        $scope.results = data;
-                    });
+
+                $http.get(uri).success(function (data) {
+                    $scope.results = data;
+                });
+
+                $http.get(countURI).success(function (data) {
+                    $scope.totalCount = data;
+                });
+
+            };
+
+            $scope.pageChanged = function (){
+                $scope.search();
             };
 
             $scope.isAlreadyLinked = function(itemId){

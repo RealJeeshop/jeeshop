@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
@@ -13,7 +12,6 @@ import org.rembx.jeeshop.catalog.test.TestCatalog;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -151,7 +149,12 @@ public class ProductResourceIT {
 
     @Test
     public void countAll(){
-        assertThat(service.count()).isGreaterThan(0);
+        assertThat(service.count(null)).isGreaterThan(0);
+    }
+
+    @Test
+    public void countAll_withUnknownSearchCriteria(){
+        assertThat(service.count("666")).isEqualTo(0);
     }
 
     @Test

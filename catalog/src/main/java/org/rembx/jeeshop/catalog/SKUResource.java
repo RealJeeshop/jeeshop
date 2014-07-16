@@ -105,7 +105,7 @@ public class SKUResource {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         if (search!=null)
-            return catalogItemFinder.findByNameOrId(sKU, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(sKU, search, start, size);
         else
             return catalogItemFinder.findAll(sKU, start, size);
     }
@@ -114,8 +114,11 @@ public class SKUResource {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count() {
-        return catalogItemFinder.countAll(sKU);
+    public Long count(@QueryParam("search")String search) {
+        if (search!=null)
+            return catalogItemFinder.countBySearchCriteria(sKU,search);
+        else
+            return catalogItemFinder.countAll(sKU);
     }
 
     @GET

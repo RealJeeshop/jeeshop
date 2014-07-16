@@ -160,7 +160,7 @@ public class CategoryResourceIT {
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aCategoryWithoutProducts().getName().toString(),null, null)).containsExactly(testCatalog.aCategoryWithoutProducts());
+        assertThat(service.findAll(testCatalog.aCategoryWithoutProducts().getName(),null, null)).containsExactly(testCatalog.aCategoryWithoutProducts());
     }
 
     @Test
@@ -202,7 +202,12 @@ public class CategoryResourceIT {
 
     @Test
     public void countAll(){
-        assertThat(service.count()).isGreaterThan(0);
+        assertThat(service.count(null)).isGreaterThan(0);
+    }
+
+    @Test
+    public void countAll_withUnknownSearchCriteria(){
+        assertThat(service.count("666")).isEqualTo(0);
     }
 
     @Test

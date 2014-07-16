@@ -120,7 +120,7 @@ public class ProductResource {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         if (search!=null)
-            return catalogItemFinder.findByNameOrId(product, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(product, search, start, size);
         else
             return catalogItemFinder.findAll(product, start, size);
     }
@@ -129,8 +129,11 @@ public class ProductResource {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count() {
-        return catalogItemFinder.countAll(product);
+    public Long count(@QueryParam("search") String search) {
+        if (search!=null)
+            return catalogItemFinder.countBySearchCriteria(product,search);
+        else
+            return catalogItemFinder.countAll(product);
     }
 
     @GET

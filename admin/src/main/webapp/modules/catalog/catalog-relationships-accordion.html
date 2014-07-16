@@ -45,8 +45,8 @@
                 </tbody>
             </table>
             <div class="text-center">
-            <pagination total-items="catalogEntriesCtrl.totalCount" ng-model="catalogEntriesCtrl.currentPage" ng-change="catalogEntriesCtrl.pageChanged()"
-                        items-per-page="catalogEntriesCtrl.pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
+            <pagination total-items="totalCount" ng-model="currentPage" ng-change="pageChanged()"
+                        items-per-page="pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
             </div>
         </div>
         <div class="modal-footer">

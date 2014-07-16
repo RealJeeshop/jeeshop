@@ -138,7 +138,12 @@ public class SKUResourceIT {
 
     @Test
     public void countAll(){
-        assertThat(service.count()).isGreaterThan(0);
+        assertThat(service.count(null)).isGreaterThan(0);
+    }
+
+    @Test
+    public void countAll_withUnknownSearchCriteria(){
+        assertThat(service.count("666")).isEqualTo(0);
     }
 
     @Test
