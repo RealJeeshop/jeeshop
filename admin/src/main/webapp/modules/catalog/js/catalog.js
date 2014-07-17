@@ -287,7 +287,7 @@
                 });
 
                 $http.get(countURI).success(function (data) {
-                    $scope.totalCount = data - $scope.items.length;
+                    $scope.totalCount = data;
                 });
 
             };
