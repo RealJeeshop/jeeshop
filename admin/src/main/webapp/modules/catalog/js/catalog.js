@@ -54,15 +54,25 @@
                 ctrl.currentPage = 1;
                 ctrl.totalCount = null;
                 ctrl.pageSize = 10;
+                ctrl.searchValue = null;
 
                 $scope.findEntries = function (){
                     ctrl.alerts = [];
                     var offset = ctrl.pageSize *(ctrl.currentPage -1);
-                    $http.get('rs/' + $scope.resource+"?start="+offset+"&size="+ctrl.pageSize).success(function (data) {
+
+                    var uri = 'rs/' + $scope.resource+"?start="+offset+"&size="+ctrl.pageSize;
+                    var countURI = 'rs/' + $scope.resource+'/count';
+                    if (ctrl.searchValue != null && !(ctrl.searchValue ==="")){
+                        var searchArg = 'search='+ ctrl.searchValue;
+                        uri = uri + '&'+searchArg;
+                        countURI = countURI + '?'+searchArg;
+                    }
+
+                    $http.get(uri).success(function (data) {
                         ctrl.entries = data;
                     });
 
-                    $http.get('rs/' + $scope.resource+'/count').success(function (data) {
+                    $http.get(countURI).success(function (data) {
                         ctrl.totalCount = data;
                     });
                 }
@@ -277,9 +287,9 @@
                 var uri = 'rs/' + $scope.relationshipsResource+"?start="+offset+"&size="+$scope.pageSize;
                 var countURI = 'rs/' + $scope.relationshipsResource+'/count';
                 if ($scope.searchValue != null && !($scope.searchValue ==="")){
-                     var searchArg = '&search='+ $scope.searchValue;
-                     uri = uri + searchArg;
-                     countURI = countURI + searchArg;
+                     var searchArg = 'search='+ $scope.searchValue;
+                     uri = uri + '&'+searchArg;
+                     countURI = countURI + '?'+searchArg;
                 }
 
                 $http.get(uri).success(function (data) {
