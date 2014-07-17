@@ -279,7 +279,7 @@
                 if ($scope.searchValue != null && !($scope.searchValue ==="")){
                      var searchArg = '&search='+ $scope.searchValue;
                      uri = uri + searchArg;
-                     countURI = count + searchArg;
+                     countURI = countURI + searchArg;
                 }
 
                 $http.get(uri).success(function (data) {
@@ -287,7 +287,7 @@
                 });
 
                 $http.get(countURI).success(function (data) {
-                    $scope.totalCount = data;
+                    $scope.totalCount = data - $scope.items.length;
                 });
 
             };

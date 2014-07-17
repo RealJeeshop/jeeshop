@@ -31,7 +31,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="item in results"  ng-hide="isAlreadyLinked(item.id)">
+                <tr ng-repeat="item in results">
                     <td  >{{item.id}}</td>
                     <td  >{{item.name}}</td>
                     <td class="hidden-xs hidden-sm"  >{{item.startDate|date : 'medium'}}</td>
@@ -39,14 +39,14 @@
                     <td  >{{item.visible ===true?'Yes':'No'}}</td>
                     <td class="hidden-xs hidden-sm"  >{{item.disabled === true?'Yes':'No'}}</td>
                     <td>
-                        <input type="checkbox" ng-model="selected[item.id]"/>
+                        <input type="checkbox" ng-model="selected[item.id]" ng-disabled="isAlreadyLinked(item.id)"/>
                     </td>
                 </tr>
                 </tbody>
             </table>
             <div class="text-center">
-            <pagination total-items="totalCount" ng-model="currentPage" ng-change="pageChanged()"
-                        items-per-page="pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
+            <pagination total-items="$parent.totalCount" ng-model="$parent.currentPage" ng-change="pageChanged()"
+                        items-per-page="$parent.pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
             </div>
         </div>
         <div class="modal-footer">
