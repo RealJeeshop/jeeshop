@@ -1,10 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.Product;
-import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -19,8 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
@@ -32,7 +28,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/products")
 @Stateless
-public class ProductResource {
+public class Products {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -43,11 +39,11 @@ public class ProductResource {
     @Resource
     private SessionContext sessionContext;
 
-    public ProductResource() {
+    public Products() {
 
     }
 
-    public ProductResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public Products(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }
@@ -56,15 +52,15 @@ public class ProductResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Product create(Product product){
-        if (product.getChildSKUsIds() != null){
+    public Product create(Product product) {
+        if (product.getChildSKUsIds() != null) {
             List<SKU> newSkus = new ArrayList<>();
-            product.getChildSKUsIds().forEach(skuId-> newSkus.add(entityManager.find(SKU.class, skuId)));
+            product.getChildSKUsIds().forEach(skuId -> newSkus.add(entityManager.find(SKU.class, skuId)));
             product.setChildSKUs(newSkus);
         }
-        if (product.getDiscountsIds() != null){
+        if (product.getDiscountsIds() != null) {
             List<Discount> newDiscounts = new ArrayList<>();
-            product.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            product.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
             product.setDiscounts(newDiscounts);
         }
         entityManager.persist(product);
@@ -76,42 +72,38 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{productId}")
-    public void delete(@PathParam("productId") Long productId){
-        Product catalogPersisted = entityManager.find(Product.class,productId);
-        if (catalogPersisted != null){
-            entityManager.remove(catalogPersisted);
-        }else{
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+    public void delete(@PathParam("productId") Long productId) {
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+        entityManager.remove(product);
+
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Product modify(Product product){
+    public Product modify(Product product) {
         Product originalProduct = entityManager.find(Product.class, product.getId());
-        if (originalProduct == null){
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(originalProduct);
 
-        if (product.getChildSKUsIds() != null){
+        if (product.getChildSKUsIds() != null) {
             List<SKU> newSkus = new ArrayList<>();
-            product.getChildSKUsIds().forEach(skuId-> newSkus.add(entityManager.find(SKU.class, skuId)));
+            product.getChildSKUsIds().forEach(skuId -> newSkus.add(entityManager.find(SKU.class, skuId)));
             product.setChildSKUs(newSkus);
-        }else{
+        } else {
             product.setChildSKUs(originalProduct.getChildSKUs());
         }
 
-        if (product.getDiscountsIds() != null){
+        if (product.getDiscountsIds() != null) {
             List<Discount> newDiscounts = new ArrayList<>();
-            product.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            product.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
             product.setDiscounts(newDiscounts);
-        }else{
+        } else {
             product.setDiscounts(originalProduct.getDiscounts());
         }
 
-        return  entityManager.merge(product);
+        return entityManager.merge(product);
     }
 
     @GET
@@ -119,7 +111,7 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        if (search!=null)
+        if (search != null)
             return catalogItemFinder.findBySearchCriteria(product, search, start, size);
         else
             return catalogItemFinder.findAll(product, start, size);
@@ -130,8 +122,8 @@ public class ProductResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Long count(@QueryParam("search") String search) {
-        if (search!=null)
-            return catalogItemFinder.countBySearchCriteria(product,search);
+        if (search != null)
+            return catalogItemFinder.countBySearchCriteria(product, search);
         else
             return catalogItemFinder.countAll(product);
     }
@@ -149,14 +141,32 @@ public class ProductResource {
     }
 
     @GET
+    @Path("/{productId}/presentationslocales")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Set<String> findPresentationsLocales(@PathParam("productId") @NotNull Long productId) {
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+        return product.getPresentationByLocale().keySet();
+    }
+
+    @Path("/{productId}/presentations/{locale}")
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+        Presentation presentation = product.getPresentationByLocale().get(locale);
+        return new PresentationResource(presentation, locale, entityManager, product);
+    }
+
+
+    @GET
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public List<SKU> findChildSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
-        if (product == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(product);
         List<SKU> childSKUs = product.getChildSKUs();
         if (childSKUs.isEmpty()) {
             return new ArrayList<>();
@@ -168,4 +178,9 @@ public class ProductResource {
             return catalogItemFinder.findVisibleCatalogItems(sKU, childSKUs, locale);
     }
 
+    private void checkNotNull(Product product) {
+        if (product == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
 }

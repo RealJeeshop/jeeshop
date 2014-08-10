@@ -34,13 +34,13 @@
     <div class="form-group col-md-6">
         <label for="name">Name</label>
         <input type="text" class="form-control" id="name" ng-model="catalogEntryCtrl.entry.name" required="true"
-               placeholder="Name..."/>
+               placeholder="Name..." maxlength="50"/>
     </div>
 
     <div class="form-group col-md-6">
         <label for="name">Description</label>
         <textarea class="form-control" id="description" ng-model="catalogEntryCtrl.entry.description"
-                  placeholder="Description..." rows="2"></textarea>
+                  placeholder="Description..." rows="2" maxlength="255"></textarea>
     </div>
 </div>
 
@@ -74,6 +74,88 @@
 
 <div class="checkbox">
     <label><input type="checkbox" ng-model="catalogEntryCtrl.entry.disabled"/>Disabled</label>
-
     <p class="help-block">Check to prevent this entry to appear in store</p>
+</div>
+
+
+<div class="form-group">
+<label>Presentations</label>
+<div class="row">
+    <div class="col-md-6" ng-controller="PresentationsController as presCtrl">
+
+        <script type="text/ng-template" id="addOrEditPresentation.html">
+            <div class="modal-header">
+                <h3 class="modal-title" ng-show = "isEditionMode()">Edit presentation for locale: <i>{{locale}}</i></h3>
+                <h3 class="modal-title" ng-show = "isCreationMode()">Add new presentation</h3>
+            </div>
+
+            <div class="modal-body">
+                <form name="presentationForm"
+                      ng-submit="presentationForm.$valid && addOrEditPresentation()" novalidate>
+                    <div class="row" ng-show="!isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label>Select a locale</label>
+                            <select class="form-control" ng-model="selectedLocale" name="selectedLocale" ng-options="a.displayName for a in availableLocales track by a.name">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6" >
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="presDisplayName" ng-model="presentation.displayName" required="true"
+                                   placeholder="Name..." maxlength="50"/>
+                        </div>
+
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="name">Short description</label>
+                            <textarea class="form-control" id="presShortDescription" ng-model="presentation.shortDescription"
+                                      placeholder="Description..." rows="2" maxlength="2000"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="name">Long description</label>
+                            <textarea class="form-control" id="presDescription" ng-model="presentation.description"
+                                      placeholder="Description..." rows="4" maxlength="2000"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">Add</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+        <accordion close-others="oneAtATime">
+            <accordion-group is-open="accordion.open">
+                <accordion-heading>
+                    <span style="cursor:pointer">Presentations per locale</span> <i style="cursor:pointer" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': accordion.open, 'glyphicon-chevron-right': !accordion.open}"></i>
+                </accordion-heading>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-default" ng-click="addOrEditPresentation('lg')"><i class="glyphicon glyphicon-plus" ></i>
+                    </button>
+                </div>
+
+                <table class="table table-striped table-hover table-condensed text-left">
+                    <thead>
+                    <tr>
+                        <th>Locale</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="locale in locales" style="cursor:pointer" ng-click="addOrEditPresentation('lg', locale)">
+                        <td style="width:90%">{{locale}}</td>
+                        <td class="text-right">
+                            <a ng-click="removeItem($index)" href="#" class="glyphicon glyphicon-trash"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </accordion-group>
+        </accordion>
+    </div>
+</div>
 </div>

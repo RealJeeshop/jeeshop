@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
 import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
-public class CategoryResourceIT {
-    private CategoryResource service;
+public class CategoriesResourceIT {
+    private Categories service;
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
@@ -39,7 +39,7 @@ public class CategoryResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new CategoryResource(entityManager, new CatalogItemFinder(entityManager));
+        service = new Categories(entityManager, new CatalogItemFinder(entityManager));
     }
 
     @Test
@@ -83,6 +83,11 @@ public class CategoryResourceIT {
     @Test
     public void find_idOfCategoryWithPresentation_WithNotSupportedLocaleSpecifiedShouldReturnFallbackLocalePresentation(){
         assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), "it_IT")).hasLocalizedPresentationShortDescription(Locale.US.toString(), PresentationTexts.TEXT_2000);
+    }
+
+    @Test
+    public void findLocales_OfACategoryWithPresentations_shouldReturnExpectedPresentations(){
+        assertThat(service.findPresentationsLocales(testCatalog.aCategoryWithPresentation().getId())).containsOnly(Locale.US.toString(), Locale.UK.toString());
     }
 
     @Test

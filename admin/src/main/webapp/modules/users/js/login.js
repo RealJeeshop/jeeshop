@@ -4,7 +4,7 @@
     app.controller('LoginController', ['AuthService','$scope', function(AuthService,$scope){
         var login = this;
 
-        login.credentials = {}
+        login.credentials = {};
         login.authenticationFailed = false;
 
         this.login = function (){

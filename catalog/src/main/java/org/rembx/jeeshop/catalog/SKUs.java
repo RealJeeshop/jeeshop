@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
@@ -31,7 +33,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/skus")
 @Stateless
-public class SKUResource {
+public class SKUs {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -42,10 +44,10 @@ public class SKUResource {
     @Resource
     private SessionContext sessionContext;
 
-    public SKUResource() {
+    public SKUs() {
     }
 
-    public SKUResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public SKUs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }
@@ -54,10 +56,10 @@ public class SKUResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public SKU create(SKU sku){
-        if (sku.getDiscountsIds() != null){
+    public SKU create(SKU sku) {
+        if (sku.getDiscountsIds() != null) {
             List<Discount> newDiscounts = new ArrayList<>();
-            sku.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            sku.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
             sku.setDiscounts(newDiscounts);
         }
         entityManager.persist(sku);
@@ -69,34 +71,30 @@ public class SKUResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{skuId}")
-    public void delete(@PathParam("skuId") Long skuId){
-        SKU catalogPersisted = entityManager.find(SKU.class,skuId);
-        if (catalogPersisted != null){
-            entityManager.remove(catalogPersisted);
-        }else{
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+    public void delete(@PathParam("skuId") Long skuId) {
+        SKU sku = entityManager.find(SKU.class, skuId);
+        checkNotNull(sku);
+        entityManager.remove(sku);
+
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public SKU modify(SKU sku){
+    public SKU modify(SKU sku) {
         SKU originalSKU = entityManager.find(SKU.class, sku.getId());
-        if (originalSKU == null){
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(originalSKU);
 
-        if (sku.getDiscountsIds() != null){
+        if (sku.getDiscountsIds() != null) {
             List<Discount> newDiscounts = new ArrayList<>();
-            sku.getDiscountsIds().forEach(discountId-> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+            sku.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
             sku.setDiscounts(newDiscounts);
-        }else{
+        } else {
             sku.setDiscounts(originalSKU.getDiscounts());
         }
 
-        return  entityManager.merge(sku);
+        return entityManager.merge(sku);
     }
 
     @GET
@@ -104,7 +102,7 @@ public class SKUResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        if (search!=null)
+        if (search != null)
             return catalogItemFinder.findBySearchCriteria(sKU, search, start, size);
         else
             return catalogItemFinder.findAll(sKU, start, size);
@@ -114,9 +112,9 @@ public class SKUResource {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search")String search) {
-        if (search!=null)
-            return catalogItemFinder.countBySearchCriteria(sKU,search);
+    public Long count(@QueryParam("search") String search) {
+        if (search != null)
+            return catalogItemFinder.countBySearchCriteria(sKU, search);
         else
             return catalogItemFinder.countAll(sKU);
     }
@@ -130,7 +128,26 @@ public class SKUResource {
         if (isAdminUser(sessionContext))
             return sku;
         else
-        return catalogItemFinder.filterVisible(sku, locale);
+            return catalogItemFinder.filterVisible(sku, locale);
+    }
+
+    @GET
+    @Path("/{skuId}/presentationslocales")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Set<String> findPresentationsLocales(@PathParam("skuId") @NotNull Long skuId) {
+        SKU sku = entityManager.find(SKU.class, skuId);
+        checkNotNull(sku);
+        return sku.getPresentationByLocale().keySet();
+    }
+
+    @Path("/{skuId}/presentations/{locale}")
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public PresentationResource findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
+        SKU sku = entityManager.find(SKU.class, skuId);
+        checkNotNull(sku);
+        Presentation presentation = sku.getPresentationByLocale().get(locale);
+        return new PresentationResource(presentation, locale, entityManager, sku);
     }
 
     @GET
@@ -139,9 +156,7 @@ public class SKUResource {
     @PermitAll
     public List<Discount> findDiscounts(@PathParam("skuId") @NotNull Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
-        if (sku == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(sku);
         List<Discount> discounts = sku.getDiscounts();
         if (discounts.isEmpty()) {
             return new ArrayList<>();
@@ -151,6 +166,12 @@ public class SKUResource {
             return discounts;
         else
             return catalogItemFinder.findVisibleCatalogItems(discount, discounts, null);
+    }
+
+    private void checkNotNull(SKU sku) {
+        if (sku == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
 }

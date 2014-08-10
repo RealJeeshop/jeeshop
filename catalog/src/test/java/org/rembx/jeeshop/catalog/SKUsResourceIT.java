@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatDiscountsOf;
 
-public class SKUResourceIT {
+public class SKUsResourceIT {
 
-    private SKUResource service;
+    private SKUs service;
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
@@ -38,7 +38,7 @@ public class SKUResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new SKUResource(entityManager, new CatalogItemFinder(entityManager));
+        service = new SKUs(entityManager, new CatalogItemFinder(entityManager));
     }
 
     @Test

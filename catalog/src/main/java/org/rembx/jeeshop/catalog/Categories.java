@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
+import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
@@ -31,7 +33,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/categories")
 @Stateless
-public class CategoryResource {
+public class Categories {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -42,10 +44,10 @@ public class CategoryResource {
     @Resource
     private SessionContext sessionContext;
 
-    public CategoryResource() {
+    public Categories() {
     }
 
-    public CategoryResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public Categories(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }
@@ -54,15 +56,15 @@ public class CategoryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Category create(Category category){
-        if (category.getChildCategories() != null){
+    public Category create(Category category) {
+        if (category.getChildCategories() != null) {
             List<Category> newCategories = new ArrayList<>();
-            category.getChildCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             category.setChildCategories(newCategories);
         }
-        if (category.getChildProductsIds() != null){
+        if (category.getChildProductsIds() != null) {
             List<Product> newProducts = new ArrayList<>();
-            category.getChildProductsIds().forEach(productId-> newProducts.add(entityManager.find(Product.class, productId)));
+            category.getChildProductsIds().forEach(productId -> newProducts.add(entityManager.find(Product.class, productId)));
             category.setChildProducts(newProducts);
         }
         entityManager.persist(category);
@@ -74,42 +76,38 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{categoryId}")
-    public void delete(@PathParam("categoryId") Long categoryId){
-        Category catalogPersisted = entityManager.find(Category.class,categoryId);
-        if (catalogPersisted != null){
-            entityManager.remove(catalogPersisted);
-        }else{
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+    public void delete(@PathParam("categoryId") Long categoryId) {
+        Category category = entityManager.find(Category.class, categoryId);
+        checkNotNull(category);
+        entityManager.remove(category);
+
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Category modify(Category category){
+    public Category modify(Category category) {
         Category originalCategory = entityManager.find(Category.class, category.getId());
-        if (originalCategory == null){
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(originalCategory);
 
-        if (category.getChildCategoriesIds() != null){
+        if (category.getChildCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
-            category.getChildCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             category.setChildCategories(newCategories);
-        }else{
+        } else {
             category.setChildCategories(originalCategory.getChildCategories());
         }
 
-        if (category.getChildProductsIds() != null){
+        if (category.getChildProductsIds() != null) {
             List<Product> newProducts = new ArrayList<>();
-            category.getChildProductsIds().forEach(productId-> newProducts.add(entityManager.find(Product.class, productId)));
+            category.getChildProductsIds().forEach(productId -> newProducts.add(entityManager.find(Product.class, productId)));
             category.setChildProducts(newProducts);
-        }else{
+        } else {
             category.setChildProducts(originalCategory.getChildProducts());
         }
 
-        return  entityManager.merge(category);
+        return entityManager.merge(category);
     }
 
     @GET
@@ -117,7 +115,7 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        if (search!=null)
+        if (search != null)
             return catalogItemFinder.findBySearchCriteria(category, search, start, size);
         else
             return catalogItemFinder.findAll(category, start, size);
@@ -128,8 +126,8 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Long count(@QueryParam("search") String search) {
-        if (search!=null)
-            return catalogItemFinder.countBySearchCriteria(category,search);
+        if (search != null)
+            return catalogItemFinder.countBySearchCriteria(category, search);
         else
             return catalogItemFinder.countAll(category);
     }
@@ -147,16 +145,33 @@ public class CategoryResource {
     }
 
     @GET
+    @Path("/{categoryId}/presentationslocales")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Set<String> findPresentationsLocales(@PathParam("categoryId") @NotNull Long categoryId) {
+        Category category = entityManager.find(Category.class, categoryId);
+        checkNotNull(category);
+        return category.getPresentationByLocale().keySet();
+    }
+
+    @Path("/{categoryId}/presentations/{locale}")
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public PresentationResource findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
+        Category category = entityManager.find(Category.class, categoryId);
+        checkNotNull(category);
+        Presentation presentation = category.getPresentationByLocale().get(locale);
+        return new PresentationResource(presentation, locale, entityManager, category);
+    }
+
+    @GET
     @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public List<Category> findChildCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
-        if (cat == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(cat);
         List<Category> childCategories = cat.getChildCategories();
-        if (childCategories.isEmpty()){
+        if (childCategories.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -166,19 +181,18 @@ public class CategoryResource {
             return catalogItemFinder.findVisibleCatalogItems(category, childCategories, locale);
     }
 
+
     @GET
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public List<Product> findChildProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
-        if (cat == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(cat);
 
         List<Product> childProducts = cat.getChildProducts();
 
-        if (childProducts.isEmpty()){
+        if (childProducts.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -188,4 +202,9 @@ public class CategoryResource {
             return catalogItemFinder.findVisibleCatalogItems(product, childProducts, locale);
     }
 
+    private void checkNotNull(Category cat) {
+        if (cat == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
 }

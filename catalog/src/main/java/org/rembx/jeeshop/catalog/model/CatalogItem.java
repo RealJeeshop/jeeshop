@@ -4,9 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import static org.rembx.jeeshop.util.DateUtil.dateToLocalDateTime;
 import static org.rembx.jeeshop.util.LocaleUtil.FALLBACK;
@@ -216,4 +216,34 @@ public abstract class CatalogItem {
                 ", endDate=" + endDate +
                 '}';
     }
+
+        static public void main(String[] args) {
+
+            Locale[] availableLocales = SimpleDateFormat.getAvailableLocales();
+            List<Locale> list = new ArrayList<Locale>(Arrays.asList(availableLocales));
+            list.remove(0);
+
+            TreeSet<String> set = new TreeSet<>();
+            int localeLength = 0;
+            for (Locale a : list) {
+                if (a.toString().length()>localeLength)
+                    localeLength = a.toString().length();
+
+                set.add("{displayName:\"" + a.getDisplayName(Locale.ENGLISH) + "\"," + "name:\"" + a.toString() + "\"},");
+            }
+
+            System.out.println(localeLength);
+            String buff = "";
+            for (String i : set){
+;               buff += i;
+                if (buff.length()>160){
+                    System.out.println(buff);
+                    buff ="";
+                }
+
+            }
+
+
+        }
+
 }

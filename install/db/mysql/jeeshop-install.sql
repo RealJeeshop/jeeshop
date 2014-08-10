@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS Presentation (
   description varchar(10000) DEFAULT NULL,
   displayName varchar(255) DEFAULT NULL,
   features tinyblob,
-  locale varchar(5) NOT NULL,
+  locale varchar(25) NOT NULL,
   shortDescription varchar(2000) DEFAULT NULL,
   largeImage_id bigint(20) DEFAULT NULL,
   smallImage_id bigint(20) DEFAULT NULL,

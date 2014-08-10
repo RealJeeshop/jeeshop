@@ -21,9 +21,9 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatSKUsOf;
 
-public class ProductResourceIT {
+public class ProductsResourceIT {
 
-    private ProductResource service;
+    private Products service;
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
@@ -38,7 +38,7 @@ public class ProductResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new ProductResource(entityManager,new CatalogItemFinder(entityManager));
+        service = new Products(entityManager,new CatalogItemFinder(entityManager));
     }
 
     @Test

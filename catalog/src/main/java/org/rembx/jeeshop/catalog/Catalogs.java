@@ -4,6 +4,7 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
+import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
@@ -31,7 +33,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/catalogs")
 @Stateless
-public class CatalogResource {
+public class Catalogs {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -42,11 +44,11 @@ public class CatalogResource {
     @Resource
     private SessionContext sessionContext;
 
-    public CatalogResource(){
+    public Catalogs() {
 
     }
 
-    public CatalogResource(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    public Catalogs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }
@@ -55,10 +57,10 @@ public class CatalogResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Catalog create(Catalog catalog){
-        if (catalog.getRootCategoriesIds() != null){
+    public Catalog create(Catalog catalog) {
+        if (catalog.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
-            catalog.getRootCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            catalog.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             catalog.setRootCategories(newCategories);
         }
         entityManager.persist(catalog);
@@ -70,44 +72,38 @@ public class CatalogResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{catalogId}")
-    public void delete(@PathParam("catalogId") Long catalogId){
-        Catalog catalogPersisted = entityManager.find(Catalog.class,catalogId);
-        if (catalogPersisted != null){
-            entityManager.remove(catalogPersisted);
-        }else{
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+    public void delete(@PathParam("catalogId") Long catalogId) {
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(catalog);
+        entityManager.remove(catalog);
+
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Catalog modify(Catalog catalog){
+    public Catalog modify(Catalog catalog) {
         Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
-        if (originalCatalog == null){
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(originalCatalog);
 
-        if (catalog.getRootCategoriesIds() != null){
+        if (catalog.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
-            catalog.getRootCategoriesIds().forEach(categoryId-> newCategories.add(entityManager.find(Category.class, categoryId)));
+            catalog.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             catalog.setRootCategories(newCategories);
-        }else{
+        } else {
             catalog.setRootCategories(originalCatalog.getRootCategories());
         }
 
-
-        return  entityManager.merge(catalog);
+        return entityManager.merge(catalog);
     }
-
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        if (search!=null)
+        if (search != null)
             return catalogItemFinder.findBySearchCriteria(catalog, search, start, size);
         else
             return catalogItemFinder.findAll(catalog, start, size);
@@ -119,11 +115,12 @@ public class CatalogResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Long count(@QueryParam("search") String search) {
-        if (search!=null)
-                return catalogItemFinder.countBySearchCriteria(catalog,search);
-            else
-                return catalogItemFinder.countAll(catalog);
+        if (search != null)
+            return catalogItemFinder.countBySearchCriteria(catalog, search);
+        else
+            return catalogItemFinder.countAll(catalog);
     }
+
 
     @GET
     @Path("/{catalogId}")
@@ -139,27 +136,50 @@ public class CatalogResource {
     }
 
     @GET
+    @Path("/{catalogId}/presentationslocales")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(catalog);
+        return catalog.getPresentationByLocale().keySet();
+    }
+
+    @Path("/{catalogId}/presentations/{locale}")
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public PresentationResource findPresentationByLocale(@PathParam("catalogId") @NotNull Long catalogId, @NotNull @PathParam("locale") String locale) {
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(catalog);
+        Presentation presentation = catalog.getPresentationByLocale().get(locale);
+        return new PresentationResource(presentation, locale, entityManager, catalog);
+    }
+
+    @GET
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
-        if (catalog == null){
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(catalog);
 
         List<Category> rootCategories = catalog.getRootCategories();
-        if (rootCategories.isEmpty()){
+        if (rootCategories.isEmpty()) {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext)){
+        if (isAdminUser(sessionContext)) {
             return rootCategories;
-        }else{
+        } else {
             return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);
         }
 
+    }
+
+    private void checkNotNull(Catalog originalCatalog) {
+        if (originalCatalog == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
 }

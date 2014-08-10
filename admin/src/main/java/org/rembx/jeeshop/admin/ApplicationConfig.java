@@ -1,9 +1,9 @@
 package org.rembx.jeeshop.admin;
 
-import org.rembx.jeeshop.catalog.CatalogResource;
-import org.rembx.jeeshop.catalog.CategoryResource;
-import org.rembx.jeeshop.catalog.ProductResource;
-import org.rembx.jeeshop.catalog.SKUResource;
+import org.rembx.jeeshop.catalog.Catalogs;
+import org.rembx.jeeshop.catalog.Categories;
+import org.rembx.jeeshop.catalog.Products;
+import org.rembx.jeeshop.catalog.SKUs;
 import org.rembx.jeeshop.user.UserResource;
 
 import javax.ws.rs.ApplicationPath;
@@ -21,10 +21,10 @@ public class ApplicationConfig extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(CatalogResource.class);
-        classes.add(CategoryResource.class);
-        classes.add(ProductResource.class);
-        classes.add(SKUResource.class);
+        classes.add(Catalogs.class);
+        classes.add(Categories.class);
+        classes.add(Products.class);
+        classes.add(SKUs.class);
         classes.add(UserResource.class);
         return classes;
     }
