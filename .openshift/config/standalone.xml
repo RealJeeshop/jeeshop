@@ -149,7 +149,7 @@
                         ${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}
                     </xa-datasource-property>
                     <xa-datasource-property name="DatabaseName">
-                        backoffice
+                        wildfly8
                     </xa-datasource-property>
                     <driver>mysql</driver>
                     <security>
@@ -170,7 +170,7 @@
                         ${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}
                     </xa-datasource-property>
                     <xa-datasource-property name="DatabaseName">
-                        backoffice
+                        wildfly8
                     </xa-datasource-property>
                     <driver>mysql</driver>
                     <security>
