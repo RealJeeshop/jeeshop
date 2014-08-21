@@ -20,7 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
-public class CatalogsResourceIT {
+public class CatalogsIT {
 
     private Catalogs service;
 

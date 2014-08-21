@@ -1,5 +1,8 @@
 <div class="text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
-    <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive">
+    <div id="loaderDiv" ng-show="catalogEntriesCtrl.isProcessing">
+        <img src="images/loading.gif" class="ajax-loader"/>
+    </div>
+    <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive || catalogEntriesCtrl.isProcessing">
         <div class ="row" style="margin-top:1em">
             <div class="col-md-6 text-left">
                 Show

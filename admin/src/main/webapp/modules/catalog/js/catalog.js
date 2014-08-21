@@ -55,8 +55,10 @@
                 ctrl.totalCount = null;
                 ctrl.pageSize = 10;
                 ctrl.searchValue = null;
+                ctrl.isProcessing = true;
 
                 $scope.findEntries = function (){
+                    ctrl.isProcessing = true;
                     ctrl.alerts = [];
                     var offset = ctrl.pageSize *(ctrl.currentPage -1);
 
@@ -70,11 +72,14 @@
 
                     $http.get(uri).success(function (data) {
                         ctrl.entries = data;
+                        ctrl.isProcessing = false;
                     });
 
                     $http.get(countURI).success(function (data) {
                         ctrl.totalCount = data;
+                        ctrl.isProcessing = false;
                     });
+
                 }
 
                 $scope.findEntries();

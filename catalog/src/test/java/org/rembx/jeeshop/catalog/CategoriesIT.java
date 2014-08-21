@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
 import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
-public class CategoriesResourceIT {
+public class CategoriesIT {
     private Categories service;
 
     private TestCatalog testCatalog;

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Discount;
+import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
@@ -17,13 +17,13 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.*;
-import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
-import static org.rembx.jeeshop.catalog.test.Assertions.assertThatDiscountsOf;
+import static org.rembx.jeeshop.catalog.test.Assertions.assertThatSKUsOf;
 
-public class SKUsResourceIT {
+public class ProductsIT {
 
-    private SKUs service;
+    private Products service;
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
@@ -38,19 +38,19 @@ public class SKUsResourceIT {
     public void setup(){
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new SKUs(entityManager, new CatalogItemFinder(entityManager));
+        service = new Products(entityManager,new CatalogItemFinder(entityManager));
     }
 
     @Test
-    public void find_withIdOfVisibleSKU_ShouldReturnExpectedSKU() {
-        assertThat(service.find(testCatalog.aVisibleSKU().getId(),null)).isEqualTo(testCatalog.aVisibleSKU());
-        assertThat(service.find(testCatalog.aVisibleSKU().getId(),null).isVisible()).isTrue();
+    public void find_withIdOfVisibleProduct_ShouldReturnExpectedProduct() {
+        assertThat(service.find(testCatalog.aProductWithSKUs().getId(),null)).isEqualTo(testCatalog.aProductWithSKUs());
+        assertThat(service.find(testCatalog.aProductWithSKUs().getId(),null).isVisible()).isTrue();
     }
 
     @Test
-    public void find_withIdOfDisableSKU_ShouldThrowForbiddenException() {
+    public void find_withIdOfDisableProduct_ShouldThrowForbiddenException() {
         try{
-            service.find(testCatalog.aDisabledSKU().getId(),null);
+            service.find(testCatalog.aDisabledProduct().getId(),null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.FORBIDDEN,e.getResponse().getStatusInfo());
@@ -58,16 +58,9 @@ public class SKUsResourceIT {
     }
 
     @Test
-    public void find_withIdOfUnAvailableSKU_ShouldReturnUnAvailableSKU() {
-        assertThat(service.find(testCatalog.aSKUNotAvailable().getId(),null)).isEqualTo(testCatalog.aSKUNotAvailable());
-        assertThat(service.find(testCatalog.aSKUNotAvailable().getId(),null).isAvailable()).isFalse();
-
-    }
-
-    @Test
-    public void find_withIdOfExpiredSKU_ShouldThrowForbiddenException() {
+    public void find_withIdOfExpiredProduct_ShouldThrowForbiddenException() {
         try{
-            service.find(testCatalog.anExpiredSKU().getId(),null);
+            service.find(testCatalog.anExpiredProduct().getId(),null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.FORBIDDEN,e.getResponse().getStatusInfo());
@@ -75,7 +68,7 @@ public class SKUsResourceIT {
     }
 
     @Test
-    public void find_withUnknownSKUId_ShouldThrowNotFoundException() {
+    public void find_withUnknownProductId_ShouldThrowNotFoundException() {
         try{
             service.find(9999L,null);
             fail("should have thrown ex");
@@ -86,9 +79,9 @@ public class SKUsResourceIT {
 
 
     @Test
-    public void findDiscounts_shouldReturn404ExWhenSKUNotFound() {
+    public void findSKUs_shouldReturn404ExWhenProductNotFound() {
         try{
-            service.findDiscounts(9999L);
+            service.findChildSKUs(9999L, null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertEquals(Response.Status.NOT_FOUND,e.getResponse().getStatusInfo());
@@ -96,10 +89,16 @@ public class SKUsResourceIT {
     }
 
     @Test
-    public void findDiscounts_shouldNotReturnExpiredNorDisabledDiscounts() {
-        List<Discount> discounts = service.findDiscounts(testCatalog.aSKUWithDiscounts().getId());
-        assertNotNull(discounts);
-        assertThatDiscountsOf(discounts).areVisibleDiscountsOfASKUWithDiscounts();
+    public void findSKUs_shouldNotReturnExpiredNorDisabledSKUs() {
+        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithSKUs().getId(), null);
+        assertNotNull(skus);
+        assertThatSKUsOf(skus).areVisibleSKUsOfAProductWithSKUs();
+    }
+
+    @Test
+    public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
+        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
+        assertThat(skus).isEmpty();
     }
 
     @Test
@@ -109,25 +108,37 @@ public class SKUsResourceIT {
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<SKU> categories = service.findAll(null,0, 1);
+        List<Product> categories = service.findAll(null,0, 1);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aSKUNotAvailable().getId().toString(),null, null)).containsExactly(testCatalog.aSKUNotAvailable());
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getId().toString(),null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aSKUNotAvailable().getName(),null, null)).containsExactly(testCatalog.aSKUNotAvailable());
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getName(),null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
     }
 
     @Test
-    public void modifyUnknownSKU_ShouldThrowNotFoundException() {
+    public void modifyProduct_ShouldModifyProductAttributesAndPreserveSKUsWhenNotProvided() {
+        Product product = service.find(testCatalog.aProductWithSKUs().getId(), null);
 
-        SKU detachedProductToModify = new SKU(9999L,null,null,null,null,null, null,null,null,null);
+        Product detachedProductToModify = new Product(testCatalog.aProductWithSKUs().getId(), product.getName(), product.getDescription(), product.getStartDate(), product.getEndDate(), product.isDisabled());
+
+        service.modify(detachedProductToModify);
+
+        assertThat(product.getChildSKUs()).containsExactly(product.getChildSKUs().toArray());
+
+    }
+
+    @Test
+    public void modifyUnknownProduct_ShouldThrowNotFoundException() {
+
+        Product detachedProductToModify = new Product(9999L,null,null,null,null,null);
         try {
             service.modify(detachedProductToModify);
             fail("should have thrown ex");
@@ -148,30 +159,29 @@ public class SKUsResourceIT {
 
     @Test
     public void create_shouldPersist(){
-        SKU sku = new SKU("name", "description", 1.0, 2, "reference",
-                new Date(), new Date(), false, 1);
+        Product product = new Product("name","description",new Date(), new Date(),false);
 
         entityManager.getTransaction().begin();
-        service.create(sku);
+        service.create(product);
         entityManager.getTransaction().commit();
 
-        assertThat(entityManager.find(SKU.class, sku.getId())).isNotNull();
-        entityManager.remove(sku);
+        assertThat(entityManager.find(Product.class, product.getId())).isNotNull();
+        entityManager.remove(product);
     }
 
     @Test
     public void delete_shouldRemove(){
 
         entityManager.getTransaction().begin();
-        SKU sku = new SKU("Test","",null,null,null,null,null,null,null);
-        entityManager.persist(sku);
+        Product product = new Product("Test","",null,null,null);
+        entityManager.persist(product);
         entityManager.getTransaction().commit();
 
         entityManager.getTransaction().begin();
-        service.delete(sku.getId());
+        service.delete(product.getId());
         entityManager.getTransaction().commit();
 
-        Assertions.assertThat(entityManager.find(SKU.class, sku.getId())).isNull();
+        Assertions.assertThat(entityManager.find(Product.class, product.getId())).isNull();
     }
 
     @Test
@@ -186,4 +196,5 @@ public class SKUsResourceIT {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
+
 }
