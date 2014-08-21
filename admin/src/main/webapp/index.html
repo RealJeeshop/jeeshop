@@ -35,7 +35,6 @@
         </div>
         <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="#">Profile</a></li>
                 <li><a href="#">Help</a></li>
@@ -64,30 +63,31 @@
         <div class="col-sm-3 col-md-2 sidebar" >
             <ul class="nav nav-sidebar">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('overview')">Overview</a>
+                    <a href ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"/> Overview</a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('users') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('users')">Users</a>
+                    <a href ng-click="sideMenuCtrl.selectEntry('orders')"><span class="glyphicon glyphicon-shopping-cart"/> Orders</a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('statistics')">Analytics</a>
+                    <a href ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"/> Stats</a>
+                </li>
+            </ul>
+            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
+                <li ng-class="{ active:sideMenuCtrl.isSelected('users') }">
+                    <a href ng-click="sideMenuCtrl.selectEntry('users')"><span class="glyphicon glyphicon-user"/> Users</a>
+                </li>
+                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }">
+                    <a href ng-click="sideMenuCtrl.selectEntry('newsletters')"><span class="glyphicon glyphicon-envelope"/> Newsletters</a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage your catalog items">
-                    <a href ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a>
+                    <a href ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"/> Catalog</a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a>
-                </li>
-
-                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('newsletters')">Newsletters</a>
+                    <a href ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"/> Inventory</a>
                 </li>
             </ul>
         </div>

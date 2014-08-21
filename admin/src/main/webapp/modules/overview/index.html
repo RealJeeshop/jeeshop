@@ -3,27 +3,31 @@
 <br/>
 <div class="row placeholders">
     <div class="col-xs-6 col-sm-3 placeholder">
-        <img data-src="holder.js/200x200/auto/sky" class="img-responsive"
-             alt="Generic placeholder thumbnail">
+        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('catalog')">
+            <span class="glyphicon glyphicon-book"></span>
+        </button>
         <h4>Catalog</h4>
-        <span class="text-muted">Manage your Catalog</span>
+        <span class="text-muted">Manage store items</span>
     </div>
     <div class="col-xs-6 col-sm-3 placeholder">
-        <img data-src="holder.js/200x200/auto/vine" class="img-responsive"
-             alt="Generic placeholder thumbnail">
+        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('orders')">
+            <span class="glyphicon glyphicon-shopping-cart"></span>
+        </button>
         <h4>Orders</h4>
-        <span class="text-muted">Watch last orders</span>
+        <span class="text-muted">Customers orders</span>
     </div>
     <div class="col-xs-6 col-sm-3 placeholder">
-        <img data-src="holder.js/200x200/auto/sky" class="img-responsive"
-             alt="Generic placeholder thumbnail">
-        <h4>Users</h4>
-        <span class="text-muted">Administer users</span>
+        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('users')">
+            <span class="glyphicon glyphicon-user"></span>
+        </button>
+        <h4>Customers</h4>
+        <span class="text-muted">Manage customers</span>
     </div>
     <div class="col-xs-6 col-sm-3 placeholder">
-        <img data-src="holder.js/200x200/auto/vine" class="img-responsive"
-             alt="Generic placeholder thumbnail">
-        <h4>Statistics</h4>
-        <span class="text-muted">Watch usage statistics</span>
+        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('statistics')">
+            <span class="glyphicon glyphicon-stats"></span>
+        </button>
+        <h4>Stats</h4>
+        <span class="text-muted">Usage statistics</span>
     </div>
 </div>
