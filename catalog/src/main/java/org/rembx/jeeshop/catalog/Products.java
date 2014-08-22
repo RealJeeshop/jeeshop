@@ -34,6 +34,9 @@ public class Products {
     private EntityManager entityManager;
 
     @Inject
+    PresentationResource presentationResource;
+
+    @Inject
     private CatalogItemFinder catalogItemFinder;
 
     @Resource
@@ -156,7 +159,7 @@ public class Products {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return new PresentationResource(presentation, locale, entityManager, product);
+        return presentationResource.init(presentation, locale, product);
     }
 
 

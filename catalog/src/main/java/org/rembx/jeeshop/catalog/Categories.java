@@ -1,10 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.model.Presentation;
-import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -34,6 +31,9 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 @Path("/categories")
 @Stateless
 public class Categories {
+
+    @Inject
+    PresentationResource presentationResource;
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -160,7 +160,7 @@ public class Categories {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return new PresentationResource(presentation, locale, entityManager, category);
+        return presentationResource.init(presentation, locale, category);
     }
 
     @GET
@@ -207,4 +207,5 @@ public class Categories {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
+
 }

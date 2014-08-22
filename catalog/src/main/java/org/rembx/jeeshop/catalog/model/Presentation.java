@@ -22,12 +22,11 @@ public class Presentation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @XmlTransient
     private Long id;
 
     @NotNull
-    @Size(min = 5, max = 5)
-    @Column(length = 5)
+    @Size(min = 1, max = 25)
+    @Column(length = 25)
     private String locale;
 
     @Size(max = 255)

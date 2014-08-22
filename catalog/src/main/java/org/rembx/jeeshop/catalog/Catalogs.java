@@ -38,6 +38,8 @@ public class Catalogs {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
+    @Inject PresentationResource presentationResource;
+
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
@@ -151,7 +153,7 @@ public class Catalogs {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         Presentation presentation = catalog.getPresentationByLocale().get(locale);
-        return new PresentationResource(presentation, locale, entityManager, catalog);
+        return presentationResource.init(presentation, locale, catalog);
     }
 
     @GET

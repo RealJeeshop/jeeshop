@@ -83,16 +83,16 @@
         <script type="text/ng-template" id="addOrEditPresentation.html">
             <div class="modal-header">
                 <h3 class="modal-title" ng-show = "isEditionMode()">Edit presentation for locale: <i>{{locale}}</i></h3>
-                <h3 class="modal-title" ng-show = "isCreationMode()">Add new presentation</h3>
+                <h3 class="modal-title" ng-show = "!isEditionMode()">Add new presentation</h3>
             </div>
 
             <div class="modal-body">
                 <form name="presentationForm"
                       ng-submit="presentationForm.$valid && addOrEditPresentation()" novalidate>
-                    <div class="row" ng-show="!isLocaleSelected()">
+                    <div class="row">
                         <div class="form-group col-md-6">
                             <label>Select a locale</label>
-                            <select class="form-control" ng-model="selectedLocale" name="selectedLocale" ng-options="a.displayName for a in availableLocales track by a.name">
+                            <select class="form-control" ng-model="$parent.selectedLocale" ng-change="selectLocale()" name="selectedLocale" ng-options="a.name as a.displayName for a in availableLocales">
                             </select>
                         </div>
                     </div>
@@ -113,13 +113,14 @@
                         <div class="form-group col-md-6">
                             <label for="name">Long description</label>
                             <textarea class="form-control" id="presDescription" ng-model="presentation.description"
-                                      placeholder="Description..." rows="4" maxlength="2000"></textarea>
+                                      placeholder="Description..." rows="4" maxlength="10000"></textarea>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">Add</button>
+                <button class="btn btn-primary" ng-click="save()"  ng-show="isEditionMode()">Save</button>
+                <button class="btn btn-primary" ng-click="add()"  ng-show="!isEditionMode() && isLocaleSelected()">Add</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </script>
@@ -143,10 +144,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="locale in locales" style="cursor:pointer" ng-click="addOrEditPresentation('lg', locale)">
-                        <td style="width:90%">{{locale}}</td>
+                    <tr ng-repeat="locale in locales">
+                        <td style="width:90%"  ng-click="addOrEditPresentation('lg', locale)" style="cursor:pointer">{{locale}}</td>
                         <td class="text-right">
-                            <a ng-click="removeItem($index)" href="#" class="glyphicon glyphicon-trash"/>
+                            <a ng-click="removeItem($index, 'This will delete presentation for locale '+locale)" href="#" class="glyphicon glyphicon-trash"/>
                         </td>
                     </tr>
                     </tbody>

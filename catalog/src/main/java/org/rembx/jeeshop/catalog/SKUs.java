@@ -38,6 +38,8 @@ public class SKUs {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
+    @Inject PresentationResource presentationResource;
+
     @Inject
     private CatalogItemFinder catalogItemFinder;
 
@@ -147,7 +149,7 @@ public class SKUs {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return new PresentationResource(presentation, locale, entityManager, sku);
+        return presentationResource.init(presentation, locale, sku);
     }
 
     @GET

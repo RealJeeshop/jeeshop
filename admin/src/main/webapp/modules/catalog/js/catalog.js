@@ -5,42 +5,42 @@
     /*----- Directives -----*/
 
     app.directive("commonCatalogFormFields", function () {
-            return {
-                restrict: "A",
-                templateUrl: "modules/catalog/common-catalog-form-fields.html"
-            };
-        });
+        return {
+            restrict: "A",
+            templateUrl: "modules/catalog/common-catalog-form-fields.html"
+        };
+    });
 
-    app.directive("catalogRelationshipsForm",function () {
+    app.directive("catalogRelationshipsForm", function () {
         function link(scope, element, attrs) {
-              attrs.$observe('relationshipsTitle', function(value) {    // xxx est le nom de l'attribut
-                  scope.relationshipsTitle = value;
-              });
+            attrs.$observe('relationshipsTitle', function (value) {    // xxx est le nom de l'attribut
+                scope.relationshipsTitle = value;
+            });
 
-              attrs.$observe('resource', function(value) {    // xxx est le nom de l'attribut
-                    scope.relationshipsResource = value;
-                });
+            attrs.$observe('resource', function (value) {    // xxx est le nom de l'attribut
+                scope.relationshipsResource = value;
+            });
 
-                attrs.$observe('relationshipsProperty', function(value) {    // xxx est le nom de l'attribut
-                    scope.relationshipsProperty = value;
-                });
+            attrs.$observe('relationshipsProperty', function (value) {    // xxx est le nom de l'attribut
+                scope.relationshipsProperty = value;
+            });
 
 
-              /*scope.$watch(attrs.relationshipsProperty, function(value) {
-                  scope.relationshipsProperty = value;
-                });*/
+            /*scope.$watch(attrs.relationshipsProperty, function(value) {
+             scope.relationshipsProperty = value;
+             });*/
 
-            }
+        }
 
         return {
             restrict: "A",
-            scope:true,
+            scope: true,
             templateUrl: "modules/catalog/catalog-relationships-accordion.html",
             link: link
         };
     });
 
-    app.directive("getCatalogEntries", ['$http','$modal', function ($http, $dialog, $scope) {
+    app.directive("getCatalogEntries", ['$http', '$modal', function ($http, $dialog, $scope) {
         return {
             restrict: "A",
             scope: {
@@ -48,7 +48,7 @@
             },
             controller: function ($http, $scope, $modal) {
                 var ctrl = this;
-                ctrl.alerts=[];
+                ctrl.alerts = [];
                 ctrl.entries = [];
                 ctrl.resourceType = $scope.resource;
                 ctrl.currentPage = 1;
@@ -57,17 +57,17 @@
                 ctrl.searchValue = null;
                 ctrl.isProcessing = true;
 
-                $scope.findEntries = function (){
+                $scope.findEntries = function () {
                     ctrl.isProcessing = true;
                     ctrl.alerts = [];
-                    var offset = ctrl.pageSize *(ctrl.currentPage -1);
+                    var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
-                    var uri = 'rs/' + $scope.resource+"?start="+offset+"&size="+ctrl.pageSize;
-                    var countURI = 'rs/' + $scope.resource+'/count';
-                    if (ctrl.searchValue != null && !(ctrl.searchValue ==="")){
-                        var searchArg = 'search='+ ctrl.searchValue;
-                        uri = uri + '&'+searchArg;
-                        countURI = countURI + '?'+searchArg;
+                    var uri = 'rs/' + $scope.resource + "?start=" + offset + "&size=" + ctrl.pageSize;
+                    var countURI = 'rs/' + $scope.resource + '/count';
+                    if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
+                        var searchArg = 'search=' + ctrl.searchValue;
+                        uri = uri + '&' + searchArg;
+                        countURI = countURI + '?' + searchArg;
                     }
 
                     $http.get(uri).success(function (data) {
@@ -84,27 +84,27 @@
 
                 $scope.findEntries();
 
-                this.pageChanged = function (){
+                this.pageChanged = function () {
                     $scope.findEntries();
                 };
 
-                this.delete = function (index,message) {
+                this.delete = function (index, message) {
                     var modalInstance = $modal.open({
-                    templateUrl: 'util/confirm-dialog.html',
-                    controller: function($modalInstance,$scope){
-                        $scope.modalInstance = $modalInstance;
-                        $scope.confirmMessage = message;
-                     },
-                    size: 'sm'});
+                        templateUrl: 'util/confirm-dialog.html',
+                        controller: function ($modalInstance, $scope) {
+                            $scope.modalInstance = $modalInstance;
+                            $scope.confirmMessage = message;
+                        },
+                        size: 'sm'});
                     modalInstance.result.then(function () {
                         ctrl.alerts = [];
-                        $http.delete('rs/' + $scope.resource+"/"+ctrl.entries[index].id)
+                        $http.delete('rs/' + $scope.resource + "/" + ctrl.entries[index].id)
                             .success(function (data) {
-                                ctrl.entries.splice(index,1);
+                                ctrl.entries.splice(index, 1);
                             })
                             .error(function (data) {
                                 ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
-                        });
+                            });
                         $scope.findEntries();
                     }, function () {
 
@@ -138,7 +138,7 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
         ctrl.entry = {};
-        ctrl.entryChilds={};
+        ctrl.entryChilds = {};
 
         this.closeAlert = function (index) {
             ctrl.alerts.splice(index, 1);
@@ -154,18 +154,18 @@
 
         };
 
-        this.createOrEdit = function(){
+        this.createOrEdit = function () {
 
-            if (ctrl.isCreationModeActive){
+            if (ctrl.isCreationModeActive) {
                 ctrl.create();
-            }else if (ctrl.isEditionModeActive){
+            } else if (ctrl.isEditionModeActive) {
                 ctrl.edit();
             }
         };
 
 
         this.create = function () {
-            $http.post('rs/' + $scope.resource,ctrl.entry)
+            $http.post('rs/' + $scope.resource, ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
@@ -173,7 +173,7 @@
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
-            });
+                });
         };
 
         this.edit = function () {
@@ -185,10 +185,10 @@
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
-            });
+                });
         };
 
-        this.convertEntryDates = function(){
+        this.convertEntryDates = function () {
             // hack for dates returned as timestamp by service
             ctrl.entry.startDate = ctrl.entry.startDate != null ? new Date(ctrl.entry.startDate) : null;
             ctrl.entry.endDate = ctrl.entry.endDate != null ? new Date(ctrl.entry.endDate) : null;
@@ -214,38 +214,38 @@
         $scope.items = [];
 
         $scope.accordion = {
-            open : false
+            open: false
         };
 
-        $scope.initRelationshipsIdsProperty = function(){
-            $scope.itemsIds=[];
-            for (i in $scope.items){
+        $scope.initRelationshipsIdsProperty = function () {
+            $scope.itemsIds = [];
+            for (i in $scope.items) {
                 $scope.itemsIds[i] = $scope.items[i].id;
             }
             $scope.catalogEntryCtrl.entry[$scope.relationshipsProperty] = $scope.itemsIds;
         };
 
-        $scope.removeItem = function(index){
-            $scope.items.splice(index,1);
+        $scope.removeItem = function (index) {
+            $scope.items.splice(index, 1);
             $scope.initRelationshipsIdsProperty();
         };
 
-        $scope.$watch('catalogEntryCtrl.entry', function(){
+        $scope.$watch('catalogEntryCtrl.entry', function () {
             $scope.accordion.open = false;
-          });
+        });
 
-        $scope.$watch('accordion.open', function(isOpen){
+        $scope.$watch('accordion.open', function (isOpen) {
             if (isOpen) {
-                if ($scope.catalogEntryCtrl.entry.id == null){
+                if ($scope.catalogEntryCtrl.entry.id == null) {
                     return;
                 }
-                $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id+'/'+$scope.relationshipsResource)
+                $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/' + $scope.relationshipsResource)
                     .success(function (data) {
-                        $scope.items=data;
+                        $scope.items = data;
                         $scope.initRelationshipsIdsProperty();
                     });
             }
-          });
+        });
 
         $scope.open = function (size) {
             var modalInstance = $modal.open({
@@ -267,7 +267,7 @@
 
             modalInstance.result.then(function (selectedItems) {
 
-                for (i in selectedItems){
+                for (i in selectedItems) {
                     $scope.items.push(selectedItems[i]);
                 }
                 $scope.initRelationshipsIdsProperty();
@@ -276,7 +276,7 @@
             });
         };
 
-        var ModalInstanceCtrl = function ($http,$scope, $modalInstance, items, relationshipsResource) {
+        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, items, relationshipsResource) {
 
             ctrl = this;
             $scope.items = items;
@@ -287,14 +287,14 @@
             $scope.totalCount = 0;
             $scope.pageSize = 10;
 
-            $scope.search = function(){ // TODO merge with catalogEntriesCtrl listing and add search to it
-                var offset = $scope.pageSize *($scope.currentPage -1);
-                var uri = 'rs/' + $scope.relationshipsResource+"?start="+offset+"&size="+$scope.pageSize;
-                var countURI = 'rs/' + $scope.relationshipsResource+'/count';
-                if ($scope.searchValue != null && !($scope.searchValue ==="")){
-                     var searchArg = 'search='+ $scope.searchValue;
-                     uri = uri + '&'+searchArg;
-                     countURI = countURI + '?'+searchArg;
+            $scope.search = function () { // TODO merge with catalogEntriesCtrl listing and add search to it
+                var offset = $scope.pageSize * ($scope.currentPage - 1);
+                var uri = 'rs/' + $scope.relationshipsResource + "?start=" + offset + "&size=" + $scope.pageSize;
+                var countURI = 'rs/' + $scope.relationshipsResource + '/count';
+                if ($scope.searchValue != null && !($scope.searchValue === "")) {
+                    var searchArg = 'search=' + $scope.searchValue;
+                    uri = uri + '&' + searchArg;
+                    countURI = countURI + '?' + searchArg;
                 }
 
                 $http.get(uri).success(function (data) {
@@ -307,14 +307,14 @@
 
             };
 
-            $scope.pageChanged = function (){
+            $scope.pageChanged = function () {
                 $scope.search();
             };
 
-            $scope.isAlreadyLinked = function(itemId){
+            $scope.isAlreadyLinked = function (itemId) {
                 var isLinked = false;
-                for (i in $scope.items){
-                    if ($scope.items[i].id ===itemId){
+                for (i in $scope.items) {
+                    if ($scope.items[i].id === itemId) {
                         isLinked = true;
                         break;
                     }
@@ -324,8 +324,8 @@
 
             $scope.ok = function () {
                 var selectedItems = new Array();
-                for (i in $scope.results){
-                    if ($scope.selected[$scope.results[i].id] != null && $scope.selected[$scope.results[i].id] === true){
+                for (i in $scope.results) {
+                    if ($scope.selected[$scope.results[i].id] != null && $scope.selected[$scope.results[i].id] === true) {
                         selectedItems.push($scope.results[i]);
                     }
                 }
@@ -339,151 +339,322 @@
 
     }]);
 
-    app.controller('PresentationsController', ['$http', '$scope', '$modal','$log', function ($http, $scope, $modal, $log) {
+    app.controller('PresentationsController', ['$http', '$scope', '$modal', '$log', function ($http, $scope, $modal, $log) {
 
         var ctrl = this;
+
+        var getAvailableLocales = function () {
+            $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentationslocales')
+                .success(function (data) {
+                    $scope.locales = data;
+                });
+        }
+
         $scope.locales = [];
-        $scope.locale = null;
+        $scope.locale = null; // set when edition mode
 
         $scope.accordion = {
-            open : false
+            open: false
         };
 
-        $scope.removeItem = function(index){
-            $scope.locales.splice(index,1);
+        $scope.removeItem = function (index, message) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'util/confirm-dialog.html',
+                controller: function ($modalInstance, $scope) {
+                    $scope.modalInstance = $modalInstance;
+                    $scope.confirmMessage = message;
+                },
+                size: 'sm'});
+            modalInstance.result.then(function () {
+                $scope.catalogEntryCtrl.alerts = [];
+                $http.delete('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations/' + $scope.locales[index])
+                    .success(function (data) {
+                        $scope.locales.splice(index, 1);
+                    })
+                    .error(function (data) {
+                        $scope.catalogEntryCtrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                    });
+            }, function () {
+
+            });
+
         };
 
-        $scope.$watch('catalogEntryCtrl.entry', function(){
+        $scope.isEditionMode = function () {
+            return $scope.locale != null;
+        };
+
+        $scope.$watch('catalogEntryCtrl.entry', function () {
             $scope.accordion.open = false;
-          });
+        });
 
-        $scope.$watch('accordion.open', function(isOpen){
+        $scope.$watch('accordion.open', function (isOpen) {
             if (isOpen) {
-                if ($scope.catalogEntryCtrl.entry.id == null){
+                if ($scope.catalogEntryCtrl.entry.id == null) {
                     return;
                 }
-                $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id+'/presentationslocales')
-                    .success(function (data) {
-                        $scope.locales=data;
-                    });
+                getAvailableLocales();
             }
         });
 
         $scope.addOrEditPresentation = function (size, locale) {
-                    $scope.locale = locale;
-                    var modalInstance = $modal.open({
-                        templateUrl: 'addOrEditPresentation.html',
-                        controller: ModalInstanceCtrl,
-                        size: size,
-                        resolve: {
-                            locales: function () {
-                                return $scope.locales;
-                            },
-                            locale: function(){
-                                return $scope.locale;
-                            },
-                            presentationsResourceURI: function(){
-                                return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id+'/presentations';
-                            }
-                        }
-                    });
+            $scope.locale = locale;
+            var modalInstance = $modal.open({
+                templateUrl: 'addOrEditPresentation.html',
+                controller: ModalInstanceCtrl,
+                size: size,
+                resolve: {
+                    locales: function () {
+                        return $scope.locales;
+                    },
+                    locale: function () {
+                        return $scope.locale;
+                    },
+                    presentationsResourceURI: function () {
+                        return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';;
+                    }
+                }
+            });
 
-                    modalInstance.result.then(function () {
+            modalInstance.result.then(function (result) {
+                $scope.catalogEntryCtrl.alerts = [];
+                if (result!=null){
+                    $scope.catalogEntryCtrl.alerts.push(result);
+                }
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
 
-                    }, function () {
-                        $log.info('Modal dismissed at: ' + new Date());
-                    });
-                };
-
-        var ModalInstanceCtrl = function ($http,$scope, $modalInstance, locales, locale,presentationsResourceURI) {
+        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, locales, locale, presentationsResourceURI) {
 
             ctrl = this;
             $scope.locales = locales;
-            $scope.locale = locale;
+            $scope.locale = locale; // set when edition mode
             $scope.selectedLocale = null;
-            $scope.results = [];
-
             $scope.presentation = {};
 
-            if (locale != null){
+
+            var getPresentationByLocale = function (locale) {
                 $scope.selectedLocale = locale;
-                $http.get(presentationsResourceURI+"/"+locale)
+                $http.get(presentationsResourceURI + "/" + locale)
                     .success(function (data) {
                         $scope.presentation = data;
+                        $scope.locale = locale;
+                    })
+                    .error(function (data) {
+                        $scope.presentation = {};
+                        $scope.locale = null;
                     });
             }
 
-            $scope.isEditionMode = function (){
+
+            $scope.isEditionMode = function () {
                 return $scope.locale != null;
+            };
+
+            if (locale != null) {
+                getPresentationByLocale(locale);
             }
 
-            $scope.isCreationMode = function (){
-                return $scope.locale == null;
-            }
-
-            $scope.isLocaleSelected = function(){
+            $scope.isLocaleSelected = function () {
                 return $scope.selectedLocale != null;
             }
 
-            $scope.isAlreadyLinked = function(){
-                var isLinked = false;
-                for (i in $scope.locales){
-                    if ($scope.locales[i].id === $scope.locale){
-                        isLinked = true;
-                        break;
-                    }
-                }
-                return isLinked;
+            $scope.selectLocale = function () {
+                getPresentationByLocale($scope.selectedLocale);
             }
 
-            $scope.ok = function () {
-                $modalInstance.close();
+            $scope.save = function () {
+                $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
+                    .success(function (data) {
+                        $scope.presentation = data;
+                        $modalInstance.close();
+                    })
+                    .error(function (data) {
+                        $modalInstance.close({type: 'danger', msg: 'Technical error'});
+                    });
+
+                $modalInstance.close(ctrl.result);
             };
+
+            $scope.add = function () {
+                $scope.presentation.locale = $scope.selectedLocale;
+                $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
+                    .success(function (data) {
+                        $scope.presentation = data;
+                        getAvailableLocales();
+                        $modalInstance.close();
+                    })
+                    .error(function (data) {
+                        $modalInstance.close({type: 'danger', msg: 'Technical error'});
+                    });
+            }
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
 
             $scope.availableLocales = [
-                {displayName:"Albanian (Albania)",name:"sq_AL"},{displayName:"Albanian",name:"sq"},{displayName:"Arabic (Algeria)",name:"ar_DZ"},{displayName:"Arabic (Bahrain)",name:"ar_BH"},
-                {displayName:"Arabic (Egypt)",name:"ar_EG"},{displayName:"Arabic (Iraq)",name:"ar_IQ"},{displayName:"Arabic (Jordan)",name:"ar_JO"},{displayName:"Arabic (Kuwait)",name:"ar_KW"},
-                {displayName:"Arabic (Lebanon)",name:"ar_LB"},{displayName:"Arabic (Libya)",name:"ar_LY"},{displayName:"Arabic (Morocco)",name:"ar_MA"},{displayName:"Arabic (Oman)",name:"ar_OM"},
-                {displayName:"Arabic (Qatar)",name:"ar_QA"},{displayName:"Arabic (Saudi Arabia)",name:"ar_SA"},{displayName:"Arabic (Sudan)",name:"ar_SD"},{displayName:"Arabic (Syria)",name:"ar_SY"},
-                {displayName:"Arabic (Tunisia)",name:"ar_TN"},{displayName:"Arabic (United Arab Emirates)",name:"ar_AE"},{displayName:"Arabic (Yemen)",name:"ar_YE"},{displayName:"Arabic",name:"ar"},
-                {displayName:"Belarusian (Belarus)",name:"be_BY"},{displayName:"Belarusian",name:"be"},{displayName:"Bulgarian (Bulgaria)",name:"bg_BG"},{displayName:"Bulgarian",name:"bg"},
-                {displayName:"Catalan (Spain)",name:"ca_ES"},{displayName:"Catalan",name:"ca"},{displayName:"Chinese (China)",name:"zh_CN"},{displayName:"Chinese (Hong Kong)",name:"zh_HK"},
-                {displayName:"Chinese (Singapore)",name:"zh_SG"},{displayName:"Chinese (Taiwan)",name:"zh_TW"},{displayName:"Chinese",name:"zh"},{displayName:"Croatian (Croatia)",name:"hr_HR"},
-                {displayName:"Croatian",name:"hr"},{displayName:"Czech (Czech Republic)",name:"cs_CZ"},{displayName:"Czech",name:"cs"},{displayName:"Danish (Denmark)",name:"da_DK"},
-                {displayName:"Danish",name:"da"},{displayName:"Dutch (Belgium)",name:"nl_BE"},{displayName:"Dutch (Netherlands)",name:"nl_NL"},{displayName:"Dutch",name:"nl"},{displayName:"English (Australia)",name:"en_AU"},
-                {displayName:"English (Canada)",name:"en_CA"},{displayName:"English (India)",name:"en_IN"},{displayName:"English (Ireland)",name:"en_IE"},{displayName:"English (Malta)",name:"en_MT"},
-                {displayName:"English (New Zealand)",name:"en_NZ"},{displayName:"English (Philippines)",name:"en_PH"},{displayName:"English (Singapore)",name:"en_SG"},{displayName:"English (South Africa)",name:"en_ZA"},
-                {displayName:"English (United Kingdom)",name:"en_GB"},{displayName:"English (United States)",name:"en_US"},{displayName:"English",name:"en"},{displayName:"Estonian (Estonia)",name:"et_EE"},
-                {displayName:"Estonian",name:"et"},{displayName:"Finnish (Finland)",name:"fi_FI"},{displayName:"Finnish",name:"fi"},{displayName:"French (Belgium)",name:"fr_BE"},
-                {displayName:"French (Canada)",name:"fr_CA"},{displayName:"French (France)",name:"fr_FR"},{displayName:"French (Luxembourg)",name:"fr_LU"},{displayName:"French (Switzerland)",name:"fr_CH"},
-                {displayName:"French",name:"fr"},{displayName:"German (Austria)",name:"de_AT"},{displayName:"German (Germany)",name:"de_DE"},{displayName:"German (Greece)",name:"de_GR"},
-                {displayName:"German (Luxembourg)",name:"de_LU"},{displayName:"German (Switzerland)",name:"de_CH"},{displayName:"German",name:"de"},{displayName:"Greek (Cyprus)",name:"el_CY"},
-                {displayName:"Greek (Greece)",name:"el_GR"},{displayName:"Greek",name:"el"},{displayName:"Hebrew (Israel)",name:"iw_IL"},{displayName:"Hebrew",name:"iw"},{displayName:"Hindi (India)",name:"hi_IN"},
-                {displayName:"Hindi",name:"hi"},{displayName:"Hungarian (Hungary)",name:"hu_HU"},{displayName:"Hungarian",name:"hu"},{displayName:"Icelandic (Iceland)",name:"is_IS"},
-                {displayName:"Icelandic",name:"is"},{displayName:"Indonesian (Indonesia)",name:"in_ID"},{displayName:"Indonesian",name:"in"},{displayName:"Irish (Ireland)",name:"ga_IE"},
-                {displayName:"Irish",name:"ga"},{displayName:"Italian (Italy)",name:"it_IT"},{displayName:"Italian (Switzerland)",name:"it_CH"},{displayName:"Italian",name:"it"},
-                {displayName:"Japanese (Japan)",name:"ja_JP"},{displayName:"Japanese (Japan,JP)",name:"ja_JP_JP_#u-ca-japanese"},{displayName:"Japanese",name:"ja"},{displayName:"Korean (South Korea)",name:"ko_KR"},
-                {displayName:"Korean",name:"ko"},{displayName:"Latvian (Latvia)",name:"lv_LV"},{displayName:"Latvian",name:"lv"},{displayName:"Lithuanian (Lithuania)",name:"lt_LT"},
-                {displayName:"Lithuanian",name:"lt"},{displayName:"Macedonian (Macedonia)",name:"mk_MK"},{displayName:"Macedonian",name:"mk"},{displayName:"Malay (Malaysia)",name:"ms_MY"},
-                {displayName:"Malay",name:"ms"},{displayName:"Maltese (Malta)",name:"mt_MT"},{displayName:"Maltese",name:"mt"},{displayName:"Norwegian (Norway)",name:"no_NO"},{displayName:"Norwegian (Norway,Nynorsk)",name:"no_NO_NY"},
-                {displayName:"Norwegian",name:"no"},{displayName:"Polish (Poland)",name:"pl_PL"},{displayName:"Polish",name:"pl"},{displayName:"Portuguese (Brazil)",name:"pt_BR"},
-                {displayName:"Portuguese (Portugal)",name:"pt_PT"},{displayName:"Portuguese",name:"pt"},{displayName:"Romanian (Romania)",name:"ro_RO"},{displayName:"Romanian",name:"ro"},
-                {displayName:"Russian (Russia)",name:"ru_RU"},{displayName:"Russian",name:"ru"},{displayName:"Serbian (Bosnia and Herzegovina)",name:"sr_BA"},{displayName:"Serbian (Latin)",name:"sr__#Latn"},
-                {displayName:"Serbian (Latin,Bosnia and Herzegovina)",name:"sr_BA_#Latn"},{displayName:"Serbian (Latin,Montenegro)",name:"sr_ME_#Latn"},{displayName:"Serbian (Latin,Serbia)",name:"sr_RS_#Latn"},
-                {displayName:"Serbian (Montenegro)",name:"sr_ME"},{displayName:"Serbian (Serbia and Montenegro)",name:"sr_CS"},{displayName:"Serbian (Serbia)",name:"sr_RS"},{displayName:"Serbian",name:"sr"},
-                {displayName:"Slovak (Slovakia)",name:"sk_SK"},{displayName:"Slovak",name:"sk"},{displayName:"Slovenian (Slovenia)",name:"sl_SI"},{displayName:"Slovenian",name:"sl"},
-                {displayName:"Spanish (Argentina)",name:"es_AR"},{displayName:"Spanish (Bolivia)",name:"es_BO"},{displayName:"Spanish (Chile)",name:"es_CL"},{displayName:"Spanish (Colombia)",name:"es_CO"},
-                {displayName:"Spanish (Costa Rica)",name:"es_CR"},{displayName:"Spanish (Cuba)",name:"es_CU"},{displayName:"Spanish (Dominican Republic)",name:"es_DO"},{displayName:"Spanish (Ecuador)",name:"es_EC"},
-                {displayName:"Spanish (El Salvador)",name:"es_SV"},{displayName:"Spanish (Guatemala)",name:"es_GT"},{displayName:"Spanish (Honduras)",name:"es_HN"},{displayName:"Spanish (Mexico)",name:"es_MX"},
-                {displayName:"Spanish (Nicaragua)",name:"es_NI"},{displayName:"Spanish (Panama)",name:"es_PA"},{displayName:"Spanish (Paraguay)",name:"es_PY"},{displayName:"Spanish (Peru)",name:"es_PE"},
-                {displayName:"Spanish (Puerto Rico)",name:"es_PR"},{displayName:"Spanish (Spain)",name:"es_ES"},{displayName:"Spanish (United States)",name:"es_US"},{displayName:"Spanish (Uruguay)",name:"es_UY"},
-                {displayName:"Spanish (Venezuela)",name:"es_VE"},{displayName:"Spanish",name:"es"},{displayName:"Swedish (Sweden)",name:"sv_SE"},{displayName:"Swedish",name:"sv"},
-                {displayName:"Thai (Thailand)",name:"th_TH"},{displayName:"Thai (Thailand,TH)",name:"th_TH_TH_#u-nu-thai"},{displayName:"Thai",name:"th"},{displayName:"Turkish (Turkey)",name:"tr_TR"},
-                {displayName:"Turkish",name:"tr"},{displayName:"Ukrainian (Ukraine)",name:"uk_UA"},{displayName:"Ukrainian",name:"uk"},{displayName:"Vietnamese (Vietnam)",name:"vi_VN"}
+                {displayName: "Albanian (Albania)", name: "sq_AL"},
+                {displayName: "Albanian", name: "sq"},
+                {displayName: "Arabic (Algeria)", name: "ar_DZ"},
+                {displayName: "Arabic (Bahrain)", name: "ar_BH"},
+                {displayName: "Arabic (Egypt)", name: "ar_EG"},
+                {displayName: "Arabic (Iraq)", name: "ar_IQ"},
+                {displayName: "Arabic (Jordan)", name: "ar_JO"},
+                {displayName: "Arabic (Kuwait)", name: "ar_KW"},
+                {displayName: "Arabic (Lebanon)", name: "ar_LB"},
+                {displayName: "Arabic (Libya)", name: "ar_LY"},
+                {displayName: "Arabic (Morocco)", name: "ar_MA"},
+                {displayName: "Arabic (Oman)", name: "ar_OM"},
+                {displayName: "Arabic (Qatar)", name: "ar_QA"},
+                {displayName: "Arabic (Saudi Arabia)", name: "ar_SA"},
+                {displayName: "Arabic (Sudan)", name: "ar_SD"},
+                {displayName: "Arabic (Syria)", name: "ar_SY"},
+                {displayName: "Arabic (Tunisia)", name: "ar_TN"},
+                {displayName: "Arabic (United Arab Emirates)", name: "ar_AE"},
+                {displayName: "Arabic (Yemen)", name: "ar_YE"},
+                {displayName: "Arabic", name: "ar"},
+                {displayName: "Belarusian (Belarus)", name: "be_BY"},
+                {displayName: "Belarusian", name: "be"},
+                {displayName: "Bulgarian (Bulgaria)", name: "bg_BG"},
+                {displayName: "Bulgarian", name: "bg"},
+                {displayName: "Catalan (Spain)", name: "ca_ES"},
+                {displayName: "Catalan", name: "ca"},
+                {displayName: "Chinese (China)", name: "zh_CN"},
+                {displayName: "Chinese (Hong Kong)", name: "zh_HK"},
+                {displayName: "Chinese (Singapore)", name: "zh_SG"},
+                {displayName: "Chinese (Taiwan)", name: "zh_TW"},
+                {displayName: "Chinese", name: "zh"},
+                {displayName: "Croatian (Croatia)", name: "hr_HR"},
+                {displayName: "Croatian", name: "hr"},
+                {displayName: "Czech (Czech Republic)", name: "cs_CZ"},
+                {displayName: "Czech", name: "cs"},
+                {displayName: "Danish (Denmark)", name: "da_DK"},
+                {displayName: "Danish", name: "da"},
+                {displayName: "Dutch (Belgium)", name: "nl_BE"},
+                {displayName: "Dutch (Netherlands)", name: "nl_NL"},
+                {displayName: "Dutch", name: "nl"},
+                {displayName: "English (Australia)", name: "en_AU"},
+                {displayName: "English (Canada)", name: "en_CA"},
+                {displayName: "English (India)", name: "en_IN"},
+                {displayName: "English (Ireland)", name: "en_IE"},
+                {displayName: "English (Malta)", name: "en_MT"},
+                {displayName: "English (New Zealand)", name: "en_NZ"},
+                {displayName: "English (Philippines)", name: "en_PH"},
+                {displayName: "English (Singapore)", name: "en_SG"},
+                {displayName: "English (South Africa)", name: "en_ZA"},
+                {displayName: "English (United Kingdom)", name: "en_GB"},
+                {displayName: "English (United States)", name: "en_US"},
+                {displayName: "English", name: "en"},
+                {displayName: "Estonian (Estonia)", name: "et_EE"},
+                {displayName: "Estonian", name: "et"},
+                {displayName: "Finnish (Finland)", name: "fi_FI"},
+                {displayName: "Finnish", name: "fi"},
+                {displayName: "French (Belgium)", name: "fr_BE"},
+                {displayName: "French (Canada)", name: "fr_CA"},
+                {displayName: "French (France)", name: "fr_FR"},
+                {displayName: "French (Luxembourg)", name: "fr_LU"},
+                {displayName: "French (Switzerland)", name: "fr_CH"},
+                {displayName: "French", name: "fr"},
+                {displayName: "German (Austria)", name: "de_AT"},
+                {displayName: "German (Germany)", name: "de_DE"},
+                {displayName: "German (Greece)", name: "de_GR"},
+                {displayName: "German (Luxembourg)", name: "de_LU"},
+                {displayName: "German (Switzerland)", name: "de_CH"},
+                {displayName: "German", name: "de"},
+                {displayName: "Greek (Cyprus)", name: "el_CY"},
+                {displayName: "Greek (Greece)", name: "el_GR"},
+                {displayName: "Greek", name: "el"},
+                {displayName: "Hebrew (Israel)", name: "iw_IL"},
+                {displayName: "Hebrew", name: "iw"},
+                {displayName: "Hindi (India)", name: "hi_IN"},
+                {displayName: "Hindi", name: "hi"},
+                {displayName: "Hungarian (Hungary)", name: "hu_HU"},
+                {displayName: "Hungarian", name: "hu"},
+                {displayName: "Icelandic (Iceland)", name: "is_IS"},
+                {displayName: "Icelandic", name: "is"},
+                {displayName: "Indonesian (Indonesia)", name: "in_ID"},
+                {displayName: "Indonesian", name: "in"},
+                {displayName: "Irish (Ireland)", name: "ga_IE"},
+                {displayName: "Irish", name: "ga"},
+                {displayName: "Italian (Italy)", name: "it_IT"},
+                {displayName: "Italian (Switzerland)", name: "it_CH"},
+                {displayName: "Italian", name: "it"},
+                {displayName: "Japanese (Japan)", name: "ja_JP"},
+                {displayName: "Japanese (Japan,JP)", name: "ja_JP_JP_#u-ca-japanese"},
+                {displayName: "Japanese", name: "ja"},
+                {displayName: "Korean (South Korea)", name: "ko_KR"},
+                {displayName: "Korean", name: "ko"},
+                {displayName: "Latvian (Latvia)", name: "lv_LV"},
+                {displayName: "Latvian", name: "lv"},
+                {displayName: "Lithuanian (Lithuania)", name: "lt_LT"},
+                {displayName: "Lithuanian", name: "lt"},
+                {displayName: "Macedonian (Macedonia)", name: "mk_MK"},
+                {displayName: "Macedonian", name: "mk"},
+                {displayName: "Malay (Malaysia)", name: "ms_MY"},
+                {displayName: "Malay", name: "ms"},
+                {displayName: "Maltese (Malta)", name: "mt_MT"},
+                {displayName: "Maltese", name: "mt"},
+                {displayName: "Norwegian (Norway)", name: "no_NO"},
+                {displayName: "Norwegian (Norway,Nynorsk)", name: "no_NO_NY"},
+                {displayName: "Norwegian", name: "no"},
+                {displayName: "Polish (Poland)", name: "pl_PL"},
+                {displayName: "Polish", name: "pl"},
+                {displayName: "Portuguese (Brazil)", name: "pt_BR"},
+                {displayName: "Portuguese (Portugal)", name: "pt_PT"},
+                {displayName: "Portuguese", name: "pt"},
+                {displayName: "Romanian (Romania)", name: "ro_RO"},
+                {displayName: "Romanian", name: "ro"},
+                {displayName: "Russian (Russia)", name: "ru_RU"},
+                {displayName: "Russian", name: "ru"},
+                {displayName: "Serbian (Bosnia and Herzegovina)", name: "sr_BA"},
+                {displayName: "Serbian (Latin)", name: "sr__#Latn"},
+                {displayName: "Serbian (Latin,Bosnia and Herzegovina)", name: "sr_BA_#Latn"},
+                {displayName: "Serbian (Latin,Montenegro)", name: "sr_ME_#Latn"},
+                {displayName: "Serbian (Latin,Serbia)", name: "sr_RS_#Latn"},
+                {displayName: "Serbian (Montenegro)", name: "sr_ME"},
+                {displayName: "Serbian (Serbia and Montenegro)", name: "sr_CS"},
+                {displayName: "Serbian (Serbia)", name: "sr_RS"},
+                {displayName: "Serbian", name: "sr"},
+                {displayName: "Slovak (Slovakia)", name: "sk_SK"},
+                {displayName: "Slovak", name: "sk"},
+                {displayName: "Slovenian (Slovenia)", name: "sl_SI"},
+                {displayName: "Slovenian", name: "sl"},
+                {displayName: "Spanish (Argentina)", name: "es_AR"},
+                {displayName: "Spanish (Bolivia)", name: "es_BO"},
+                {displayName: "Spanish (Chile)", name: "es_CL"},
+                {displayName: "Spanish (Colombia)", name: "es_CO"},
+                {displayName: "Spanish (Costa Rica)", name: "es_CR"},
+                {displayName: "Spanish (Cuba)", name: "es_CU"},
+                {displayName: "Spanish (Dominican Republic)", name: "es_DO"},
+                {displayName: "Spanish (Ecuador)", name: "es_EC"},
+                {displayName: "Spanish (El Salvador)", name: "es_SV"},
+                {displayName: "Spanish (Guatemala)", name: "es_GT"},
+                {displayName: "Spanish (Honduras)", name: "es_HN"},
+                {displayName: "Spanish (Mexico)", name: "es_MX"},
+                {displayName: "Spanish (Nicaragua)", name: "es_NI"},
+                {displayName: "Spanish (Panama)", name: "es_PA"},
+                {displayName: "Spanish (Paraguay)", name: "es_PY"},
+                {displayName: "Spanish (Peru)", name: "es_PE"},
+                {displayName: "Spanish (Puerto Rico)", name: "es_PR"},
+                {displayName: "Spanish (Spain)", name: "es_ES"},
+                {displayName: "Spanish (United States)", name: "es_US"},
+                {displayName: "Spanish (Uruguay)", name: "es_UY"},
+                {displayName: "Spanish (Venezuela)", name: "es_VE"},
+                {displayName: "Spanish", name: "es"},
+                {displayName: "Swedish (Sweden)", name: "sv_SE"},
+                {displayName: "Swedish", name: "sv"},
+                {displayName: "Thai (Thailand)", name: "th_TH"},
+                {displayName: "Thai (Thailand,TH)", name: "th_TH_TH_#u-nu-thai"},
+                {displayName: "Thai", name: "th"},
+                {displayName: "Turkish (Turkey)", name: "tr_TR"},
+                {displayName: "Turkish", name: "tr"},
+                {displayName: "Ukrainian (Ukraine)", name: "uk_UA"},
+                {displayName: "Ukrainian", name: "uk"},
+                {displayName: "Vietnamese (Vietnam)", name: "vi_VN"}
             ];
         };
 

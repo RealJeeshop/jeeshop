@@ -1,34 +1,33 @@
 package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.CatalogItem;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
-import org.rembx.jeeshop.role.JeeshopRoles;
 
-import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 
 /**
+ * Sub-resource of Catalogs, Categories, Products and Skus resources.
  * @Author remi
  */
+
 public class PresentationResource {
 
     private Presentation existingPresentation;
     private CatalogItem parentCatalogItem;
     private String locale;
 
+    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    public PresentationResource(Presentation presentation, String locale, EntityManager entityManager, CatalogItem parentCatalogItem){
-        this.entityManager = entityManager;
-        this.existingPresentation = presentation;
-        this.parentCatalogItem = parentCatalogItem;
-        this.locale = locale;
+    public PresentationResource() {
     }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -39,15 +38,18 @@ public class PresentationResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
     public void delete(){
         checkEntityNotNull();
         parentCatalogItem.getPresentationByLocale().remove(existingPresentation.getLocale());
-        entityManager.remove(existingPresentation);
+        entityManager.merge(parentCatalogItem);
+        entityManager.remove(entityManager.merge(existingPresentation));
     };
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
     public Presentation createLocalizedPresentation(Presentation presentation){
 
         if (existingPresentation != null) {
@@ -57,6 +59,7 @@ public class PresentationResource {
         entityManager.persist(presentation);
 
         parentCatalogItem.getPresentationByLocale().put(locale,presentation);
+        entityManager.merge(parentCatalogItem);
 
         return presentation;
     }
@@ -64,7 +67,8 @@ public class PresentationResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Presentation modifyLocalizedPresentation(Presentation presentation, @PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale){
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    public Presentation modifyLocalizedPresentation(Presentation presentation){
         checkEntityNotNull();
 
         if (existingPresentation == null) {
@@ -73,8 +77,6 @@ public class PresentationResource {
         }
         entityManager.merge(presentation);
 
-        parentCatalogItem.getPresentationByLocale().put(locale,presentation);
-
         return presentation;
     }
 
@@ -82,5 +84,12 @@ public class PresentationResource {
         if (existingPresentation == null){
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+    }
+
+    public PresentationResource init(Presentation presentation, String locale, CatalogItem parentCatalogItem){
+        this.existingPresentation = presentation;
+        this.locale = locale;
+        this.parentCatalogItem = parentCatalogItem;
+        return this;
     }
 }
