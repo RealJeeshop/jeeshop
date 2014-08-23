@@ -145,7 +145,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="locale in locales">
-                        <td style="width:90%"  ng-click="addOrEditPresentation('lg', locale)" style="cursor:pointer">{{locale}}</td>
+                        <td style="width:90%;cursor:pointer"  ng-click="addOrEditPresentation('lg', locale)" style="cursor:pointer">{{locale}}</td>
                         <td class="text-right">
                             <a ng-click="removeItem($index, 'This will delete presentation for locale '+locale)" href="#" class="glyphicon glyphicon-trash"/>
                         </td>
