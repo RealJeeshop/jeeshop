@@ -23,7 +23,9 @@
 <body>
 
 <script type="text/javascript" src="js/stringview-min.js"></script>
+<script type="text/javascript" src="js/angular-file-upload-html5-shim.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-file-upload.min.js"></script>
 <script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
 <script type="text/javascript" src="modules/users/js/login.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
@@ -38,7 +40,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><em>Jeeshop Admin</em></a>
+            <span class="navbar-brand"><em>Jeeshop Admin</em></span>
         </div>
         <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl">
             <ul class="nav navbar-nav navbar-left">
@@ -70,31 +72,31 @@
         <div class="col-sm-3 col-md-2 sidebar" >
             <ul class="nav nav-sidebar">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('orders')"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('orders')"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('users') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('users')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('users')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('newsletters')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('newsletters')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                 <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage your catalog items">
-                    <a href ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }">
-                    <a href ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Inventory</span></a>
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Inventory</span></a>
                 </li>
             </ul>
         </div>

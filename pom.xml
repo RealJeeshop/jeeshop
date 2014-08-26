@@ -42,6 +42,7 @@
         <version.mockito>1.9.5</version.mockito>
         <version.commons-lang>2.6</version.commons-lang>
 		<version.commons-collections>3.2.1</version.commons-collections>
+        <version.commons-fileupload>1.3.1</version.commons-fileupload>
 
         <version.maven.war.plugin>2.4</version.maven.war.plugin>
         <version.failsafe.plugin>2.17</version.failsafe.plugin>
@@ -91,6 +92,12 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${version.commons-fileupload}</version>
+            </dependency>
 
             <dependency>
                 <groupId>commons-lang</groupId>

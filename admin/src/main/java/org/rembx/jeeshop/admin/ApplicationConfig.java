@@ -1,9 +1,6 @@
 package org.rembx.jeeshop.admin;
 
-import org.rembx.jeeshop.catalog.Catalogs;
-import org.rembx.jeeshop.catalog.Categories;
-import org.rembx.jeeshop.catalog.Products;
-import org.rembx.jeeshop.catalog.SKUs;
+import org.rembx.jeeshop.catalog.*;
 import org.rembx.jeeshop.user.UserResource;
 
 import javax.ws.rs.ApplicationPath;
@@ -26,6 +23,7 @@ public class ApplicationConfig extends Application {
         classes.add(Products.class);
         classes.add(SKUs.class);
         classes.add(UserResource.class);
+        classes.add(Medias.class);
         return classes;
     }
 }

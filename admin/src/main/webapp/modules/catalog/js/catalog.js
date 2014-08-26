@@ -80,7 +80,7 @@
                         ctrl.isProcessing = false;
                     });
 
-                }
+                };
 
                 $scope.findEntries();
 
@@ -195,6 +195,7 @@
         };
 
         this.activateCreationMode = function () {
+            ctrl.alerts.push({type: 'info', msg: 'Save this item to access localized content (texts, images, ...) configuration'});
             ctrl.isCreationModeActive = true;
         }
 
@@ -348,7 +349,7 @@
                 .success(function (data) {
                     $scope.locales = data;
                 });
-        }
+        };
 
         $scope.locales = [];
         $scope.locale = null; // set when edition mode
@@ -392,7 +393,7 @@
         $scope.$watch('accordion.open', function (isOpen) {
             if (isOpen) {
                 if ($scope.catalogEntryCtrl.entry.id == null) {
-                    return;
+                    $scope.locales = [];
                 }
                 getAvailableLocales();
             }
@@ -412,24 +413,31 @@
                         return $scope.locale;
                     },
                     presentationsResourceURI: function () {
-                        return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';;
+                        return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';
+                    },
+                    resource: function(){
+                        return $scope.resource;
+                    },
+                    entryId: function(){
+                        return $scope.catalogEntryCtrl.entry.id;
                     }
                 }
             });
 
-            modalInstance.result.then(function (result) {
+            modalInstance.result.then(function (errors) {
                 $scope.catalogEntryCtrl.alerts = [];
-                if (result!=null){
-                    $scope.catalogEntryCtrl.alerts.push(result);
+                if (errors.length > 0){
+                    $scope.catalogEntryCtrl.alerts.push(errors[0]);
                 }
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
 
-        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, locales, locale, presentationsResourceURI) {
+        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, locales, locale, presentationsResourceURI, $upload, entryId, resource) {
 
             ctrl = this;
+
             $scope.locales = locales;
             $scope.locale = locale; // set when edition mode
             $scope.selectedLocale = null;
@@ -447,7 +455,7 @@
                         $scope.presentation = {};
                         $scope.locale = null;
                     });
-            }
+            };
 
 
             $scope.isEditionMode = function () {
@@ -460,23 +468,55 @@
 
             $scope.isLocaleSelected = function () {
                 return $scope.selectedLocale != null;
-            }
+            };
 
             $scope.selectLocale = function () {
                 getPresentationByLocale($scope.selectedLocale);
-            }
+            };
+
+            $scope.onFileSelect = function($files) {
+                //$files: an array of files selected, each file has name, size, and type.
+                for (var i = 0; i < $files.length; i++) {
+                    var file = $files[i];
+                    $scope.upload = $upload.upload({
+                        url: 'rs/medias/'+ resource+'/'+entryId+'/upload', //upload.php script, node.js route, or servlet url
+                        method: 'POST',
+                        //headers: {'header-key': 'header-value'},
+                        withCredentials: true,
+                        file: file // or list of files ($files) for html5 only
+                        //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
+                        // customize file formData name ('Content-Disposition'), server side file variable name.
+                        //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
+                        // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+                        //formDataAppender: function(formData, key, val){}
+                    }).progress(function(evt) {
+                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    }).success(function(data, status, headers, config) {
+                        // file is uploaded successfully
+                        console.log(data);
+                    });
+                    //.error(...)
+                    //.then(success, error, progress);
+                    // access or attach event listeners to the underlying XMLHttpRequest.
+                    //.xhr(function(xhr){xhr.upload.addEventListener(...)})
+                }
+                /* alternative way of uploading, send the file binary with the file's content-type.
+                 Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
+                 It could also be used to monitor the progress of a normal http post/put request with large data*/
+                //$scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+            };
 
             $scope.save = function () {
+                var errors = new Array();
                 $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
                     .success(function (data) {
                         $scope.presentation = data;
-                        $modalInstance.close();
+                        $modalInstance.close(errors);
                     })
                     .error(function (data) {
-                        $modalInstance.close({type: 'danger', msg: 'Technical error'});
+                        errors.push({type: 'danger', msg: 'Technical error'});
+                        $modalInstance.close(errors);
                     });
-
-                $modalInstance.close(ctrl.result);
             };
 
             $scope.add = function () {
@@ -490,7 +530,7 @@
                     .error(function (data) {
                         $modalInstance.close({type: 'danger', msg: 'Technical error'});
                     });
-            }
+            };
 
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');

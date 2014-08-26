@@ -117,6 +117,30 @@
                                       placeholder="Description..." rows="4" maxlength="10000"></textarea>
                         </div>
                     </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="thumbnail">Thumbnail</label>
+                            <input type="file" id="thumbnail" ng-file-select="onFileSelect($files)">
+                            <p class="help-block">Select a thumbnail image</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="smallImage">Small image</label>
+                            <input type="file" id="smallImage" ng-file-select="onFileSelect($files)">
+                            <p class="help-block">Select a small image</p>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="largeImage">Large image</label>
+                            <input type="file" id="largeImage" ng-file-select="onFileSelect($files)">
+                            <p class="help-block">Select a large image</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="video">Video</label>
+                            <input type="file" id="video" ng-file-select="onFileSelect($files)">
+                            <p class="help-block">Select a video</p>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -126,7 +150,7 @@
             </div>
         </script>
 
-        <accordion close-others="oneAtATime">
+        <accordion close-others="oneAtATime" ng-show="catalogEntryCtrl.isEditionModeActive">
             <accordion-group is-open="accordion.open">
                 <accordion-heading>
                     <span style="cursor:pointer">Presentations per locale</span> <i style="cursor:pointer" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': accordion.open, 'glyphicon-chevron-right': !accordion.open}"></i>

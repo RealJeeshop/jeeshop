@@ -3,11 +3,12 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,6 +47,7 @@ public class PresentationResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public void delete() {
         checkEntityNotNull();
         parentCatalogItem.getPresentationByLocale().remove(presentation.getLocale());
@@ -59,6 +61,7 @@ public class PresentationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public Presentation createLocalizedPresentation(Presentation presentation) {
 
         if (this.presentation != null) {
@@ -78,6 +81,7 @@ public class PresentationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public Presentation modifyLocalizedPresentation(Presentation presentation) {
         checkEntityNotNull();
 
