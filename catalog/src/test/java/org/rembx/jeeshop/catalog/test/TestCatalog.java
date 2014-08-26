@@ -50,6 +50,8 @@ public class TestCatalog {
         Category childCat3Expired = new Category("childCat3", "Child category 3 expired", now, yesterday, false);
         Category childCat4Disabled = new Category("childCat4", "Child category 4 disabled", now, tomorrow, true);
         Category childCat5WithPresentation = new Category("childCat5", "Child category 5 with presentation", now, tomorrow, false);
+        Category childCat6WithoutPresentation = new Category("childCat6", "Child category 6 without presentation", now, tomorrow, true);
+        childCat6WithoutPresentation.setPresentationByLocale(new HashMap<>());
         Presentation presentationUKChildCat5 = new Presentation("en_GB","Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
         Presentation presentationUSChildCat5 = new Presentation("en_US","Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
         childCat5WithPresentation.setPresentationByLocale(new HashMap<String, Presentation>(){{
@@ -72,7 +74,7 @@ public class TestCatalog {
         sku5.setDiscounts(Arrays.asList(discount1));
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));
-        rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation));
+        rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation,childCat6WithoutPresentation));
         childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled,product4));
         product1.setChildSKUs(Arrays.asList(sku1,sku2,sku3,sku4, sku5));
 
@@ -109,6 +111,10 @@ public class TestCatalog {
 
     public Category aCategoryWithPresentation(){
         return aRootCategoryWithChildCategories().getChildCategories().get(4);
+    }
+
+    public Category aCategoryWithoutPresentation(){
+        return aRootCategoryWithChildCategories().getChildCategories().get(5);
     }
 
     public Category anExpiredCategory(){
