@@ -1,7 +1,26 @@
 <h4>Welcome to Jeeshop Admin</h4>
 <p class="help-block" ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.isAuthenticated()">Please login to manage online store</p>
 <br/>
-<div class="row placeholders">
+
+<div class="visible-xs" ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.isAuthenticated()">
+
+    <form class="navbar-form navbar-right" name="loginFormMobile" ng-submit="loginCtrl.login()"
+          ng-hide="loginCtrl.isAuthenticated()">
+        <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
+        <div class="form-group">
+            <input type="text" class="form-control" id="loginMobile" placeholder="User name..."
+                   ng-model="loginCtrl.credentials.login" ng-required="true"/>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" id="passwordMobile" placeholder="Password..."
+                   ng-model="loginCtrl.credentials.password" ng-required="true"/>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="form-control" value="log in"/>
+        </div>
+    </form>
+</div>
+<div class="row placeholders" ng-show="loginCtrl.isAuthenticated()">
     <div class="col-xs-6 col-sm-3 placeholder">
         <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('catalog')">
             <span class="glyphicon glyphicon-book"></span>
