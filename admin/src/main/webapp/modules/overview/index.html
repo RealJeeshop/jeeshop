@@ -1,52 +1,105 @@
-<h4>Welcome to Jeeshop Admin</h4>
-<p class="help-block" ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.isAuthenticated()">Please login to manage online store</p>
-<br/>
+<div ng-controller="LoginController as loginCtrl">
 
-<div class="visible-xs" ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.isAuthenticated()">
+    <h3 ng-show="loginCtrl.isAuthenticated()" class="text-center page-header">Overview</h3>
+    <h3 ng-hide="loginCtrl.isAuthenticated()" class="text-center page-header">Welcome to Jeeshop Admin</h3>
+    <p class=" text-center help-block"
+       ng-hide="loginCtrl.isAuthenticated()">
+        Please login to manage online store</p>
+    <br/>
 
-    <form class="navbar-form navbar-right" name="loginFormMobile" ng-submit="loginCtrl.login()"
-          ng-hide="loginCtrl.isAuthenticated()">
-        <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
-        <div class="form-group">
-            <input type="text" class="form-control" id="loginMobile" placeholder="User name..."
-                   ng-model="loginCtrl.credentials.login" ng-required="true"/>
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" id="passwordMobile" placeholder="Password..."
-                   ng-model="loginCtrl.credentials.password" ng-required="true"/>
-        </div>
-        <div class="form-group">
-            <input type="submit" class="form-control" value="log in"/>
-        </div>
-    </form>
-</div>
-<div class="row placeholders" ng-show="loginCtrl.isAuthenticated()">
-    <div class="col-xs-6 col-sm-3 placeholder">
-        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('catalog')">
-            <span class="glyphicon glyphicon-book"></span>
-        </button>
-        <h4>Catalog</h4>
-        <span class="text-muted">Manage store items</span>
+    <div style="width:90%" class="text-center visible-xs"
+         ng-hide="loginCtrl.isAuthenticated()">
+
+        <form class="navbar-form navbar-right" name="loginFormMobile" ng-submit="loginCtrl.login()"
+              ng-hide="loginCtrl.isAuthenticated()">
+            <span class="alert alert-danger"
+                  ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
+
+            <div class="form-group">
+                <label for="loginMobile">Login</label>
+                <input type="text" class="form-control" id="loginMobile" placeholder="Enter login..."
+                       ng-model="loginCtrl.credentials.login" ng-required="true"/>
+            </div>
+            <div class="form-group">
+                <label for="passwordMobile">Password</label>
+                <input type="password" class="form-control" id="passwordMobile" placeholder="Enter password..."
+                       ng-model="loginCtrl.credentials.password" ng-required="true"/>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Log in"/>
+        </form>
     </div>
-    <div class="col-xs-6 col-sm-3 placeholder">
-        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('orders')">
-            <span class="glyphicon glyphicon-shopping-cart"></span>
-        </button>
-        <h4>Orders</h4>
-        <span class="text-muted">Track customers orders</span>
+    <div class="row placeholders" ng-show="loginCtrl.isAuthenticated()">
+        <div class="col-xs-6 col-sm-3 placeholder">
+            <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('catalog')">
+                <span class="glyphicon glyphicon-book"></span>
+            </button>
+            <h4>Catalog</h4>
+            <span class="text-muted">Manage store items</span>
+        </div>
+        <div class="col-xs-6 col-sm-3 placeholder">
+            <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('orders')">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+            </button>
+            <h4>Orders</h4>
+            <span class="text-muted">Track customers orders</span>
+        </div>
+        <div class="col-xs-6 col-sm-3 placeholder">
+            <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('users')">
+                <span class="glyphicon glyphicon-user"></span>
+            </button>
+            <h4>Customers</h4>
+            <span class="text-muted">Manage customers</span>
+        </div>
+        <div class="col-xs-6 col-sm-3 placeholder">
+            <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('statistics')">
+                <span class="glyphicon glyphicon-stats"></span>
+            </button>
+            <h4>Stats</h4>
+            <span class="text-muted">Show statistics</span>
+        </div>
     </div>
-    <div class="col-xs-6 col-sm-3 placeholder">
-        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('users')">
-            <span class="glyphicon glyphicon-user"></span>
-        </button>
-        <h4>Customers</h4>
-        <span class="text-muted">Manage customers</span>
-    </div>
-    <div class="col-xs-6 col-sm-3 placeholder">
-        <button type="button" class="btn btn-default btn-lg" ng-click="sideMenuCtrl.selectEntry('statistics')">
-            <span class="glyphicon glyphicon-stats"></span>
-        </button>
-        <h4>Stats</h4>
-        <span class="text-muted">Show statistics</span>
+    <div class="row" ng-show="loginCtrl.isAuthenticated()">
+        <h4>Last Orders <small>(Fake list, to be implemented)</small></h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>User</th>
+                <th>Product(s)</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>999</td>
+                <td>John Smith</td>
+                <td>Hyper Bike VTT 33</td>
+                <td>Pending</td>
+                <td>2014-06-11 19h32:56</td>
+            </tr>
+            <tr>
+                <td>998</td>
+                <td>Rachel Doe</td>
+                <td>Mega Bike VTC Move</td>
+                <td>Complete</td>
+                <td>2014-06-11 19h32:56</td>
+            </tr>
+            <tr>
+                <td>997</td>
+                <td>Angelina Gomez</td>
+                <td>Left hand brackets</td>
+                <td>Fullfilled</td>
+                <td>2014-06-11 19h32:56</td>
+            </tr>
+            <tr>
+                <td>996</td>
+                <td>Mike Heinz</td>
+                <td>Hyper swim VTT, Left hand brackets ...</td>
+                <td>Fullfilled</td>
+                <td>2014-06-11 19h32:56</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
