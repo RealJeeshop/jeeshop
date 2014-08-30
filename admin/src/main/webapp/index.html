@@ -49,7 +49,7 @@
                 <li><a href="#">Help</a></li>
             </ul>
 
-            <form class="navbar-form navbar-right" name="loginForm" ng-submit="loginCtrl.login()"
+            <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
                   ng-hide="loginCtrl.isAuthenticated()">
                 <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
                 <input type="text" class="form-control" name="login" placeholder="User name..."

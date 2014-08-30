@@ -7,7 +7,7 @@
         Please login to manage online store</p>
     <br/>
 
-    <div style="width:90%" class="text-left visible-xs"
+    <div style="width:90%" class="text-left visible-xs visible-sm"
          ng-hide="loginCtrl.isAuthenticated()">
 
         <form name="loginFormMobile" ng-submit="loginCtrl.login()">
@@ -59,7 +59,7 @@
             <span class="text-muted">Show statistics</span>
         </div>
     </div>
-    <div class="row" ng-show="loginCtrl.isAuthenticated()">
+    <div class="row visible-sm visible-md visible-lg" ng-show="loginCtrl.isAuthenticated()">
         <h4>Last Orders <small>(Fake list, to be implemented)</small></h4>
         <table class="table table-striped">
             <thead>
