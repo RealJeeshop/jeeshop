@@ -104,7 +104,7 @@ INSERT INTO Product_SKU (productId, skuId, orderIdx) VALUES
 -- Contenu de la table Discount
 --
 
-INSERT INTO Discount (id, description, disabled, endDate, name, startDate, amount, triggerRule, type, uniqueUse, usesPerCustomer, voucherCode) VALUES
+INSERT INTO Discount (id, description, disabled, endDate, name, startDate, value, triggerRule, type, uniqueUse, usesPerCustomer, voucherCode) VALUES
 (1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1, 'ORDER_AMOUNT', 'DISCOUNT_RATE', b'1', 1, NULL);
 
 

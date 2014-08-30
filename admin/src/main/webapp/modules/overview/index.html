@@ -11,8 +11,9 @@
          ng-hide="loginCtrl.isAuthenticated()">
 
         <form name="loginFormMobile" ng-submit="loginCtrl.login()">
-            <span class="alert alert-danger"
-                  ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
+            <div class="text-center" ng-show="loginCtrl.hasAuthenticationFailed()"><span class="alert alert-danger"
+                  >Authentication has Failed!</span>
+            </div>
 
             <div class="form-group">
                 <label for="loginMobile">Login</label>

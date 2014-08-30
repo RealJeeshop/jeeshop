@@ -155,7 +155,7 @@ public class SKUs {
     @GET
     @Path("/{skuId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Discount> findDiscounts(@PathParam("skuId") @NotNull Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);

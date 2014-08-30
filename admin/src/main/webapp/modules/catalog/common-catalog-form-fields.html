@@ -38,27 +38,28 @@
 
 <div class="row">
 
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.name.$invalid && catalogItemForm.name.$dirty}">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" ng-model="catalogEntryCtrl.entry.name" required="true"
+        <input type="text" class="form-control" name="name" id="name" ng-model="catalogEntryCtrl.entry.name" required="true"
                placeholder="Name..." maxlength="50"/>
+        <p class="help-block" ng-show="catalogItemForm.name.$error.required">Name is required</p>
     </div>
 
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.description.$invalid && catalogItemForm.description.$dirty}">
         <label for="name">Description</label>
         <textarea class="form-control" id="description" ng-model="catalogEntryCtrl.entry.description"
-                  placeholder="Description..." rows="2" maxlength="255"></textarea>
+                  placeholder="Description..." rows="2" maxlength="255" name="description"></textarea>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6" ng-controller="DatepickerDemoCtrl">
+    <div class="col-md-6" ng-controller="DatepickerDemoCtrl" ng-class="{'has-error': catalogItemForm.startDate.$invalid && catalogItemForm.startDate.$dirty}">
         <label for="startDate">Start Date</label>
 
         <p class="input-group">
             <input type="text" id="startDate" class="form-control" datepicker-popup
                    ng-model="catalogEntryCtrl.entry.startDate" is-open="opened" datepicker-options="dateOptions"
-                   close-text="Close"/>
+                   close-text="Close" name="startDate"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event)"><i
                         class="glyphicon glyphicon-calendar"></i></button>
@@ -66,13 +67,13 @@
         </p>
     </div>
 
-    <div class="col-md-6" ng-controller="DatepickerDemoCtrl">
+    <div class="col-md-6" ng-controller="DatepickerDemoCtrl" ng-class="{'has-error': catalogItemForm.endDate.$invalid && catalogItemForm.endDate.$dirty}">
         <label for="startDate">End Date</label>
 
         <p class="input-group">
             <input type="text" id="endDate" class="form-control" datepicker-popup
                    ng-model="catalogEntryCtrl.entry.endDate" is-open="opened" datepicker-options="dateOptions"
-                   close-text="Close"/>
+                   close-text="Close" name="endDate"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event)"><i
                         class="glyphicon glyphicon-calendar"></i></button>

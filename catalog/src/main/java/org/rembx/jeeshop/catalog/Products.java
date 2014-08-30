@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
@@ -180,6 +181,25 @@ public class Products {
         else
             return catalogItemFinder.findVisibleCatalogItems(sKU, childSKUs, locale);
     }
+
+    @GET
+    @Path("/{productId}/discounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public List<Discount> findDiscounts(@PathParam("productId") @NotNull Long productId) {
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+        List<Discount> discounts = product.getDiscounts();
+        if (discounts.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        if (isAdminUser(sessionContext))
+            return discounts;
+        else
+            return catalogItemFinder.findVisibleCatalogItems(discount, discounts, null);
+    }
+
 
     private void checkNotNull(Product product) {
         if (product == null) {

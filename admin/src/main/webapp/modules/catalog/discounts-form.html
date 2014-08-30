@@ -1,0 +1,78 @@
+<div class="text-left">
+    <form name="catalogItemForm"
+          ng-submit="catalogItemForm.$valid && catalogEntryCtrl.createOrEdit()" novalidate>
+
+        <div common-catalog-form-fields></div>
+
+        <div class="row">
+            <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.voucherCode.$invalid && catalogItemForm.voucherCode.$dirty}">
+                <label for="voucherCode">Voucher code</label>
+                <input type="text" class="form-control" name="voucherCode" id="voucherCode" ng-model="catalogEntryCtrl.entry.voucherCode"
+                       placeholder="Enter voucher code..." maxlength="100"/>
+                <p class="help-block">Voucher code used by customers</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="type">Type</label>
+                <select class="form-control" name="type" ng-model="catalogEntryCtrl.entry.type" id="type">
+                    <option value="DISCOUNT_RATE">Discount rate</option>
+                    <option value="ORDER_DISCOUNT_AMOUNT">Order amount discount</option>
+                    <option value="SHIPPING_FEE_DISCOUNT_AMOUNT">Shipping fee amount discount</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.value.$invalid && catalogItemForm.value.$dirty}">
+                <label for="discountValue">Value</label>
+                <input type="number" class="form-control" id="discountValue"
+                       ng-model="catalogEntryCtrl.entry.discountValue"
+                       placeholder="Enter a number..." name="value"/>
+                <p class="help-block">Discount value (rate or amount)</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <label for="trigger">Trigger threshold rule</label>
+                <select class="form-control" ng-model="catalogEntryCtrl.entry.triggerRule" id="trigger">
+                    <option value="QUANTITY">Specific quantity</option>
+                    <option value="AMOUNT">Specific amount</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.triggerValue.$invalid && catalogItemForm.triggerValue.$dirty}">
+                <label for="triggerValue">Threshold</label>
+                <input type="number" class="form-control" id="triggerValue"
+                       ng-model="catalogEntryCtrl.entry.triggerValue"
+                       placeholder="Enter a number..." name="triggerValue"/>
+                <p class="help-block">Trigger threshold (amount or quantity)</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.usesPerCustomer.$invalid && catalogItemForm.usesPerCustomer.$dirty}">
+                <label for="usesPerCustomer">Number of use per customer</label>
+                <input type="number" class="form-control" id="usesPerCustomer"
+                       ng-model="catalogEntryCtrl.entry.usesPerCustomer"
+                       placeholder="Enter a number..." name="usesPerCustomer"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="uniqueUse">Cumulative</label>
+                <select class="form-control" ng-model="catalogEntryCtrl.entry.uniqueUse" id="uniqueUse">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save"/>
+    </form>
+
+</div>

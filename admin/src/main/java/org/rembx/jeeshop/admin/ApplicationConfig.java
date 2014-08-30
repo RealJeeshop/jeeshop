@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @ApplicationPath("/rs")
-public class ApplicationConfig extends Application {
+public class
+        ApplicationConfig extends Application {
 
     // ======================================
     // =          Business methods          =
@@ -22,6 +23,7 @@ public class ApplicationConfig extends Application {
         classes.add(Categories.class);
         classes.add(Products.class);
         classes.add(SKUs.class);
+        classes.add(Discounts.class);
         classes.add(UserResource.class);
         classes.add(Medias.class);
         return classes;

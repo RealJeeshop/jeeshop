@@ -133,12 +133,13 @@ CREATE TABLE IF NOT EXISTS Discount (
   endDate datetime DEFAULT NULL,
   name varchar(50) NOT NULL,
   startDate datetime DEFAULT NULL,
-  amount double DEFAULT NULL,
-  triggerRule varchar(255) DEFAULT NULL,
-  type varchar(255) DEFAULT NULL,
+  discountValue double DEFAULT NULL,
+  triggerValue double DEFAULT NULL,
+  triggerRule varchar(50) DEFAULT NULL,
+  type varchar(50) DEFAULT NULL,
   uniqueUse bit(1) DEFAULT NULL,
   usesPerCustomer int(11) DEFAULT NULL,
-  voucherCode varchar(255) DEFAULT NULL,
+  voucherCode varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
