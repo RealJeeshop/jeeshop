@@ -11,6 +11,14 @@
         };
     });
 
+    app.directive("presentationsAccordion", function () {
+        return {
+            restrict: "E",
+            templateUrl: "modules/catalog/presentations-accordion.html"
+        };
+    });
+
+
     app.directive("catalogRelationshipsForm", function () {
         function link(scope, element, attrs) {
             attrs.$observe('relationshipsTitle', function (value) {    // xxx est le nom de l'attribut
@@ -35,7 +43,7 @@
         return {
             restrict: "A",
             scope: true,
-            templateUrl: "modules/catalog/catalog-relationships-accordion.html",
+            templateUrl: "modules/catalog/relationships-accordion.html",
             link: link
         };
     });
@@ -415,10 +423,10 @@
                     presentationsResourceURI: function () {
                         return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';
                     },
-                    resource: function(){
+                    resource: function () {
                         return $scope.resource;
                     },
-                    entryId: function(){
+                    entryId: function () {
                         return $scope.catalogEntryCtrl.entry.id;
                     }
                 }
@@ -426,7 +434,7 @@
 
             modalInstance.result.then(function (errors) {
                 $scope.catalogEntryCtrl.alerts = [];
-                if (errors.length > 0){
+                if (errors.length > 0) {
                     $scope.catalogEntryCtrl.alerts.push(errors[0]);
                 }
             }, function () {
@@ -442,6 +450,8 @@
             $scope.locale = locale; // set when edition mode
             $scope.selectedLocale = null;
             $scope.presentation = {};
+            $scope.entryId = entryId;
+            $scope.resource = resource;
 
 
             var getPresentationByLocale = function (locale) {
@@ -474,32 +484,45 @@
                 getPresentationByLocale($scope.selectedLocale);
             };
 
-            $scope.onFileSelect = function($files) {
-                //$files: an array of files selected, each file has name, size, and type.
-                for (var i = 0; i < $files.length; i++) {
-                    var file = $files[i];
-                    $scope.upload = $upload.upload({
-                        url: 'rs/medias/'+ resource+'/'+entryId+'/upload', //upload.php script, node.js route, or servlet url
-                        method: 'POST',
-                        //headers: {'header-key': 'header-value'},
-                        withCredentials: true,
-                        file: file // or list of files ($files) for html5 only
-                        //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-                        // customize file formData name ('Content-Disposition'), server side file variable name.
-                        //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
-                        // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-                        //formDataAppender: function(formData, key, val){}
-                    }).progress(function(evt) {
-                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    }).success(function(data, status, headers, config) {
-                        // file is uploaded successfully
-                        console.log(data);
-                    });
-                    //.error(...)
-                    //.then(success, error, progress);
-                    // access or attach event listeners to the underlying XMLHttpRequest.
-                    //.xhr(function(xhr){xhr.upload.addEventListener(...)})
+            $scope.removePresentationMedia = function (presentationPropertyName){
+                $scope.presentation[presentationPropertyName] = null;
+            };
+
+            $scope.getPresentationMediaURI = function (presentationPropertyName){
+                if ($scope.presentation[presentationPropertyName] != null){
+                    return 'rs/medias/'+$scope.resource+'/'+$scope.entryId+'/'+$scope.locale+'/'+$scope.presentation[presentationPropertyName].uri;
                 }
+            };
+
+            $scope.onFileSelect = function ($files, presentationPropertyName) {
+                //$files: an array of files selected, each file has name, size, and type.
+                //for (var i = 0; i < $files.length; i++) {
+                var file = $files[0];
+
+                var presentationMedia = {
+                    uri: file.name
+                };
+                $scope.presentation[presentationPropertyName] = presentationMedia;
+
+                $scope.upload = $upload.upload({
+                    url: 'rs/medias/' + resource + '/' + entryId + '/' + $scope.locale + '/upload', //upload.php script, node.js route, or servlet url
+                    method: 'POST',
+                    //headers: {'header-key': 'header-value'},
+                    withCredentials: true,
+                    file: file // or list of files ($files) for html5 only
+                    //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
+                    // customize file formData name ('Content-Disposition'), server side file variable name.
+                    //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
+                    // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
+                    //formDataAppender: function(formData, key, val){}
+                }).progress(function (evt) {
+                }).success(function (data, status, headers, config) {
+                });
+                //.error(...)
+                //.then(success, error, progress);
+                // access or attach event listeners to the underlying XMLHttpRequest.
+                //.xhr(function(xhr){xhr.upload.addEventListener(...)})
+                //}
                 /* alternative way of uploading, send the file binary with the file's content-type.
                  Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
                  It could also be used to monitor the progress of a normal http post/put request with large data*/

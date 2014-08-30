@@ -41,23 +41,23 @@ public class Presentation {
     @Column(length = 10000)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(referencedColumnName = "id")
     private Media thumbnail;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(referencedColumnName = "id")
     private Media smallImage;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(referencedColumnName = "id")
     private Media largeImage;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(referencedColumnName = "id")
     private Media video;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(joinColumns = @JoinColumn(name = "presentationId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId"))
     @OrderColumn(name = "orderIdx")
