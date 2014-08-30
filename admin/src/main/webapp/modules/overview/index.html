@@ -1,31 +1,32 @@
 <div ng-controller="LoginController as loginCtrl">
 
     <h3 ng-show="loginCtrl.isAuthenticated()" class="text-center page-header">Overview</h3>
-    <h3 ng-hide="loginCtrl.isAuthenticated()" class="text-center page-header">Welcome to Jeeshop Admin</h3>
+    <h3 ng-hide="loginCtrl.isAuthenticated()" class="text-center page-header">Welcome</h3>
     <p class=" text-center help-block"
        ng-hide="loginCtrl.isAuthenticated()">
         Please login to manage online store</p>
     <br/>
 
-    <div style="width:90%" class="text-center visible-xs"
+    <div style="width:90%" class="text-left visible-xs"
          ng-hide="loginCtrl.isAuthenticated()">
 
-        <form class="navbar-form navbar-right" name="loginFormMobile" ng-submit="loginCtrl.login()"
-              ng-hide="loginCtrl.isAuthenticated()">
+        <form name="loginFormMobile" ng-submit="loginCtrl.login()">
             <span class="alert alert-danger"
                   ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
 
             <div class="form-group">
                 <label for="loginMobile">Login</label>
                 <input type="text" class="form-control" id="loginMobile" placeholder="Enter login..."
-                       ng-model="loginCtrl.credentials.login" ng-required="true"/>
+                       ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="50"/>
             </div>
             <div class="form-group">
                 <label for="passwordMobile">Password</label>
                 <input type="password" class="form-control" id="passwordMobile" placeholder="Enter password..."
-                       ng-model="loginCtrl.credentials.password" ng-required="true"/>
+                       ng-model="loginCtrl.credentials.password" ng-required="true" maxlength="50"/>
             </div>
-            <input type="submit" class="btn btn-primary" value="Log in"/>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Sign in"/>
+            </div>
         </form>
     </div>
     <div class="row placeholders" ng-show="loginCtrl.isAuthenticated()">

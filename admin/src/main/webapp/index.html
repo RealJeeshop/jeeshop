@@ -53,10 +53,10 @@
                   ng-hide="loginCtrl.isAuthenticated()">
                 <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
                 <input type="text" class="form-control" name="login" placeholder="User name..."
-                       ng-model="loginCtrl.credentials.login" ng-required="true"/>
+                       ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="50"/>
                 <input type="password" class="form-control" name="password" placeholder="Password..."
-                       ng-model="loginCtrl.credentials.password" ng-required="true"/>
-                <input type="submit" class="form-control" value="ok"/>
+                       ng-model="loginCtrl.credentials.password" ng-required="true" maxlength="50"/>
+                <input type="submit" class="form-control" value="Sign in"/>
             </form>
 
             <ul ng-show="loginCtrl.isAuthenticated()" class="nav navbar-nav navbar-right">
