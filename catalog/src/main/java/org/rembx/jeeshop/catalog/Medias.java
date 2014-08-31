@@ -80,7 +80,7 @@ public class Medias {
         java.nio.file.Path path;
 
         if (StringUtils.isNotEmpty(System.getenv(OPENSHIFT_DATA_DIR)))
-            path = Paths.get(OPENSHIFT_DATA_DIR).resolve(JEESHOP_MEDIA_DIR);
+            path = Paths.get(System.getenv(OPENSHIFT_DATA_DIR)).resolve(JEESHOP_MEDIA_DIR);
         else
             path = Paths.get(Medias.JEESHOP_MEDIA_DIR);
 
