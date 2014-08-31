@@ -452,6 +452,11 @@
             $scope.presentation = {};
             $scope.entryId = entryId;
             $scope.resource = resource;
+            $scope.isProcessing = {
+                thumbnail:false,
+                largeImage:false,
+                smallImage:false
+            };
 
 
             var getPresentationByLocale = function (locale) {
@@ -490,13 +495,15 @@
 
             $scope.getPresentationMediaURI = function (presentationPropertyName){
                 if ($scope.presentation[presentationPropertyName] != null){
-                    return 'rs/medias/'+$scope.resource+'/'+$scope.entryId+'/'+$scope.locale+'/'+$scope.presentation[presentationPropertyName].uri;
+                    return 'rs/medias/'+$scope.resource+'/'+$scope.entryId+'/'+$scope.locale+'/'
+                        +$scope.presentation[presentationPropertyName].uri+'?hash='+new Date().getTime();
                 }
             };
 
             $scope.onFileSelect = function ($files, presentationPropertyName) {
                 //$files: an array of files selected, each file has name, size, and type.
                 //for (var i = 0; i < $files.length; i++) {
+                $scope.isProcessing[presentationPropertyName] = true;
                 var file = $files[0];
 
                 var presentationMedia = {
@@ -516,9 +523,13 @@
                     // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
                     //formDataAppender: function(formData, key, val){}
                 }).progress(function (evt) {
+
                 }).success(function (data, status, headers, config) {
+                    $scope.isProcessing[presentationPropertyName] = false;
+                })
+                .error(function (data, status, headers, config){
+                    $scope.isProcessing[presentationPropertyName] = false;
                 });
-                //.error(...)
                 //.then(success, error, progress);
                 // access or attach event listeners to the underlying XMLHttpRequest.
                 //.xhr(function(xhr){xhr.upload.addEventListener(...)})
