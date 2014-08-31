@@ -79,6 +79,18 @@ public class Products {
     public void delete(@PathParam("productId") Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
+
+        List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childProducts, product);
+        for (Category category : categoryHolders){
+            category.getChildProducts().remove(product);
+        }
+
+        List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.products, product);
+        for (Discount discount : discountHolders){
+            product.getDiscounts().remove(discount);
+            discount.getSkus().remove(product);
+        }
+
         entityManager.remove(product);
 
     }

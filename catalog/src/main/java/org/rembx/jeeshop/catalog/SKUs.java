@@ -1,10 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.Presentation;
-import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -76,6 +73,18 @@ public class SKUs {
     public void delete(@PathParam("skuId") Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
+
+        List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.childSKUs, sku);
+        for (Product product : productHolders){
+            product.getChildSKUs().remove(sku);
+        }
+
+        List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.skus, sku);
+        for (Discount discount : discountHolders){
+            sku.getDiscounts().remove(discount);
+            discount.getSkus().remove(sku);
+        }
+
         entityManager.remove(sku);
 
     }

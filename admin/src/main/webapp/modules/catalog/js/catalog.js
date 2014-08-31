@@ -109,11 +109,12 @@
                         $http.delete('rs/' + $scope.resource + "/" + ctrl.entries[index].id)
                             .success(function (data) {
                                 ctrl.entries.splice(index, 1);
+                                $scope.findEntries();
                             })
                             .error(function (data) {
                                 ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                             });
-                        $scope.findEntries();
+
                     }, function () {
 
                     });

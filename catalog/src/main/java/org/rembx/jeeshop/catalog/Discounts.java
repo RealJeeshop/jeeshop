@@ -1,9 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.Presentation;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -68,6 +66,17 @@ public class Discounts {
     public void delete(@PathParam("discountId") Long discountId) {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
+
+        List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.discounts, discount);
+        for (Product product : productHolders){
+            product.getDiscounts().remove(discount);
+        }
+
+        List<SKU> skuHolders = catalogItemFinder.findForeignHolder(QSKU.sKU, QSKU.sKU.discounts, discount);
+        for (SKU sku : skuHolders){
+            sku.getDiscounts().remove(discount);
+        }
+
         entityManager.remove(discount);
 
     }

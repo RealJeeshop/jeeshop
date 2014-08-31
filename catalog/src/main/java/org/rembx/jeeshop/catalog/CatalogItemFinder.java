@@ -1,12 +1,13 @@
 package org.rembx.jeeshop.catalog;
 
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.Path;
 import com.mysema.query.types.expr.BooleanExpression;
+import com.mysema.query.types.expr.SimpleExpression;
 import com.mysema.query.types.path.EntityPathBase;
+import com.mysema.query.types.path.ListPath;
 import org.apache.commons.lang.math.NumberUtils;
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.QCatalogItem;
+import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -55,6 +56,16 @@ public class CatalogItemFinder {
         addOffsetAndLimitToQuery(offset, limit, query);
 
         return query.list(entityPathBase);
+    }
+
+
+    public <T extends CatalogItem, P extends CatalogItem> List<P> findForeignHolder(EntityPathBase<P> hp,
+                                                                                    ListPath<T,? extends SimpleExpression<T>> h, T c) {
+
+        return new JPAQuery(entityManager)
+                .from(hp)
+                .where(h.contains(c))
+                .list(hp);
     }
 
     public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPathBase<T> entityPathBase, String searchCriteria, Integer offset, Integer limit) {

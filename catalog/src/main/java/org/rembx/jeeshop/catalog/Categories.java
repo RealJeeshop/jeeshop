@@ -79,6 +79,17 @@ public class Categories {
     public void delete(@PathParam("categoryId") Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
+
+        List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childCategories, category);
+        for (Category categoryHolder : categoryHolders){
+            categoryHolder.getChildCategories().remove(category);
+        }
+
+        List<Catalog> catalogHolders = catalogItemFinder.findForeignHolder(QCatalog.catalog, QCatalog.catalog.rootCategories, category);
+        for (Catalog catalogHolder : catalogHolders){
+            catalogHolder.getRootCategories().remove(category);
+        }
+
         entityManager.remove(category);
 
     }

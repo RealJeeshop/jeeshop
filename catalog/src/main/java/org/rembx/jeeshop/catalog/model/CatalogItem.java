@@ -62,7 +62,7 @@ public abstract class CatalogItem {
     @Transient
     protected boolean visible;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.REMOVE, CascadeType.MERGE})
     @JoinTable(joinColumns = @JoinColumn(name = "catalogItemId", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     @MapKey(name = "locale")

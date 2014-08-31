@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,11 +49,11 @@ public class Discount extends CatalogItem {
 
     @ManyToMany(mappedBy = "discounts")
     @XmlTransient
-    private Set<SKU> skus;
+    private List<SKU> skus;
 
     @ManyToMany(mappedBy = "discounts")
     @XmlTransient
-    private Set<Product> products;
+    private List<Product> products;
 
     /**
      * Cannot be used with other discounts when true
@@ -105,19 +106,19 @@ public class Discount extends CatalogItem {
         this.voucherCode = voucherCode;
     }
 
-    public Set<SKU> getSkus() {
+    public List<SKU> getSkus() {
         return skus;
     }
 
-    public void setSkus(Set<SKU> skus) {
+    public void setSkus(List<SKU> skus) {
         this.skus = skus;
     }
 
-    public Set<Product> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
