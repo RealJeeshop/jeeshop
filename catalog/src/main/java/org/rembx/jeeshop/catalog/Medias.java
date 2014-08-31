@@ -31,6 +31,7 @@ import java.nio.file.*;
 public class Medias {
 
     static final String JEESHOP_MEDIA_DIR = "jeeshop-media";
+    static final String JEESHOP_DATA_DIR = "JEESHOP_DATA_DIR";
     static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
     private static Logger LOG = LoggerFactory.getLogger(Medias.class);
 
@@ -52,7 +53,7 @@ public class Medias {
                     Files.createDirectories(itemBasePath);
                 java.nio.file.Path filePath = itemBasePath.resolve(item.getName());
                 Files.copy(item.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                LOG.info("File written to "+ filePath);
+                LOG.info("File written to " + filePath);
             }
 
 
@@ -80,10 +81,13 @@ public class Medias {
     private java.nio.file.Path getBasePath() {
         java.nio.file.Path path;
 
-        if (StringUtils.isNotEmpty(System.getenv(OPENSHIFT_DATA_DIR)))
+        if (StringUtils.isNotEmpty(System.getenv(OPENSHIFT_DATA_DIR))) {
             path = Paths.get(System.getenv(OPENSHIFT_DATA_DIR)).resolve(JEESHOP_MEDIA_DIR);
-        else
+        } else if (StringUtils.isNotEmpty(System.getenv(JEESHOP_DATA_DIR))) {
+            path = Paths.get(System.getenv(JEESHOP_DATA_DIR)).resolve(JEESHOP_MEDIA_DIR);
+        }else{
             path = Paths.get(Medias.JEESHOP_MEDIA_DIR);
+        }
 
         return path;
     }
