@@ -116,7 +116,7 @@ public class Discounts {
     @GET
     @Path("/{discountId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public Discount find(@PathParam("discountId") @NotNull Long discountId, @QueryParam("locale") String locale) {
         Discount discount = entityManager.find(Discount.class, discountId);
         if (isAdminUser(sessionContext))

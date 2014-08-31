@@ -11,7 +11,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>REST services</web-resource-name>
-            <url-pattern>/rs/user/*</url-pattern>
+            <url-pattern>/rs/users/*</url-pattern>
         </web-resource-collection>
 
         <auth-constraint>

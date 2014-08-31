@@ -60,7 +60,7 @@ public class CatalogItemFinder {
 
 
     public <T extends CatalogItem, P extends CatalogItem> List<P> findForeignHolder(EntityPathBase<P> hp,
-                                                                                    ListPath<T,? extends SimpleExpression<T>> h, T c) {
+                                                                                    ListPath<T, ? extends SimpleExpression<T>> h, T c) {
 
         return new JPAQuery(entityManager)
                 .from(hp)

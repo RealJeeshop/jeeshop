@@ -1,0 +1,62 @@
+<h3 class="text-center page-header">Users <small>(Work in progress)</small></h3>
+
+<div class="text-center" ng-controller="UsersController as usersController">
+    <div id="loaderDiv" ng-show="usersController.isProcessing">
+        <img src="images/loading.gif" class="ajax-loader"/>
+    </div>
+    <div ng-hide="usersController.isEditionModeActive || usersController.isCreationModeActive || usersController.isProcessing">
+        <div class ="row" style="margin-top:1em">
+            <div class="col-md-6 text-left">
+                Show
+                <select ng-model="usersController.pageSize" ng-change="usersController.findEntries()">
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                elements per page
+            </div>
+            <div class="col-md-6 text-left">
+                <p class="input-group">
+                    <input type="text" class="form-control" placeholder="Enter item id, name or description" ng-model="usersController.searchValue"/>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="usersController.findEntries()"><i class="glyphicon glyphicon-search"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="usersController.activateCreationMode()"><i
+                            class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>
+                </span>
+                </p>
+            </div>
+        </div>
+        <table class="table table-striped table-hover table-condensed text-left">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th class="hidden-xs hidden-sm">First name</th>
+                <th class="hidden-xs hidden-sm">Last name</th>
+                <th>Disabled</th>
+                <th class="hidden-xs hidden-sm">Creation date</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="entry in usersController.entries" style="cursor:pointer" >
+                <td ng-click="usersController.selectEntry(entry.id)" >{{entry.id}}</td>
+                <td ng-click="usersController.selectEntry(entry.id)" >{{entry.login}}</td>
+                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.firstname}}</td>
+                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.lastname}}</td>
+                <td ng-click="usersController.selectEntry(entry.id)" >{{entry.disabled ===true?'Yes':'No'}}</td>
+                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.creationDate|date : 'medium'}}</td>
+                <td>
+                    <a ng-click="usersController.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <pagination total-items="usersController.totalCount" ng-model="usersController.currentPage" ng-change="usersController.pageChanged()"
+                    items-per-page="usersController.pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
+    </div>
+
+    <div user-form ng-show="usersController.isEditionModeActive || usersController.isCreationModeActive">
+    </div>
+
+</div>

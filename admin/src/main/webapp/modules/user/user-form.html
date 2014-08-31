@@ -1,0 +1,94 @@
+<div class="text-left">
+    <form name="userForm"
+          ng-submit="userForm.$valid && usersController.createOrEdit()" novalidate>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Disabled</label><br/>
+                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="true"> Yes
+                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="false"> No
+            </div>
+
+
+            <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-default" ng-click="usersController.leaveEditView()"><i
+                        class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6" ng-class="{'has-error': userForm.login.$invalid && userForm.login.$dirty}">
+                <label for="login">Login</label>
+                <input type="text" class="form-control" id="login" name="login" ng-model="usersController.entry.login"
+                       placeholder="Login..." maxlength="50" required="true"/>
+            </div>
+
+            <div class="col-md-6"
+                 ng-class="{'has-error': userForm.creationDate.$invalid && userForm.creationDate.$dirty}">
+                <label for="creationDate">Creation date</label>
+                <input type="datetime" id="creationDate" class="form-control"
+                       ng-model="usersController.entry.creationDate" name="creationDate" disabled/>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.firstname.$invalid && userForm.firstname.$dirty}">
+                <label for="firstname">First name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname"
+                       ng-model="usersController.entry.firstname"
+                       placeholder="First name..." maxlength="50" required="true"/>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.lastname.$invalid && userForm.lastname.$dirty}">
+                <label for="lastname">Last name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname"
+                       ng-model="usersController.entry.lastname"
+                       placeholder="Last name..." maxlength="50" required="true"/>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6" ng-class="{'has-error': userForm.email.$invalid && userForm.email.$dirty}">
+                <label for="email">E-mail</label>
+                <input type="email" class="form-control" id="email" name="email" ng-model="usersController.entry.email"
+                       placeholder="E-mail..." maxlength="255" required="true"/>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.phoneNumber.$invalid && userForm.phoneNumber.$dirty}">
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
+                       pattern="+*[0-9]+" ng-model="usersController.entry.phoneNumber"
+                       placeholder="Phone number..." required="true"/>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6" ng-controller="DatepickerDemoCtrl"
+                 ng-class="{'has-error': userForm.birthDate.$invalid && userForm.birthDate.$dirty}">
+                <label for="birthDate">Birth date</label>
+
+                <p class="input-group">
+                    <input type="text" id="birthDate" class="form-control" datepicker-popup
+                           ng-model="usersController.entry.birthDate" is-open="opened"
+                           datepicker-options="dateOptions"
+                           close-text="Close" name="birthDate" required="true"/>
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                            class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save"/>
+    </form>
+
+</div>

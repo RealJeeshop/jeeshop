@@ -22,12 +22,15 @@
 
 <body>
 
+<!-- libraries -->
 <script type="text/javascript" src="js/stringview-min.js"></script>
 <script type="text/javascript" src="js/angular-file-upload-html5-shim.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-file-upload.min.js"></script>
 <script type="text/javascript" src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
-<script type="text/javascript" src="modules/users/js/login.js"></script>
+<!-- jeeshop scripts -->
+<script type="text/javascript" src="modules/user/js/login.js"></script>
+<script type="text/javascript" src="modules/user/js/user.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 
@@ -84,8 +87,8 @@
                 </li>
             </ul>
             <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage users">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('users') }">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('users')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
+                <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
+                    <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
                 </li>
                 <li ng-class="{ active:sideMenuCtrl.isSelected('newsletters') }" title="Create and configure newsletters">
                     <a href="#" ng-click="sideMenuCtrl.selectEntry('newsletters')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>

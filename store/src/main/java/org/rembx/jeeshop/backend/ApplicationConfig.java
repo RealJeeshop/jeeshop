@@ -4,7 +4,7 @@ import org.rembx.jeeshop.catalog.Catalogs;
 import org.rembx.jeeshop.catalog.Categories;
 import org.rembx.jeeshop.catalog.Products;
 import org.rembx.jeeshop.catalog.SKUs;
-import org.rembx.jeeshop.user.UserResource;
+import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -25,7 +25,7 @@ public class ApplicationConfig extends Application {
         classes.add(Categories.class);
         classes.add(Products.class);
         classes.add(SKUs.class);
-        classes.add(UserResource.class);
+        classes.add(Users.class);
         return classes;
     }
 }

@@ -63,7 +63,7 @@
                 ctrl.totalCount = null;
                 ctrl.pageSize = 10;
                 ctrl.searchValue = null;
-                ctrl.isProcessing = true;
+                ctrl.isProcessing = false;
 
                 $scope.findEntries = function () {
                     ctrl.isProcessing = true;

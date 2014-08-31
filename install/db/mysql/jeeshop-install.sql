@@ -183,6 +183,8 @@ CREATE TABLE IF NOT EXISTS Presentation_Media (
 CREATE TABLE IF NOT EXISTS User (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   birthDate datetime NOT NULL,
+  creationDate datetime NOT NULL,
+  disabled bit(1) DEFAULT NULL,
   email varchar(255) NOT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,

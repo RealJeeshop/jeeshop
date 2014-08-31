@@ -55,6 +55,11 @@ public class User {
     @Transient
     private Integer age;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
+    private Boolean disabled;
+
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -73,6 +78,15 @@ public class User {
         this.email = email;
         this.address = address;
         this.birthDate = birthDate;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.creationDate = new Date();
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -167,6 +181,22 @@ public class User {
         this.roles = roles;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -176,6 +206,7 @@ public class User {
 
         if (age != null ? !age.equals(user.age) : user.age != null) return false;
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
+        if (disabled != null ? !disabled.equals(user.disabled) : user.disabled != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (firstname != null ? !firstname.equals(user.firstname) : user.firstname != null) return false;
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
@@ -198,6 +229,24 @@ public class User {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (disabled != null ? disabled.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", birthDate=" + birthDate +
+                ", age=" + age +
+                ", creationDate=" + creationDate +
+                ", disabled=" + disabled +
+                '}';
     }
 }

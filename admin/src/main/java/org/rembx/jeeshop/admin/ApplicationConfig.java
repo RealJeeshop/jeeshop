@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.admin;
 
 import org.rembx.jeeshop.catalog.*;
-import org.rembx.jeeshop.user.UserResource;
+import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -24,7 +24,7 @@ public class
         classes.add(Products.class);
         classes.add(SKUs.class);
         classes.add(Discounts.class);
-        classes.add(UserResource.class);
+        classes.add(Users.class);
         classes.add(Medias.class);
         return classes;
     }
