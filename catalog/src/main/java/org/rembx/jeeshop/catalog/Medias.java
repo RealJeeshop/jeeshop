@@ -13,14 +13,13 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 /**
  * Medias resource
@@ -51,7 +50,9 @@ public class Medias {
                 java.nio.file.Path itemBasePath = getBasePath().resolve(itemType).resolve(itemId.toString()).resolve(locale);
                 if (!Files.exists(itemBasePath))
                     Files.createDirectories(itemBasePath);
-                Files.copy(item.openStream(), itemBasePath.resolve(item.getName()), StandardCopyOption.REPLACE_EXISTING);
+                java.nio.file.Path filePath = itemBasePath.resolve(item.getName());
+                Files.copy(item.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                LOG.info("File written to "+ filePath);
             }
 
 
