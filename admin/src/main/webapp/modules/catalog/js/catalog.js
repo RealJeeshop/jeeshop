@@ -496,7 +496,7 @@
             $scope.getPresentationMediaURI = function (presentationPropertyName){
                 if ($scope.presentation[presentationPropertyName] != null){
                     return 'rs/medias/'+$scope.resource+'/'+$scope.entryId+'/'+$scope.locale+'/'
-                        +$scope.presentation[presentationPropertyName].uri;
+                        +$scope.presentation[presentationPropertyName].uri+'?refresh='+$scope.isProcessing;
                 }
             };
 
