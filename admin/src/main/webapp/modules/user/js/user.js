@@ -134,6 +134,10 @@
             ctrl.entryChilds = {};
             ctrl.alerts = [];
         };
+
+        ctrl.closeAlert = function (index) {
+            ctrl.alerts.splice(index, 1);
+        };
     }]);
 
 })();

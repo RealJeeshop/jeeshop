@@ -3,17 +3,29 @@
           ng-submit="userForm.$valid && usersController.createOrEdit()" novalidate>
 
         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 text-center">
+                <span>
+                    <alert ng-repeat="alert in usersController.alerts" type="{{alert.type}}"
+                           close="usersController.closeAlert($index)">{{alert.msg}}
+                    </alert>
+                </span>
+            </div>
+            <div class="col-md-1">
+                <div class="col-md-6 text-right">
+                    <button type="button" class="btn btn-default" ng-click="usersController.leaveEditView()"><i
+                            class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group col-md-6">
                 <label>Disabled</label><br/>
                 <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="true"> Yes
                 <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="false"> No
             </div>
 
-
-            <div class="col-md-6 text-right">
-                <button type="button" class="btn btn-default" ng-click="usersController.leaveEditView()"><i
-                        class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
-            </div>
         </div>
 
         <div class="row">
