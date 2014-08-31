@@ -4,6 +4,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.StringUtils;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,8 @@ import java.nio.file.StandardCopyOption;
  */
 public class Medias {
 
-    final static String SERVER_UPLOAD_LOCATION_FOLDER = "jeeshop-media";
+    static final String JEESHOP_MEDIA_DIR = "jeeshop-media";
+    static final String OPENSHIFT_DATA_DIR = "OPENSHIFT_DATA_DIR";
     private static Logger LOG = LoggerFactory.getLogger(Medias.class);
 
     @POST
@@ -46,7 +48,7 @@ public class Medias {
 
             while (iterator.hasNext()) {
                 FileItemStream item = iterator.next();
-                java.nio.file.Path itemBasePath = Paths.get(SERVER_UPLOAD_LOCATION_FOLDER).resolve(itemType).resolve(itemId.toString()).resolve(locale);
+                java.nio.file.Path itemBasePath = getBasePath().resolve(itemType).resolve(itemId.toString()).resolve(locale);
                 if (!Files.exists(itemBasePath))
                     Files.createDirectories(itemBasePath);
                 Files.copy(item.openStream(), itemBasePath.resolve(item.getName()), StandardCopyOption.REPLACE_EXISTING);
@@ -65,8 +67,8 @@ public class Medias {
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{type}/{id}/{locale}/{filename}")
     public File get(@NotNull @PathParam("type") String itemType, @NotNull @PathParam("id") Long itemId,
-                        @NotNull @PathParam("locale") String locale, @NotNull @PathParam("filename") String fileName) {
-        java.nio.file.Path filePath = Paths.get(SERVER_UPLOAD_LOCATION_FOLDER).resolve(itemType).resolve(itemId.toString()).resolve(locale).resolve(fileName);
+                    @NotNull @PathParam("locale") String locale, @NotNull @PathParam("filename") String fileName) {
+        java.nio.file.Path filePath = getBasePath().resolve(itemType).resolve(itemId.toString()).resolve(locale).resolve(fileName);
         if (!Files.exists(filePath))
             throw new WebApplicationException(Response.Status.NOT_FOUND);
 
@@ -74,16 +76,15 @@ public class Medias {
 
     }
 
-    /*
-    @DELETE
-    @RolesAllowed(JeeshopRoles.ADMIN)
-    @Path("/{type}/{id}/{locale}/{filename}")
-    public void delete(@Context HttpServletRequest request, @NotNull @PathParam("type") String itemType, @NotNull @PathParam("id") Long itemId,
-                        @NotNull @PathParam("locale") String locale, @NotNull @PathParam("filename") String fileName) {
-        java.nio.file.Path filePath = Paths.get(SERVER_UPLOAD_LOCATION_FOLDER).resolve(itemType).resolve(itemId.toString()).resolve(locale).resolve(fileName);
-        if (Files.exists(filePath))
-            filePath.toFile().delete();
+    private java.nio.file.Path getBasePath() {
+        java.nio.file.Path path;
+
+        if (StringUtils.isNotEmpty(System.getenv(OPENSHIFT_DATA_DIR)))
+            path = Paths.get(OPENSHIFT_DATA_DIR).resolve(JEESHOP_MEDIA_DIR);
+        else
+            path = Paths.get(Medias.JEESHOP_MEDIA_DIR);
+
+        return path;
     }
-    */
 }
 
