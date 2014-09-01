@@ -73,6 +73,7 @@ public class Users {
         User originalCatalog = entityManager.find(User.class, user.getId());
         checkNotNull(originalCatalog);
         user.setPassword(originalCatalog.getPassword());
+        user.setRoles(originalCatalog.getRoles());
         return entityManager.merge(user);
     }
 
