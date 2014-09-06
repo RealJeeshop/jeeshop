@@ -152,7 +152,7 @@
                         ${env.OPENSHIFT_MYSQL_DB_PORT}
                     </xa-datasource-property>
                     <xa-datasource-property name="DatabaseName">
-                        wildfly8
+                        apps
                     </xa-datasource-property>
                     <driver>mysql</driver>
                     <security>
@@ -176,7 +176,7 @@
                         ${env.OPENSHIFT_MYSQL_DB_PORT}
                     </xa-datasource-property>
                     <xa-datasource-property name="DatabaseName">
-                        wildfly8
+                        apps
                     </xa-datasource-property>
                     <driver>mysql</driver>
                     <security>
