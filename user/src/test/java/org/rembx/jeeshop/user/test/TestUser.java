@@ -1,9 +1,6 @@
 package org.rembx.jeeshop.user.test;
 
-import org.rembx.jeeshop.user.model.Address;
-import org.rembx.jeeshop.user.model.Country;
-import org.rembx.jeeshop.user.model.User;
-import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import org.rembx.jeeshop.user.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -39,6 +36,11 @@ public class TestUser {
         entityManager.persist(country);
         entityManager.persist(address);
         entityManager.persist(user1);
+
+        Role adminRole = new Role(RoleName.admin);
+        Role userRole = new Role(RoleName.user);
+        entityManager.persist(adminRole);
+        entityManager.persist(userRole);
 
         entityManager.getTransaction().commit();
 

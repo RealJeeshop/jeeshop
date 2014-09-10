@@ -182,15 +182,15 @@ CREATE TABLE IF NOT EXISTS Presentation_Media (
 
 CREATE TABLE IF NOT EXISTS User (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  birthDate datetime NOT NULL,
+  birthDate datetime DEFAULT NULL,
   creationDate datetime NOT NULL,
   disabled bit(1) DEFAULT NULL,
   email varchar(255) NOT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
-  login varchar(50) NOT NULL,
-  password varchar(50) NOT NULL,
-  phoneNumber varchar(15) NOT NULL,
+  login varchar(100) NOT NULL,
+  password varchar(100) NOT NULL,
+  phoneNumber varchar(15) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
   deliveryAddress_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS Country (
 
 CREATE TABLE IF NOT EXISTS Role (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  role varchar(255) NOT NULL,
+  name varchar(255) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_Role_role (role)
 );
@@ -308,8 +308,8 @@ ALTER TABLE User_Role
 INSERT INTO User (birthDate, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
 VALUES ('2014-06-18 00:00:00', 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
-INSERT INTO Role (id, role) VALUES (1, 'user');
-INSERT INTO Role (id, role) VALUES (2, 'admin');
+INSERT INTO Role (id, name) VALUES (1, 'user');
+INSERT INTO Role (id, name) VALUES (2, 'admin');
 
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '1');
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '2');

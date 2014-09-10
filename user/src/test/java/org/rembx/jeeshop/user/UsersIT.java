@@ -35,7 +35,7 @@ public class UsersIT {
     public void setup() {
         testUser = TestUser.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Users(entityManager, new UserFinder(entityManager));
+        service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager));
     }
 
     @Test

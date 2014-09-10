@@ -5,15 +5,12 @@
              version="2.1">
 
     <persistence-unit name="User">
-        <description>This unit manages orders and customers.
-            It does not rely on any vendor-specific features and can
-            therefore be deployed to any persistence provider.
-        </description>
         <jta-data-source>UserDS</jta-data-source>
         <class>org.rembx.jeeshop.user.model.Role</class>
         <class>org.rembx.jeeshop.user.model.User</class>
         <class>org.rembx.jeeshop.user.model.Address</class>
         <class>org.rembx.jeeshop.user.model.Country</class>
+        <class>org.rembx.jeeshop.user.model.RoleName</class>
         <properties>
             <!--<property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>-->

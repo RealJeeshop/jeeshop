@@ -17,9 +17,14 @@ public class Role {
     @NotNull
     @Size(min = 1)
     @Column(unique = true, nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleName name;
 
     public Role() {
+    }
+
+    public Role(RoleName name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -27,12 +32,12 @@ public class Role {
     }
 
 
-    public String getRole() {
-        return role;
+    public RoleName getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(RoleName role) {
+        this.name = role;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class Role {
         Role role1 = (Role) o;
 
         if (id != null ? !id.equals(role1.id) : role1.id != null) return false;
-        if (role != null ? !role.equals(role1.role) : role1.role != null) return false;
+        if (name != null ? !name.equals(role1.name) : role1.name != null) return false;
 
         return true;
     }
@@ -51,7 +56,7 @@ public class Role {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 }

@@ -26,7 +26,7 @@ public class Presentation {
 
     @NotNull
     @Size(min = 1, max = 25)
-    @Column(length = 25)
+    @Column(length = 25, nullable=false)
     private String locale;
 
     @Size(max = 255)

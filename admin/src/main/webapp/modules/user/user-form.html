@@ -22,25 +22,23 @@
         <div class="row">
             <div class="form-group col-md-6">
                 <label>Disabled</label><br/>
-                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="true"> Yes
-                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" value="false"> No
+                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" ng-value="true"> Yes
+                <input type="radio" name="disabled" ng-model="usersController.entry.disabled" ng-value="false"> No
             </div>
-
         </div>
 
         <div class="row">
             <div class="form-group col-md-6" ng-class="{'has-error': userForm.login.$invalid && userForm.login.$dirty}">
                 <label for="login">Login</label>
                 <input type="text" class="form-control" id="login" name="login" ng-model="usersController.entry.login"
-                       placeholder="Login..." maxlength="50" required="true"/>
+                       placeholder="Login..." maxlength="100" required="true"/>
+                <p class="help-block" ng-show="userForm.login.$error.required">Login is required</p>
             </div>
-
-            <div class="col-md-6"
-                 ng-class="{'has-error': userForm.creationDate.$invalid && userForm.creationDate.$dirty}">
-                <label for="creationDate">Creation date</label>
-                <input type="datetime" id="creationDate" class="form-control"
-                       ng-model="usersController.entry.creationDate" name="creationDate" disabled/>
-
+            <div class="form-group col-md-6" ng-class="{'has-error': userForm.password.$invalid && userForm.password.$dirty}">
+                <label for="password">Password</label>
+                <input type="text" class="form-control" id="password" name="password" ng-model="usersController.entry.password"
+                       placeholder="Password..." maxlength="100" required="true"/>
+                <p class="help-block" ng-show="userForm.password.$error.required">Password is required</p>
             </div>
 
         </div>
@@ -52,6 +50,7 @@
                 <input type="text" class="form-control" id="firstname" name="firstname"
                        ng-model="usersController.entry.firstname"
                        placeholder="First name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="userForm.firstname.$error.required">First name is required</p>
             </div>
 
             <div class="form-group col-md-6"
@@ -60,6 +59,7 @@
                 <input type="text" class="form-control" id="lastname" name="lastname"
                        ng-model="usersController.entry.lastname"
                        placeholder="Last name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="userForm.lastname.$error.required">Last name is required</p>
             </div>
 
         </div>
@@ -69,14 +69,15 @@
                 <label for="email">E-mail</label>
                 <input type="email" class="form-control" id="email" name="email" ng-model="usersController.entry.email"
                        placeholder="E-mail..." maxlength="255" required="true"/>
+                <p class="help-block" ng-show="userForm.email.$error.required">E-mail is required</p>
             </div>
 
             <div class="form-group col-md-6"
                  ng-class="{'has-error': userForm.phoneNumber.$invalid && userForm.phoneNumber.$dirty}">
                 <label for="phoneNumber">Phone number</label>
                 <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
-                       pattern="+*[0-9]+" ng-model="usersController.entry.phoneNumber"
-                       placeholder="Phone number..." required="true"/>
+                       ng-pattern="/+?[0-9]{15}/" ng-model="usersController.entry.phoneNumber"
+                       placeholder="Phone number..." maxlength="15"/>
             </div>
 
         </div>
@@ -90,12 +91,19 @@
                     <input type="text" id="birthDate" class="form-control" datepicker-popup
                            ng-model="usersController.entry.birthDate" is-open="opened"
                            datepicker-options="dateOptions"
-                           close-text="Close" name="birthDate" required="true"/>
+                           close-text="Close" name="birthDate"/>
                     <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="open($event)"><i
                             class="glyphicon glyphicon-calendar"></i></button>
                     </span>
                 </p>
+            </div>
+
+            <div class="col-md-6"
+                 ng-class="{'has-error': userForm.creationDate.$invalid && userForm.creationDate.$dirty}">
+                <label for="creationDate">Creation date</label>
+                <input type="datetime-local" id="creationDate" class="form-control"
+                       ng-model="usersController.entry.creationDate" name="creationDate" disabled/>
             </div>
 
         </div>

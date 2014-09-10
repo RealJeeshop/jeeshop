@@ -1,10 +1,13 @@
 package org.rembx.jeeshop.user;
 
+import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
 import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.user.model.Role;
+import org.rembx.jeeshop.user.model.RoleName;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,20 +30,22 @@ import java.util.List;
 // TODO password management in creation / modification
 public class Users {
 
-    @Resource
-
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     @Inject
     private UserFinder userFinder;
 
+    @Inject
+    private RoleFinder roleFinder;
+
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder) {
+    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
+        this.roleFinder = roleFinder;
     }
 
     @POST
@@ -49,7 +54,9 @@ public class Users {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public User create(User user) {
         entityManager.persist(user);
-        user.setPassword("New_Account");
+        Role userRole = roleFinder.findByName(RoleName.user);
+        user.setRoles(Sets.newHashSet(userRole));
+        user.setPassword(Hashing.sha256().hashString(user.getPassword()).toString());
         return user;
     }
 
@@ -70,10 +77,10 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public User modify(User user) {
-        User originalCatalog = entityManager.find(User.class, user.getId());
-        checkNotNull(originalCatalog);
-        user.setPassword(originalCatalog.getPassword());
-        user.setRoles(originalCatalog.getRoles());
+        User existingUser = entityManager.find(User.class, user.getId());
+        checkNotNull(existingUser);
+        user.setPassword(existingUser.getPassword());
+        user.setRoles(existingUser.getRoles());
         return entityManager.merge(user);
     }
 

@@ -5,10 +5,6 @@
              version="2.1">
 
     <persistence-unit name="Catalog">
-        <description>This unit manages orders and customers.
-            It does not rely on any vendor-specific features and can
-            therefore be deployed to any persistence provider.
-        </description>
         <jta-data-source>CatalogDS</jta-data-source>
         <class>org.rembx.jeeshop.catalog.model.Catalog</class>
         <class>org.rembx.jeeshop.catalog.model.Category</class>

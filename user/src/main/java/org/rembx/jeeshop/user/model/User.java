@@ -21,23 +21,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false, length = 255)
-    @Login
+
+    @Column(unique = true, nullable = false, length = 100)
+    @NotNull
     private String login;
     @Column(nullable = false, length = 100)
-    @Password
-    @XmlTransient
+    @NotNull
     private String password;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String firstname;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String lastname;
     @Phone
-    @Column(nullable = false)
     private String phoneNumber;
     @Email
     @NotNull
@@ -48,10 +47,10 @@ public class User {
     private Address address;
     @OneToOne
     private Address deliveryAddress;
-    @NotNull
-    @Column(nullable = false)
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date birthDate;
+
     @Transient
     private Integer age;
 

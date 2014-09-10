@@ -15,9 +15,9 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @NotNull
-@Size(min = 1, max = 15)
+@Size(max = 15)
 @Constraint(validatedBy = {})
-@Pattern(regexp = "\\+*[0-9]+")
+@Pattern(regexp = "\\+?[0-9]+")
 @ReportAsSingleViolation
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)
