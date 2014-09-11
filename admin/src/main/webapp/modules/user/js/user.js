@@ -77,6 +77,10 @@
             });
         };
 
+        this.activateCreationMode = function () {
+            ctrl.isCreationModeActive = true;
+        }
+
         ctrl.selectEntry = function (id) {
             $http.get('rs/users/' + id)
                 .success(function (data) {
