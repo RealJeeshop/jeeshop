@@ -78,7 +78,7 @@
                 <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
                        ng-pattern="/^\+?\d+$/" ng-model="usersController.entry.phoneNumber"
                        placeholder="Phone number..." maxlength="15"/>
-                <p class="help-block" ng-show="userForm.email.$error.required">E-mail is required</p>
+                <p class="help-block" ng-show="userForm.phoneNumber.$error.pattern">Format is: optional "+" followed by digits</p>
             </div>
 
         </div>
@@ -109,7 +109,7 @@
 
         </div>
 
-        <input type="submit" class="btn btn-primary" value="Save"/>
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="userForm.$invalid"/>
     </form>
 
 </div>

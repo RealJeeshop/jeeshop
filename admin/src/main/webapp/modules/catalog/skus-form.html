@@ -53,7 +53,7 @@
 
         <div class="row" catalog-relationships-form resource="discounts" relationships-title="SKU discounts" relationships-property="discountsIds"></div>
 
-        <input type="submit" class="btn btn-primary" value="Save"/>
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="catalogItemForm.$invalid"/>
     </form>
 
 </div>

@@ -8,7 +8,7 @@
             <div catalog-relationships-form resource="skus" relationships-title="Child SKUs" relationships-property="childSKUsIds"></div>
             <div catalog-relationships-form resource="discounts" relationships-title="Product discounts" relationships-property="discountsIds"></div>
         </div>
-        <input type="submit" class="btn btn-primary" value="Save"/>
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="catalogItemForm.$invalid"/>
     </form>
 
 </div>
