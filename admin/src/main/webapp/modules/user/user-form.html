@@ -73,11 +73,12 @@
             </div>
 
             <div class="form-group col-md-6"
-                 ng-class="{'has-error': userForm.phoneNumber.$invalid && userForm.phoneNumber.$dirty}">
+                 ng-class="{'has-error': (userForm.phoneNumber.$invalid || userForm.phoneNumber.$error.pattern) && userForm.phoneNumber.$dirty}">
                 <label for="phoneNumber">Phone number</label>
                 <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
-                       ng-pattern="/+?[0-9]{15}/" ng-model="usersController.entry.phoneNumber"
+                       ng-pattern="/^\+?\d+$/" ng-model="usersController.entry.phoneNumber"
                        placeholder="Phone number..." maxlength="15"/>
+                <p class="help-block" ng-show="userForm.email.$error.required">E-mail is required</p>
             </div>
 
         </div>
