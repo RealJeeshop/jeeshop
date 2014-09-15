@@ -435,7 +435,7 @@
 
             modalInstance.result.then(function (errors) {
                 $scope.catalogEntryCtrl.alerts = [];
-                if (errors.length > 0) {
+                if (errors != null && errors.length > 0) {
                     $scope.catalogEntryCtrl.alerts.push(errors[0]);
                 }
             }, function () {
@@ -459,6 +459,26 @@
                 smallImage:false
             };
 
+            // setup editor options
+            $scope.editorOptions = {
+                height:'6em',
+                toolbar:null,
+                toolbar_full:null,
+                toolbarGroups:[
+                    { name: 'document', groups: [ 'mode'] },
+                    { name: 'clipboard', groups: ['undo' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles' ] },
+                    { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ] },
+                    { name: 'links' },
+                    '/',
+                    { name: 'insert' },
+                    { name: 'styles' },
+                    { name: 'colors' },
+                    { name: 'tools' },
+                    { name: 'others' }]
+
+            };
 
             var getPresentationByLocale = function (locale) {
                 $scope.selectedLocale = locale;

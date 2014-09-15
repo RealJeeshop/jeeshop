@@ -32,14 +32,13 @@
                     <div class="row" ng-show="isLocaleSelected()">
                         <div class="form-group col-md-6">
                             <label for="presShortDescription">Short description</label>
-                            <textarea class="form-control" id="presShortDescription"
-                                      ng-model="presentation.shortDescription"
-                                      placeholder="Description..." rows="2" maxlength="2000"></textarea>
+                            <textarea ckeditor="editorOptions" id="presShortDescription"
+                                      ng-model="presentation.shortDescription" maxlength="2000" ></textarea>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="presDescription">Long description</label>
-                            <textarea class="form-control" id="presDescription" ng-model="presentation.description"
-                                      placeholder="Description..." rows="4" maxlength="10000"></textarea>
+                            <textarea ckeditor="editorOptions" id="presDescription"
+                                      ng-model="presentation.description" maxlength="10000"></textarea>
                         </div>
                     </div>
                     <div class="row" ng-show="isLocaleSelected()">
