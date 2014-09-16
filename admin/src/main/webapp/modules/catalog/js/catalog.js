@@ -459,7 +459,7 @@
                 smallImage:false
             };
 
-            // setup editor options
+            /*// setup editor options
             $scope.editorOptions = {
                 height:'6em',
                 toolbar:null,
@@ -475,7 +475,7 @@
                     { name: 'colors' },
                     { name: 'document', groups: [ 'mode'] },]
 
-            };
+            };*/
 
             var getPresentationByLocale = function (locale) {
                 $scope.selectedLocale = locale;
