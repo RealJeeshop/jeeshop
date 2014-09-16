@@ -465,18 +465,15 @@
                 toolbar:null,
                 toolbar_full:null,
                 toolbarGroups:[
-                    { name: 'document', groups: [ 'mode'] },
-                    { name: 'clipboard', groups: ['undo' ] },
-                    '/',
                     { name: 'basicstyles', groups: [ 'basicstyles' ] },
                     { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ] },
                     { name: 'links' },
+                    { name: 'tools' },
                     '/',
                     { name: 'insert' },
                     { name: 'styles' },
                     { name: 'colors' },
-                    { name: 'tools' },
-                    { name: 'others' }]
+                    { name: 'document', groups: [ 'mode'] },]
 
             };
 
