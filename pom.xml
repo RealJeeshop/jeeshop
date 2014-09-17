@@ -18,6 +18,7 @@
         <module>store</module>
         <module>admin</module>
         <module>common</module>
+        <module>media</module>
     </modules>
 
     <properties>

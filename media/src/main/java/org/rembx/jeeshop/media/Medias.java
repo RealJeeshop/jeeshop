@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog;
+package org.rembx.jeeshop.media;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;

@@ -25,6 +25,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>media</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.mysema.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
         </dependency>

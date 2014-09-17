@@ -32,13 +32,13 @@
                 <label for="login">Login</label>
                 <input type="text" class="form-control" id="login" name="login" ng-model="usersController.entry.login"
                        placeholder="Login..." maxlength="100" required="true"/>
-                <p class="help-block" ng-show="userForm.login.$error.required">Login is required</p>
+                <p class="help-block" ng-show="userForm.login.$error.required && userForm.login.$dirty">Login is required</p>
             </div>
             <div class="form-group col-md-6" ng-class="{'has-error': userForm.password.$invalid && userForm.password.$dirty}">
                 <label for="password">Password</label>
                 <input type="text" class="form-control" id="password" name="password" ng-model="usersController.entry.password"
                        placeholder="Password..." maxlength="100" required="true"/>
-                <p class="help-block" ng-show="userForm.password.$error.required">Password is required</p>
+                <p class="help-block" ng-show="userForm.password.$error.required && userForm.password.$dirty">Password is required</p>
             </div>
 
         </div>
@@ -50,7 +50,7 @@
                 <input type="text" class="form-control" id="firstname" name="firstname"
                        ng-model="usersController.entry.firstname"
                        placeholder="First name..." maxlength="50" required="true"/>
-                <p class="help-block" ng-show="userForm.firstname.$error.required">First name is required</p>
+                <p class="help-block" ng-show="userForm.firstname.$error.required && userForm.firstname.$dirty">First name is required</p>
             </div>
 
             <div class="form-group col-md-6"
@@ -59,7 +59,7 @@
                 <input type="text" class="form-control" id="lastname" name="lastname"
                        ng-model="usersController.entry.lastname"
                        placeholder="Last name..." maxlength="50" required="true"/>
-                <p class="help-block" ng-show="userForm.lastname.$error.required">Last name is required</p>
+                <p class="help-block" ng-show="userForm.lastname.$error.required && userForm.lastname.$dirty">Last name is required</p>
             </div>
 
         </div>
@@ -69,7 +69,7 @@
                 <label for="email">E-mail</label>
                 <input type="email" class="form-control" id="email" name="email" ng-model="usersController.entry.email"
                        placeholder="E-mail..." maxlength="255" required="true"/>
-                <p class="help-block" ng-show="userForm.email.$error.required">E-mail is required</p>
+                <p class="help-block" ng-show="userForm.email.$error.required && userForm.email.$dirty">E-mail is required</p>
             </div>
 
             <div class="form-group col-md-6"

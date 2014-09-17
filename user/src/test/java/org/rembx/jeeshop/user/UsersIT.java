@@ -80,7 +80,7 @@ public class UsersIT {
     }
 
     @Test
-    public void find_ShouldThrowException() throws Exception {
+    public void find_withUnknownId_ShouldThrowException() throws Exception {
         try {
             service.find(999L);
             fail("should have thrown ex");
@@ -119,15 +119,15 @@ public class UsersIT {
 
     @Test
     public void modifyUser_ShouldModifyUser() {
-        User detachedCatalogToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
-        detachedCatalogToModify.setId(testUser.firstUser().getId());
+        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
+        detachedUserToModify.setId(testUser.firstUser().getId());
 
-        service.modify(detachedCatalogToModify);
+        service.modify(detachedUserToModify);
 
     }
 
     @Test
-    public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
+    public void modifyUnknown_ShouldThrowNotFoundException() {
 
         User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
         detachedUser.setId(9999L);

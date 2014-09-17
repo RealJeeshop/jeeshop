@@ -222,13 +222,28 @@ CREATE TABLE IF NOT EXISTS Role (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY UK_Role_role (role)
+  UNIQUE KEY UK_Role_name (name)
 );
 
 CREATE TABLE IF NOT EXISTS User_Role (
   userId bigint(20) NOT NULL,
   roleId bigint(20) NOT NULL,
   PRIMARY KEY (userId,roleId)
+);
+
+CREATE TABLE IF NOT EXISTS Newsletter (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  name varchar(100) NOT NULL,
+  locale varchar(25) NULL,
+  content TEXT NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY UK_Newsletter_name (name,locale)
+);
+
+CREATE TABLE IF NOT EXISTS Newsletter_Media (
+  newsletterId bigint(20) NOT NULL,
+  mediaId bigint(20) NOT NULL,
+  PRIMARY KEY (newsletterId,mediaId)
 );
 
 --
@@ -296,22 +311,23 @@ ALTER TABLE User
   ADD CONSTRAINT FK_User_Address1 FOREIGN KEY (deliveryAddress_id) REFERENCES Address (id),
   ADD CONSTRAINT FK_User_Address2 FOREIGN KEY (address_id) REFERENCES Address (id);
 
+ALTER TABLE Newsletter_Media
+  ADD CONSTRAINT FK_Newsletter_Media_Newsletter FOREIGN KEY (newsletterId) REFERENCES Newsletter (id),
+  ADD CONSTRAINT FK_Newsletter_Media_Media FOREIGN KEY (mediaId) REFERENCES Media (id);
+
 ALTER TABLE User_Role
   ADD CONSTRAINT FK_User_Role_User FOREIGN KEY (userId) REFERENCES User (id),
   ADD CONSTRAINT FK_User_Role_Role FOREIGN KEY (roleId) REFERENCES Role (id);
-
 
 --
 -- Default Users / Roles
 --
 
-INSERT INTO User (birthDate, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
-VALUES ('2014-06-18 00:00:00', 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
+INSERT INTO User (birthDate, creationDate, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
+VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');
 
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '1');
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '2');
-
-

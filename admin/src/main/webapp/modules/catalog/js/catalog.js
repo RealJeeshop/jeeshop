@@ -459,24 +459,6 @@
                 smallImage:false
             };
 
-            /*// setup editor options
-            $scope.editorOptions = {
-                height:'6em',
-                toolbar:null,
-                toolbar_full:null,
-                toolbarGroups:[
-                    { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                    { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ] },
-                    { name: 'links' },
-                    { name: 'tools' },
-                    '/',
-                    { name: 'insert' },
-                    { name: 'styles' },
-                    { name: 'colors' },
-                    { name: 'document', groups: [ 'mode'] },]
-
-            };*/
-
             var getPresentationByLocale = function (locale) {
                 $scope.selectedLocale = locale;
                 $http.get(presentationsResourceURI + "/" + locale)

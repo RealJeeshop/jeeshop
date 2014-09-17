@@ -27,7 +27,6 @@ import java.util.List;
 
 @Path("/users")
 @Stateless
-// TODO password management in creation / modification
 public class Users {
 
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
@@ -87,7 +86,7 @@ public class Users {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)// TODO paginate
+    @RolesAllowed(JeeshopRoles.ADMIN)
     public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         if (search != null)
             return userFinder.findBySearchCriteria(search, start, size);

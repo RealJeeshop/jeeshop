@@ -11,6 +11,8 @@
         <class>org.rembx.jeeshop.user.model.Address</class>
         <class>org.rembx.jeeshop.user.model.Country</class>
         <class>org.rembx.jeeshop.user.model.RoleName</class>
+        <class>org.rembx.jeeshop.user.model.Newsletter</class>
+        <class>org.rembx.jeeshop.media.model.Media</class>
         <properties>
             <!--<property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>-->

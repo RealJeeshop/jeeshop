@@ -11,7 +11,7 @@
         <class>org.rembx.jeeshop.catalog.model.Category</class>
         <class>org.rembx.jeeshop.catalog.model.Product</class>
         <class>org.rembx.jeeshop.catalog.model.SKU</class>
-        <class>org.rembx.jeeshop.catalog.model.Media</class>
+        <class>org.rembx.jeeshop.media.model.Media</class>
         <class>org.rembx.jeeshop.catalog.model.Presentation</class>
         <class>org.rembx.jeeshop.catalog.model.Discount</class>
         <properties>

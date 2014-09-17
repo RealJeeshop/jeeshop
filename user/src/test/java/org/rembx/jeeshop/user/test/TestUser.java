@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
- * Catalog test utility with DSL
+ * User test utility
  */
 public class TestUser {
 

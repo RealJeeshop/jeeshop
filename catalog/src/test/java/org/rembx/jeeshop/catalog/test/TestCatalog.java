@@ -12,7 +12,7 @@ import java.util.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
- * Catalog test utility with DSL
+ * Catalog test utility
  */
 public class TestCatalog {
 

@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog;
+package org.rembx.jeeshop.media;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +8,6 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;

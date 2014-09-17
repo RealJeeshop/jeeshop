@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.catalog.model;
+package org.rembx.jeeshop.media.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
