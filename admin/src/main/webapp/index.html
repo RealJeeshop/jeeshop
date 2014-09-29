@@ -23,6 +23,7 @@
 <body>
 
 <!-- libraries -->
+<script src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/stringview-min.js"></script>
 <script type="text/javascript" src="lib/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="js/angular-file-upload-html5-shim.min.js"></script>
@@ -37,80 +38,86 @@
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <span class="navbar-brand"><em>Jeeshop Admin</em></span>
-        </div>
-        <div class="navbar-collapse collapse" ng-controller="LoginController as loginCtrl">
-            <ul class="nav navbar-nav navbar-left">
-                <li><a href="#">Settings</a></li>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Help</a></li>
-            </ul>
+<div ng-controller="SideMenuController as sideMenuCtrl">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" ng-click="sideMenuCtrl.navCollapsed = !sideMenuCtrl.navCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="navbar-brand"><em>Jeeshop Admin</em></span>
+            </div>
+            <div ng-controller="LoginController as loginCtrl" class="navbar-collapse collapse" collapse="!sideMenuCtrl.navCollapsed">
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="#">Settings</a></li>
+                    <li class="hidden-xs"><a href="#">Help</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('overview')">Overview</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')">Stats</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Users</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('newsletter')">Newsletters</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a></li>
+                </ul>
 
-            <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
-                  ng-hide="loginCtrl.isAuthenticated()">
-                <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
-                <input type="text" class="form-control" name="login" placeholder="User name..."
-                       ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="50"/>
-                <input type="password" class="form-control" name="password" placeholder="Password..."
-                       ng-model="loginCtrl.credentials.password" ng-required="true" maxlength="50"/>
-                <input type="submit" class="form-control" value="Sign in"/>
-            </form>
+                <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
+                      ng-hide="loginCtrl.isAuthenticated()">
+                    <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
+                    <input type="text" class="form-control" name="login" placeholder="User name..."
+                           ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="50"/>
+                    <input type="password" class="form-control" name="password" placeholder="Password..."
+                           ng-model="loginCtrl.credentials.password" ng-required="true" maxlength="50"/>
+                    <input type="submit" class="form-control" value="Sign in"/>
+                </form>
 
-            <ul ng-show="loginCtrl.isAuthenticated()" class="nav navbar-nav navbar-right">
-                <li><a href="#">Logged in as {{loginCtrl.credentials.login}}</a></li>
-                <li><a href="#" ng-click="loginCtrl.logout()">Logout</a></li>
-            </ul>
+                <ul ng-show="loginCtrl.isAuthenticated()" class="nav navbar-nav navbar-right">
+                    <li class="hidden-xs"><a href="#">Logged in as {{loginCtrl.credentials.login}}</a></li>
+                    <li><a href="#" ng-click="loginCtrl.logout()">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid" ng-controller="LoginController as loginCtrl">
-    <div class="row" ng-controller="SideMenuController as sideMenuCtrl">
-        <div class="col-sm-3 col-md-2 sidebar" >
-            <ul class="nav nav-sidebar">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
-                </li>
-            </ul>
-            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }" title="Track and manage orders">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('orders')"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }" title="Access statistics">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
-                </li>
-            </ul>
-            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage users">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('newsletter') }" title="Create and configure newsletter">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('newsletter')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>
-                </li>
-            </ul>
-            <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
-                <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage store catalog items">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
-                </li>
-                <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }" title="Manage products inventory">
-                    <a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Inventory</span></a>
-                </li>
-            </ul>
+    <div class="container-fluid" ng-controller="LoginController as loginCtrl">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
+                    </li>
+                </ul>
+                <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('orders') }" title="Track and manage orders">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('orders')"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
+                    </li>
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }" title="Access statistics">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
+                    </li>
+                </ul>
+                <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage users">
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
+                    </li>
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('newsletter') }" title="Create and configure newsletter">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('newsletter')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>
+                    </li>
+                </ul>
+                <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage store catalog items">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
+                    </li>
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }" title="Manage products inventory">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Inventory</span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+                 ng-include="'modules/'+(loginCtrl.isAuthenticated()?sideMenuCtrl.entryId:'overview')+'/index.html'"></div>
         </div>
-
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-             ng-include="'modules/'+(loginCtrl.isAuthenticated()?sideMenuCtrl.entryId:'overview')+'/index.html'"></div>
-
-
     </div>
 </div>
 

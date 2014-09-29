@@ -5,8 +5,11 @@
     app.controller('SideMenuController', function(){
         this.entryId = 'overview';
 
+        this.navCollapsed=false;
+
         this.selectEntry = function(setId){
             this.entryId = setId;
+            this.navCollapsed = false;
         };
 
         this.isSelected = function(checkId){
