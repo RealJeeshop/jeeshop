@@ -1,53 +1,93 @@
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: apps
+--
 
 
 --
--- Contenu de la table Presentation
+-- Dumping data for table Media
+--
+
+INSERT INTO Media (id, uri) VALUES
+(1, 'remi.png'),
+(2, 'remi.png'),
+(3, 'remi.png'),
+(5, 'vero.png'),
+(6, 'remi.png'),
+(7, 'vero.png'),
+(8, 'vtt_small.jpg'),
+(9, 'vtt_large.jpg'),
+(10, 'vtt_small.jpg'),
+(11, 'vtt_thumbnail.jpg'),
+(12, 'vtt_large.jpg'),
+(13, 'vtt_small.jpg'),
+(14, 'vtt_thumbnail.jpg'),
+(15, 'vtt_thumbnail.jpg'),
+(16, 'IMGP2376.JPG'),
+(17, 'vtt_large.jpg'),
+(18, 'vtt_small.jpg'),
+(19, 'vtt_large.jpg'),
+(20, 'vtt_small.jpg'),
+(21, 'vtt_small.jpg'),
+(22, 'vtt_large.jpg'),
+(23, 'vtt_small.jpg'),
+(24, 'vtt_thumbnail.jpg');
+
+
+--
+-- Dumping data for table Presentation
 --
 
 INSERT INTO Presentation (id, description, displayName, features, locale, shortDescription, largeImage_id, smallImage_id, thumbnail_id, video_id) VALUES
-(1, 'orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultricies convallis lacinia. Nunc fringilla, odio ac volutpat lobortis, ligula nisi suscipit eros, quis porttitor neque mi id purus. Proin vitae nibh semper, fermentum sapien et, interdum urna. Morbi dictum dignissim est, vitae hendrerit dolor adipiscing sed. Phasellus ac est mi. Aenean adipiscing turpis rutrum elit ultricies, eget scelerisque nisl scelerisque. Cras quis urna vulputate est interdum congue. Pellentesque vel sollicitudin mi, sed fringilla odio. Duis quis volutpat orci. Curabitur nec vestibulum nunc. Nunc imperdiet lacus orci, ac vestibulum diam bibendum quis. Praesent convallis tempus ante, in suscipit urna facilisis at. Sed congue pretium feugiat. Nunc faucibus consectetur accumsan.Phasellus malesuada augue eget magna condimentum, ut rhoncus nisl ullamcorper. Pellentesque vitae erat facilisis, ullamcorper urna ac, eleifend massa. Phasellus elit eros, volutpat nec pellentesque et, ultrices nec erat. Cras iaculis tincidunt nulla auctor luctus. Pellentesque turpis leo, auctor sed sem eget, luctus malesuada erat. Donec sit amet posuere magna. Duis iaculis, arcu sit amet pharetra condimentum, quam dolor condimentum massa, convallis venenatis diam lorem eu sem.Nullam ornare dolor id neque pretium, quis dignissim lorem posuere. Quisque iaculis augue libero, in sagittis velit dignissim in. Nullam adipiscing, odio ut facilisis malesuada, nibh justo tincidunt ipsum, eget eleifend diam lacus ut nibh. Sed feugiat est eu elit sagittis, id sollicitudin sem faucibus. Sed sit amet libero et massa luctus ullamcorper. Sed non purus adipiscing, malesuada leo vel, tempus felis. Nulla ut ipsum laoreet diam eleifend gravida at eget nulla. Nullam ultrices convallis nisi at cursus. Nullam lacinia tincidunt eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas vel tincidunt metus. Nullam nibh orci, tristique sed mollis vitae, euismod ultricies augue. Aliquam tincidunt elit a massa ....', 'Chocolat cakes', NULL, 'en_GB', 'orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultricies convallis lacinia. Nunc fringilla, odio ac volutpat lobortis, ligula nisi suscipit eros, quis porttitor neque mi id purus. Proin vitae nibh semper, fermentum sapien et, interdum urna. Morbi dictum dignissim est, vitae hendrerit dolor adipiscing sed. Phasellus ac est mi. Aenean adipiscing turpis rutrum elit ultricies, eget scelerisque nisl scelerisque. Cras quis urna vulputate est interdum congue. Pellentesque vel sollicitudin mi, sed fringilla odio. Duis quis volutpat orci. Curabitur nec vestibulum nunc. Nunc imperdiet lacus orci, ac vestibulum diam bibendum quis. Praesent convallis tempus ante, in suscipit urna facilisis at. Sed congue pretium feugiat. Nunc faucibus consectetur accumsan.Phasellus malesuada augue eget magna condimentum, ut rhoncus nisl ullamcorper. Pellentesque vitae erat facilisis, ullamcorper urna ac, eleifend massa. Phasellus elit eros, volutpat nec pellentesque et, ultrices nec erat. Cras iaculis tincidunt nulla auctor luctus. Pellentesque turpis leo, auctor sed sem eget, luctus malesuada erat. Donec sit amet posuere magna. Duis iaculis, arcu sit amet pharetra condimentum, quam dolor condimentum massa, convallis venenatis diam lorem eu sem.Nullam ornare dolor id neque pretium, quis dignissim lorem posuere. Quisque iaculis augue libero, in sagittis velit dignissim in. Nullam adipiscing, odio ut facilisis malesuada, nibh justo tincidunt ipsum, eget eleifend diam lacus ut nibh. Sed feugiat est eu elit sagittis, id sollicitudin sem faucibus. Sed sit amet libero et massa luctus ullamcorper. Sed non purus adipiscing, malesuada leo vel, tempus felis. Nulla ut ipsum laoreet diam eleifend gravida at eget nulla. Nullam ultrices convallis nisi at cursus. Nullam lacinia tincidunt eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas vel tincidunt metus. Nullam nibh orci, tristique sed mollis vitae, euismod ultricies augue. Aliquam tincidunt elit a massa ....', NULL, NULL, NULL, NULL),
-(2, 'orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultricies convallis lacinia. Nunc fringilla, odio ac volutpat lobortis, ligula nisi suscipit eros, quis porttitor neque mi id purus. Proin vitae nibh semper, fermentum sapien et, interdum urna. Morbi dictum dignissim est, vitae hendrerit dolor adipiscing sed. Phasellus ac est mi. Aenean adipiscing turpis rutrum elit ultricies, eget scelerisque nisl scelerisque. Cras quis urna vulputate est interdum congue. Pellentesque vel sollicitudin mi, sed fringilla odio. Duis quis volutpat orci. Curabitur nec vestibulum nunc. Nunc imperdiet lacus orci, ac vestibulum diam bibendum quis. Praesent convallis tempus ante, in suscipit urna facilisis at. Sed congue pretium feugiat. Nunc faucibus consectetur accumsan.Phasellus malesuada augue eget magna condimentum, ut rhoncus nisl ullamcorper. Pellentesque vitae erat facilisis, ullamcorper urna ac, eleifend massa. Phasellus elit eros, volutpat nec pellentesque et, ultrices nec erat. Cras iaculis tincidunt nulla auctor luctus. Pellentesque turpis leo, auctor sed sem eget, luctus malesuada erat. Donec sit amet posuere magna. Duis iaculis, arcu sit amet pharetra condimentum, quam dolor condimentum massa, convallis venenatis diam lorem eu sem.Nullam ornare dolor id neque pretium, quis dignissim lorem posuere. Quisque iaculis augue libero, in sagittis velit dignissim in. Nullam adipiscing, odio ut facilisis malesuada, nibh justo tincidunt ipsum, eget eleifend diam lacus ut nibh. Sed feugiat est eu elit sagittis, id sollicitudin sem faucibus. Sed sit amet libero et massa luctus ullamcorper. Sed non purus adipiscing, malesuada leo vel, tempus felis. Nulla ut ipsum laoreet diam eleifend gravida at eget nulla. Nullam ultrices convallis nisi at cursus. Nullam lacinia tincidunt eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas vel tincidunt metus. Nullam nibh orci, tristique sed mollis vitae, euismod ultricies augue. Aliquam tincidunt elit a massa ....', 'Chocolat cakes', NULL, 'en_US', 'orem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ultricies convallis lacinia. Nunc fringilla, odio ac volutpat lobortis, ligula nisi suscipit eros, quis porttitor neque mi id purus. Proin vitae nibh semper, fermentum sapien et, interdum urna. Morbi dictum dignissim est, vitae hendrerit dolor adipiscing sed. Phasellus ac est mi. Aenean adipiscing turpis rutrum elit ultricies, eget scelerisque nisl scelerisque. Cras quis urna vulputate est interdum congue. Pellentesque vel sollicitudin mi, sed fringilla odio. Duis quis volutpat orci. Curabitur nec vestibulum nunc. Nunc imperdiet lacus orci, ac vestibulum diam bibendum quis. Praesent convallis tempus ante, in suscipit urna facilisis at. Sed congue pretium feugiat. Nunc faucibus consectetur accumsan.Phasellus malesuada augue eget magna condimentum, ut rhoncus nisl ullamcorper. Pellentesque vitae erat facilisis, ullamcorper urna ac, eleifend massa. Phasellus elit eros, volutpat nec pellentesque et, ultrices nec erat. Cras iaculis tincidunt nulla auctor luctus. Pellentesque turpis leo, auctor sed sem eget, luctus malesuada erat. Donec sit amet posuere magna. Duis iaculis, arcu sit amet pharetra condimentum, quam dolor condimentum massa, convallis venenatis diam lorem eu sem.Nullam ornare dolor id neque pretium, quis dignissim lorem posuere. Quisque iaculis augue libero, in sagittis velit dignissim in. Nullam adipiscing, odio ut facilisis malesuada, nibh justo tincidunt ipsum, eget eleifend diam lacus ut nibh. Sed feugiat est eu elit sagittis, id sollicitudin sem faucibus. Sed sit amet libero et massa luctus ullamcorper. Sed non purus adipiscing, malesuada leo vel, tempus felis. Nulla ut ipsum laoreet diam eleifend gravida at eget nulla. Nullam ultrices convallis nisi at cursus. Nullam lacinia tincidunt eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas vel tincidunt metus. Nullam nibh orci, tristique sed mollis vitae, euismod ultricies augue. Aliquam tincidunt elit a massa ....', NULL, NULL, NULL, NULL);
+(4, 'test', 'Test', NULL, 'fr_FR', 'test1', NULL, NULL, NULL, NULL),
+(6, 'Ce nouveau VTT de la gamme Energy vous procure des sensations de roulement incomparables en ville comme à la montagne.', 'VTT Energy 2', NULL, 'fr_FR', 'Le nouveau VTT de la gamme Energy de Bikester', 17, 18, 15, NULL),
+(7, 'This new mountain bike gives you amazing sensations on city streets, or mountain trails.', 'Energy 2 mountain bike', NULL, 'en_US', 'The new Energy mountain bike produced by Bikester', 22, 23, 24, NULL);
+
 
 --
--- Contenu de la table Catalog
+-- Dumping data for table Catalog
 --
 
 INSERT INTO Catalog (id, description, disabled, endDate, name, startDate) VALUES
-(1, NULL, b'0', NULL, 'test', NULL);
+(1, 'Catalog of Hyperbike store', b'0', NULL, 'Hyperbike catalog', NULL);
 
 --
--- Contenu de la table Category
---
-
-INSERT INTO Category (id, description, disabled, endDate, name, startDate) VALUES
-(1, 'Root category 1 empty', b'0', '2014-06-19 00:52:52', 'rootCat1', '2014-06-18 00:52:52'),
-(2, 'Root category 2 with child categories', b'0', '2014-06-19 00:52:52', 'rootCat2', '2014-06-18 00:52:52'),
-(3, 'Child category 1', b'0', '2014-06-19 00:52:52', 'childCat1', '2014-06-18 00:52:52'),
-(4, 'Child category 2 with products', b'0', '2014-06-19 00:52:52', 'childCat2', '2014-06-18 00:52:52'),
-(5, 'Child category 3 expired', b'0', '2014-06-17 00:52:52', 'childCat3', '2014-06-18 00:52:52'),
-(6, 'Child category 4 disabled', b'1', '2014-06-19 00:52:52', 'childCat4', '2014-06-18 00:52:52'),
-(7, 'Child category 5 with presentation', b'0', '2014-06-19 00:52:52', 'childCat5', '2014-06-18 00:52:52'),
-(8, 'Root category 3 expired', b'0', '2014-06-17 00:52:52', 'rootCat3', '2014-06-18 00:52:52');
-
---
--- Contenu de la table Product
+-- Dumping data for table Product
 --
 
 INSERT INTO Product (id, description, disabled, endDate, name, startDate) VALUES
-(1, NULL, b'0', '2014-06-19 00:52:52', 'product1', '2014-06-18 00:52:52'),
-(2, NULL, b'0', '2014-06-17 00:52:52', 'product2', '2014-06-18 00:52:52'),
-(3, NULL, b'1', '2014-06-17 00:52:52', 'product3', '2014-06-18 00:52:52'),
-(4, NULL, b'0', '2014-06-17 00:52:52', 'product4', '2014-06-18 00:52:52');
+(1, 'VTT energy X1', b'0', NULL, 'Energy X1', NULL),
+(2, 'VTT Energy X2', b'0', '2014-06-17 00:52:52', 'Energy X2', '2014-06-18 00:52:52'),
+(3, 'VTC Lazer V2', b'1', NULL, 'Lazer V2', NULL),
+(4, 'VTC Beam 3000', b'0', '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52'),
+(5, 'Michelin NX01 tire', b'0', NULL, 'Michelin NX01', NULL);
+
+
 --
--- Contenu de la table Catalog_Category
+-- Dumping data for table Category
 --
 
-INSERT INTO Catalog_Category (catalogId, categoryId, orderIdx) VALUES
-(1, 1, 0),
-(1, 2, 1),
-(1, 8, 2);
+INSERT INTO Category (id, description, disabled, endDate, name, startDate) VALUES
+(1, 'Bikes main category', b'0', NULL, 'Bikes', NULL),
+(2, 'Accessories main category', b'0', NULL, 'Accessories', NULL),
+(3, 'Tires rubric', b'0', NULL, 'Tires', NULL),
+(4, 'Brackets rubric', b'0', NULL, 'Brackets', NULL),
+(5, 'Handlebar rubric', b'0', NULL, 'Handlebar', NULL),
+(6, 'Wheels rubric', b'0', '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52'),
+(7, 'VTT rubric', b'0', NULL, 'VTT', NULL),
+(12, 'VTC rubric', b'0', NULL, 'VTC', NULL),
+(13, 'Bikes selection for christmas', b'0', '2014-12-30 18:00:00', 'Christmas bikes', '2014-12-14 18:00:00');
+
 --
--- Contenu de la table Category_Category
+-- Dumping data for table Category_Category
 --
 
 INSERT INTO Category_Category (parentCategoryId, childCategoryId, orderIdx) VALUES
@@ -58,59 +98,74 @@ INSERT INTO Category_Category (parentCategoryId, childCategoryId, orderIdx) VALU
 (2, 7, 4);
 
 --
--- Contenu de la table Category_Presentation
+-- Dumping data for table Catalog_Category
 --
 
-INSERT INTO Category_Presentation (catalogItemId, presentationId) VALUES
-(7, 1),
-(7, 2);
+INSERT INTO Catalog_Category (catalogId, categoryId, orderIdx) VALUES
+(1, 1, 0),
+(1, 2, 1);
+
 
 --
--- Contenu de la table Category_Product
+-- Dumping data for table Category_Product
 --
 
 INSERT INTO Category_Product (categoryId, productId, orderIdx) VALUES
-(4, 1, 0),
-(4, 2, 1),
-(4, 3, 2),
-(4, 4, 3);
+(7, 1, 0),
+(7, 2, 1),
+(12, 3, 0),
+(12, 4, 1),
+(3, 5, 0);
+
+--
+-- Dumping data for table Discount
+--
+
+INSERT INTO Discount (id, description, disabled, endDate, name, startDate, discountValue, triggerValue, triggerRule, type, uniqueUse, usesPerCustomer, voucherCode) VALUES
+(1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1, NULL, 'AMOUNT', 'DISCOUNT_RATE', b'1', 1, NULL);
 
 
 --
--- Contenu de la table SKU
+-- Dumping data for table Product_Presentation
+--
+
+INSERT INTO Product_Presentation (catalogItemId, presentationId) VALUES
+(2, 6),
+(2, 7);
+
+--
+-- Dumping data for table SKU
 --
 
 INSERT INTO SKU (id, description, disabled, endDate, name, startDate, currency, price, quantity, reference, threshold) VALUES
-(1, 'Sku1 enabled', b'0', '2014-06-19 00:52:52', 'sku1', '2014-06-18 00:52:52', NULL, 10, 100, 'X1213JJLB-1', 3),
-(2, 'Sku2 disabled', b'1', '2014-06-19 00:52:52', 'sku2', '2014-06-18 00:52:52', NULL, 10, 100, 'X1213JJLB-2', 3),
-(3, 'Sku3 expired', b'0', '2014-06-17 00:52:52', 'sku3', '2014-06-18 00:52:52', NULL, 10, 100, 'X1213JJLB-3', 3),
-(4, 'Sku4 not available', b'0', '2014-06-19 00:52:52', 'sku4', '2014-06-18 00:52:52', NULL, 10, 2, 'X1213JJLB-4', 3),
-(5, 'Sku5 with discounts', b'0', '2014-06-19 00:52:52', 'sku5', '2014-06-18 00:52:52', NULL, 10, 100, 'X1213JJLB-5', 3);
-
+(1, 'Energy X1 batch of 10', b'0', '2014-10-01 00:52:52', 'Energy X1 batch of 10', '2014-06-18 00:52:52', 'EUR', 10, 100, 'X1213JJLB-1', 3),
+(2, 'Energy X1 batch of 50', b'1', '2015-01-01 00:52:52', 'Energy X1 batch of 50', '2014-10-02 00:52:52', NULL, 10, 100, 'X1213JJLB-2', 3),
+(3, 'Energy X2', b'0', NULL, 'Energy X2', NULL, NULL, 10, 100, 'X1213JJLB-3', 3),
+(4, 'Michelin NX01', b'0', NULL, 'Michelin NX01', NULL, NULL, 10, 2, 'X1213JJLB-4', 3),
+(5, 'Lazer V2', b'0', NULL, 'Lazer V2', NULL, NULL, 10, 100, 'X1213JJLB-5', 3),
+(6, 'Beam 3000', b'0', NULL, 'Beam 3000', NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
--- Contenu de la table Product_SKU
+-- Dumping data for table Product_SKU
 --
 
 INSERT INTO Product_SKU (productId, skuId, orderIdx) VALUES
 (1, 1, 0),
 (1, 2, 1),
-(1, 3, 2),
-(1, 4, 3),
-(1, 5, 4);
+(2, 3, 0),
+(5, 4, 0),
+(4, 6, 0);
 
 
 --
--- Contenu de la table Discount
---
-
-INSERT INTO Discount (id, description, disabled, endDate, name, startDate, triggerValue, discountValue, triggerRule, type, uniqueUse, usesPerCustomer, voucherCode) VALUES
-(1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1,2, 'AMOUNT', 'DISCOUNT_RATE', b'1', 1, NULL);
-
-
---
--- Contenu de la table SKU_Discount
+-- Dumping data for table SKU_Discount
 --
 
 INSERT INTO SKU_Discount (skuId, discountId, orderIdx) VALUES
 (5, 1, 0);
+
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
