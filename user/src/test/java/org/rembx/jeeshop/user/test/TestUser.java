@@ -30,7 +30,7 @@ public class TestUser {
         entityManager.getTransaction().begin();
 
         Country country = new Country("fr", "France", "France", "FRA", "123");
-        Address address = new Address("21 Blue street", "", "Chicago", "78801", country);
+        Address address = new Address("21 Blue street", "Chicago", "78801", country);
         user1 = new User("test@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", address, yesterday);
 
         entityManager.persist(country);

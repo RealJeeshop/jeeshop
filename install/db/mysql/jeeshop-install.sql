@@ -185,6 +185,8 @@ CREATE TABLE IF NOT EXISTS User (
   birthDate datetime DEFAULT NULL,
   creationDate datetime NOT NULL,
   disabled bit(1) DEFAULT NULL,
+  activated bit(1) DEFAULT NULL,
+  actionToken VARCHAR(255) DEFAULT NULL,
   email varchar(255) NOT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
@@ -199,10 +201,9 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE TABLE IF NOT EXISTS Address (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  city varchar(100) NOT NULL,
-  street1 varchar(50) NOT NULL,
-  street2 varchar(50) DEFAULT NULL,
-  zipCode varchar(255) DEFAULT NULL,
+  city varchar(255) NOT NULL,
+  street varchar(255) NOT NULL,
+  zipCode varchar (10) DEFAULT NULL,
   country_id bigint(20) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -323,8 +324,8 @@ ALTER TABLE User_Role
 -- Default Users / Roles
 --
 
-INSERT INTO User (birthDate, creationDate, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
-VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
+INSERT INTO User (birthDate, creationDate, activated, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
+VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');

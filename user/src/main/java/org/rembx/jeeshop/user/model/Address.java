@@ -11,15 +11,12 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @Size(min = 5, max = 50)
+    @Size(max = 100)
     @Column(nullable = false, length = 50)
-    private String street1;
-    @Size(min = 5, max = 50)
-    @Column(length = 50)
-    private String street2;
+    private String street;
     @NotNull
     @Column(nullable = false, length = 100)
-    @Size(min = 2, max = 100)
+    @Size( max = 100)
     private String city;
     @NotNull
     @Column(nullable = false, length = 10)
@@ -32,9 +29,8 @@ public class Address {
     public Address() {
     }
 
-    public Address(String street1, String street2, String city, String zipCode, Country country) {
-        this.street1 = street1;
-        this.street2 = street2;
+    public Address(String street, String city, String zipCode, Country country) {
+        this.street = street;
         this.city = city;
         this.zipCode = zipCode;
         this.country = country;

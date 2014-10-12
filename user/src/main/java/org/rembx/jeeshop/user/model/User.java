@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by remi on 21/05/14.
@@ -59,6 +60,10 @@ public class User {
 
     private Boolean disabled;
 
+    private Boolean activated;
+
+    private UUID actionToken;
+
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -82,6 +87,7 @@ public class User {
     @PrePersist
     public void prePersist(){
         this.creationDate = new Date();
+        this.activated = false;
     }
 
     public void setId(Long id) {
@@ -196,6 +202,22 @@ public class User {
         this.disabled = disabled;
     }
 
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
+    }
+
+    public UUID getActionToken() {
+        return actionToken;
+    }
+
+    public void setActionToken(UUID actionToken) {
+        this.actionToken = actionToken;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -203,6 +225,9 @@ public class User {
 
         User user = (User) o;
 
+        if (activated != null ? !activated.equals(user.activated) : user.activated != null) return false;
+        if (actionToken != null ? !actionToken.equals(user.actionToken) : user.actionToken != null)
+            return false;
         if (age != null ? !age.equals(user.age) : user.age != null) return false;
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
         if (disabled != null ? !disabled.equals(user.disabled) : user.disabled != null) return false;
@@ -229,13 +254,16 @@ public class User {
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + (disabled != null ? disabled.hashCode() : 0);
+        result = 31 * result + (activated != null ? activated.hashCode() : 0);
+        result = 31 * result + (actionToken != null ? actionToken.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "actionToken=" + actionToken +
+                ", id=" + id +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", firstname='" + firstname + '\'' +
@@ -246,6 +274,7 @@ public class User {
                 ", age=" + age +
                 ", creationDate=" + creationDate +
                 ", disabled=" + disabled +
+                ", activated=" + activated +
                 '}';
     }
 }
