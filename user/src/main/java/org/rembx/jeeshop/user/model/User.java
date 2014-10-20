@@ -38,6 +38,11 @@ public class User {
     @NotNull
     @Size(max = 50)
     private String lastname;
+
+    @Size(max = 30)
+    @Column(nullable = true)
+    private String gender; // TODO replace with enum
+
     @Phone
     private String phoneNumber;
 
@@ -61,6 +66,8 @@ public class User {
 
     private UUID actionToken;
 
+    private String preferredLocale;
+
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -70,7 +77,7 @@ public class User {
     public User() {
     }
 
-    public User(String login, String password, String firstname, String lastname, String phoneNumber, String email, Address address, Date birthDate) {
+    public User(String login, String password, String firstname, String lastname, String phoneNumber, Address address, Date birthDate, String preferredLocale, Address deliveryAddress) {
         this.login = login;
         this.password = password;
         this.firstname = firstname;
@@ -78,10 +85,12 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.birthDate = birthDate;
+        this.preferredLocale = preferredLocale;
+        this.deliveryAddress = deliveryAddress;
     }
 
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         this.creationDate = new Date();
         this.activated = false;
     }
@@ -206,43 +215,20 @@ public class User {
         this.actionToken = actionToken;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        if (activated != null ? !activated.equals(user.activated) : user.activated != null) return false;
-        if (actionToken != null ? !actionToken.equals(user.actionToken) : user.actionToken != null)
-            return false;
-        if (age != null ? !age.equals(user.age) : user.age != null) return false;
-        if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
-        if (disabled != null ? !disabled.equals(user.disabled) : user.disabled != null) return false;
-        if (firstname != null ? !firstname.equals(user.firstname) : user.firstname != null) return false;
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
-        if (login != null ? !login.equals(user.login) : user.login != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) return false;
-
-        return true;
+    public String getPreferredLocale() {
+        return preferredLocale;
     }
 
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (login != null ? login.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
-        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
-        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
-        result = 31 * result + (age != null ? age.hashCode() : 0);
-        result = 31 * result + (disabled != null ? disabled.hashCode() : 0);
-        result = 31 * result + (activated != null ? activated.hashCode() : 0);
-        result = 31 * result + (actionToken != null ? actionToken.hashCode() : 0);
-        return result;
+    public void setPreferredLocale(String preferredLocale) {
+        this.preferredLocale = preferredLocale;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override
@@ -257,9 +243,10 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", birthDate=" + birthDate +
                 ", age=" + age +
-                ", creationDate=" + creationDate +
                 ", disabled=" + disabled +
                 ", activated=" + activated +
                 '}';
     }
+
+
 }

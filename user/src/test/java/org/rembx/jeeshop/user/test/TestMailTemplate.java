@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.user.test;
 
+import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
@@ -14,6 +15,7 @@ public class TestMailTemplate {
     private static TestMailTemplate instance;
 
     private static MailTemplate mailTemplate1;
+    private static MailTemplate userRegistrationMailTpl;
 
     public static TestMailTemplate getInstance() {
         if (instance != null)
@@ -23,9 +25,11 @@ public class TestMailTemplate {
 
         entityManager.getTransaction().begin();
 
-        mailTemplate1 = new MailTemplate("Newsletter1", "<html><body>bla bla...</body></html>");
+        mailTemplate1 = new MailTemplate("Newsletter1", "fr_FR", "<html><body>bla bla...</body></html>", "Hello Subject");
+        userRegistrationMailTpl = new MailTemplate(Mails.userRegistration.name(), "fr_FR", "<html><body>Welcome ${gender} ${firstname} ${lastname}</body></html>", "New Registration Subject");
 
         entityManager.persist(mailTemplate1);
+        entityManager.persist(userRegistrationMailTpl);
 
         entityManager.getTransaction().commit();
 
@@ -37,6 +41,10 @@ public class TestMailTemplate {
 
     public MailTemplate firstMailTemplate() {
         return mailTemplate1;
+    }
+
+    public MailTemplate userRegistrationMailTemplate(){
+        return userRegistrationMailTpl;
     }
 
 }

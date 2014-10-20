@@ -2,12 +2,14 @@ package org.rembx.jeeshop.user;
 
 import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.user.model.Role;
-import org.rembx.jeeshop.user.model.RoleName;
-import org.rembx.jeeshop.user.model.User;
-import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import org.rembx.jeeshop.user.mail.Mails;
+import org.rembx.jeeshop.user.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -21,6 +23,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +34,8 @@ import java.util.UUID;
 @Path("/users")
 @Stateless
 public class Users {
+
+    private final static Logger LOG = LoggerFactory.getLogger(Users.class);
 
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -44,13 +49,18 @@ public class Users {
     @Inject
     private Mailer mailer;
 
+    @Inject
+    private MailTemplateFinder mailTemplateFinder;
+
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder) {
+    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
+        this.mailTemplateFinder = mailTemplateFinder;
+        this.mailer = mailer;
     }
 
     @POST
@@ -58,7 +68,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public User subscribe(User user) {
+    public User register(User user) {
         if (user.getId() != null){
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
@@ -76,7 +86,16 @@ public class Users {
         user.setActionToken(UUID.randomUUID());
         user.setActivated(false);
 
-        // TODO Mail sending
+        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(Mails.userRegistration.name(), user.getPreferredLocale());
+
+        try {
+            /*Template mailContentTpl = new Template(Mails.userRegistration.name(),mailTemplate.getContent(),new Configuration());
+            final StringWriter mailBody = new StringWriter();
+            mailContentTpl.process(user, mailBody);*/
+            mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailTemplate.getContent());
+        }catch (Exception e){
+            LOG.error("Unable to send registration mail to user", e);
+        }
 
         return user;
     }

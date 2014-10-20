@@ -236,6 +236,7 @@ CREATE TABLE IF NOT EXISTS MailTemplate (
   name varchar(100) NOT NULL,
   locale varchar(25) NULL,
   content TEXT NOT NULL,
+  subject varchar (255) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_MailTemplate_name (name,locale)
 );

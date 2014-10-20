@@ -2,9 +2,12 @@ package org.rembx.jeeshop.user;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import org.rembx.jeeshop.user.test.TestMailTemplate;
 import org.rembx.jeeshop.user.test.TestUser;
 
 import javax.persistence.EntityManager;
@@ -17,14 +20,18 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
 
+@Ignore
 public class UsersIT {
 
     private Users service;
 
     private TestUser testUser;
+    private TestMailTemplate testMailTemplate;
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+    private Mailer mailerMock;
 
     @BeforeClass
     public static void beforeClass() {
@@ -34,8 +41,11 @@ public class UsersIT {
     @Before
     public void setup() {
         testUser = TestUser.getInstance();
+        testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager));
+        mailerMock = mock(Mailer.class);
+        service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
+                new MailTemplateFinder(entityManager), mailerMock);
     }
 
     @Test
@@ -100,7 +110,8 @@ public class UsersIT {
 
     @Test
     public void create_shouldPersist(){
-        User user = new User("test1@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
+
+        User user = new User("test1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
 
         entityManager.getTransaction().begin();
         service.create(user);
@@ -111,8 +122,43 @@ public class UsersIT {
     }
 
     @Test
+    @Ignore
+    public void register_shouldPersistUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception{
+
+        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+
+        entityManager.getTransaction().begin();
+        service.register(user);
+        entityManager.getTransaction().commit();
+
+        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
+
+        assertThat(entityManager.find(User.class, user.getId())).isNotNull();
+        entityManager.remove(user);
+    }
+
+    @Test
+    @Ignore
+    public void register_shouldJustPersistUserWhenExceptionDuringMailSending() throws Exception{
+
+        User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+
+        entityManager.getTransaction().begin();
+        service.register(user);
+        entityManager.getTransaction().commit();
+
+        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),testMailTemplate.userRegistrationMailTemplate().getContent());
+
+        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),"<html><body>Welcome M. John Doe</body></html>");
+
+        assertThat(entityManager.find(User.class, user.getId())).isNotNull();
+        entityManager.remove(user);
+    }
+
+    @Test
     public void modifyUser_ShouldModifyUser() {
-        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
+        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+
         detachedUserToModify.setId(testUser.firstUser().getId());
 
         service.modify(detachedUserToModify);
@@ -121,8 +167,8 @@ public class UsersIT {
 
     @Test
     public void modifyUnknown_ShouldThrowNotFoundException() {
+        User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
 
-        User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
         detachedUser.setId(9999L);
         try {
             service.modify(detachedUser);
@@ -135,7 +181,7 @@ public class UsersIT {
     @Test
     public void delete_shouldRemove(){
         entityManager.getTransaction().begin();
-        User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616", "test@test.com", null, new Date());
+        User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
         entityManager.persist(user);
         entityManager.getTransaction().commit();
 

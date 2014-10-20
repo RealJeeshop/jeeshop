@@ -80,7 +80,7 @@ public class MailTemplatesIT {
     @Test
     public void create_shouldPersist(){
 
-        MailTemplate mailTemplate = new MailTemplate("TestNewsletter","test content");
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter","en_GB","test content","Test Subject");
 
         entityManager.getTransaction().begin();
         service.create(mailTemplate);
@@ -92,7 +92,7 @@ public class MailTemplatesIT {
 
     @Test
     public void modify_ShouldModify() {
-        MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2","test2 content");
+        MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2","fr_FR", "test2 content", "Test2 Subject");
         detachedMailTemplateToModify.setId(testMailTemplate.firstMailTemplate().getId());
 
         service.modify(detachedMailTemplateToModify);
@@ -115,7 +115,7 @@ public class MailTemplatesIT {
     @Test
     public void delete_shouldRemove(){
         entityManager.getTransaction().begin();
-        MailTemplate mailTemplate = new MailTemplate("TestNewsletter3","test content 3");
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter3","fr_FR","test content 3","Test Subject3");
         entityManager.persist(mailTemplate);
         entityManager.getTransaction().commit();
 

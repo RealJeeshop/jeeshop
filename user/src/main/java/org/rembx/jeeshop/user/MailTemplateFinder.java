@@ -15,6 +15,8 @@ import static org.rembx.jeeshop.user.model.QMailTemplate.mailTemplate;
  */
 public class MailTemplateFinder {
 
+    public final static String DEFAULT_LOCALE = "en_GB";
+
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
@@ -25,7 +27,21 @@ public class MailTemplateFinder {
         this.entityManager = entityManager;
     }
 
+    public MailTemplate findByNameAndLocale(String name, String locale) {
+
+        if (locale == null){
+            locale = DEFAULT_LOCALE;
+        }
+
+        return new JPAQuery(entityManager)
+                .from(mailTemplate).where(
+                        mailTemplate.name.eq(name)
+                .and(mailTemplate.locale.eq(locale)))
+                .singleResult(mailTemplate);
+    }
+
     public MailTemplate findByName(String name) {
+
         return new JPAQuery(entityManager)
                 .from(mailTemplate).where(
                         mailTemplate.name.eq(name))

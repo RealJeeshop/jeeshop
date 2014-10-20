@@ -35,6 +35,10 @@ public class MailTemplate {
     @Column(nullable = false)
     String content;
 
+    @NotNull
+    @Column(nullable = false)
+    String subject;
+
     @ManyToMany
     @JoinTable(name = "Newsletter_Media", joinColumns = @JoinColumn(name = "newsletterId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId"))
@@ -44,9 +48,11 @@ public class MailTemplate {
     public MailTemplate() {
     }
 
-    public MailTemplate(String name, String content) {
+    public MailTemplate(String name, String locale, String content, String subject) {
         this.name = name;
+        this.locale = locale;
         this.content = content;
+        this.subject = subject;
     }
 
     public Long getId() {
@@ -90,6 +96,14 @@ public class MailTemplate {
         this.locale = locale;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -101,6 +115,7 @@ public class MailTemplate {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (locale != null ? !locale.equals(that.locale) : that.locale != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (subject != null ? !subject.equals(that.subject) : that.subject != null) return false;
 
         return true;
     }
@@ -111,6 +126,7 @@ public class MailTemplate {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (locale != null ? locale.hashCode() : 0);
         result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (subject != null ? subject.hashCode() : 0);
         return result;
     }
 }
