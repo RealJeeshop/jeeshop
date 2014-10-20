@@ -187,10 +187,9 @@ CREATE TABLE IF NOT EXISTS User (
   disabled bit(1) DEFAULT NULL,
   activated bit(1) DEFAULT NULL,
   actionToken VARCHAR(255) DEFAULT NULL,
-  email varchar(255) NOT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
-  login varchar(100) NOT NULL,
+  login varchar(255) NOT NULL,
   password varchar(100) NOT NULL,
   phoneNumber varchar(15) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
@@ -232,19 +231,19 @@ CREATE TABLE IF NOT EXISTS User_Role (
   PRIMARY KEY (userId,roleId)
 );
 
-CREATE TABLE IF NOT EXISTS Newsletter (
+CREATE TABLE IF NOT EXISTS MailTemplate (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
   locale varchar(25) NULL,
   content TEXT NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY UK_Newsletter_name (name,locale)
+  UNIQUE KEY UK_MailTemplate_name (name,locale)
 );
 
-CREATE TABLE IF NOT EXISTS Newsletter_Media (
-  newsletterId bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS MailTemplate_Media (
+  mailTemplateId bigint(20) NOT NULL,
   mediaId bigint(20) NOT NULL,
-  PRIMARY KEY (newsletterId,mediaId)
+  PRIMARY KEY (mailTemplateId,mediaId)
 );
 
 --
@@ -312,9 +311,9 @@ ALTER TABLE User
   ADD CONSTRAINT FK_User_Address1 FOREIGN KEY (deliveryAddress_id) REFERENCES Address (id),
   ADD CONSTRAINT FK_User_Address2 FOREIGN KEY (address_id) REFERENCES Address (id);
 
-ALTER TABLE Newsletter_Media
-  ADD CONSTRAINT FK_Newsletter_Media_Newsletter FOREIGN KEY (newsletterId) REFERENCES Newsletter (id),
-  ADD CONSTRAINT FK_Newsletter_Media_Media FOREIGN KEY (mediaId) REFERENCES Media (id);
+ALTER TABLE MailTemplate_Media
+  ADD CONSTRAINT FK_MailTemplate_Media_MailTemplate FOREIGN KEY (mailTemplateId) REFERENCES MailTemplate (id),
+  ADD CONSTRAINT FK_MailTemplate_Media_Media FOREIGN KEY (mediaId) REFERENCES Media (id);
 
 ALTER TABLE User_Role
   ADD CONSTRAINT FK_User_Role_User FOREIGN KEY (userId) REFERENCES User (id),
@@ -324,8 +323,8 @@ ALTER TABLE User_Role
 -- Default Users / Roles
 --
 
-INSERT INTO User (birthDate, creationDate, activated, email, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
-VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'admin@jeeshop.org', 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
+INSERT INTO User (birthDate, creationDate, activated, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
+VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');

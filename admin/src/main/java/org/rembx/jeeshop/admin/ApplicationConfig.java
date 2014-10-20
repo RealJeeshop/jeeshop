@@ -2,9 +2,8 @@ package org.rembx.jeeshop.admin;
 
 import org.rembx.jeeshop.catalog.*;
 import org.rembx.jeeshop.media.Medias;
-import org.rembx.jeeshop.user.Newsletters;
+import org.rembx.jeeshop.user.MailTemplates;
 import org.rembx.jeeshop.user.Users;
-import org.rembx.jeeshop.user.model.Newsletter;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -29,7 +28,7 @@ public class
         classes.add(Discounts.class);
         classes.add(Users.class);
         classes.add(Medias.class);
-        classes.add(Newsletters.class);
+        classes.add(MailTemplates.class);
         return classes;
     }
 }

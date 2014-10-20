@@ -1,0 +1,59 @@
+<div class="text-left">
+    <form name="mailTemplateForm"
+          ng-submit="mailTemplateForm.$valid && mailTemplatesCtrl.createOrEdit()" novalidate>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 text-center">
+                <span>
+                    <alert ng-repeat="alert in mailTemplatesCtrl.alerts" type="{{alert.type}}"
+                           close="mailTemplatesCtrl.closeAlert($index)">{{alert.msg}}
+                    </alert>
+                </span>
+            </div>
+            <div class="col-md-1">
+                <div class="col-md-6 text-right">
+                    <button type="button" class="btn btn-default" ng-click="mailTemplatesCtrl.leaveEditView()"><i
+                            class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.name.$invalid && mailTemplateForm.name.$dirty}">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" ng-model="mailTemplatesCtrl.entry.name"
+                       placeholder="Name ..." maxlength="100" required="true"/>
+
+                <p class="help-block" ng-show="mailTemplateForm.name.$error.required && mailTemplateForm.name.$dirty" >Name is required</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"  ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
+                <label>Select a locale</label>
+                <select class="form-control" ng-model="mailTemplatesCtrl.entry.locale" ng-change="selectLocale()"
+                        name="locale"
+                        ng-options="a.name as a.displayName for a in mailTemplatesCtrl.availableLocales" ng-required="true">
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12"
+                 ng-class="{'has-error': mailTemplateForm.content.$invalid && mailTemplateForm.content.$dirty}">
+                <label for="content">Content</label>
+
+                <textarea ckeditor="mailTemplatesCtrl.editorOptions" id="content"
+                          ng-model="mailTemplatesCtrl.entry.content" required="true"></textarea>
+
+
+                <p class="help-block" ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is required</p>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="mailTemplateForm.$invalid"/>
+    </form>
+
+</div>

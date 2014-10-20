@@ -2,12 +2,14 @@ package org.rembx.jeeshop.user;
 
 import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
+import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.model.Role;
 import org.rembx.jeeshop.user.model.RoleName;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Customer resource
@@ -38,6 +41,9 @@ public class Users {
     @Inject
     private RoleFinder roleFinder;
 
+    @Inject
+    private Mailer mailer;
+
     public Users() {
     }
 
@@ -45,6 +51,34 @@ public class Users {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
+    }
+
+    @POST
+    @Path("/public")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public User subscribe(User user) {
+        if (user.getId() != null){
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+
+        User userByLogin = userFinder.findByLogin(user.getLogin());
+
+        if (userByLogin != null){
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        }
+
+        entityManager.persist(user);
+        Role userRole = roleFinder.findByName(RoleName.user);
+        user.setRoles(Sets.newHashSet(userRole));
+        user.setPassword(Hashing.sha256().hashString(user.getPassword()).toString());
+        user.setActionToken(UUID.randomUUID());
+        user.setActivated(false);
+
+        // TODO Mail sending
+
+        return user;
     }
 
     @POST

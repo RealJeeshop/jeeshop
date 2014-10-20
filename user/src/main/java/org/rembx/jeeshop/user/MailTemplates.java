@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.user;
 
 import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.user.model.Newsletter;
+import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.annotation.security.RolesAllowed;
@@ -13,50 +13,49 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashSet;
 import java.util.List;
 
 /**
- * Newsletter resource
+ * Mail template resource
  */
 
-@Path("/newsletters")
+@Path("/mailtemplates")
 @Stateless
-public class Newsletters {
+public class MailTemplates {
 
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     @Inject
-    private NewsletterFinder newsletterFinder;
+    private MailTemplateFinder mailTemplateFinder;
 
 
-    public Newsletters() {
+    public MailTemplates() {
     }
 
-    public Newsletters(EntityManager entityManager, NewsletterFinder newsletterFinder) {
+    public MailTemplates(EntityManager entityManager, MailTemplateFinder mailTemplateFinder) {
         this.entityManager = entityManager;
-        this.newsletterFinder = newsletterFinder;
+        this.mailTemplateFinder = mailTemplateFinder;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Newsletter create(Newsletter newsletter) {
-        entityManager.persist(newsletter);
-        return newsletter;
+    public MailTemplate create(MailTemplate mailTemplate) {
+        entityManager.persist(mailTemplate);
+        return mailTemplate;
     }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    @Path("/{newsletterId}")
-    public void delete(@PathParam("newsletterId") Long newsletterId) {
-        Newsletter newsletter = entityManager.find(Newsletter.class, newsletterId);
-        checkNotNull(newsletter);
-        entityManager.remove(newsletter);
+    @Path("/{id}")
+    public void delete(@PathParam("id") Long id) {
+        MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
+        checkNotNull(mailTemplate);
+        entityManager.remove(mailTemplate);
 
     }
 
@@ -64,30 +63,30 @@ public class Newsletters {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Newsletter modify(Newsletter newsletter) {
-        Newsletter existingNewsletter = entityManager.find(Newsletter.class, newsletter.getId());
-        checkNotNull(existingNewsletter);
-        return entityManager.merge(newsletter);
+    public MailTemplate modify(MailTemplate mailTemplate) {
+        MailTemplate existingMailTemplate = entityManager.find(MailTemplate.class, mailTemplate.getId());
+        checkNotNull(existingMailTemplate);
+        return entityManager.merge(mailTemplate);
     }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Newsletter> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        return newsletterFinder.findAll(start, size);
+    public List<MailTemplate> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        return mailTemplateFinder.findAll(start, size);
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Newsletter find(@PathParam("id") @NotNull Long id) {
-        Newsletter newsletter = entityManager.find(Newsletter.class, id);
-        if (newsletter == null) {
+    public MailTemplate find(@PathParam("id") @NotNull Long id) {
+        MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
+        if (mailTemplate == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return newsletter;
+        return mailTemplate;
     }
 
     @GET
@@ -95,21 +94,21 @@ public class Newsletters {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Long count() {
-        return newsletterFinder.countAll();
+        return mailTemplateFinder.countAll();
     }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Newsletter findByName(@QueryParam("name") String name) {
-        Newsletter newsletter = newsletterFinder.findByName(name);
-        checkNotNull(newsletter);
-        return newsletter;
+    public MailTemplate findByName(@QueryParam("name") String name) {
+        MailTemplate mailTemplate = mailTemplateFinder.findByName(name);
+        checkNotNull(mailTemplate);
+        return mailTemplate;
     }
 
-    private void checkNotNull(Newsletter newsletter) {
-        if (newsletter == null) {
+    private void checkNotNull(MailTemplate mailTemplate) {
+        if (mailTemplate == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }

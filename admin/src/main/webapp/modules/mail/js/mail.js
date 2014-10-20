@@ -1,14 +1,14 @@
 (function () {
-    var app = angular.module('admin-newsletter', []);
+    var app = angular.module('admin-mail', []);
 
-    app.directive("newsletterForm", function () {
+    app.directive("mailtemplateForm", function () {
         return {
             restrict: "A",
-            templateUrl: "modules/newsletter/newsletter-form.html"
+            templateUrl: "modules/mail/mailtemplate-form.html"
         };
     });
 
-    app.controller('NewslettersController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('MailTemplatesController', ['$http', '$modal', function ($http, $modal) {
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -22,13 +22,15 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
 
+        ctrl.availableLocales = allLocales();
+
         ctrl.findEntries = function () {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
-            var uri = 'rs/newsletters';
-            var countURI = 'rs/newsletters/count';
+            var uri = 'rs/mailtemplates';
+            var countURI = 'rs/mailtemplates/count';
 
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 uri = uri + '?name=' + ctrl.searchValue;
@@ -62,7 +64,7 @@
                 size: 'sm'});
             modalInstance.result.then(function () {
                 ctrl.alerts = [];
-                $http.delete('rs/newsletters/' + ctrl.entries[index].id)
+                $http.delete('rs/mailtemplates/' + ctrl.entries[index].id)
                     .success(function (data) {
                         ctrl.entries.splice(index, 1);
                         ctrl.findEntries();
@@ -81,7 +83,7 @@
         }
 
         ctrl.selectEntry = function (id) {
-            $http.get('rs/newsletters/' + id)
+            $http.get('rs/mailtemplates/' + id)
                 .success(function (data) {
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
@@ -99,7 +101,7 @@
 
 
         ctrl.create = function () {
-            $http.post('rs/newsletters', ctrl.entry)
+            $http.post('rs/mailtemplates', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
@@ -110,7 +112,7 @@
         };
 
         ctrl.edit = function () {
-            $http.put('rs/newsletters', ctrl.entry)
+            $http.put('rs/mailtemplates', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'})

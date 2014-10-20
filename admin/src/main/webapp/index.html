@@ -34,7 +34,7 @@
 <!-- jeeshop scripts -->
 <script type="text/javascript" src="modules/user/js/login.js"></script>
 <script type="text/javascript" src="modules/user/js/user.js"></script>
-<script type="text/javascript" src="modules/newsletter/js/newsletter.js"></script>
+<script type="text/javascript" src="modules/mail/js/mail.js"></script>
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 
@@ -58,7 +58,7 @@
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('orders')">Orders</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')">Stats</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Users</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('newsletter')">Newsletters</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('mail')">Mails, Newsletters</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a></li>
                 </ul>
@@ -101,8 +101,8 @@
                     <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
                         <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
                     </li>
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('newsletter') }" title="Create and configure newsletter">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('newsletter')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Newsletters</span></a>
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('mail') }" title="Create and configure newsletters, mail templates">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('mail')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Mails, Newsletters</span></a>
                     </li>
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">

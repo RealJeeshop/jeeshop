@@ -3,9 +3,9 @@ package org.rembx.jeeshop.user;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rembx.jeeshop.user.model.Newsletter;
+import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.rembx.jeeshop.user.test.TestNewsletter;
+import org.rembx.jeeshop.user.test.TestMailTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,11 +17,11 @@ import java.util.List;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class NewslettersIT {
+public class MailTemplatesIT {
 
-    private Newsletters service;
+    private MailTemplates service;
 
-    private TestNewsletter testNewsletter;
+    private TestMailTemplate testMailTemplate;
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
@@ -32,9 +32,9 @@ public class NewslettersIT {
 
     @Before
     public void setup() {
-        testNewsletter = TestNewsletter.getInstance();
+        testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Newsletters(entityManager, new NewsletterFinder(entityManager));
+        service = new MailTemplates(entityManager, new MailTemplateFinder(entityManager));
     }
 
     @Test
@@ -44,15 +44,15 @@ public class NewslettersIT {
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Newsletter> newsletters = service.findAll( 0, 1);
-        assertThat(newsletters).isNotEmpty();
-        assertThat(newsletters).containsExactly(testNewsletter.firstNewsletter());
+        List<MailTemplate> mailTemplates = service.findAll( 0, 1);
+        assertThat(mailTemplates).isNotEmpty();
+        assertThat(mailTemplates).containsExactly(testMailTemplate.firstMailTemplate());
     }
 
     @Test
-    public void findByName_shouldReturnMatchingNewsletter() {
-        Newsletter newsletters = service.findByName(testNewsletter.firstNewsletter().getName());
-        assertThat(newsletters).isEqualTo(testNewsletter.firstNewsletter());
+    public void findByName_shouldReturnMatchingMailTemplate() {
+        MailTemplate newsletters = service.findByName(testMailTemplate.firstMailTemplate().getName());
+        assertThat(newsletters).isEqualTo(testMailTemplate.firstMailTemplate());
     }
 
 
@@ -80,32 +80,32 @@ public class NewslettersIT {
     @Test
     public void create_shouldPersist(){
 
-        Newsletter newsletter = new Newsletter("TestNewsletter","test content");
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter","test content");
 
         entityManager.getTransaction().begin();
-        service.create(newsletter);
+        service.create(mailTemplate);
         entityManager.getTransaction().commit();
 
-        assertThat(entityManager.find(Newsletter.class, newsletter.getId())).isNotNull();
-        entityManager.remove(newsletter);
+        assertThat(entityManager.find(MailTemplate.class, mailTemplate.getId())).isNotNull();
+        entityManager.remove(mailTemplate);
     }
 
     @Test
     public void modify_ShouldModify() {
-        Newsletter detachedNewsletterToModify = new Newsletter("TestNewsletter2","test2 content");
-        detachedNewsletterToModify.setId(testNewsletter.firstNewsletter().getId());
+        MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2","test2 content");
+        detachedMailTemplateToModify.setId(testMailTemplate.firstMailTemplate().getId());
 
-        service.modify(detachedNewsletterToModify);
+        service.modify(detachedMailTemplateToModify);
 
     }
 
     @Test
     public void modifyUnknown_ShouldThrowNotFoundException() {
 
-        Newsletter detachedNewsletter = new Newsletter();
-        detachedNewsletter.setId(9999L);
+        MailTemplate detachedMailTemplate = new MailTemplate();
+        detachedMailTemplate.setId(9999L);
         try {
-            service.modify(detachedNewsletter);
+            service.modify(detachedMailTemplate);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
@@ -115,15 +115,15 @@ public class NewslettersIT {
     @Test
     public void delete_shouldRemove(){
         entityManager.getTransaction().begin();
-        Newsletter newsletter = new Newsletter("TestNewsletter3","test content 3");
-        entityManager.persist(newsletter);
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter3","test content 3");
+        entityManager.persist(mailTemplate);
         entityManager.getTransaction().commit();
 
         entityManager.getTransaction().begin();
-        service.delete(newsletter.getId());
+        service.delete(mailTemplate.getId());
         entityManager.getTransaction().commit();
 
-        assertThat(entityManager.find(Newsletter.class, newsletter.getId())).isNull();
+        assertThat(entityManager.find(MailTemplate.class, mailTemplate.getId())).isNull();
     }
 
     @Test

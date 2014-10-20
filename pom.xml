@@ -48,6 +48,9 @@
         <version.maven.war.plugin>2.4</version.maven.war.plugin>
         <version.failsafe.plugin>2.17</version.failsafe.plugin>
         <version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
+        <version.freemarker>2.3.21</version.freemarker>
+
+        <version.weld-se>2.2.5.Final</version.weld-se>
     </properties>
 
     <dependencies>
@@ -147,6 +150,19 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${version.hibernate}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${version.freemarker}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se</artifactId>
+                <version>${version.weld-se}</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>

@@ -57,13 +57,6 @@ public class UsersIT {
         assertThat(users).containsExactly(testUser.firstUser());
     }
 
-    @Test
-    public void findAll_ByEmail_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getEmail(), 0, 1);
-        assertThat(users).isNotEmpty();
-        assertThat(users).containsExactly(testUser.firstUser());
-    }
-
 
     @Test
     public void findAll_ByFirstName_shouldReturnSearchedUser() {

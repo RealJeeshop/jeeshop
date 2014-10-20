@@ -1,21 +1,21 @@
 package org.rembx.jeeshop.user.test;
 
-import org.rembx.jeeshop.user.model.Newsletter;
+import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 /**
- * Newsletter test utility
+ * MailTemplate test utility
  */
-public class TestNewsletter {
+public class TestMailTemplate {
 
-    private static TestNewsletter instance;
+    private static TestMailTemplate instance;
 
-    private static Newsletter newsletter1;
+    private static MailTemplate mailTemplate1;
 
-    public static TestNewsletter getInstance() {
+    public static TestMailTemplate getInstance() {
         if (instance != null)
             return instance;
 
@@ -23,20 +23,20 @@ public class TestNewsletter {
 
         entityManager.getTransaction().begin();
 
-        newsletter1 = new Newsletter("Newsletter1", "<html><body>bla bla...</body></html>");
+        mailTemplate1 = new MailTemplate("Newsletter1", "<html><body>bla bla...</body></html>");
 
-        entityManager.persist(newsletter1);
+        entityManager.persist(mailTemplate1);
 
         entityManager.getTransaction().commit();
 
-        instance = new TestNewsletter();
+        instance = new TestMailTemplate();
         entityManager.close();
         return instance;
     }
 
 
-    public Newsletter firstNewsletter() {
-        return newsletter1;
+    public MailTemplate firstMailTemplate() {
+        return mailTemplate1;
     }
 
 }

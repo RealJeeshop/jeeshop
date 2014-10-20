@@ -25,6 +25,7 @@ public class User {
 
     @Column(unique = true, nullable = false, length = 100)
     @NotNull
+    @Email
     private String login;
     @Column(nullable = false, length = 100)
     @NotNull
@@ -39,10 +40,6 @@ public class User {
     private String lastname;
     @Phone
     private String phoneNumber;
-    @Email
-    @NotNull
-    @Column(nullable = false)
-    private String email;
 
     @OneToOne
     private Address address;
@@ -79,7 +76,6 @@ public class User {
         this.firstname = firstname;
         this.lastname = lastname;
         this.phoneNumber = phoneNumber;
-        this.email = email;
         this.address = address;
         this.birthDate = birthDate;
     }
@@ -136,14 +132,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Address getAddress() {
@@ -231,7 +219,6 @@ public class User {
         if (age != null ? !age.equals(user.age) : user.age != null) return false;
         if (birthDate != null ? !birthDate.equals(user.birthDate) : user.birthDate != null) return false;
         if (disabled != null ? !disabled.equals(user.disabled) : user.disabled != null) return false;
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (firstname != null ? !firstname.equals(user.firstname) : user.firstname != null) return false;
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
         if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
@@ -250,7 +237,6 @@ public class User {
         result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
         result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
         result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + (disabled != null ? disabled.hashCode() : 0);
@@ -269,7 +255,6 @@ public class User {
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", email='" + email + '\'' +
                 ", birthDate=" + birthDate +
                 ", age=" + age +
                 ", creationDate=" + creationDate +

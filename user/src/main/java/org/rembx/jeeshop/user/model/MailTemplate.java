@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Newsletter {
+public class MailTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +41,10 @@ public class Newsletter {
     @XmlTransient
     Set<Media> medias;
 
-    public Newsletter() {
+    public MailTemplate() {
     }
 
-    public Newsletter(String name, String content) {
+    public MailTemplate(String name, String content) {
         this.name = name;
         this.content = content;
     }
@@ -95,7 +95,7 @@ public class Newsletter {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Newsletter that = (Newsletter) o;
+        MailTemplate that = (MailTemplate) o;
 
         if (content != null ? !content.equals(that.content) : that.content != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
