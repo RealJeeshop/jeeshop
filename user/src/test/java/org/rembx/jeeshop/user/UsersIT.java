@@ -232,6 +232,7 @@ public class UsersIT {
     public void delete_shouldRemove(){
         entityManager.getTransaction().begin();
         User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
         entityManager.persist(user);
         entityManager.getTransaction().commit();
 

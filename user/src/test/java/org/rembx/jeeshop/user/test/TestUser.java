@@ -32,7 +32,7 @@ public class TestUser {
         Country country = new Country("fr", "France", "France", "FRA", "123");
         Address address = new Address("21 Blue street", "Chicago", "78801", country);
         user1 = new User("test@test.com", "test", "John", "Doe", "+33616161616",null,yesterday,"fr_FR",null);
-
+        user1.setGender("M.");
         entityManager.persist(country);
         entityManager.persist(address);
         entityManager.persist(user1);
