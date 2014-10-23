@@ -40,7 +40,7 @@ public class User {
     private String lastname;
 
     @Size(max = 30)
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String gender; // TODO replace with enum
 
     @Phone
@@ -59,6 +59,9 @@ public class User {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
 
     private Boolean disabled;
 
@@ -93,6 +96,11 @@ public class User {
     public void prePersist() {
         this.creationDate = new Date();
         this.activated = false;
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        this.updateDate = new Date();
     }
 
     public void setId(Long id) {
@@ -229,6 +237,14 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

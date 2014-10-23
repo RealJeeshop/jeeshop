@@ -184,16 +184,19 @@ CREATE TABLE IF NOT EXISTS User (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   birthDate datetime DEFAULT NULL,
   creationDate datetime NOT NULL,
+  updateDate datetime NULL,
   disabled bit(1) DEFAULT NULL,
   activated bit(1) DEFAULT NULL,
   actionToken VARCHAR(255) DEFAULT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
+  gender varchar(30) NOT NULL,
   login varchar(255) NOT NULL,
   password varchar(100) NOT NULL,
   phoneNumber varchar(15) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
   deliveryAddress_id bigint(20) DEFAULT NULL,
+  preferredLocale varchar(25) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_Login (login)
 );
@@ -237,6 +240,8 @@ CREATE TABLE IF NOT EXISTS MailTemplate (
   locale varchar(25) NULL,
   content TEXT NOT NULL,
   subject varchar (255) NOT NULL,
+  creationDate datetime NOT NULL,
+  updateDate datetime NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_MailTemplate_name (name,locale)
 );
@@ -324,8 +329,8 @@ ALTER TABLE User_Role
 -- Default Users / Roles
 --
 
-INSERT INTO User (birthDate, creationDate, activated, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
-VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
+INSERT INTO User (birthDate, creationDate, activated, gender, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
+VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'M.' , 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');

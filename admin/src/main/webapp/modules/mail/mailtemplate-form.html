@@ -41,13 +41,23 @@
         </div>
 
         <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.subject.$invalid && mailTemplateForm.subject.$dirty}">
+                <label for="name">Subject</label>
+                <input type="text" class="form-control" id="subject" name="subject" ng-model="mailTemplatesCtrl.entry.subject"
+                       placeholder="Subject ..." maxlength="100" required="true"/>
+
+                <p class="help-block" ng-show="mailTemplateForm.subject.$error.required && mailTemplateForm.subject.$dirty" >Subject is required</p>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group col-md-12"
                  ng-class="{'has-error': mailTemplateForm.content.$invalid && mailTemplateForm.content.$dirty}">
                 <label for="content">Content</label>
 
                 <textarea ckeditor="mailTemplatesCtrl.editorOptions" id="content"
                           ng-model="mailTemplatesCtrl.entry.content" required="true"></textarea>
-
 
                 <p class="help-block" ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is required</p>
             </div>

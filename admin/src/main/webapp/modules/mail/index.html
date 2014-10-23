@@ -1,4 +1,4 @@
-<h3 class="text-center page-header">Mails, Newsletters <small>(Work in progress)</small></h3>
+<h3 class="text-center page-header">Mails, Newsletters</h3>
 
 <div class="text-center" ng-controller="MailTemplatesController as mailTemplatesCtrl">
     <div id="loaderDiv" ng-show="mailTemplatesCtrl.isProcessing">
@@ -31,9 +31,9 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Locale</th>
                 <th class="hidden-xs hidden-sm">Creation date</th>
                 <th class="hidden-xs hidden-sm">Last modification</th>
-                <th>Locale</th>
                 <th></th>
             </tr>
             </thead>
@@ -41,9 +41,9 @@
             <tr ng-repeat="entry in mailTemplatesCtrl.entries" style="cursor:pointer" >
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.id}}</td>
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.name}}</td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)"></td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)"></td>
                 <td ng-click="">{{entry.locale}}</td>
+                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.creationDate|date : 'medium'}}</td>
+                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.updateDate|date : 'medium'}}</td>
                 <td>
                     <a ng-click="mailTemplatesCtrl.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
                 </td>

@@ -486,6 +486,7 @@
             };
 
             $scope.selectLocale = function () {
+                alert($scope.selectedLocale);
                 getPresentationByLocale($scope.selectedLocale);
             };
 

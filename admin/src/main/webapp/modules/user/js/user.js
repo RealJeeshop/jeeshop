@@ -106,6 +106,8 @@
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
+                    ctrl.isCreationModeActive = false;
+                    ctrl.isEditionModeActive = true;
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
@@ -128,6 +130,7 @@
             // hack for dates returned as timestamp by service
             ctrl.entry.birthDate = ctrl.entry.birthDate != null ? new Date(ctrl.entry.birthDate) : null;
             ctrl.entry.creationDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
+            ctrl.entry.updateDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
         };
 
         ctrl.leaveEditView = function () {

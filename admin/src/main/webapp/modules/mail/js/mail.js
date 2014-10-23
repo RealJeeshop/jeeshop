@@ -87,10 +87,14 @@
                 .success(function (data) {
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
+                    ctrl.convertEntryDates();
                 });
         };
 
+
         ctrl.createOrEdit = function () {
+
+            ctrl.alerts = [];
 
             if (ctrl.isCreationModeActive) {
                 ctrl.create();
@@ -105,6 +109,9 @@
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
+                    ctrl.isCreationModeActive = false;
+                    ctrl.isEditionModeActive = true;
+                    ctrl.convertEntryDates();
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
@@ -116,6 +123,7 @@
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'})
+                    ctrl.convertEntryDates();
                 })
                 .error(function (data) {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
@@ -133,6 +141,12 @@
 
         ctrl.closeAlert = function (index) {
             ctrl.alerts.splice(index, 1);
+        };
+
+        ctrl.convertEntryDates = function () {
+            // hack for dates returned as timestamp by service
+            ctrl.entry.creationDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
+            ctrl.entry.updateDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
         };
 
         //setup editor options

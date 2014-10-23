@@ -35,6 +35,7 @@
                 <th class="hidden-xs hidden-sm">Last name</th>
                 <th>Disabled</th>
                 <th class="hidden-xs hidden-sm">Creation date</th>
+                <th class="hidden-xs hidden-sm">Last modification</th>
                 <th></th>
             </tr>
             </thead>
@@ -46,6 +47,7 @@
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.lastname}}</td>
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.disabled ===true?'Yes':'No'}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.creationDate|date : 'medium'}}</td>
+                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.updateDate|date : 'medium'}}</td>
                 <td>
                     <a ng-click="usersController.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
                 </td>

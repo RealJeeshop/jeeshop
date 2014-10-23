@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -40,10 +41,16 @@ public class MailTemplate {
     String subject;
 
     @ManyToMany
-    @JoinTable(name = "Newsletter_Media", joinColumns = @JoinColumn(name = "newsletterId"),
+    @JoinTable(name = "MailTemplate_Media", joinColumns = @JoinColumn(name = "mailTemplateId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId"))
     @XmlTransient
     Set<Media> medias;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
 
     public MailTemplate() {
     }
@@ -53,6 +60,16 @@ public class MailTemplate {
         this.locale = locale;
         this.content = content;
         this.subject = subject;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.creationDate = new Date();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        this.updateDate = new Date();
     }
 
     public Long getId() {
@@ -102,6 +119,22 @@ public class MailTemplate {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label>Select a locale</label>
-                            <select class="form-control" ng-model="$parent.selectedLocale" ng-change="selectLocale()"
+                            <select class="form-control" ng-model="selectedLocale" ng-change="selectLocale()"
                                     name="selectedLocale"
                                     ng-options="a.name as a.displayName for a in availableLocales">
                             </select>
