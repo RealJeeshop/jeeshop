@@ -11,4 +11,8 @@ public class AuthorizationUtils {
         return sessionContext != null && sessionContext.getCallerPrincipal()!=null
                 && sessionContext.getCallerPrincipal().getName().equals(JeeshopRoles.ADMIN);
     }
+
+    public static boolean isEndUser(SessionContext sessionContext){
+        return !isAdminUser(sessionContext);
+    }
 }

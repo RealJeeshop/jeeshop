@@ -2,19 +2,22 @@ package org.rembx.jeeshop.user;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.rembx.jeeshop.mail.Mailer;
+import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
 import org.rembx.jeeshop.user.test.TestUser;
+import sun.security.acl.PrincipalImpl;
 
+import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +25,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
-@Ignore
+
 public class UsersIT {
 
     private Users service;
@@ -32,6 +35,7 @@ public class UsersIT {
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private Mailer mailerMock;
+    private SessionContext sessionContextMock;
 
     @BeforeClass
     public static void beforeClass() {
@@ -44,8 +48,9 @@ public class UsersIT {
         testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         mailerMock = mock(Mailer.class);
+        sessionContextMock = mock(SessionContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
-                new MailTemplateFinder(entityManager), mailerMock);
+                new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
     }
 
     @Test
@@ -109,46 +114,91 @@ public class UsersIT {
     }
 
     @Test
-    public void create_shouldPersist(){
+    public void create_shouldThrowBadRequestExWhenUserIdIsNotNull() throws Exception{
 
-        User user = new User("test1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User();
+        user.setId(777L);
+
+        try {
+            service.create(user);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+    }
+
+    @Test
+    public void create_shouldThrowConflictExWhenUserWithGivenLoginAlreadyExists() throws Exception{
+
+        User user = new User();
+        user.setLogin("test@test.com");
+
+        try {
+            service.create(user);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        }
+    }
+
+    @Test
+    public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception{
+
+        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+        Principal principal = new PrincipalImpl(JeeshopRoles.ADMIN);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
 
         entityManager.getTransaction().begin();
         service.create(user);
         entityManager.getTransaction().commit();
 
+        verify(sessionContextMock,times(2)).getCallerPrincipal();
+
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
+
         entityManager.remove(user);
     }
 
     @Test
-    @Ignore
-    public void register_shouldPersistUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception{
+    public void create_shouldPersistEndUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception{
 
-        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+
+        Principal principal = new PrincipalImpl(JeeshopRoles.USER);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
 
         entityManager.getTransaction().begin();
-        service.register(user);
+        service.create(user);
         entityManager.getTransaction().commit();
 
+        verify(sessionContextMock,times(2)).getCallerPrincipal();
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
+        assertThat(user.getActivated()).isFalse();
+        assertThat(user.getActionToken()).isNotNull();
+
         entityManager.remove(user);
     }
 
     @Test
-    @Ignore
-    public void register_shouldJustPersistUserWhenExceptionDuringMailSending() throws Exception{
+    public void create_shouldJustPersistEndUserEvenWhenExceptionDuringMailSending() throws Exception{
 
         User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+
+        Principal principal = new PrincipalImpl(JeeshopRoles.USER);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
 
         entityManager.getTransaction().begin();
-        service.register(user);
+        service.create(user);
         entityManager.getTransaction().commit();
 
         doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),testMailTemplate.userRegistrationMailTemplate().getContent());
 
+        verify(sessionContextMock,times(2)).getCallerPrincipal();
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),"<html><body>Welcome M. John Doe</body></html>");
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();

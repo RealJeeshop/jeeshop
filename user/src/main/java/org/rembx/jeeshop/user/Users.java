@@ -5,14 +5,16 @@ import com.google.common.hash.Hashing;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.rembx.jeeshop.mail.Mailer;
+import org.rembx.jeeshop.role.AuthorizationUtils;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -52,23 +54,29 @@ public class Users {
     @Inject
     private MailTemplateFinder mailTemplateFinder;
 
+    @Resource
+    private SessionContext sessionContext;
+
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
+    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder,
+                 MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
+        this.sessionContext = sessionContext;
     }
 
+
     @POST
-    @Path("/public")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
-    public User register(User user) {
+    @RolesAllowed({JeeshopRoles.ADMIN, JeeshopRoles.USER})
+    public User create(User user) {
+
         if (user.getId() != null){
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
@@ -83,32 +91,11 @@ public class Users {
         Role userRole = roleFinder.findByName(RoleName.user);
         user.setRoles(Sets.newHashSet(userRole));
         user.setPassword(Hashing.sha256().hashString(user.getPassword()).toString());
-        user.setActionToken(UUID.randomUUID());
-        user.setActivated(false);
 
-        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(Mails.userRegistration.name(), user.getPreferredLocale());
-
-        try {
-            /*Template mailContentTpl = new Template(Mails.userRegistration.name(),mailTemplate.getContent(),new Configuration());
-            final StringWriter mailBody = new StringWriter();
-            mailContentTpl.process(user, mailBody);*/
-            mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailTemplate.getContent());
-        }catch (Exception e){
-            LOG.error("Unable to send registration mail to user", e);
+        if (AuthorizationUtils.isEndUser(sessionContext)){
+            registerEndUser(user);
         }
 
-        return user;
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
-    public User create(User user) {
-        entityManager.persist(user);
-        Role userRole = roleFinder.findByName(RoleName.user);
-        user.setRoles(Sets.newHashSet(userRole));
-        user.setPassword(Hashing.sha256().hashString(user.getPassword()).toString());
         return user;
     }
 
@@ -189,6 +176,26 @@ public class Users {
         if (originalUser == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+    }
+
+    private User registerEndUser(User user) {
+
+        user.setActionToken(UUID.randomUUID());
+        user.setActivated(false);
+
+        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(Mails.userRegistration.name(), user.getPreferredLocale());
+
+        try {
+            Template mailContentTpl = new Template(Mails.userRegistration.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
+            final StringWriter mailBody = new StringWriter();
+            mailContentTpl.process(user, mailBody);
+            mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailBody.toString());
+        }catch (Exception e){
+            LOG.error("Unable to send registration mail to user", e);
+        }
+
+
+        return user;
     }
 
 }
