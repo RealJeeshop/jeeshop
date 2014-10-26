@@ -187,6 +187,7 @@ CREATE TABLE IF NOT EXISTS User (
   updateDate datetime NULL,
   disabled bit(1) DEFAULT NULL,
   activated bit(1) DEFAULT NULL,
+  newslettersSubscribed bit(1) DEFAULT NULL,
   actionToken BINARY (16) DEFAULT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,

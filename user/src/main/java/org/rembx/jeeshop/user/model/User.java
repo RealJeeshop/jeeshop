@@ -72,6 +72,8 @@ public class User {
 
     private String preferredLocale;
 
+    private Boolean newslettersSubscribed;
+
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
@@ -247,6 +249,15 @@ public class User {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
+
+    public Boolean getNewslettersSubscribed() {
+        return newslettersSubscribed;
+    }
+
+    public void setNewslettersSubscribed(Boolean newslettersSubscribed) {
+        this.newslettersSubscribed = newslettersSubscribed;
+    }
+
 
     @Override
     public String toString() {
