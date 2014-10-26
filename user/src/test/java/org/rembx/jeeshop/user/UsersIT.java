@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -227,6 +228,43 @@ public class UsersIT {
         assertThat(persistedUser.getAddress()).isEqualTo(address);
 
         entityManager.remove(user);
+    }
+
+    @Test
+    public void activate_shouldActivateUserAndClearActionToken() throws Exception{
+
+        User user = new User("activate1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+
+        final UUID actionToken = UUID.randomUUID();
+        user.setActionToken(actionToken);
+        user.setActivated(false);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
+
+        service.activate(user.getLogin(), actionToken);
+
+        final User modifiedUser = entityManager.find(User.class, user.getId());
+        assertThat(modifiedUser).isNotNull();
+        assertThat(modifiedUser.getActivated()).isTrue();
+        assertThat(modifiedUser.getActionToken()).isNull();
+
+        entityManager.remove(user);
+    }
+
+
+    @Test
+    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception{;
+
+        try {
+            service.activate("unknown_login", UUID.randomUUID());
+            fail("should have thrown ex");
+        }catch(WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        }
+
     }
 
     @Test

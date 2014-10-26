@@ -81,7 +81,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public User create(User user) {
+    public User create(@NotNull User user) {
 
         if (user.getId() != null){
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -111,12 +111,27 @@ public class Users {
         return user;
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userLogin}")
+    @PermitAll
+    public void activate(@NotNull @PathParam("userLogin") String userLogin, @NotNull UUID token){
+        User user = userFinder.findByLogin(userLogin);
+        if (user != null && user.getActionToken().equals(token)){
+            user.setActivated(true);
+            user.setActionToken(null);
+        }else{
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     @Path("/{userId}")
-    public void delete(@PathParam("userId") Long userId) {
+    public void delete(@NotNull @PathParam("userId") Long userId) {
         User catalog = entityManager.find(User.class, userId);
         checkNotNull(catalog);
         entityManager.remove(catalog);
@@ -127,7 +142,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public User modify(User user) {
+    public User modify(@NotNull User user) {
         User existingUser = entityManager.find(User.class, user.getId());
         checkNotNull(existingUser);
         user.setPassword(existingUser.getPassword());
