@@ -3,6 +3,7 @@ package org.rembx.jeeshop.mail;
 import org.apache.commons.lang.StringUtils;
 import org.rembx.jeeshop.configuration.NamedConfiguration;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -14,6 +15,7 @@ import java.util.Properties;
 
 /**
  */
+@ApplicationScoped
 public class Mailer {
 
     @Inject
@@ -79,12 +81,12 @@ public class Mailer {
         message.setFrom(new InternetAddress(sender));
         InternetAddress[] address = {new InternetAddress(to)};
         message.setRecipients(Message.RecipientType.TO, address);
-        message.setSubject(subject);
+        message.setSubject(subject,"UTF-8");
         message.setSentDate(new Date());
 
         Multipart multipart = new MimeMultipart("alternative");
         MimeBodyPart htmlPart = new MimeBodyPart();
-        htmlPart.setContent(content, "text/html");
+        htmlPart.setContent(content, "text/html; charset=utf-8");
         multipart.addBodyPart(htmlPart);
 
         message.setContent(multipart);
