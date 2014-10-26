@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
@@ -50,7 +51,7 @@ public class UsersIT {
         mailerMock = mock(Mailer.class);
         sessionContextMock = mock(SessionContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
-                new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
+                new CountryChecker("FRA,GBR"),new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
     }
 
     @Test
@@ -142,6 +143,23 @@ public class UsersIT {
     }
 
     @Test
+    public void create_shouldThrowBadRequestExceptionExWhenUsersCountryIsNotAvailable() throws Exception{
+
+        User user = new User();
+        user.setLogin("toto@toto.com");
+        Address address = new Address();
+        address.setCountryIso3Code("ZZZ");
+        user.setAddress(address);
+
+        try {
+            service.create(user);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+    }
+
+    @Test
     public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception{
 
         User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
@@ -189,6 +207,9 @@ public class UsersIT {
         User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
         user.setGender("M.");
 
+        Address address = new Address("7 blue street","Nowhere","00001","FRA");
+        user.setAddress(address);
+
         Principal principal = new PrincipalImpl(JeeshopRoles.USER);
         when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
 
@@ -201,7 +222,10 @@ public class UsersIT {
         verify(sessionContextMock,times(2)).getCallerPrincipal();
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),"<html><body>Welcome M. John Doe</body></html>");
 
-        assertThat(entityManager.find(User.class, user.getId())).isNotNull();
+        final User persistedUser = entityManager.find(User.class, user.getId());
+        assertThat(persistedUser).isNotNull();
+        assertThat(persistedUser.getAddress()).isEqualTo(address);
+
         entityManager.remove(user);
     }
 

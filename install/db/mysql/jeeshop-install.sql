@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS User (
   updateDate datetime NULL,
   disabled bit(1) DEFAULT NULL,
   activated bit(1) DEFAULT NULL,
-  actionToken VARCHAR(255) DEFAULT NULL,
+  actionToken BINARY (16) DEFAULT NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
   gender varchar(30) NOT NULL,
@@ -206,20 +206,9 @@ CREATE TABLE IF NOT EXISTS Address (
   city varchar(255) NOT NULL,
   street varchar(255) NOT NULL,
   zipCode varchar (10) DEFAULT NULL,
-  country_id bigint(20) NOT NULL,
+  countryIso3Code varchar (3) NOT NULL,
   PRIMARY KEY (id)
 );
-
-CREATE TABLE IF NOT EXISTS Country (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  iso3 varchar(3) DEFAULT NULL,
-  isoCode varchar(2) NOT NULL,
-  name varchar(80) NOT NULL,
-  numcode varchar(3) DEFAULT NULL,
-  printableName varchar(80) NOT NULL,
-  PRIMARY KEY (id)
-);
-
 
 CREATE TABLE IF NOT EXISTS Role (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -309,9 +298,6 @@ ALTER TABLE SKU_Discount
 ALTER TABLE SKU_Presentation
   ADD CONSTRAINT FK_SKU_Presentation_SKU FOREIGN KEY (catalogItemId) REFERENCES SKU (id),
   ADD CONSTRAINT FK_SKU_Presentation_Presentation FOREIGN KEY (presentationId) REFERENCES Presentation (id);
-
-ALTER TABLE Address
-  ADD CONSTRAINT FK_Address_Country FOREIGN KEY (country_id) REFERENCES Country (id);
 
 ALTER TABLE User
   ADD CONSTRAINT FK_User_Address1 FOREIGN KEY (deliveryAddress_id) REFERENCES Address (id),

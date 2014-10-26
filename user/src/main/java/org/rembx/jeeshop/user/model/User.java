@@ -46,7 +46,7 @@ public class User {
     @Phone
     private String phoneNumber;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
     @OneToOne
     private Address deliveryAddress;
@@ -67,6 +67,7 @@ public class User {
 
     private Boolean activated;
 
+    @Column(columnDefinition = "BINARY(16)")
     private UUID actionToken;
 
     private String preferredLocale;

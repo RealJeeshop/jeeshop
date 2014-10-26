@@ -36,7 +36,7 @@ public class MailTemplateFinder {
         return new JPAQuery(entityManager)
                 .from(mailTemplate).where(
                         mailTemplate.name.eq(name)
-                .and(mailTemplate.locale.eq(locale)))
+                .and(mailTemplate.locale.eq(locale).or(mailTemplate.locale.startsWith(locale))))
                 .singleResult(mailTemplate);
     }
 

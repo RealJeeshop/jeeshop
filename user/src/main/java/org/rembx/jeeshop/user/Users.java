@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -49,6 +51,9 @@ public class Users {
     private RoleFinder roleFinder;
 
     @Inject
+    private CountryChecker countryChecker;
+
+    @Inject
     private Mailer mailer;
 
     @Inject
@@ -60,11 +65,12 @@ public class Users {
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder,
+    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder,CountryChecker countryChecker,
                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
+        this.countryChecker = countryChecker;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
         this.sessionContext = sessionContext;
@@ -74,7 +80,7 @@ public class Users {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.ADMIN, JeeshopRoles.USER})
+    @PermitAll
     public User create(User user) {
 
         if (user.getId() != null){
@@ -85,6 +91,12 @@ public class Users {
 
         if (userByLogin != null){
             throw new WebApplicationException(Response.Status.CONFLICT);
+        }
+
+        final Address userAddress = user.getAddress();
+        if (userAddress != null && !countryChecker.isAvailable(userAddress.getCountryIso3Code())){
+            LOG.error("Country {} is not available",userAddress.getCountryIso3Code());
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
         entityManager.persist(user);
