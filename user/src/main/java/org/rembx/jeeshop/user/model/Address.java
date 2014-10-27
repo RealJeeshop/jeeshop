@@ -15,15 +15,12 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
     @Size(max = 255)
     @Column(nullable = false, length = 255)
     private String street;
-    @NotNull
     @Column(nullable = false, length = 255)
     @Size( max = 255)
     private String city;
-    @NotNull
     @Column(nullable = false, length = 10)
     @Size(min = 1, max = 10)
     private String zipCode;

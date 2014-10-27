@@ -116,9 +116,9 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}")
     @PermitAll
-    public void activate(@NotNull @PathParam("userLogin") String userLogin, @NotNull UUID token){
+    public void activate(@NotNull @PathParam("userLogin") String userLogin, @NotNull String token){
         User user = userFinder.findByLogin(userLogin);
-        if (user != null && user.getActionToken().equals(token)){
+        if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
             user.setActivated(true);
             user.setActionToken(null);
         }else{

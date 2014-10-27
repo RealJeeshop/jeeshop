@@ -244,7 +244,7 @@ public class UsersIT {
         entityManager.persist(user);
         entityManager.getTransaction().commit();
 
-        service.activate(user.getLogin(), actionToken);
+        service.activate(user.getLogin(), actionToken.toString());
 
         final User modifiedUser = entityManager.find(User.class, user.getId());
         assertThat(modifiedUser).isNotNull();
@@ -259,7 +259,7 @@ public class UsersIT {
     public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception{;
 
         try {
-            service.activate("unknown_login", UUID.randomUUID());
+            service.activate("unknown_login", UUID.randomUUID().toString());
             fail("should have thrown ex");
         }catch(WebApplicationException e){
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
