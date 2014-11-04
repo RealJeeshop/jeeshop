@@ -99,6 +99,8 @@ public class Catalogs {
             catalog.setRootCategories(originalCatalog.getRootCategories());
         }
 
+        catalog.setPresentationByLocale(originalCatalog.getPresentationByLocale());
+
         return entityManager.merge(catalog);
     }
 

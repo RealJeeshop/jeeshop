@@ -105,6 +105,8 @@ public class SKUs {
             sku.setDiscounts(originalSKU.getDiscounts());
         }
 
+        sku.setPresentationByLocale(originalSKU.getPresentationByLocale());
+
         return entityManager.merge(sku);
     }
 

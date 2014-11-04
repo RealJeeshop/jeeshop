@@ -119,6 +119,8 @@ public class Products {
             product.setDiscounts(originalProduct.getDiscounts());
         }
 
+        product.setPresentationByLocale(originalProduct.getPresentationByLocale());
+
         return entityManager.merge(product);
     }
 

@@ -118,6 +118,8 @@ public class Categories {
             category.setChildProducts(originalCategory.getChildProducts());
         }
 
+        category.setPresentationByLocale(originalCategory.getPresentationByLocale());
+
         return entityManager.merge(category);
     }
 
