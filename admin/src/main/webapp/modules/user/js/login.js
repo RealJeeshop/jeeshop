@@ -1,6 +1,10 @@
 (function (){
     var app = angular.module('admin-login',[]);
 
+    app.config(['$httpProvider', function($httpProvider){
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    }]);
+
     app.controller('LoginController', ['AuthService','$scope', function(AuthService,$scope){
         var login = this;
 
@@ -51,6 +55,9 @@
             },
             isAuthenticated: function () {
                 return auth.wrapper.logged === true;
+            },
+            isNotAuthenticated: function () {
+                return auth.wrapper.logged === false;
             },
             hasAuthenticationFailed: function () {
                 return auth.wrapper.hasAuthenticationFailed;

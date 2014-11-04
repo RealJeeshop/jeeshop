@@ -204,8 +204,8 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE TABLE IF NOT EXISTS Address (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  city varchar(255) NOT NULL,
-  street varchar(255) NOT NULL,
+  city varchar(255) DEFAULT NULL,
+  street varchar(255) DEFAULT NULL,
   zipCode varchar (10) DEFAULT NULL,
   countryIso3Code varchar (3) NOT NULL,
   PRIMARY KEY (id)

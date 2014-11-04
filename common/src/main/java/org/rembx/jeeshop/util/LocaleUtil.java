@@ -10,7 +10,7 @@ public class LocaleUtil {
 
     private static Logger logger = LoggerFactory.getLogger(LocaleUtil.class);
 
-    public static final Locale FALLBACK = Locale.US;
+    public static final Locale FALLBACK = Locale.ENGLISH;
 
     public static String getLocaleCode(String localeStr) {
         Locale locale = FALLBACK;

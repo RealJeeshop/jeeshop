@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.codec.binary.Base64;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.role.AuthorizationUtils;
 import org.rembx.jeeshop.role.JeeshopRoles;
@@ -28,7 +29,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -102,7 +102,11 @@ public class Users {
         entityManager.persist(user);
         Role userRole = roleFinder.findByName(RoleName.user);
         user.setRoles(Sets.newHashSet(userRole));
-        user.setPassword(Hashing.sha256().hashString(user.getPassword()).toString());
+
+        byte[] digest = Hashing.sha256().hashBytes(user.getPassword().getBytes()).asBytes();
+        String base64 = Base64.encodeBase64String(digest);
+
+        user.setPassword(base64);
 
         if (AuthorizationUtils.isEndUser(sessionContext)){
             registerEndUser(user);
@@ -148,6 +152,15 @@ public class Users {
         user.setPassword(existingUser.getPassword());
         user.setRoles(existingUser.getRoles());
         return entityManager.merge(user);
+    }
+
+
+    @HEAD
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Boolean authenticate() {
+        return true;
     }
 
     @GET

@@ -98,7 +98,7 @@ public abstract class CatalogItem {
         }
     }
 
-    public void setLocalizedPresentation(String locale) {
+    public void setLocalizedPresentation(String locale) { // TODO missing test!! and Fallback
         Presentation localizedPresentation = null;
 
         if (presentationByLocale == null || presentationByLocale.size()==0){
@@ -106,6 +106,13 @@ public abstract class CatalogItem {
         }
 
         localizedPresentation = presentationByLocale.get(getLocaleCode(locale));
+
+        if (localizedPresentation == null && locale != null){
+            String [] splitted = locale.split("_");
+            if (splitted.length > 1){
+                localizedPresentation = presentationByLocale.get(getLocaleCode(splitted[0]));
+            }
+        }
 
         if (localizedPresentation == null && presentationByLocale.get(FALLBACK.toString()) != null) {
             localizedPresentation = presentationByLocale.get(FALLBACK.toString());

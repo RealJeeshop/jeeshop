@@ -18,10 +18,10 @@ public class Address {
     @Size(max = 255)
     @Column(nullable = false, length = 255)
     private String street;
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     @Size( max = 255)
     private String city;
-    @Column(nullable = false, length = 10)
+    @Column(nullable = true, length = 10)
     @Size(min = 1, max = 10)
     private String zipCode;
 

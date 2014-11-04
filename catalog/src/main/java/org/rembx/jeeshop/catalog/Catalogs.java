@@ -26,6 +26,8 @@ import java.util.Set;
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.USER;
 
 /**
  * @author remi
@@ -58,7 +60,7 @@ public class Catalogs {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Catalog create(Catalog catalog) {
         if (catalog.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
@@ -72,7 +74,7 @@ public class Catalogs {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{catalogId}")
     public void delete(@PathParam("catalogId") Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
@@ -84,7 +86,7 @@ public class Catalogs {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Catalog modify(Catalog catalog) {
         Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
         checkNotNull(originalCatalog);
@@ -103,7 +105,7 @@ public class Catalogs {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(catalog, search, start, size);
@@ -115,7 +117,7 @@ public class Catalogs {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return catalogItemFinder.countBySearchCriteria(catalog, search);
@@ -127,7 +129,7 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.ADMIN, JeeshopRoles.USER})
+    @RolesAllowed({ADMIN, USER})
     public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
@@ -140,7 +142,7 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
@@ -148,7 +150,7 @@ public class Catalogs {
     }
 
     @Path("/{catalogId}/presentations/{locale}")
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public PresentationResource findPresentationByLocale(@PathParam("catalogId") @NotNull Long catalogId, @NotNull @PathParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
