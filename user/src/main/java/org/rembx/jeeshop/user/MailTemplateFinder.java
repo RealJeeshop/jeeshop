@@ -40,12 +40,12 @@ public class MailTemplateFinder {
                 .singleResult(mailTemplate);
     }
 
-    public MailTemplate findByName(String name) {
+    public List<MailTemplate> findByName(String name) {
 
         return new JPAQuery(entityManager)
                 .from(mailTemplate).where(
-                        mailTemplate.name.eq(name))
-                .singleResult(mailTemplate);
+                        mailTemplate.name.startsWith(name))
+                .list(mailTemplate);
     }
 
     public List<MailTemplate> findAll(Integer offset, Integer limit) {

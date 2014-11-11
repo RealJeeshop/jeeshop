@@ -171,6 +171,12 @@ CREATE TABLE IF NOT EXISTS Presentation (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS Presentation_Feature (
+  presentationId bigint(20) NOT NULL,
+  name varchar(255) NOT NULL,
+  value varchar(500) NULL,
+  PRIMARY KEY (presentationId,name)
+);
 
 CREATE TABLE IF NOT EXISTS Presentation_Media (
   presentationId bigint(20) NOT NULL,
@@ -194,7 +200,7 @@ CREATE TABLE IF NOT EXISTS User (
   gender varchar(30) NOT NULL,
   login varchar(255) NOT NULL,
   password varchar(100) NOT NULL,
-  phoneNumber varchar(15) DEFAULT NULL,
+  phoneNumber varchar(30) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
   deliveryAddress_id bigint(20) DEFAULT NULL,
   preferredLocale varchar(25) NULL,

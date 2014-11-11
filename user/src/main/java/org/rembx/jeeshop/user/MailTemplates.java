@@ -73,7 +73,11 @@ public class MailTemplates {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<MailTemplate> findAll(@QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+        if (name!=null){
+            return mailTemplateFinder.findByName(name);
+        }
+
         return mailTemplateFinder.findAll(start, size);
     }
 
@@ -97,15 +101,6 @@ public class MailTemplates {
         return mailTemplateFinder.countAll();
     }
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
-    public MailTemplate findByName(@QueryParam("name") String name) {
-        MailTemplate mailTemplate = mailTemplateFinder.findByName(name);
-        checkNotNull(mailTemplate);
-        return mailTemplate;
-    }
 
     private void checkNotNull(MailTemplate mailTemplate) {
         if (mailTemplate == null) {

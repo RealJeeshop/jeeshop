@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Hold presentation data associated to catalog items such as descriptions,
@@ -66,7 +67,11 @@ public class Presentation {
     @XmlTransient
     private List<Media> otherMedia;
 
-    private HashMap<String,String> features;
+    @ElementCollection
+    @MapKeyColumn(name="name")
+    @Column(name="value")
+    @CollectionTable(name="Presentation_Feature", joinColumns=@JoinColumn(name="presentationId"))
+    private Map<String,String> features;
 
     public Presentation() {
     }
@@ -158,11 +163,11 @@ public class Presentation {
         this.otherMedia = otherMedia;
     }
 
-    public HashMap<String, String> getFeatures() {
+    public Map<String, String> getFeatures() {
         return features;
     }
 
-    public void setFeatures(HashMap<String, String> features) {
+    public void setFeatures(Map<String, String> features) {
         this.features = features;
     }
 
