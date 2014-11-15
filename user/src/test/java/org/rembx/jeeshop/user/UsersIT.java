@@ -311,7 +311,7 @@ public class UsersIT {
         entityManager.persist(user);
         entityManager.getTransaction().commit();
 
-        service.resetPassword(user.getLogin(),"newPassword", actionToken.toString());
+        service.resetPassword(user.getLogin(), actionToken.toString(),"newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();

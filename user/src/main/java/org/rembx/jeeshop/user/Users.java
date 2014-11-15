@@ -147,7 +147,7 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}/password")
     @PermitAll
-    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin,@NotNull String newPassword, @NotNull String token){
+    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin,@NotNull @QueryParam("token") String token, @NotNull String newPassword) {
         User user = userFinder.findByLogin(userLogin);
         if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
             user.setPassword(hashSha256Base64(newPassword));
