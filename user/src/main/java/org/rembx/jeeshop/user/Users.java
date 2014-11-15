@@ -103,13 +103,11 @@ public class Users {
         Role userRole = roleFinder.findByName(RoleName.user);
         user.setRoles(Sets.newHashSet(userRole));
 
-        byte[] digest = Hashing.sha256().hashBytes(user.getPassword().getBytes()).asBytes();
-        String base64 = Base64.encodeBase64String(digest);
-
-        user.setPassword(base64);
+        user.setPassword(hashSha256Base64(user.getPassword()));
 
         if (AuthorizationUtils.isEndUser(sessionContext)){
-            registerEndUser(user);
+            user.setActivated(false);
+            generateActionTokenAndSendMail(user, Mails.userRegistration);
         }
 
         return user;
@@ -124,6 +122,35 @@ public class Users {
         User user = userFinder.findByLogin(userLogin);
         if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
             user.setActivated(true);
+            user.setActionToken(null);
+        }else{
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userLogin}/password")
+    @PermitAll
+    public void sendResetPasswordMail(@NotNull @PathParam("userLogin") String userLogin){
+        User user = userFinder.findByLogin(userLogin);
+        if (user != null){
+            generateActionTokenAndSendMail(user, Mails.userResetPassword);
+        }else{
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userLogin}/password")
+    @PermitAll
+    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin,@NotNull String newPassword, @NotNull String token){
+        User user = userFinder.findByLogin(userLogin);
+        if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
+            user.setPassword(hashSha256Base64(newPassword));
             user.setActionToken(null);
         }else{
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -154,7 +181,6 @@ public class Users {
         return entityManager.merge(user);
     }
 
-
     @HEAD
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -162,6 +188,7 @@ public class Users {
     public Boolean authenticate() {
         return true;
     }
+
 
     @GET
     @Path("/")
@@ -218,24 +245,27 @@ public class Users {
         }
     }
 
-    private User registerEndUser(User user) {
+    private User generateActionTokenAndSendMail(User user, Mails mailType) {
 
         user.setActionToken(UUID.randomUUID());
-        user.setActivated(false);
 
-        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(Mails.userRegistration.name(), user.getPreferredLocale());
+        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(mailType.name(), user.getPreferredLocale());
 
         try {
-            Template mailContentTpl = new Template(Mails.userRegistration.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
+            Template mailContentTpl = new Template(mailType.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
             final StringWriter mailBody = new StringWriter();
             mailContentTpl.process(user, mailBody);
             mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailBody.toString());
         }catch (Exception e){
-            LOG.error("Unable to send registration mail to user", e);
+            LOG.error("Unable to send mail "+mailType+" to user "+user.getLogin(), e);
         }
 
-
         return user;
+    }
+
+    private String hashSha256Base64(String strToHash) {
+        byte[] digest = Hashing.sha256().hashBytes(strToHash.getBytes()).asBytes();
+        return Base64.encodeBase64String(digest);
     }
 
 }

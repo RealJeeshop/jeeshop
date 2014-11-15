@@ -70,11 +70,14 @@
         </div>
 
         <div class="row">
-            <div class="form-group col-md-6" ng-class="{'has-error': userForm.email.$invalid && userForm.email.$dirty}">
-                <label for="email">E-mail</label>
-                <input type="email" class="form-control" id="email" name="email" ng-model="usersController.entry.email"
-                       placeholder="E-mail..." maxlength="255" required="true"/>
-                <p class="help-block" ng-show="userForm.email.$error.required && userForm.email.$dirty">E-mail is required</p>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.lastname.$invalid && userForm.lastname.$dirty}">
+                <label for="gender">Gender</label>
+                <input type="text" class="form-control" id="gender" name="gender"
+                       ng-model="usersController.entry.gender"
+                       placeholder="Gender ..." maxlength="30" required="true"/>
+                <p class="help-block" ng-show="userForm.gender.$error.required && userForm.gender.$dirty">Gender is required</p>
             </div>
 
             <div class="form-group col-md-6"

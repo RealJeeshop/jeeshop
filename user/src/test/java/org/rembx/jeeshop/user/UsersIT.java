@@ -251,7 +251,6 @@ public class UsersIT {
         assertThat(modifiedUser.getActivated()).isTrue();
         assertThat(modifiedUser.getActionToken()).isNull();
 
-        entityManager.remove(user);
     }
 
 
@@ -260,6 +259,72 @@ public class UsersIT {
 
         try {
             service.activate("unknown_login", UUID.randomUUID().toString());
+            fail("should have thrown ex");
+        }catch(WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        }
+
+    }
+
+
+    @Test
+    public void sendResetPasswordMail_shouldGenerateActionTokenAndSendResetPasswordMail() throws Exception{
+
+        entityManager.getTransaction().begin();
+        service.sendResetPasswordMail(testUser.firstUser().getLogin());
+        entityManager.getTransaction().commit();
+
+        verify(mailerMock).sendMail(testMailTemplate.resetPasswordMailTemplate().getSubject(), testUser.firstUser().getLogin(), "<html><body>Here is the link to reset your password</body></html>");
+
+        User persistedUser = entityManager.find(User.class, testUser.firstUser().getId());
+        assertThat(persistedUser).isNotNull();
+
+        entityManager.getTransaction().begin();
+        persistedUser.setActionToken(null);
+        entityManager.getTransaction().commit();
+
+    }
+
+    @Test
+    public void sendResetPasswordMail_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception{
+
+        try {
+            service.sendResetPasswordMail("unknown_login");
+            fail("should have thrown ex");
+        }catch(WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        }
+
+    }
+
+    @Test
+    public void resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() throws Exception{
+
+        User user = new User("reset1@test.com", "previousPassword", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+
+        final UUID actionToken = UUID.randomUUID();
+        user.setActionToken(actionToken);
+        user.setActivated(false);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
+
+        service.resetPassword(user.getLogin(),"newPassword", actionToken.toString());
+
+        final User updatedUser = entityManager.find(User.class, user.getId());
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getActionToken()).isNotEqualTo("previousPassword");
+        assertThat(updatedUser.getActionToken()).isNull();
+
+    }
+
+    @Test
+    public void resetPassword_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception{
+
+        try {
+            service.resetPassword("unknown_login",null,null);
             fail("should have thrown ex");
         }catch(WebApplicationException e){
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());

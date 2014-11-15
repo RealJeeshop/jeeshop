@@ -16,6 +16,8 @@ public class TestMailTemplate {
 
     private static MailTemplate mailTemplate1;
     private static MailTemplate userRegistrationMailTpl;
+    private static MailTemplate ressetPasswordMailTpl;
+
 
     public static TestMailTemplate getInstance() {
         if (instance != null)
@@ -27,9 +29,11 @@ public class TestMailTemplate {
 
         mailTemplate1 = new MailTemplate("Newsletter1", "fr_FR", "<html><body>bla bla...</body></html>", "Hello Subject");
         userRegistrationMailTpl = new MailTemplate(Mails.userRegistration.name(), "fr_FR", "<html><body>Welcome ${gender} ${firstname} ${lastname}</body></html>", "New Registration Subject");
+        ressetPasswordMailTpl = new MailTemplate(Mails.userResetPassword.name(), "fr_FR", "<html><body>Here is the link to reset your password</body></html>", "Reset Password Subject");
 
         entityManager.persist(mailTemplate1);
         entityManager.persist(userRegistrationMailTpl);
+        entityManager.persist(ressetPasswordMailTpl);
 
         entityManager.getTransaction().commit();
 
@@ -47,4 +51,7 @@ public class TestMailTemplate {
         return userRegistrationMailTpl;
     }
 
+    public MailTemplate resetPasswordMailTemplate(){
+        return ressetPasswordMailTpl;
+    }
 }
