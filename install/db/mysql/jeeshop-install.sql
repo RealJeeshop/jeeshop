@@ -159,11 +159,13 @@ CREATE TABLE IF NOT EXISTS Media (
 
 CREATE TABLE IF NOT EXISTS Presentation (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(10000) DEFAULT NULL,
   displayName varchar(255) DEFAULT NULL,
+  promotion varchar(255) DEFAULT NULL,
   features tinyblob,
   locale varchar(25) NOT NULL,
-  shortDescription varchar(2000) DEFAULT NULL,
+  shortDescription varchar(1000) DEFAULT NULL,
+  mediumDescription varchar(2000) DEFAULT NULL,
+  longDescription varchar(5000) DEFAULT NULL,
   largeImage_id bigint(20) DEFAULT NULL,
   smallImage_id bigint(20) DEFAULT NULL,
   thumbnail_id bigint(20) DEFAULT NULL,
@@ -174,7 +176,7 @@ CREATE TABLE IF NOT EXISTS Presentation (
 CREATE TABLE IF NOT EXISTS Presentation_Feature (
   presentationId bigint(20) NOT NULL,
   name varchar(255) NOT NULL,
-  value varchar(500) NULL,
+  value varchar(255) NULL,
   PRIMARY KEY (presentationId,name)
 );
 
@@ -285,6 +287,10 @@ ALTER TABLE Presentation
 ALTER TABLE Presentation_Media
   ADD CONSTRAINT FK_Presentation_Media_Presentation FOREIGN KEY (presentationId) REFERENCES Presentation (id),
   ADD CONSTRAINT FK_Presentation_Media_Media FOREIGN KEY (mediaId) REFERENCES Media (id);
+
+ALTER TABLE Presentation_Feature
+ADD CONSTRAINT FK_Presentation_Feature_Presentation FOREIGN KEY (presentationId) REFERENCES Presentation (id);
+
 
 ALTER TABLE Product_Discount
   ADD CONSTRAINT FK_Product_Discount_Product FOREIGN KEY (productId) REFERENCES Product (id),

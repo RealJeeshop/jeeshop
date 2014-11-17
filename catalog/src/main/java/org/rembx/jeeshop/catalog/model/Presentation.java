@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +35,21 @@ public class Presentation {
     @Column(length = 255)
     private String displayName;
 
-    @Size(max = 2000)
-    @Column(length =2000)
+    @Size(max = 255)
+    @Column(length = 255)
+    private String promotion;
+
+    @Size(max = 1000)
+    @Column(length =1000)
     private String shortDescription;
 
-    @Size(max = 10000 )
-    @Column(length = 10000)
-    private String description;
+    @Size(max = 2000)
+    @Column(length =2000)
+    private String mediumDescription;
+
+    @Size(max = 5000 )
+    @Column(length = 5000)
+    private String longDescription;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(referencedColumnName = "id")
@@ -67,7 +74,7 @@ public class Presentation {
     @XmlTransient
     private List<Media> otherMedia;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyColumn(name="name")
     @Column(name="value")
     @CollectionTable(name="Presentation_Feature", joinColumns=@JoinColumn(name="presentationId"))
@@ -80,7 +87,7 @@ public class Presentation {
         this.locale = locale;
         this.displayName = displayName;
         this.shortDescription = shortDescription;
-        this.description = description;
+        this.longDescription = description;
     }
 
     public Long getId() {
@@ -115,12 +122,12 @@ public class Presentation {
         this.shortDescription = shortDescription;
     }
 
-    public String getDescription() {
-        return description;
+    public String getLongDescription() {
+        return longDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLongDescription(String description) {
+        this.longDescription = description;
     }
 
     public Media getThumbnail() {
@@ -169,6 +176,22 @@ public class Presentation {
 
     public void setFeatures(Map<String, String> features) {
         this.features = features;
+    }
+
+    public String getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(String promotion) {
+        this.promotion = promotion;
+    }
+
+    public String getMediumDescription() {
+        return mediumDescription;
+    }
+
+    public void setMediumDescription(String mediumDescription) {
+        this.mediumDescription = mediumDescription;
     }
 
     @Override

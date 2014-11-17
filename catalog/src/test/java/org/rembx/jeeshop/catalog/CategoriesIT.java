@@ -72,17 +72,17 @@ public class CategoriesIT {
 
     @Test
     public void find_idOfCategoryWithPresentation_ShouldReturnExpectedPresentation(){
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), Locale.ENGLISH.toString())).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_2000);
+        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), Locale.ENGLISH.toString())).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test
     public void find_idOfCategoryWithPresentation_WithNoLocaleSpecifiedShouldReturnFallbackLocalePresentation(){
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), null)).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_2000);
+        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), null)).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test
     public void find_idOfCategoryWithPresentation_WithNotSupportedLocaleSpecifiedShouldReturnFallbackLocalePresentation(){
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), "it_IT")).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_2000);
+        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), "it_IT")).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test

@@ -74,8 +74,8 @@ public class TestCatalog {
         childCat5WithPresentation = new Category("childCat5", "Child category 5 with presentation", now, tomorrow, false);
         childCat6WithoutPresentation = new Category("childCat6", "Child category 6 without presentation", now, tomorrow, true);
         childCat6WithoutPresentation.setPresentationByLocale(new HashMap<>());
-        Presentation presentationUKChildCat5 = new Presentation("en", "Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
-        Presentation presentationUSChildCat5 = new Presentation("en_US", "Chocolat cakes", PresentationTexts.TEXT_2000, PresentationTexts.TEXT_2000);
+        Presentation presentationUKChildCat5 = new Presentation("en", "Chocolat cakes", PresentationTexts.TEXT_1000, PresentationTexts.TEXT_2000);
+        Presentation presentationUSChildCat5 = new Presentation("en_US", "Chocolat cakes", PresentationTexts.TEXT_1000, PresentationTexts.TEXT_2000);
         childCat5WithPresentation.setPresentationByLocale(new HashMap<String, Presentation>() {{
             put(Locale.ENGLISH.toString(), presentationUKChildCat5);
             put(Locale.US.toString(), presentationUSChildCat5);

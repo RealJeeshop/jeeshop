@@ -116,6 +116,7 @@ public abstract class CatalogItem {
 
         if (localizedPresentation == null && presentationByLocale.get(FALLBACK.toString()) != null) {
             localizedPresentation = presentationByLocale.get(FALLBACK.toString());
+
         }
         setLocalizedPresentation(localizedPresentation);
     }

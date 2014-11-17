@@ -18,6 +18,12 @@
         };
     });
 
+    app.directive("featuresAccordion", function () {
+        return {
+            restrict: "E",
+            templateUrl: "modules/catalog/pres-features-accordion.html"
+        };
+    });
 
     app.directive("catalogRelationshipsForm", function () {
         function link(scope, element, attrs) {
@@ -457,6 +463,18 @@
                 thumbnail:false,
                 largeImage:false,
                 smallImage:false
+            };
+
+
+            $scope.feature={};
+
+            $scope.addFeature = function(feature){
+                $scope.presentation.features[feature.name] = feature.value;
+                $scope.feature={};
+            };
+
+            $scope.removeFeature = function(name){
+                delete $scope.presentation.features[name];
             };
 
             var getPresentationByLocale = function (locale) {

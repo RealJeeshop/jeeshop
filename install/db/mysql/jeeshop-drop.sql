@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS MailTemplate;
 DROP TABLE IF EXISTS Media;
 DROP TABLE IF EXISTS Presentation;
 DROP TABLE IF EXISTS Presentation_Media;
+DROP TABLE IF EXISTS Presentation_Feature;
 DROP TABLE IF EXISTS Product;
 DROP TABLE IF EXISTS Product_Discount;
 DROP TABLE IF EXISTS Product_Presentation;

@@ -28,18 +28,36 @@
                                    placeholder="Name..." maxlength="255"/>
                         </div>
 
+                        <div class="form-group col-md-6">
+                            <label for="promotion">Promotion text</label>
+                            <input type="text" class="form-control" id="promotion"
+                                   ng-model="presentation.promotion"
+                                   placeholder="Promotion text..." maxlength="255"/>
+                        </div>
+
                     </div>
                     <div class="row" ng-show="isLocaleSelected()">
                         <div class="form-group col-md-6">
                             <label for="presShortDescription">Short description</label>
                             <textarea class="form-control" id="presShortDescription"
                                       ng-model="presentation.shortDescription"
-                                      placeholder="Description..." rows="2" maxlength="2000"></textarea>
+                                      placeholder="Short description..." rows="2" maxlength="1000"></textarea>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="presDescription">Long description</label>
-                            <textarea class="form-control" id="presDescription" ng-model="presentation.description"
-                                      placeholder="Description..." rows="4" maxlength="10000"></textarea>
+                            <label for="presMedDescription">Medium description</label>
+                            <textarea class="form-control" id="presMedDescription" ng-model="presentation.mediumDescription"
+                                      placeholder="Medium description ..." rows="4" maxlength="2000"></textarea>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="presLongDescription">Long description</label>
+                            <textarea class="form-control" id="presLongDescription" ng-model="presentation.longDescription"
+                                      placeholder="Long description ..." rows="4" maxlength="5000"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Features</label>
+                            <features-accordion></features-accordion>
                         </div>
                     </div>
                     <div class="row" ng-show="isLocaleSelected()">
