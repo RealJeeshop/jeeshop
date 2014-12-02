@@ -4,7 +4,10 @@ import org.rembx.jeeshop.catalog.model.SKU;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Order item.
@@ -12,6 +15,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrderItem {
 
     @Id
@@ -31,6 +36,7 @@ public class OrderItem {
     private Integer quantity;
 
     @ManyToOne(optional = false)
+    @XmlTransient
     private Order order;
 
     public OrderItem() {

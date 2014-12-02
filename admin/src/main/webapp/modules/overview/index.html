@@ -60,10 +60,9 @@
             <span class="text-muted">Show statistics</span>
         </div>
     </div>
-    <div ng-show="loginCtrl.isAuthenticated()"
-         ng-controller="OrdersController as ordersController">
+    <div ng-show="loginCtrl.isAuthenticated()">
 
-        <div class="row">
+        <div class="row" ng-controller="OrdersController as ordersController">
             <div class="col-xs-8">
                 <h4 ng-show="!ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)">
                     Show last orders
@@ -78,44 +77,44 @@
                 <button type="button" class="btn btn-default" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)" ng-show="ordersController.showLastOrders"><i
                         class="glyphicon glyphicon-refresh"></i></button>
             </div>
+            <table class="table table-striped table-hover table-condensed text-left" ng-show="ordersController.showLastOrders">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Owner</th>
+                    <th class="hidden-xs hidden-sm">Login</th>
+                    <th>Status</th>
+                    <th class="hidden-xs hidden-sm">Items</th>
+                    <th class="hidden-xs hidden-sm">Creation Date</th>
+                    <th class="hidden-xs hidden-sm">Last Modification</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="entry in ordersController.entries" style="cursor:pointer">
+                    <td ng-click="ordersController.selectEntry(entry.id)">{{entry.id}}</td>
+                    <td ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
+                        {{entry.user.lastname}}
+                    </td>
+                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
+                    </td>
+                    <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.items}}</td>
+                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
+                        {{entry.creationDate|date : 'medium'}}
+                    </td>
+                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
+                        {{entry.updateDate|date
+                        : 'medium'}}
+                    </td>
+                    <td>
+                        <a ng-click="ordersController.delete($index,'This will delete item #'+entry.id)" href="#"
+                           class="glyphicon glyphicon-trash"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-        <table class="table table-striped table-hover table-condensed text-left" ng-show="ordersController.showLastOrders">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Owner</th>
-                <th class="hidden-xs hidden-sm">Login</th>
-                <th>Status</th>
-                <th class="hidden-xs hidden-sm">Product(s)</th>
-                <th class="hidden-xs hidden-sm">Creation Date</th>
-                <th class="hidden-xs hidden-sm">Last Modification</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="entry in ordersController.entries" style="cursor:pointer">
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.id}}</td>
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
-                    {{entry.user.lastname}}
-                </td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
-                </td>
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.items}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
-                    {{entry.creationDate|date : 'medium'}}
-                </td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
-                    {{entry.updateDate|date
-                    : 'medium'}}
-                </td>
-                <td>
-                    <a ng-click="ordersController.delete($index,'This will delete item #'+entry.id)" href="#"
-                       class="glyphicon glyphicon-trash"/>
-                </td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 </div>
