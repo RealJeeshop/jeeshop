@@ -1,6 +1,6 @@
 (function (){
 
-    var app = angular.module('admin',['ui.bootstrap','angularFileUpload','admin-catalog','admin-login', 'admin-user','admin-mail', 'ngCkeditor']);
+    var app = angular.module('admin',['ui.bootstrap','angularFileUpload','admin-catalog','admin-login', 'admin-user','admin-mail', 'admin-order', 'ngCkeditor']);
 
     app.controller('SideMenuController', function(){
         this.entryId = 'overview';

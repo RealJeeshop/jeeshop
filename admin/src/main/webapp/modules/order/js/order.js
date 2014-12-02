@@ -1,14 +1,14 @@
 (function () {
-    var app = angular.module('admin-user', []);
+    var app = angular.module('admin-order', []);
 
-    app.directive("userForm", function () {
+    app.directive("orderForm", function () {
         return {
             restrict: "A",
-            templateUrl: "modules/user/user-form.html"
+            templateUrl: "modules/order/order-form.html"
         };
     });
 
-    app.controller('UsersController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('OrdersController', ['$http', '$modal', function ($http, $modal) {
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -22,17 +22,21 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
 
-        ctrl.findEntries = function () {
+        ctrl.findEntries = function (orderBy, isDesc) {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
-            var uri = 'rs/users?start=' + offset + '&size=' + ctrl.pageSize;
-            var countURI = 'rs/users/count';
+            var uri = 'rs/orders?start=' + offset + '&size=' + ctrl.pageSize;
+            var countURI = 'rs/orders/count';
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 var searchArg = 'search=' + ctrl.searchValue;
                 uri = uri + '&' + searchArg;
                 countURI = countURI + '?' + searchArg;
+            }
+
+            if (orderBy != null && isDesc !=null){
+                uri = uri + '&orderBy=' + orderBy+'&isDesc='+isDesc;
             }
 
             $http.get(uri).success(function (data) {
@@ -63,7 +67,7 @@
                 size: 'sm'});
             modalInstance.result.then(function () {
                 ctrl.alerts = [];
-                $http.delete('rs/users/' + ctrl.entries[index].id)
+                $http.delete('rs/orders/' + ctrl.entries[index].id)
                     .success(function (data) {
                         ctrl.entries.splice(index, 1);
                         ctrl.findEntries();
@@ -82,7 +86,7 @@
         };
 
         ctrl.selectEntry = function (id) {
-            $http.get('rs/users/' + id)
+            $http.get('rs/orders/' + id)
                 .success(function (data) {
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
@@ -101,7 +105,7 @@
 
 
         ctrl.create = function () {
-            $http.post('rs/users', ctrl.entry)
+            $http.post('rs/orders', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
@@ -115,7 +119,7 @@
         };
 
         ctrl.edit = function () {
-            $http.put('rs/users', ctrl.entry)
+            $http.put('rs/orders', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();

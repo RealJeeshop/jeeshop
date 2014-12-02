@@ -2,6 +2,7 @@ package org.rembx.jeeshop.admin;
 
 import org.rembx.jeeshop.catalog.*;
 import org.rembx.jeeshop.media.Medias;
+import org.rembx.jeeshop.order.Orders;
 import org.rembx.jeeshop.user.MailTemplates;
 import org.rembx.jeeshop.user.Users;
 
@@ -29,6 +30,7 @@ public class
         classes.add(Users.class);
         classes.add(Medias.class);
         classes.add(MailTemplates.class);
+        classes.add(Orders.class);
         return classes;
     }
 }

@@ -53,21 +53,4 @@ public class TestUser {
         return user1;
     }
 
-    /*public static class SKUDiscountsAssert extends GenericAssert<SKUDiscountsAssert, List<Discount>> {
-
-        SKUDiscountsAssert( List<Discount> actual) {
-            super(SKUDiscountsAssert.class , actual);
-        }
-
-        *//**
-     * Visible discounts are not disabled and have an endDate after current date
-     *//*
-        public SKUDiscountsAssert areVisibleDiscountsOfASKUWithDiscounts(){
-            assertThat(actual).containsExactly(catalog.getRootCategories().get(1).getChildCategories().get(1)
-                    .getChildProducts().get(0).getChildSKUs().get(4).getDiscounts().get(0));
-            return this;
-        }
-
-    }*/
-
 }

@@ -12,7 +12,13 @@ public class AuthorizationUtils {
                 && sessionContext.getCallerPrincipal().getName().equals(JeeshopRoles.ADMIN);
     }
 
-    public static boolean isEndUser(SessionContext sessionContext){
+    public static boolean isNotAdminUser(SessionContext sessionContext){
         return !isAdminUser(sessionContext);
     }
+
+    public static boolean isEndUser(SessionContext sessionContext) {
+        return sessionContext != null && sessionContext.getCallerPrincipal()!=null
+                && sessionContext.getCallerPrincipal().getName().equals(JeeshopRoles.USER);
+    }
+
 }

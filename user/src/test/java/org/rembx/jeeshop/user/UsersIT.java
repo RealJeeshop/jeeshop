@@ -165,14 +165,13 @@ public class UsersIT {
 
         User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
         user.setGender("M.");
-        Principal principal = new PrincipalImpl(JeeshopRoles.ADMIN);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
         service.create(user);
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock,times(2)).getCallerPrincipal();
+        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
 
@@ -185,14 +184,13 @@ public class UsersIT {
         User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
         user.setGender("M.");
 
-        Principal principal = new PrincipalImpl(JeeshopRoles.USER);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
         service.create(user);
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock,times(2)).getCallerPrincipal();
+        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
@@ -211,8 +209,7 @@ public class UsersIT {
         Address address = new Address("7 blue street","Nowhere","00001","FRA");
         user.setAddress(address);
 
-        Principal principal = new PrincipalImpl(JeeshopRoles.USER);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(principal);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
         service.create(user);
@@ -220,7 +217,7 @@ public class UsersIT {
 
         doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),testMailTemplate.userRegistrationMailTemplate().getContent());
 
-        verify(sessionContextMock,times(2)).getCallerPrincipal();
+        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),"<html><body>Welcome M. John Doe</body></html>");
 
         final User persistedUser = entityManager.find(User.class, user.getId());

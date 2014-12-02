@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order.model;
 
 import org.rembx.jeeshop.catalog.model.SKU;
 

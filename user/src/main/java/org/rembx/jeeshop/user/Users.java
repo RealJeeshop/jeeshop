@@ -6,7 +6,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.codec.binary.Base64;
 import org.rembx.jeeshop.mail.Mailer;
-import org.rembx.jeeshop.role.AuthorizationUtils;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.*;
@@ -105,7 +104,7 @@ public class Users {
 
         user.setPassword(hashSha256Base64(user.getPassword()));
 
-        if (AuthorizationUtils.isEndUser(sessionContext)){
+        if (!sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
             user.setActivated(false);
             generateActionTokenAndSendMail(user, Mails.userRegistration);
         }

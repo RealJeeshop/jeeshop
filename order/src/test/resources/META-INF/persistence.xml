@@ -5,19 +5,25 @@
              version="2.1">
 
     <!-- User persistence unit-->
-    <persistence-unit name="User">
+    <persistence-unit name="Order">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>org.rembx.jeeshop.order.model.Order</class>
+        <class>org.rembx.jeeshop.order.model.OrderItem</class>
         <class>org.rembx.jeeshop.user.model.Role</class>
         <class>org.rembx.jeeshop.user.model.User</class>
         <class>org.rembx.jeeshop.user.model.Address</class>
         <class>org.rembx.jeeshop.user.model.RoleName</class>
         <class>org.rembx.jeeshop.user.model.MailTemplate</class>
         <class>org.rembx.jeeshop.media.model.Media</class>
+        <class>org.rembx.jeeshop.catalog.model.SKU</class>
+        <class>org.rembx.jeeshop.catalog.model.Discount</class>
+        <class>org.rembx.jeeshop.catalog.model.Presentation</class>
+        <class>org.rembx.jeeshop.catalog.model.Product</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:User"/>
+            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:Order"/>
             <property name="hibernate.connection.username" value="sa"/>
             <!--<property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>-->

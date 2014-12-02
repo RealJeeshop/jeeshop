@@ -30,6 +30,13 @@
 
         <dependency>
             <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>order</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
             <artifactId>media</artifactId>
             <version>${project.version}</version>
         </dependency>

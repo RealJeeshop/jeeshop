@@ -18,18 +18,79 @@
     <description>order domain</description>
 
     <dependencies>
+
         <dependency>
             <groupId>org.rembx.jeeshop</groupId>
             <artifactId>user</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.rembx.jeeshop</groupId>
             <artifactId>catalog</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.mysema.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysema.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${version.hibernate}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${version.hibernate}</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>maven-apt-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
+                            <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
 

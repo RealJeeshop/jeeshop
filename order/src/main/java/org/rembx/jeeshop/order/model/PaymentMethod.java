@@ -1,9 +1,9 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order.model;
 
 /**
  * Created by remi on 21/05/14.
  */
-public class Payment {
+public class PaymentMethod {
 
     private enum type {
         VISA,

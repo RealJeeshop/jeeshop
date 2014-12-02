@@ -9,7 +9,6 @@
         <class>org.rembx.jeeshop.user.model.Role</class>
         <class>org.rembx.jeeshop.user.model.User</class>
         <class>org.rembx.jeeshop.user.model.Address</class>
-        <class>org.rembx.jeeshop.user.model.Country</class>
         <class>org.rembx.jeeshop.user.model.RoleName</class>
         <class>org.rembx.jeeshop.user.model.MailTemplate</class>
         <class>org.rembx.jeeshop.media.model.Media</class>

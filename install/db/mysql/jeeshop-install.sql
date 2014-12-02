@@ -210,6 +210,25 @@ CREATE TABLE IF NOT EXISTS User (
   UNIQUE KEY UK_Login (login)
 );
 
+CREATE TABLE IF NOT EXISTS Orders (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  user_id bigint(20) NOT NULL,
+  deliveryAddress_id bigint(20) DEFAULT NULL,
+  billingAddress_id bigint(20) DEFAULT NULL,
+  status varchar(30) NOT NULL,
+  creationDate datetime NOT NULL,
+  updateDate datetime NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS OrderItem (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  order_id bigint(20) NOT NULL,
+  sku_id bigint (20) NOT NULL,
+  quantity int (11) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS Address (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   city varchar(255) DEFAULT NULL,
@@ -315,6 +334,15 @@ ALTER TABLE SKU_Presentation
 ALTER TABLE User
   ADD CONSTRAINT FK_User_Address1 FOREIGN KEY (deliveryAddress_id) REFERENCES Address (id),
   ADD CONSTRAINT FK_User_Address2 FOREIGN KEY (address_id) REFERENCES Address (id);
+
+ALTER TABLE Orders
+  ADD CONSTRAINT FK_Orders_Address1 FOREIGN KEY (deliveryAddress_id) REFERENCES Address (id),
+  ADD CONSTRAINT FK_Orders_Address2 FOREIGN KEY (billingAddress_id) REFERENCES Address (id),
+  ADD CONSTRAINT FK_Orders_User FOREIGN KEY (user_id) REFERENCES User (id);
+
+ALTER TABLE OrderItem
+  ADD CONSTRAINT FK_OrderItem_SKU FOREIGN KEY (sku_id) REFERENCES SKU (id),
+  ADD CONSTRAINT FK_OrderItem_Order FOREIGN KEY (order_id) REFERENCES Orders (id);
 
 ALTER TABLE MailTemplate_Media
   ADD CONSTRAINT FK_MailTemplate_Media_MailTemplate FOREIGN KEY (mailTemplateId) REFERENCES MailTemplate (id),
