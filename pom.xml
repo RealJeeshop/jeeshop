@@ -13,7 +13,6 @@
 
     <modules>
         <module>catalog</module>
-        <module>order</module>
         <module>user</module>
         <module>store</module>
         <module>admin</module>

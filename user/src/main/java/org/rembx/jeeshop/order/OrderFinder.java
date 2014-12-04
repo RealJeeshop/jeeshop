@@ -4,7 +4,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.expr.ComparableExpressionBase;
 import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.OrderPersistenceUnit;
+import org.rembx.jeeshop.order.model.QOrder;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.persistence.EntityManager;
@@ -13,20 +13,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.rembx.jeeshop.order.model.QOrder.order;
-
 /**
  * User finder utility
  */
 public class OrderFinder {
 
-    @PersistenceContext(unitName = OrderPersistenceUnit.NAME)
+    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
     private Map<String, ComparableExpressionBase<?>> orderSortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
-        put("status", order.status);
-        put("creationDate", order.creationDate);
-        put("updateDate", order.updateDate);
+        put("status", QOrder.order.status);
+        put("creationDate", QOrder.order.creationDate);
+        put("updateDate", QOrder.order.updateDate);
     }};
 
 
@@ -38,7 +36,7 @@ public class OrderFinder {
     }
 
     public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc) {
-        JPAQuery query = new JPAQuery(entityManager).from(order);
+        JPAQuery query = new JPAQuery(entityManager).from(QOrder.order);
 
 
         if (offset != null)
@@ -48,24 +46,24 @@ public class OrderFinder {
 
         sortBy(orderby, isDesc, query);
 
-        return query.list(order);
+        return query.list(QOrder.order);
 
     }
 
     public Long countAll() {
-        JPAQuery query = new JPAQuery(entityManager).from(order);
+        JPAQuery query = new JPAQuery(entityManager).from(QOrder.order);
         return query.count();
     }
 
     public Long countBySearchCriteria(String searchCriteria) {
         JPAQuery query = new JPAQuery(entityManager)
-                .from(order)
+                .from(QOrder.order)
                 .where(buildSearchPredicate(searchCriteria));
         return query.count();
     }
 
     public List<Order> findBySearchCriteria(String searchCriteria, Integer offset, Integer limit, String orderby, Boolean isDesc) {
-        JPAQuery query = new JPAQuery(entityManager).from(order)
+        JPAQuery query = new JPAQuery(entityManager).from(QOrder.order)
                 .where(buildSearchPredicate(searchCriteria));
 
         if (offset != null)
@@ -75,7 +73,7 @@ public class OrderFinder {
 
         sortBy(orderby, isDesc, query);
 
-        return query.list(order);
+        return query.list(QOrder.order);
     }
 
     private void sortBy(String orderby, Boolean isDesc, JPAQuery query) {
@@ -89,8 +87,8 @@ public class OrderFinder {
     }
 
     private BooleanExpression buildSearchPredicate(String search) {
-        return order.user.login.containsIgnoreCase(search)
-                .or(order.user.firstname.containsIgnoreCase(search))
-                .or(order.user.lastname.containsIgnoreCase(search));
+        return QOrder.order.user.login.containsIgnoreCase(search)
+                .or(QOrder.order.user.firstname.containsIgnoreCase(search))
+                .or(QOrder.order.user.lastname.containsIgnoreCase(search));
     }
 }

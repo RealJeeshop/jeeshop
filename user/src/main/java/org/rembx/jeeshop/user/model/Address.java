@@ -25,6 +25,19 @@ public class Address {
     @Size(min = 1, max = 10)
     private String zipCode;
 
+    @Column(length = 50)
+    @Size(max = 50)
+    private String firstname;
+    @Column(length = 50)
+    @Size(max = 50)
+    private String lastname;
+    @Size(max = 30)
+    @Column(length = 30)
+    private String gender;
+    @Size(max=100)
+    @Column(length = 100)
+    private String company;
+
     @NotNull
     private String countryIso3Code;
 
@@ -35,6 +48,17 @@ public class Address {
         this.street = street;
         this.city = city;
         this.zipCode = zipCode;
+        this.countryIso3Code = countryIso3Code;
+    }
+
+    public Address(String street, String city, String zipCode, String firstname, String lastname, String gender, String company, String countryIso3Code) {
+        this.street = street;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.gender = gender;
+        this.company = company;
         this.countryIso3Code = countryIso3Code;
     }
 
@@ -79,6 +103,38 @@ public class Address {
         this.id = id;
     }
 
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,9 +143,13 @@ public class Address {
         Address address = (Address) o;
 
         if (city != null ? !city.equals(address.city) : address.city != null) return false;
+        if (company != null ? !company.equals(address.company) : address.company != null) return false;
         if (countryIso3Code != null ? !countryIso3Code.equals(address.countryIso3Code) : address.countryIso3Code != null)
             return false;
+        if (firstname != null ? !firstname.equals(address.firstname) : address.firstname != null) return false;
+        if (gender != null ? !gender.equals(address.gender) : address.gender != null) return false;
         if (id != null ? !id.equals(address.id) : address.id != null) return false;
+        if (lastname != null ? !lastname.equals(address.lastname) : address.lastname != null) return false;
         if (street != null ? !street.equals(address.street) : address.street != null) return false;
         if (zipCode != null ? !zipCode.equals(address.zipCode) : address.zipCode != null) return false;
 
@@ -102,7 +162,26 @@ public class Address {
         result = 31 * result + (street != null ? street.hashCode() : 0);
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
+        result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
+        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (company != null ? company.hashCode() : 0);
         result = 31 * result + (countryIso3Code != null ? countryIso3Code.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", gender='" + gender + '\'' +
+                ", company='" + company + '\'' +
+                ", countryIso3Code='" + countryIso3Code + '\'' +
+                '}';
     }
 }

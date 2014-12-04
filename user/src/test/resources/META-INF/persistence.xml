@@ -13,6 +13,8 @@
         <class>org.rembx.jeeshop.user.model.RoleName</class>
         <class>org.rembx.jeeshop.user.model.MailTemplate</class>
         <class>org.rembx.jeeshop.media.model.Media</class>
+        <class>org.rembx.jeeshop.order.model.Order</class>
+        <class>org.rembx.jeeshop.order.model.OrderItem</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>

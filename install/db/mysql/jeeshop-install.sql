@@ -235,6 +235,10 @@ CREATE TABLE IF NOT EXISTS Address (
   street varchar(255) DEFAULT NULL,
   zipCode varchar (10) DEFAULT NULL,
   countryIso3Code varchar (3) NOT NULL,
+  gender varchar(30) DEFAULT NULL,
+  firstname varchar(50) DEFAULT NULL,
+  lastname varchar(50) DEFAULT NULL,
+  company varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 

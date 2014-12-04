@@ -1,19 +1,17 @@
 package org.rembx.jeeshop.order.test;
 
-import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.OrderItem;
-import org.rembx.jeeshop.order.model.OrderPersistenceUnit;
 import org.rembx.jeeshop.order.model.OrderStatus;
-import org.rembx.jeeshop.user.model.*;
+import org.rembx.jeeshop.user.model.Address;
+import org.rembx.jeeshop.user.model.User;
+import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import org.rembx.jeeshop.user.test.TestUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by remi on 30/11/14.
@@ -23,9 +21,7 @@ public class TestOrder {
     private static TestOrder instance;
 
     private static Order order1;
-    private static User user1;
-    private static SKU sku1;
-    private static SKU sku2;
+    private static TestUser testUser;
 
     // Date are initialized with java.sql.Timestamp as JPA get a Timestamp instance
     private final static Date now = Timestamp.from(ZonedDateTime.now().toInstant());
@@ -35,27 +31,19 @@ public class TestOrder {
         if (instance != null)
             return instance;
 
-        EntityManager entityManager = Persistence.createEntityManagerFactory(OrderPersistenceUnit.NAME).createEntityManager();
+        testUser = TestUser.getInstance();
+
+        EntityManager entityManager = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME).createEntityManager();
 
         entityManager.getTransaction().begin();
 
         Address deliveryAddress = new Address("21 Blue street", "Chicago", "78801", "FRA");
         Address billingAddress = new Address("53 Green street", "Chicago", "78801", "FRA");
 
-        user1 = new User("test@test.com", "test", "John", "Doe", "+33616161616",null,yesterday,"fr_FR",null);
-        user1.setGender("M.");
-
         entityManager.persist(deliveryAddress);
         entityManager.persist(billingAddress);
-        entityManager.persist(user1);
 
-        sku1 = new SKU("sku1", "Sku1 enabled", 10d, 100, "X1213JJLB-1", now, null, false, 3);
-        sku2 = new SKU("sku2", "Sku2 enabled", 10d, 100, "X1213JJLB-2", now, null, false, 3);
-
-        entityManager.persist(sku1);
-        entityManager.persist(sku2);
-
-        order1 = new Order(user1,null, deliveryAddress,billingAddress, OrderStatus.CREATED);
+        order1 = new Order(testUser.firstUser(),null, deliveryAddress,billingAddress, OrderStatus.CREATED);
 
         entityManager.persist(order1);
 
@@ -73,14 +61,6 @@ public class TestOrder {
 
     public User firstOrdersUser() {
         return order1.getUser();
-    }
-
-    public SKU firstSKU(){
-        return sku1;
-    }
-
-    public SKU secondSKU(){
-        return sku2;
     }
 
 }

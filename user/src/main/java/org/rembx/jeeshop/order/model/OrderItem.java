@@ -1,7 +1,5 @@
 package org.rembx.jeeshop.order.model;
 
-import org.rembx.jeeshop.catalog.model.SKU;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,19 +21,15 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @XmlTransient
-    private SKU sku;
-
-    @Transient
     @NotNull
+    @Column(name = "sku_id", nullable = false)
     private Long skuId;
 
     @NotNull
     @Column(nullable = false)
     private Integer quantity;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @XmlTransient
     private Order order;
 
@@ -45,25 +39,6 @@ public class OrderItem {
     public OrderItem(Long skuId, Integer quantity) {
         this.skuId = skuId;
         this.quantity = quantity;
-    }
-
-    public OrderItem(SKU sku, Integer quantity) {
-        this.sku = sku;
-        this.quantity = quantity;
-    }
-
-    @PostLoad
-    public void postLoad() {
-        if (sku != null)
-            skuId = sku.getId();
-    }
-
-    public SKU getSku() {
-        return sku;
-    }
-
-    public void setSku(SKU sku) {
-        this.sku = sku;
     }
 
     public Integer getQuantity() {

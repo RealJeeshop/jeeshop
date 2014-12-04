@@ -3,16 +3,13 @@ package org.rembx.jeeshop.order;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
-import org.rembx.jeeshop.order.model.OrderPersistenceUnit;
-import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.user.*;
+import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.Address;
-import org.rembx.jeeshop.user.model.User;
+import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import sun.security.acl.PrincipalImpl;
 
 import javax.ejb.SessionContext;
@@ -21,16 +18,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
 
 public class OrdersIT {
@@ -44,7 +37,7 @@ public class OrdersIT {
 
     @BeforeClass
     public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(OrderPersistenceUnit.NAME);
+        entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
     }
 
     @Before
@@ -86,13 +79,33 @@ public class OrdersIT {
     }
 
     @Test
-    public void create_shouldThrowBadRequestExWhenUserIdIsNotNull() throws Exception{
+    public void create_shouldThrowBadRequestWhenParametersHaveId() throws Exception{
 
-        Order order = new Order();
-        order.setId(777L);
+        Address address = new Address("7 Rue des arbres", "Paris", "92800", "USA");
+        address.setId(777L);
+        OrderItem orderItemWithId = new OrderItem();
+        orderItemWithId.setId(777L);
+        List<OrderItem> orderItems = Arrays.asList(orderItemWithId);
 
         try {
-            service.create(order);
+            Order order = new Order(null, address,new Address("7 Rue des arbres", "Paris", "92800", "USA"));
+            service.create(order,null);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+
+        try {
+            Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "USA"),address);
+            service.create(order,null);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+
+        try {
+            Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "USA"),address);
+            service.create(order,null);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
@@ -104,13 +117,14 @@ public class OrdersIT {
 
         Address deliveryAddress = new Address("7 Rue des arbres", "Paris", "92800", "USA");
         Address billingAddress = new Address("8 Rue Toto", "Paris", "75001", "FRA");
-        Order order = new Order(null, deliveryAddress,billingAddress);
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
-        service.create(order);
+        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "USA"),  new Address("8 Rue Toto", "Paris", "75001", "FRA"));
+
+        service.create(order,null);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
@@ -138,13 +152,14 @@ public class OrdersIT {
                 new OrderItem(2L,3)
         );
 
-        Order order = new Order(orderItems,null,null);
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
-        service.create(order);
+        Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "USA"), new Address("7 Rue des arbres", "Paris", "92800", "USA"));
+
+        service.create(order,null);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
@@ -156,10 +171,10 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
-        OrderItem expectedOrderItem1 = new OrderItem(testOrder.firstSKU(), 2);
+        OrderItem expectedOrderItem1 = new OrderItem(1L, 2);
         expectedOrderItem1.setSkuId(1L);
         expectedOrderItem1.setId(1L);
-        OrderItem expectedOrderItem2 = new OrderItem(testOrder.secondSKU(), 3);
+        OrderItem expectedOrderItem2 = new OrderItem(2L, 3);
         expectedOrderItem2.setSkuId(2L);
         expectedOrderItem2.setId(2L);
 
@@ -172,15 +187,16 @@ public class OrdersIT {
     @Test
     public void create_shouldSetGivenUserByLoginInOrder_ForADMINRole() throws Exception{
 
-        Order order = new Order();
-        order.setUser(testOrder.firstOrdersUser());
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(false);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
-        service.create(order);
+        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "USA"), new Address("7 Rue des arbres", "Paris", "92800", "USA"));
+        service.create(order,"test@test.com");
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
+        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 

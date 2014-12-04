@@ -93,9 +93,16 @@ public class Users {
         }
 
         final Address userAddress = user.getAddress();
-        if (userAddress != null && !countryChecker.isAvailable(userAddress.getCountryIso3Code())){
-            LOG.error("Country {} is not available",userAddress.getCountryIso3Code());
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+
+        if (userAddress != null){
+            if (userAddress.getId()!=null){
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+
+            if ( !countryChecker.isAvailable(userAddress.getCountryIso3Code())) {
+                LOG.error("Country {} is not available", userAddress.getCountryIso3Code());
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
         }
 
         entityManager.persist(user);

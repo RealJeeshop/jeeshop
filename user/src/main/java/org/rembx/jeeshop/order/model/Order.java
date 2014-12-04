@@ -26,13 +26,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne (optional = false)
+    @ManyToOne
     @NotNull
     User user;
 
+    @Transient
+    Collection<OrderItem> items;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     @XmlTransient
-    Collection<OrderItem> items;
+    Collection<OrderItem> persistedItems;
 
     @OneToOne(cascade = CascadeType.ALL)
     Address deliveryAddress;
@@ -70,9 +73,15 @@ public class Order {
         this.status = status;
     }
 
+    @PostLoad
+    public void postLoad(){
+        this.items = persistedItems;
+    }
+
     @PrePersist
     public void prePersist() {
         this.creationDate = new Date();
+        this.persistedItems = items;
     }
 
     @PreUpdate

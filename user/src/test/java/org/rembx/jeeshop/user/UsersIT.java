@@ -10,7 +10,6 @@ import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
 import org.rembx.jeeshop.user.test.TestUser;
-import sun.security.acl.PrincipalImpl;
 
 import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
@@ -18,7 +17,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -116,7 +114,7 @@ public class UsersIT {
     }
 
     @Test
-    public void create_shouldThrowBadRequestExWhenUserIdIsNotNull() throws Exception{
+    public void create_shouldThrowBadRequestExWhenUserHasAnId() throws Exception{
 
         User user = new User();
         user.setId(777L);
@@ -150,6 +148,23 @@ public class UsersIT {
         user.setLogin("toto@toto.com");
         Address address = new Address();
         address.setCountryIso3Code("ZZZ");
+        user.setAddress(address);
+
+        try {
+            service.create(user);
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        }
+    }
+
+    @Test
+    public void create_shouldThrowBadRequestExceptionExWhenUserAddressHasAnId() throws Exception{
+
+        User user = new User();
+        user.setLogin("toto@toto.com");
+        Address address = new Address();
+        address.setId(1L);
         user.setAddress(address);
 
         try {
