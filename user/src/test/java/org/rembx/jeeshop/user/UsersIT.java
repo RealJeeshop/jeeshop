@@ -221,7 +221,8 @@ public class UsersIT {
         User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
         user.setGender("M.");
 
-        Address address = new Address("7 blue street","Nowhere","00001","FRA");
+        Address address = new Address("7 blue street", "Nowhere", "00001", "John", "Doe","M.",null, "FRA");
+
         user.setAddress(address);
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);

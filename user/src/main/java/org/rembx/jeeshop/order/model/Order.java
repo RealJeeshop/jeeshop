@@ -56,6 +56,12 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
+    @Transient
+    PaymentInfo paymentInfo; // Used for payment systems such as SIPS
+
+    @Transient
+    Double computedPrice;
+
     public Order() {
     }
 
@@ -87,6 +93,14 @@ public class Order {
     @PreUpdate
     public void preUpdate(){
         this.updateDate = new Date();
+    }
+
+    public PaymentInfo getPaymentInfo() {
+        return paymentInfo;
+    }
+
+    public void setPaymentInfo(PaymentInfo paymentInfo) {
+        this.paymentInfo = paymentInfo;
     }
 
     public User getUser() {
@@ -149,7 +163,13 @@ public class Order {
         return updateDate;
     }
 
+    public Double getComputedPrice() {
+        return computedPrice;
+    }
 
+    public void setComputedPrice(Double computedPrice) {
+        this.computedPrice = computedPrice;
+    }
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;

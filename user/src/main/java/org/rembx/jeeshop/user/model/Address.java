@@ -16,39 +16,40 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(max = 255)
+    @NotNull
     @Column(nullable = false, length = 255)
     private String street;
-    @Column(nullable = true, length = 255)
+    @Column(nullable = false, length = 255)
     @Size( max = 255)
+    @NotNull
     private String city;
-    @Column(nullable = true, length = 10)
+    @Column(nullable = false, length = 10)
     @Size(min = 1, max = 10)
+    @NotNull
     private String zipCode;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     @Size(max = 50)
+    @NotNull
     private String firstname;
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     @Size(max = 50)
+    @NotNull
     private String lastname;
     @Size(max = 30)
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
+    @NotNull
     private String gender;
     @Size(max=100)
     @Column(length = 100)
     private String company;
 
     @NotNull
+    @Size(min = 3, max = 3)
+    @Column(nullable = false, length = 3)
     private String countryIso3Code;
 
     public Address() {
-    }
-
-    public Address(String street, String city, String zipCode, String countryIso3Code) {
-        this.street = street;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.countryIso3Code = countryIso3Code;
     }
 
     public Address(String street, String city, String zipCode, String firstname, String lastname, String gender, String company, String countryIso3Code) {

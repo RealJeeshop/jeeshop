@@ -231,13 +231,13 @@ CREATE TABLE IF NOT EXISTS OrderItem (
 
 CREATE TABLE IF NOT EXISTS Address (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  city varchar(255) DEFAULT NULL,
-  street varchar(255) DEFAULT NULL,
-  zipCode varchar (10) DEFAULT NULL,
+  city varchar(255) NOT NULL,
+  street varchar(255)NOT NULL,
+  zipCode varchar (10) NOT NULL,
   countryIso3Code varchar (3) NOT NULL,
-  gender varchar(30) DEFAULT NULL,
-  firstname varchar(50) DEFAULT NULL,
-  lastname varchar(50) DEFAULT NULL,
+  gender varchar(30)  NOT NULL,
+  firstname varchar(50)  NOT NULL,
+  lastname varchar(50)  NOT NULL,
   company varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
 );

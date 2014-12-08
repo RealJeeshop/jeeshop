@@ -29,7 +29,7 @@ public class TestUser {
 
         entityManager.getTransaction().begin();
 
-        Address address = new Address("21 Blue street", "Chicago", "78801", "FRA");
+        Address address = new Address("21 Blue street", "Chicago", "78801", "John", "Doe","M.",null, "FRA");
         user1 = new User("test@test.com", "test", "John", "Doe", "+33616161616",null,yesterday,"fr_FR",null);
         user1.setGender("M.");
 

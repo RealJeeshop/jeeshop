@@ -144,7 +144,7 @@
                     </security>
                 </datasource>
 
-                <xa-datasource jndi-name="java:/CatalogDS" pool-name="CatalogDS" enabled="true">
+                <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
                     <xa-datasource-property name="ServerName">
                         ${env.OPENSHIFT_MYSQL_DB_HOST}
                     </xa-datasource-property>
@@ -168,56 +168,6 @@
                         <flush-strategy>IdleConnections</flush-strategy>
                     </xa-pool>
                 </xa-datasource>
-                <xa-datasource jndi-name="java:/UserDS" pool-name="UserDS" enabled="true">
-                    <xa-datasource-property name="ServerName">
-                        ${env.OPENSHIFT_MYSQL_DB_HOST}
-                    </xa-datasource-property>
-                    <xa-datasource-property name="PortNumber">
-                        ${env.OPENSHIFT_MYSQL_DB_PORT}
-                    </xa-datasource-property>
-                    <xa-datasource-property name="DatabaseName">
-                        apps
-                    </xa-datasource-property>
-                    <driver>mysql</driver>
-                    <security>
-                        <user-name>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user-name>
-                        <password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
-                    </security>
-                    <validation>
-                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
-                        <background-validation>true</background-validation>
-                        <background-validation-millis>60000</background-validation-millis>
-                    </validation>
-                    <xa-pool>
-                        <flush-strategy>IdleConnections</flush-strategy>
-                    </xa-pool>
-                </xa-datasource>
-
-                <xa-datasource jndi-name="java:/OrderDS" pool-name="OrderDS" enabled="true">
-                    <xa-datasource-property name="ServerName">
-                        ${env.OPENSHIFT_MYSQL_DB_HOST}
-                    </xa-datasource-property>
-                    <xa-datasource-property name="PortNumber">
-                        ${env.OPENSHIFT_MYSQL_DB_PORT}
-                    </xa-datasource-property>
-                    <xa-datasource-property name="DatabaseName">
-                        apps
-                    </xa-datasource-property>
-                    <driver>mysql</driver>
-                    <security>
-                        <user-name>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user-name>
-                        <password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
-                    </security>
-                    <validation>
-                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
-                        <background-validation>true</background-validation>
-                        <background-validation-millis>60000</background-validation-millis>
-                    </validation>
-                    <xa-pool>
-                        <flush-strategy>IdleConnections</flush-strategy>
-                    </xa-pool>
-                </xa-datasource>
-
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
@@ -434,7 +384,7 @@
                 <security-domain name="jeeshop" cache-type="default">
                     <authentication>
                         <login-module code="Database" flag="required">
-                            <module-option name="dsJndiName" value="java:/UserDS"/>
+                            <module-option name="dsJndiName" value="java:/JeeshopDS"/>
                             <module-option name="principalsQuery" value="select password from User where login = ?"/>
                             <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
                             <module-option name="hashAlgorithm" value="SHA-256"/>

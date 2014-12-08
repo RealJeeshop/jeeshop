@@ -34,7 +34,6 @@
             <version>${project.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.rembx.jeeshop</groupId>
             <artifactId>media</artifactId>

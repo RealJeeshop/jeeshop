@@ -37,8 +37,8 @@ public class TestOrder {
 
         entityManager.getTransaction().begin();
 
-        Address deliveryAddress = new Address("21 Blue street", "Chicago", "78801", "FRA");
-        Address billingAddress = new Address("53 Green street", "Chicago", "78801", "FRA");
+        Address deliveryAddress = new Address("21 Blue street", "Chicago", "78801","John", "Doe", "M.", null, "FRA");
+        Address billingAddress = new Address("53 Green street", "Chicago", "78801","John", "Doe", "M.", null, "FRA");
 
         entityManager.persist(deliveryAddress);
         entityManager.persist(billingAddress);

@@ -10,29 +10,11 @@ Jeeshop components can be deployed to any Java EE 7 compatible server.
 ## Wildfly 8
 ### Datasources
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
-* UserDS
-* CatalogDS
+* JeeshopDS
 
 Sample of configuration for a standalone server with datasources referencing a single jeeshop database:
   ```xml
-  <xa-datasource jndi-name="java:/CatalogDS" pool-name="CatalogDS" enabled="true">
-      <xa-datasource-property name="ServerName">
-          localhost
-      </xa-datasource-property>
-      <xa-datasource-property name="DatabaseName">
-          jeeshop
-      </xa-datasource-property>
-      <driver>mysql</driver>
-      <security>
-          <user-name>jeeshop</user-name>
-          <password>test</password>
-      </security>
-      <validation>
-          <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-          <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-      </validation>
-  </xa-datasource>
-  <xa-datasource jndi-name="java:/UserDS" pool-name="UserDS" enabled="true">
+  <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
       <xa-datasource-property name="ServerName">
           localhost
       </xa-datasource-property>
@@ -66,7 +48,7 @@ Sample of configuration for a standalone server:
   <security-domain name="jeeshop">
       <authentication>
           <login-module code="Database" flag="required">
-              <module-option name="dsJndiName" value="java:/UserDS"/>
+              <module-option name="dsJndiName" value="java:/JeeshopDS"/>
               <module-option name="principalsQuery" value="select password from User where login = ?"/>
               <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
               <module-option name="hashAlgorithm" value="SHA-256"/>

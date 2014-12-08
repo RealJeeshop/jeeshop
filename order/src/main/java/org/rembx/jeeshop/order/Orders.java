@@ -3,12 +3,10 @@ package org.rembx.jeeshop.order;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
-import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +18,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,12 +41,17 @@ public class Orders {
     @Inject
     private UserFinder userFinder;
 
-
     @Inject
     private Mailer mailer;
 
     @Inject
     private MailTemplateFinder mailTemplateFinder;
+
+    @Inject
+    private PaymentEngine paymentEngine;
+
+    @Inject
+    private OrderPriceEngine orderPriceEngine;
 
     @Resource
     private SessionContext sessionContext;
@@ -60,13 +60,14 @@ public class Orders {
     }
 
     public Orders(EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
-                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext) {
+                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext, OrderPriceEngine orderPriceEngine) {
         this.entityManager = entityManager;
         this.orderFinder = orderFinder;
         this.userFinder = userFinder;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
         this.sessionContext = sessionContext;
+        this.orderPriceEngine = orderPriceEngine;
     }
 
 
@@ -88,7 +89,6 @@ public class Orders {
             order.setUser(userFinder.findByLogin(userLogin));
         }
 
-
         if (CollectionUtils.isNotEmpty(order.getItems())){
             order.getItems().forEach(orderItem -> {
                 if (orderItem.getId()!=null)
@@ -100,6 +100,12 @@ public class Orders {
         order.setStatus(OrderStatus.CREATED);
 
         entityManager.persist(order);
+
+        order.setComputedPrice(orderPriceEngine.computePrice(order));
+
+        if (paymentEngine !=null) {
+            order.setPaymentInfo(paymentEngine.execute(order));
+        }
 
         return order;
     }

@@ -18,6 +18,7 @@
         <module>admin</module>
         <module>common</module>
         <module>media</module>
+        <module>order</module>
     </modules>
 
     <properties>

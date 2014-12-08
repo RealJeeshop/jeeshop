@@ -5,7 +5,7 @@
              version="2.1">
 
     <persistence-unit name="Catalog">
-        <jta-data-source>CatalogDS</jta-data-source>
+        <jta-data-source>JeeshopDS</jta-data-source>
         <class>org.rembx.jeeshop.catalog.model.Catalog</class>
         <class>org.rembx.jeeshop.catalog.model.Category</class>
         <class>org.rembx.jeeshop.catalog.model.Product</class>
