@@ -3,10 +3,13 @@ package org.rembx.jeeshop.order;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
+import org.rembx.jeeshop.order.test.TestMailTemplate;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
@@ -32,8 +35,10 @@ public class OrdersIT {
     private EntityManager entityManager;
     private TestOrder testOrder;
     private SessionContext sessionContextMock;
-    private OrderPriceEngine orderPriceEngineMock;
+    private PriceEngine priceEngineMock;
+    private Mailer mailerMock;
     private Orders service;
+    private TestMailTemplate testMailTemplate;
 
 
     @BeforeClass
@@ -46,15 +51,17 @@ public class OrdersIT {
         testOrder = TestOrder.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         sessionContextMock = mock(SessionContext.class);
-        orderPriceEngineMock = mock(OrderPriceEngine.class);
+        priceEngineMock = mock(PriceEngine.class);
+        mailerMock = mock(Mailer.class);
+        testMailTemplate = TestMailTemplate.getInstance();
 
         service = new Orders(entityManager, new OrderFinder(entityManager), new UserFinder(entityManager),
-                null, null, sessionContextMock, orderPriceEngineMock);
+                new MailTemplateFinder(entityManager), mailerMock, sessionContextMock, priceEngineMock);
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null,null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
@@ -66,71 +73,72 @@ public class OrdersIT {
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedOrder() {
-        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null,null);
+        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
-    public void count(){
+    public void count() {
         assertThat(service.count(null)).isGreaterThan(0);
     }
 
     @Test
-    public void count_withUnknownSearchCriteria(){
+    public void count_withUnknownSearchCriteria() {
         assertThat(service.count("unknown")).isEqualTo(0);
     }
 
     @Test
-    public void create_shouldThrowBadRequestWhenParametersHaveId() throws Exception{
+    public void create_shouldThrowBadRequestWhenParametersHaveId() throws Exception {
 
-        Address address = new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA");
+        Address address = new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA");
         address.setId(777L);
         OrderItem orderItemWithId = new OrderItem();
         orderItemWithId.setId(777L);
         List<OrderItem> orderItems = Arrays.asList(orderItemWithId);
 
         try {
-            Order order = new Order(null, address,new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"));
-            service.create(order,null);
+            Order order = new Order(null, address, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+            service.create(order, null);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
         }
 
         try {
-            Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"),address);
-            service.create(order,null);
+            Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), address);
+            service.create(order, null);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
         }
 
         try {
-            Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"),address);
-            service.create(order,null);
+            Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), address);
+            service.create(order, null);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
         }
     }
 
     @Test
-    public void create_shouldPersistOrderAndItsAddressesInCascade_AndSetCurrentUserToOrder_ForUserRole() throws Exception{
+    public void create_shouldPersistOrderAndItsAddressesInCascade_SetCurrentUserToOrderForUserRole() throws Exception {
 
-        Address deliveryAddress = new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA");
-        Address billingAddress = new Address("8 Rue Toto", "Paris", "75001","John", "Doe", "M.",null, "FRA");
+        Address deliveryAddress = new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA");
+        Address billingAddress = new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA");
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
-        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"),  new Address("8 Rue Toto", "Paris", "75001","John", "Doe", "M.",null, "FRA"));
+        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA"));
 
-        service.create(order,null);
+        service.create(order, null);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
+        //verify(mailerMock).sendMail(testMailTemplate.orderConfirmationMailTemplate().getSubject(), testOrder.firstOrdersUser().getLogin(), "<html><body>Hello M. John Doe. Your order has been registered...</body></html>");
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 
@@ -148,11 +156,11 @@ public class OrdersIT {
     }
 
     @Test
-    public void create_shouldPersistOrderAndItsOrderItems_AndComputeOrderPrice() throws Exception{
+    public void create_shouldPersistOrderAndItsOrderItems_AndComputeOrderPrice() throws Exception {
 
         List<OrderItem> orderItems = Arrays.asList(
                 new OrderItem(1L, 2),
-                new OrderItem(2L,3)
+                new OrderItem(2L, 3)
         );
 
 
@@ -160,15 +168,15 @@ public class OrdersIT {
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
-        Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"), new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"));
-        when(orderPriceEngineMock.computePrice(order)).thenReturn(79.0);
+        Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        when(priceEngineMock.computePrice(order)).thenReturn(79.0);
 
-        service.create(order,null);
+        service.create(order, null);
         entityManager.getTransaction().commit();
 
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
-        verify(orderPriceEngineMock).computePrice(order);
+        verify(priceEngineMock).computePrice(order);
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 
@@ -192,14 +200,14 @@ public class OrdersIT {
 
 
     @Test
-    public void create_shouldSetGivenUserByLoginInOrder_ForADMINRole() throws Exception{
+    public void create_shouldSetGivenUserByLoginInOrder_ForADMINRole() throws Exception {
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(false);
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
-        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"), new Address("7 Rue des arbres", "Paris", "92800","John", "Doe", "M.",null, "USA"));
-        service.create(order,"test@test.com");
+        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        service.create(order, "test@test.com");
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);

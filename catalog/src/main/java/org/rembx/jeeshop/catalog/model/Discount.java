@@ -26,7 +26,7 @@ public class Discount extends CatalogItem {
 
     public static enum Trigger {
         QUANTITY,
-        AMOUNT
+        AMOUNT,
     }
 
     @Size(max = 100)

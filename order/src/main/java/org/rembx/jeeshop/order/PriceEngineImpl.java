@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.order;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rembx.jeeshop.catalog.CatalogItemFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
@@ -15,7 +14,7 @@ import javax.persistence.PersistenceContext;
  * Order price engine
  * Computes order's price
  */
-public class OrderPriceEngineImpl implements OrderPriceEngine{
+public class PriceEngineImpl implements PriceEngine {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -23,11 +22,11 @@ public class OrderPriceEngineImpl implements OrderPriceEngine{
     @Inject
     private OrderConfiguration orderConfiguration;
 
-    public OrderPriceEngineImpl() {
+    public PriceEngineImpl() {
 
     }
 
-    public OrderPriceEngineImpl(EntityManager entityManager, OrderConfiguration orderConfiguration) {
+    public PriceEngineImpl(EntityManager entityManager, OrderConfiguration orderConfiguration) {
         this.entityManager = entityManager;
         this.orderConfiguration = orderConfiguration;
     }

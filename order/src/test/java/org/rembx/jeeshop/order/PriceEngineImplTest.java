@@ -6,7 +6,6 @@ import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 
-import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 
 import java.util.Arrays;
@@ -17,12 +16,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class OrderPriceEngineImplTest {
+public class PriceEngineImplTest {
 
     private EntityManager entityManager;
     private OrderConfiguration orderConfiguration;
 
-    private OrderPriceEngineImpl orderPriceEngine;
+    private PriceEngineImpl orderPriceEngine;
 
 
     @Before
@@ -30,7 +29,7 @@ public class OrderPriceEngineImplTest {
         entityManager =  mock(EntityManager.class);
         orderConfiguration =  mock(OrderConfiguration.class);
 
-        orderPriceEngine = new OrderPriceEngineImpl(entityManager,orderConfiguration);
+        orderPriceEngine = new PriceEngineImpl(entityManager,orderConfiguration);
     }
 
 

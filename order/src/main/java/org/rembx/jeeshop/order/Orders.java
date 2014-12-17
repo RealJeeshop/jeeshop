@@ -1,5 +1,7 @@
 package org.rembx.jeeshop.order;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
@@ -7,6 +9,8 @@ import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
+import org.rembx.jeeshop.user.model.MailTemplate;
+import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +25,10 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.StringWriter;
 import java.util.List;
+
+import static org.rembx.jeeshop.order.mail.Mails.OrderConfirmation;
 
 /**
  * Orders resource.
@@ -51,23 +58,26 @@ public class Orders {
     private PaymentEngine paymentEngine;
 
     @Inject
-    private OrderPriceEngine orderPriceEngine;
+    private PriceEngine priceEngine;
 
     @Resource
     private SessionContext sessionContext;
+
+    @Inject
+    private OrderConfiguration orderConfiguration;
 
     public Orders() {
     }
 
     public Orders(EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
-                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext, OrderPriceEngine orderPriceEngine) {
+                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext, PriceEngine priceEngine) {
         this.entityManager = entityManager;
         this.orderFinder = orderFinder;
         this.userFinder = userFinder;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
         this.sessionContext = sessionContext;
-        this.orderPriceEngine = orderPriceEngine;
+        this.priceEngine = priceEngine;
     }
 
 
@@ -76,17 +86,22 @@ public class Orders {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
     public Order create(Order order, @QueryParam("userLogin")String userLogin) {
+
+        User user = null;
+
         if (order .getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
                 || (order.getBillingAddress()!=null && order.getBillingAddress().getId() !=null)){
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
         if (sessionContext.isCallerInRole(JeeshopRoles.USER)){
-            order.setUser(userFinder.findByLogin(sessionContext.getCallerPrincipal().getName()));
+            user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+            order.setUser(user);
         }
 
         if (sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
-            order.setUser(userFinder.findByLogin(userLogin));
+            user = userFinder.findByLogin(userLogin);
+            order.setUser(user);
         }
 
         if (CollectionUtils.isNotEmpty(order.getItems())){
@@ -101,11 +116,13 @@ public class Orders {
 
         entityManager.persist(order);
 
-        order.setComputedPrice(orderPriceEngine.computePrice(order));
+        order.setComputedPrice(priceEngine.computePrice(order));
 
         if (paymentEngine !=null) {
             order.setPaymentInfo(paymentEngine.execute(order));
         }
+
+        //sendOrderConfirmationMail(user);
 
         return order;
     }
@@ -121,7 +138,6 @@ public class Orders {
             return orderFinder.findAll(start, size, orderBy, isDesc);
     }
 
-
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
@@ -131,6 +147,30 @@ public class Orders {
             return orderFinder.countBySearchCriteria(search);
         else
             return orderFinder.countAll();
+    }
+
+    @GET
+    @Path("/fixeddeliveryfee")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Double getFixedDeliveryFee() {
+        if (orderConfiguration!=null){
+            return orderConfiguration.getFixedDeliveryFee();
+        }
+        return null;
+    }
+
+    private void sendOrderConfirmationMail(User user) {
+        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(OrderConfirmation.name(), user.getPreferredLocale());
+
+        try {
+            Template mailContentTpl = new Template(OrderConfirmation.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
+            final StringWriter mailBody = new StringWriter();
+            mailContentTpl.process(user, mailBody);
+            mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailBody.toString());
+        }catch (Exception e){
+            LOG.error("Unable to send mail "+OrderConfirmation+" to user "+user.getLogin(), e);
+        }
     }
 
 }

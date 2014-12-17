@@ -12,7 +12,23 @@ public class OrderConfiguration {
     @NamedConfiguration("fixed.delivery.fee")
     private String fixedDeliveryFee;
 
+    @Inject
+    @NamedConfiguration("vat")
+    private String vat;
+
+    public OrderConfiguration() {
+    }
+
+    public OrderConfiguration(String fixedDeliveryFee, String vat) {
+        this.fixedDeliveryFee = fixedDeliveryFee;
+        this.vat = vat;
+    }
+
     public Double getFixedDeliveryFee() {
         return Double.parseDouble(fixedDeliveryFee);
+    }
+
+    public Double getVAT() {
+        return Double.parseDouble(vat);
     }
 }
