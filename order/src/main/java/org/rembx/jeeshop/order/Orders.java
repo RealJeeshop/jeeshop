@@ -1,7 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
@@ -9,7 +7,6 @@ import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
-import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.slf4j.Logger;
@@ -22,13 +19,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.StringWriter;
 import java.util.List;
-
-import static org.rembx.jeeshop.order.mail.Mails.OrderConfirmation;
 
 /**
  * Orders resource.
@@ -80,6 +75,18 @@ public class Orders {
         this.priceEngine = priceEngine;
     }
 
+
+    @GET
+    @Path("/{orderId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Order find(@PathParam("orderId") @NotNull Long orderId) {
+        Order order = entityManager.find(Order.class, orderId);
+        if (order == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return order;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -158,19 +165,6 @@ public class Orders {
             return orderConfiguration.getFixedDeliveryFee();
         }
         return null;
-    }
-
-    private void sendOrderConfirmationMail(User user) {
-        MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(OrderConfirmation.name(), user.getPreferredLocale());
-
-        try {
-            Template mailContentTpl = new Template(OrderConfirmation.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
-            final StringWriter mailBody = new StringWriter();
-            mailContentTpl.process(user, mailBody);
-            mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailBody.toString());
-        }catch (Exception e){
-            LOG.error("Unable to send mail "+OrderConfirmation+" to user "+user.getLogin(), e);
-        }
     }
 
 }

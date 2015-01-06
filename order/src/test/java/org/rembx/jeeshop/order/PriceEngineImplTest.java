@@ -2,6 +2,7 @@ package org.rembx.jeeshop.order;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
@@ -16,10 +17,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PriceEngineImplTest {
+public class PriceEngineImplTest { // TODO complete discounts application test
 
     private EntityManager entityManager;
     private OrderConfiguration orderConfiguration;
+    private OrderFinder orderFinder;
+    private DiscountFinder discountFinder;
 
     private PriceEngineImpl orderPriceEngine;
 
@@ -28,8 +31,10 @@ public class PriceEngineImplTest {
     public void setup(){
         entityManager =  mock(EntityManager.class);
         orderConfiguration =  mock(OrderConfiguration.class);
+        orderFinder = mock(OrderFinder.class);
+        discountFinder = mock(DiscountFinder.class);
 
-        orderPriceEngine = new PriceEngineImpl(entityManager,orderConfiguration);
+        orderPriceEngine = new PriceEngineImpl(entityManager,orderConfiguration, orderFinder, discountFinder);
     }
 
 

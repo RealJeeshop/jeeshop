@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,7 +9,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Discount entity
@@ -27,6 +27,12 @@ public class Discount extends CatalogItem {
     public static enum Trigger {
         QUANTITY,
         AMOUNT,
+        ORDER_NUMBER
+    }
+
+    public static enum ApplicableTo{
+        ORDER,
+        ITEM
     }
 
     @Size(max = 100)
@@ -42,6 +48,11 @@ public class Discount extends CatalogItem {
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private Trigger triggerRule;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(length = 10, nullable = false)
+    private ApplicableTo applicableTo;
 
     private Double triggerValue;
 
@@ -67,9 +78,10 @@ public class Discount extends CatalogItem {
         this.id = id;
     }
 
-    public Discount(String name, String description, Type type, Trigger triggerRule, String voucherCode, Double discountValue,Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled) {
+    public Discount(String name, String description, ApplicableTo applicableTo, Type type, Trigger triggerRule, String voucherCode, Double discountValue,Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled) {
         this.name = name;
         this.description = description;
+        this.applicableTo = applicableTo;
         this.type = type;
         this.triggerRule = triggerRule;
         this.voucherCode = voucherCode;
@@ -80,6 +92,21 @@ public class Discount extends CatalogItem {
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;
+    }
+
+    public Double processDiscount(Double price, Double originalPrice){
+        switch (type){
+            case DISCOUNT_RATE:
+                price = price - originalPrice*discountValue/100;
+                break;
+            case ORDER_DISCOUNT_AMOUNT:
+                price -= discountValue;
+                break;
+            case SHIPPING_FEE_DISCOUNT_AMOUNT:
+                price -= discountValue;
+        }
+
+        return price;
     }
 
     public Type getType() {
@@ -146,24 +173,33 @@ public class Discount extends CatalogItem {
         this.triggerRule = triggerRule;
     }
 
+    public ApplicableTo getApplicableTo() {
+        return applicableTo;
+    }
+
+    public void setApplicableTo(ApplicableTo applicableTo) {
+        this.applicableTo = applicableTo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Discount discount = (Discount) o;
+        Discount discount1 = (Discount) o;
 
-        if (discountValue != null ? !discountValue.equals(discount.discountValue) : discount.discountValue != null)
+        if (applicableTo != discount1.applicableTo) return false;
+        if (discountValue != null ? !discountValue.equals(discount1.discountValue) : discount1.discountValue != null)
             return false;
-        if (triggerRule != discount.triggerRule) return false;
-        if (triggerValue != null ? !triggerValue.equals(discount.triggerValue) : discount.triggerValue != null)
+        if (triggerRule != discount1.triggerRule) return false;
+        if (triggerValue != null ? !triggerValue.equals(discount1.triggerValue) : discount1.triggerValue != null)
             return false;
-        if (type != discount.type) return false;
-        if (uniqueUse != null ? !uniqueUse.equals(discount.uniqueUse) : discount.uniqueUse != null) return false;
-        if (usesPerCustomer != null ? !usesPerCustomer.equals(discount.usesPerCustomer) : discount.usesPerCustomer != null)
+        if (type != discount1.type) return false;
+        if (uniqueUse != null ? !uniqueUse.equals(discount1.uniqueUse) : discount1.uniqueUse != null) return false;
+        if (usesPerCustomer != null ? !usesPerCustomer.equals(discount1.usesPerCustomer) : discount1.usesPerCustomer != null)
             return false;
-        if (voucherCode != null ? !voucherCode.equals(discount.voucherCode) : discount.voucherCode != null)
+        if (voucherCode != null ? !voucherCode.equals(discount1.voucherCode) : discount1.voucherCode != null)
             return false;
 
         return true;
@@ -176,6 +212,7 @@ public class Discount extends CatalogItem {
         result = 31 * result + (usesPerCustomer != null ? usesPerCustomer.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (triggerRule != null ? triggerRule.hashCode() : 0);
+        result = 31 * result + (applicableTo != null ? applicableTo.hashCode() : 0);
         result = 31 * result + (triggerValue != null ? triggerValue.hashCode() : 0);
         result = 31 * result + (discountValue != null ? discountValue.hashCode() : 0);
         result = 31 * result + (uniqueUse != null ? uniqueUse.hashCode() : 0);

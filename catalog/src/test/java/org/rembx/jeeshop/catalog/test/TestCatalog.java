@@ -10,6 +10,9 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.rembx.jeeshop.catalog.model.Discount.ApplicableTo.ORDER;
+import static org.rembx.jeeshop.catalog.model.Discount.Trigger.AMOUNT;
+import static org.rembx.jeeshop.catalog.model.Discount.Type.DISCOUNT_RATE;
 
 /**
  * Catalog test utility
@@ -92,7 +95,7 @@ public class TestCatalog {
         sku4 = new SKU("sku4", "Sku4 not available", 10d, 2, "X1213JJLB-4", now, tomorrow, false, 3);
         sku5 = new SKU("sku5", "Sku5 with discounts", 10d, 100, "X1213JJLB-5", now, tomorrow, false, 3);
 
-        discount1 = new Discount("discount1", "a discount", Discount.Type.DISCOUNT_RATE, Discount.Trigger.AMOUNT, null, 0.1, 2.0, 1, true, now, tomorrow, false);
+        discount1 = new Discount("discount1", "a discount", ORDER, DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0, 1, true, now, tomorrow, false);
         sku5.setDiscounts(Arrays.asList(discount1));
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));

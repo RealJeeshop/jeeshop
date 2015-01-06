@@ -5,6 +5,15 @@
         <div common-catalog-form-fields></div>
 
         <div class="row">
+            <div class="form-group col-md-6">
+                <label for="type">Applicable to...</label>
+                <select class="form-control" name="applicableTo" ng-model="catalogEntryCtrl.entry.applicableTo" id="applicableTo" required="true">
+                    <option value="ORDER">An order</option>
+                    <option value="ITEM">An item</option>
+                </select>
+                <p class="help-block" ng-show="catalogItemForm.applicableTo.$error.required">Field is required</p>
+            </div>
+
             <div class="form-group col-md-6" ng-class="{'has-error': catalogItemForm.voucherCode.$invalid && catalogItemForm.voucherCode.$dirty}">
                 <label for="voucherCode">Voucher code</label>
                 <input type="text" class="form-control" name="voucherCode" id="voucherCode" ng-model="catalogEntryCtrl.entry.voucherCode"
@@ -40,6 +49,7 @@
                 <select class="form-control" ng-model="catalogEntryCtrl.entry.triggerRule" id="trigger">
                     <option value="QUANTITY">Specific quantity</option>
                     <option value="AMOUNT">Specific amount</option>
+                    <option value="ORDER_NUMBER">Number of orders (1 means first)</option>
                 </select>
             </div>
 

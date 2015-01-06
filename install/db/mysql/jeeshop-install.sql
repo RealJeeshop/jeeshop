@@ -5,11 +5,11 @@
 
 CREATE TABLE IF NOT EXISTS Catalog (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(255) DEFAULT NULL,
-  disabled bit(1) DEFAULT NULL,
-  endDate datetime DEFAULT NULL,
+  description varchar(255) NULL,
+  disabled bit(1) NULL,
+  endDate datetime NULL,
   name varchar(50) NOT NULL,
-  startDate datetime DEFAULT NULL,
+  startDate datetime NULL,
   PRIMARY KEY (id)
 );
 
@@ -31,11 +31,11 @@ CREATE TABLE IF NOT EXISTS Catalog_Presentation (
 
 CREATE TABLE IF NOT EXISTS Category (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(255) DEFAULT NULL,
-  disabled bit(1) DEFAULT NULL,
-  endDate datetime DEFAULT NULL,
+  description varchar(255) NULL,
+  disabled bit(1) NULL,
+  endDate datetime NULL,
   name varchar(50) NOT NULL,
-  startDate datetime DEFAULT NULL,
+  startDate datetime NULL,
   PRIMARY KEY (id)
 );
 
@@ -64,11 +64,11 @@ CREATE TABLE IF NOT EXISTS Category_Product (
 
 CREATE TABLE IF NOT EXISTS Product (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(255) DEFAULT NULL,
-  disabled bit(1) DEFAULT NULL,
-  endDate datetime DEFAULT NULL,
+  description varchar(255) NULL,
+  disabled bit(1) NULL,
+  endDate datetime NULL,
   name varchar(50) NOT NULL,
-  startDate datetime DEFAULT NULL,
+  startDate datetime NULL,
   PRIMARY KEY (id)
 );
 
@@ -98,16 +98,16 @@ CREATE TABLE IF NOT EXISTS Product_SKU (
 
 CREATE TABLE IF NOT EXISTS SKU (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(255) DEFAULT NULL,
-  disabled bit(1) DEFAULT NULL,
-  endDate datetime DEFAULT NULL,
+  description varchar(255) NULL,
+  disabled bit(1) NULL,
+  endDate datetime NULL,
   name varchar(50) NOT NULL,
-  startDate datetime DEFAULT NULL,
-  currency varchar(3) DEFAULT NULL,
-  price double DEFAULT NULL,
-  quantity int(11) DEFAULT NULL,
-  reference varchar(50) DEFAULT NULL,
-  threshold int(11) DEFAULT NULL,
+  startDate datetime NULL,
+  currency varchar(3) NULL,
+  price double NULL,
+  quantity int(11) NULL,
+  reference varchar(50) NULL,
+  threshold int(11) NULL,
   PRIMARY KEY (id)
 );
 
@@ -128,18 +128,19 @@ CREATE TABLE IF NOT EXISTS SKU_Presentation (
 
 CREATE TABLE IF NOT EXISTS Discount (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  description varchar(255) DEFAULT NULL,
-  disabled bit(1) DEFAULT NULL,
-  endDate datetime DEFAULT NULL,
+  description varchar(255) NULL,
+  disabled bit(1) NULL,
+  endDate datetime NULL,
   name varchar(50) NOT NULL,
-  startDate datetime DEFAULT NULL,
-  discountValue double DEFAULT NULL,
-  triggerValue double DEFAULT NULL,
-  triggerRule varchar(50) DEFAULT NULL,
-  type varchar(50) DEFAULT NULL,
-  uniqueUse bit(1) DEFAULT NULL,
-  usesPerCustomer int(11) DEFAULT NULL,
-  voucherCode varchar(100) DEFAULT NULL,
+  startDate datetime NULL,
+  discountValue double NULL,
+  triggerValue double NULL,
+  triggerRule varchar(50) NULL,
+  type varchar(50) NULL,
+  applicableTo varchar(10) NOT NULL ,
+  uniqueUse bit(1) NULL,
+  usesPerCustomer int(11) NULL,
+  voucherCode varchar(100) NULL,
   PRIMARY KEY (id)
 );
 
@@ -159,17 +160,17 @@ CREATE TABLE IF NOT EXISTS Media (
 
 CREATE TABLE IF NOT EXISTS Presentation (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  displayName varchar(255) DEFAULT NULL,
-  promotion varchar(255) DEFAULT NULL,
+  displayName varchar(255) NULL,
+  promotion varchar(255) NULL,
   features tinyblob,
   locale varchar(25) NOT NULL,
-  shortDescription varchar(1000) DEFAULT NULL,
-  mediumDescription varchar(2000) DEFAULT NULL,
-  longDescription varchar(5000) DEFAULT NULL,
-  largeImage_id bigint(20) DEFAULT NULL,
-  smallImage_id bigint(20) DEFAULT NULL,
-  thumbnail_id bigint(20) DEFAULT NULL,
-  video_id bigint(20) DEFAULT NULL,
+  shortDescription varchar(1000) NULL,
+  mediumDescription varchar(2000) NULL,
+  longDescription varchar(5000) NULL,
+  largeImage_id bigint(20) NULL,
+  smallImage_id bigint(20) NULL,
+  thumbnail_id bigint(20) NULL,
+  video_id bigint(20) NULL,
   PRIMARY KEY (id)
 );
 
@@ -190,21 +191,21 @@ CREATE TABLE IF NOT EXISTS Presentation_Media (
 
 CREATE TABLE IF NOT EXISTS User (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  birthDate datetime DEFAULT NULL,
+  birthDate datetime NULL,
   creationDate datetime NOT NULL,
   updateDate datetime NULL,
-  disabled bit(1) DEFAULT NULL,
-  activated bit(1) DEFAULT NULL,
-  newslettersSubscribed bit(1) DEFAULT NULL,
-  actionToken BINARY (16) DEFAULT NULL,
+  disabled bit(1) NULL,
+  activated bit(1) NULL,
+  newslettersSubscribed bit(1) NULL,
+  actionToken BINARY (16) NULL,
   firstname varchar(50) NOT NULL,
   lastname varchar(50) NOT NULL,
   gender varchar(30) NOT NULL,
   login varchar(255) NOT NULL,
   password varchar(100) NOT NULL,
-  phoneNumber varchar(30) DEFAULT NULL,
-  address_id bigint(20) DEFAULT NULL,
-  deliveryAddress_id bigint(20) DEFAULT NULL,
+  phoneNumber varchar(30) NULL,
+  address_id bigint(20) NULL,
+  deliveryAddress_id bigint(20) NULL,
   preferredLocale varchar(25) NULL,
   PRIMARY KEY (id),
   UNIQUE KEY UK_Login (login)
@@ -213,11 +214,15 @@ CREATE TABLE IF NOT EXISTS User (
 CREATE TABLE IF NOT EXISTS Orders (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   user_id bigint(20) NOT NULL,
-  deliveryAddress_id bigint(20) DEFAULT NULL,
-  billingAddress_id bigint(20) DEFAULT NULL,
+  transactionId VARCHAR(255) NULL,
+  deliveryAddress_id bigint(20) NULL,
+  billingAddress_id bigint(20) NULL,
   status varchar(30) NOT NULL,
   creationDate datetime NOT NULL,
   updateDate datetime NULL,
+  paymentDate datetime NULL,
+  deliveryDate datetime NULL,
+  parcelTrackingKey VARCHAR(50) NULL,
   PRIMARY KEY (id)
 );
 
@@ -238,7 +243,7 @@ CREATE TABLE IF NOT EXISTS Address (
   gender varchar(30)  NOT NULL,
   firstname varchar(50)  NOT NULL,
   lastname varchar(50)  NOT NULL,
-  company varchar(100) DEFAULT NULL,
+  company varchar(100) NULL,
   PRIMARY KEY (id)
 );
 

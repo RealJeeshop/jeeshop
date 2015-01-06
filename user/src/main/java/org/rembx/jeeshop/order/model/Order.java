@@ -62,6 +62,18 @@ public class Order {
     @Transient
     Double computedPrice;
 
+    @Column(length = 50)
+    private String transactionId;
+
+    @Column(length = 50)
+    private String parcelTrackingKey;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deliveryDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paymentDate;
+
     public Order() {
     }
 
@@ -175,6 +187,38 @@ public class Order {
         this.updateDate = updateDate;
     }
 
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getParcelTrackingKey() {
+        return parcelTrackingKey;
+    }
+
+    public void setParcelTrackingKey(String parcelTrackingKey) {
+        this.parcelTrackingKey = parcelTrackingKey;
+    }
+
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -184,6 +228,8 @@ public class Order {
 
         if (id != null ? !id.equals(order.id) : order.id != null) return false;
         if (status != order.status) return false;
+        if (transactionId != null ? !transactionId.equals(order.transactionId) : order.transactionId != null)
+            return false;
 
         return true;
     }
@@ -192,6 +238,7 @@ public class Order {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (transactionId != null ? transactionId.hashCode() : 0);
         return result;
     }
 }

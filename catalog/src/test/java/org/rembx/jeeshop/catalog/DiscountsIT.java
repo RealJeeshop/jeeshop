@@ -16,6 +16,10 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.junit.Assert.fail;
+import static org.rembx.jeeshop.catalog.model.Discount.ApplicableTo.ORDER;
+import static org.rembx.jeeshop.catalog.model.Discount.Trigger.AMOUNT;
+import static org.rembx.jeeshop.catalog.model.Discount.Trigger.QUANTITY;
+import static org.rembx.jeeshop.catalog.model.Discount.Type.DISCOUNT_RATE;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
 
 public class DiscountsIT {
@@ -90,7 +94,7 @@ public class DiscountsIT {
 
     @Test
     public void create_shouldPersist(){
-        Discount discount = new Discount("discount777", "a discount", Discount.Type.DISCOUNT_RATE, Discount.Trigger.AMOUNT, null, 0.1, 2.0,  1, true, null, null, false);
+        Discount discount = new Discount("discount777", "a discount", ORDER , DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0,  1, true, null, null, false);
 
         entityManager.getTransaction().begin();
         service.create(discount);
@@ -104,7 +108,7 @@ public class DiscountsIT {
     public void delete_shouldRemove(){
 
         entityManager.getTransaction().begin();
-        Discount discount = new Discount("discount888", "a discount", Discount.Type.DISCOUNT_RATE, Discount.Trigger.QUANTITY, null, 0.1,2.0, 1, true, null, null, false);
+        Discount discount = new Discount("discount888", "a discount", ORDER, DISCOUNT_RATE, QUANTITY, null, 0.1,2.0, 1, true, null, null, false);
         entityManager.persist(discount);
         entityManager.getTransaction().commit();
 
@@ -126,5 +130,10 @@ public class DiscountsIT {
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
+    }
+
+    @Test //TODO
+    public void findVisible(){
+
     }
 }

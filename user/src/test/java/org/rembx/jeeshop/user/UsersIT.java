@@ -88,6 +88,11 @@ public class UsersIT {
     }
 
     @Test
+    public void find() throws Exception {
+        assertThat(service.find(1L)).isNotNull();
+    }
+
+    @Test
     public void find_withUnknownId_ShouldThrowException() throws Exception {
         try {
             service.find(999L);
@@ -102,15 +107,10 @@ public class UsersIT {
         assertThat(service.count(null)).isGreaterThan(0);
     }
 
+
     @Test
     public void count_withUnknownSearchCriteria(){
         assertThat(service.count("unknown")).isEqualTo(0);
-    }
-
-
-    @Test
-    public void find() throws Exception {
-        assertThat(service.find(1L)).isNotNull();
     }
 
     @Test

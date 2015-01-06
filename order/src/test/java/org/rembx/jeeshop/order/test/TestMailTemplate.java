@@ -25,7 +25,7 @@ public class TestMailTemplate {
 
         entityManager.getTransaction().begin();
 
-        orderConfirmationTpl = new MailTemplate(Mails.OrderConfirmation.name(), "fr_FR", "<html><body>Hello ${gender} ${firstname} ${lastname}. Your order has been registered...</body></html>", "Order Confirmation");
+        orderConfirmationTpl = new MailTemplate(Mails.orderValidated.name(), "fr_FR", "<html><body>Hello ${gender} ${firstname} ${lastname}. Your order has been registered...</body></html>", "Order Confirmation");
 
         entityManager.persist(orderConfirmationTpl);
 

@@ -26,16 +26,42 @@
                 <input type="text" class="form-control" id="name" name="name" ng-model="mailTemplatesCtrl.entry.name"
                        placeholder="Name ..." maxlength="100" required="true"/>
 
-                <p class="help-block" ng-show="mailTemplateForm.name.$error.required && mailTemplateForm.name.$dirty" >Name is required</p>
+                <p class="help-block" ng-show="mailTemplateForm.name.$error.required && mailTemplateForm.name.$dirty">
+                    Name is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
+                <label>Predefined name</label>
+                <select class="form-control" ng-model="mailTemplatesCtrl.entry.name"
+                        name="predefinedName"
+                        ng-required="false">
+
+                    <optgroup label="Users">
+                        <option value="userRegistration">User registration</option>
+                        <option value="userActivation">User activation</option>
+                        <option value="userResetPassword">User password reset</option>
+                    </optgroup>
+                    <optgroup label="Orders">
+                        <option value="orderAccepted">Order accepted</option>
+                        <option value="orderValidated">Order validated</option>
+                        <option value="orderShipped">Order shipped</option>
+                    </optgroup>
+                </select>
+                <p class="help-block">
+                    Select a predefined name to register a template matching a Jeeshop backend operation
+                </p>
             </div>
         </div>
 
         <div class="row">
-            <div class="form-group col-md-6"  ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
                 <label>Select a locale</label>
                 <select class="form-control" ng-model="mailTemplatesCtrl.entry.locale" ng-change="selectLocale()"
                         name="locale"
-                        ng-options="a.name as a.displayName for a in mailTemplatesCtrl.availableLocales" ng-required="true">
+                        ng-options="a.name as a.displayName for a in mailTemplatesCtrl.availableLocales"
+                        ng-required="true">
                 </select>
             </div>
         </div>
@@ -44,10 +70,13 @@
             <div class="form-group col-md-6"
                  ng-class="{'has-error': mailTemplateForm.subject.$invalid && mailTemplateForm.subject.$dirty}">
                 <label for="name">Subject</label>
-                <input type="text" class="form-control" id="subject" name="subject" ng-model="mailTemplatesCtrl.entry.subject"
+                <input type="text" class="form-control" id="subject" name="subject"
+                       ng-model="mailTemplatesCtrl.entry.subject"
                        placeholder="Subject ..." maxlength="100" required="true"/>
 
-                <p class="help-block" ng-show="mailTemplateForm.subject.$error.required && mailTemplateForm.subject.$dirty" >Subject is required</p>
+                <p class="help-block"
+                   ng-show="mailTemplateForm.subject.$error.required && mailTemplateForm.subject.$dirty">Subject is
+                    required</p>
             </div>
         </div>
 
@@ -59,7 +88,9 @@
                 <textarea ckeditor="mailTemplatesCtrl.editorOptions" id="content"
                           ng-model="mailTemplatesCtrl.entry.content" required="true"></textarea>
 
-                <p class="help-block" ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is required</p>
+                <p class="help-block"
+                   ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is
+                    required</p>
             </div>
         </div>
 

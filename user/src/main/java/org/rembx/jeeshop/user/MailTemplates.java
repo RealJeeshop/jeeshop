@@ -43,6 +43,11 @@ public class MailTemplates {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public MailTemplate create(MailTemplate mailTemplate) {
+        MailTemplate existingTpl = mailTemplateFinder.findByNameAndLocale(mailTemplate.getName(), mailTemplate.getLocale());
+        if (existingTpl != null) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        }
+
         entityManager.persist(mailTemplate);
         return mailTemplate;
     }
@@ -64,8 +69,16 @@ public class MailTemplates {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public MailTemplate modify(MailTemplate mailTemplate) {
+
         MailTemplate existingMailTemplate = entityManager.find(MailTemplate.class, mailTemplate.getId());
         checkNotNull(existingMailTemplate);
+
+        MailTemplate existingTplWithSameLocaleAndName = mailTemplateFinder.findByNameAndLocale(mailTemplate.getName(), mailTemplate.getLocale());
+
+        if (existingTplWithSameLocaleAndName != null && !existingTplWithSameLocaleAndName.getId().equals(mailTemplate.getId())) {
+            throw new WebApplicationException(Response.Status.CONFLICT);
+        }
+
         return entityManager.merge(mailTemplate);
     }
 
@@ -74,7 +87,7 @@ public class MailTemplates {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
-        if (name!=null){
+        if (name != null) {
             return mailTemplateFinder.findByName(name);
         }
 

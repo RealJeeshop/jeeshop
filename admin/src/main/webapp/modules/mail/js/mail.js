@@ -80,7 +80,7 @@
 
         this.activateCreationMode = function () {
             ctrl.isCreationModeActive = true;
-        }
+        };
 
         ctrl.selectEntry = function (id) {
             $http.get('rs/mailtemplates/' + id)
@@ -108,13 +108,17 @@
             $http.post('rs/mailtemplates', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
-                    ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
+                    ctrl.alerts.push({type: 'success', msg: 'Creation complete'});
                     ctrl.isCreationModeActive = false;
                     ctrl.isEditionModeActive = true;
                     ctrl.convertEntryDates();
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data, status) {
+                    if (status == 409){
+                        ctrl.alerts.push({type: 'danger', msg: 'An e-mail template with same locale and name already exists'})
+                    }else{
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                    }
                 });
         };
 
@@ -122,11 +126,15 @@
             $http.put('rs/mailtemplates', ctrl.entry)
                 .success(function (data) {
                     ctrl.entry = data;
-                    ctrl.alerts.push({type: 'success', msg: 'Update complete'})
+                    ctrl.alerts.push({type: 'success', msg: 'Update complete'});
                     ctrl.convertEntryDates();
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data,status) {
+                    if (status == 409){
+                        ctrl.alerts.push({type: 'danger', msg: 'An e-mail template with same locale and name already exists'})
+                    }else{
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                    }
                 });
         };
 

@@ -99,7 +99,7 @@ public abstract class CatalogItem {
     }
 
     public void setLocalizedPresentation(String locale) { // TODO missing test!! and Fallback
-        Presentation localizedPresentation = null;
+        Presentation localizedPresentation;
 
         if (presentationByLocale == null || presentationByLocale.size()==0){
             return;

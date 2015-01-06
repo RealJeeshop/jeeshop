@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
-import org.rembx.jeeshop.order.test.TestMailTemplate;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
@@ -38,8 +37,6 @@ public class OrdersIT {
     private PriceEngine priceEngineMock;
     private Mailer mailerMock;
     private Orders service;
-    private TestMailTemplate testMailTemplate;
-
 
     @BeforeClass
     public static void beforeClass() {
@@ -53,10 +50,24 @@ public class OrdersIT {
         sessionContextMock = mock(SessionContext.class);
         priceEngineMock = mock(PriceEngine.class);
         mailerMock = mock(Mailer.class);
-        testMailTemplate = TestMailTemplate.getInstance();
 
         service = new Orders(entityManager, new OrderFinder(entityManager), new UserFinder(entityManager),
                 new MailTemplateFinder(entityManager), mailerMock, sessionContextMock, priceEngineMock);
+    }
+
+    @Test
+    public void find() throws Exception {
+        assertThat(service.find(1L)).isNotNull();
+    }
+
+    @Test
+    public void find_withUnknownId_ShouldThrowException() throws Exception {
+        try {
+            service.find(999L);
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        }
     }
 
     @Test

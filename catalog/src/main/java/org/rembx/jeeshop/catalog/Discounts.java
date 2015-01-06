@@ -2,6 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
@@ -33,10 +34,14 @@ public class Discounts {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    @Inject PresentationResource presentationResource;
+    @Inject
+    PresentationResource presentationResource;
 
     @Inject
     private CatalogItemFinder catalogItemFinder;
+
+    @Inject
+    private DiscountFinder discountFinder;
 
     @Resource
     private SessionContext sessionContext;
@@ -68,12 +73,12 @@ public class Discounts {
         checkNotNull(discount);
 
         List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.discounts, discount);
-        for (Product product : productHolders){
+        for (Product product : productHolders) {
             product.getDiscounts().remove(discount);
         }
 
         List<SKU> skuHolders = catalogItemFinder.findForeignHolder(QSKU.sKU, QSKU.sKU.discounts, discount);
-        for (SKU sku : skuHolders){
+        for (SKU sku : skuHolders) {
             sku.getDiscounts().remove(discount);
         }
 
@@ -88,6 +93,9 @@ public class Discounts {
     public Discount modify(Discount discount) {
         Discount originalDiscount = entityManager.find(Discount.class, discount.getId());
         checkNotNull(originalDiscount);
+
+        discount.setPresentationByLocale(originalDiscount.getPresentationByLocale());
+
         return entityManager.merge(discount);
     }
 
@@ -101,6 +109,16 @@ public class Discounts {
         else
             return catalogItemFinder.findAll(discount, start, size);
     }
+
+
+    @GET
+    @Path("/visible")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<Discount> findVisible(@NotNull @QueryParam("applicableTo") ApplicableTo applicableTo, @QueryParam("locale") String locale) {
+        return discountFinder.findVisibleDiscounts(applicableTo, locale);
+    }
+
 
     @GET
     @Path("/count")

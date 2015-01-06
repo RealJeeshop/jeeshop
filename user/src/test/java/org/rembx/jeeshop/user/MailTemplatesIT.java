@@ -3,6 +3,7 @@ package org.rembx.jeeshop.user;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
@@ -91,11 +92,41 @@ public class MailTemplatesIT {
     }
 
     @Test
+    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndName(){
+
+        MailTemplate mailTemplate = new MailTemplate("Newsletter1","fr_FR","test content","Test Subject");
+
+        try {
+            service.create(mailTemplate);
+            fail("Should have thrown exception");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        }
+
+    }
+
+    @Test
     public void modify_ShouldModify() {
         MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2","fr_FR", "test2 content", "Test2 Subject");
         detachedMailTemplateToModify.setId(testMailTemplate.firstMailTemplate().getId());
 
         service.modify(detachedMailTemplateToModify);
+
+    }
+
+
+    @Test
+    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndNameAndDifferentID(){
+
+        MailTemplate mailTemplate = new MailTemplate(Mails.userRegistration.name(),"fr_FR","test content","Test Subject");
+        mailTemplate.setId(testMailTemplate.firstMailTemplate().getId());
+
+        try {
+            service.modify(mailTemplate);
+            fail("Should have thrown exception");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        }
 
     }
 

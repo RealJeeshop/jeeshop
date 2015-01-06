@@ -1,13 +1,14 @@
 package org.rembx.jeeshop.catalog;
 
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Path;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.expr.SimpleExpression;
 import com.mysema.query.types.path.EntityPathBase;
 import com.mysema.query.types.path.ListPath;
 import org.apache.commons.lang.math.NumberUtils;
-import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.model.CatalogItem;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.QCatalogItem;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,8 +37,8 @@ public class CatalogItemFinder {
         List<T> results = new JPAQuery(entityManager)
                 .from(qCatalogItem).where(
                         qCatalogItem.disabled.isFalse(),
-                        qCatalogItem.endDate.after(now),
-                        qCatalogItem.startDate.before(now),
+                        qCatalogItem.endDate.after(now).or(qCatalogItem.endDate.isNull()),
+                        qCatalogItem.startDate.before(now).or(qCatalogItem.startDate.isNull()),
                         qCatalogItem.in(items)
                 )
                 .list(entityPathBase);
