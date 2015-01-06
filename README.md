@@ -2,7 +2,10 @@ Jeeshop (Work In Progress)
 =======
 
 # Description
-TODO
+Jeeshop is a e-commerce solution allowing you to setup quickly your store using innovative technologies such as:
+* AngularJS
+* Java EE 7
+* Java 8
 # Modules
 TODO
 # Deployment
@@ -41,7 +44,7 @@ Sample of configuration for a standalone server with datasources referencing a s
 ### Security domain configuration
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
-TODO, documentation of SSL configuration for securing channels.
+TODO, documentation of SSL configuration.
 
 Sample of configuration for a standalone server:
   ```xml
@@ -58,13 +61,19 @@ Sample of configuration for a standalone server:
       </authentication>
   </security-domain>
   ```
-  
+
+### JBOSS Modules
+A JBOSS Module named "jeeshop" have to be created to <WILDFLY HOME>/modules directory.
+It contains multiple configuration properties such as:
+* Mailer (SMTP parameters, Sender...)
+Sample of this module configuration is available in .openshift directory
+
 ## Database setup
 Database installation scripts are provided in ./install/db directory
 
 * jeeshop-install.sql contains table creation instructions. It also creates a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see section above)
 * jeeshop-drop.sql empties database
-* demo-catalog-data contains jeeshop fake demonstration catalog data
+* demo-catalog-data contains jeeshop demonstration catalog data
 
 Notes:
 By default, all tables are created in a single script, ie for a single database referenced in server datasources configuration. See "Datasources" section above.

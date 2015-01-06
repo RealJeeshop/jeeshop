@@ -46,7 +46,7 @@ INSERT INTO Media (id, uri) VALUES
 -- Dumping data for table Presentation
 --
 
-INSERT INTO Presentation (id, description, displayName, features, locale, shortDescription, largeImage_id, smallImage_id, thumbnail_id, video_id) VALUES
+INSERT INTO Presentation (id, longDescription, displayName, features, locale, shortDescription, largeImage_id, smallImage_id, thumbnail_id, video_id) VALUES
 (4, 'test', 'Test', NULL, 'fr_FR', 'test1', NULL, NULL, NULL, NULL),
 (6, 'Ce nouveau VTT de la gamme Energy vous procure des sensations de roulement incomparables en ville comme à la montagne.', 'VTT Energy 2', NULL, 'fr_FR', 'Le nouveau VTT de la gamme Energy de Bikester', 17, 18, 15, NULL),
 (7, 'This new mountain bike gives you amazing sensations on city streets, or mountain trails.', 'Energy 2 mountain bike', NULL, 'en_US', 'The new Energy mountain bike produced by Bikester', 22, 23, 24, NULL);
