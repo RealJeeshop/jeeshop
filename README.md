@@ -6,6 +6,7 @@ Jeeshop is a e-commerce solution allowing you to setup quickly your store using 
 * AngularJS
 * Java EE 7
 * Java 8
+
 # Modules
 TODO
 # Deployment
