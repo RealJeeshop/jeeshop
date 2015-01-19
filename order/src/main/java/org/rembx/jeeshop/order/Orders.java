@@ -129,8 +129,6 @@ public class Orders {
             order.setPaymentInfo(paymentEngine.execute(order));
         }
 
-        //sendOrderConfirmationMail(user);
-
         return order;
     }
 

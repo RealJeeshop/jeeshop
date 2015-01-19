@@ -1,0 +1,217 @@
+<div class="text-left">
+    <form name="orderForm"
+          ng-submit="orderForm.$valid && ordersController.createOrEdit()" novalidate>
+
+        <div class="row">
+            <div class="col-md-1 text-right col-md-push-11">
+                <button type="button" class="btn btn-default" ng-click="ordersController.leaveEditView()"><i
+                        class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="ordersController.isEditionModeActive">
+                <h4>Edition of order #{{ordersController.entry.id}}</h4>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="ordersController.isCreationModeActive">
+                <h4>Create a new order</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <span>
+                    <alert ng-repeat="alert in ordersController.alerts" type="{{alert.type}}"
+                           close="ordersController.closeAlert($index)">{{alert.msg}}
+                    </alert>
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <label for="status">Status</label>
+                <select class="form-control" name="status" ng-model="ordersController.entry.status" id="status">
+                    <option value="CREATED">Created</option>
+                    <option value="ACCEPTED">Accepted</option>
+                    <option value="VALIDATED">Validated</option>
+                    <option value="SHIPPED">Shipped</option>
+                    <option value="DELIVERED">Delivered</option>
+                    <option value="CANCELLED">Cancelled</option>
+                    <option value="RETURNED">Returned</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <div class="row" ng-show="ordersController.entry.status != CREATED">
+
+            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.transactionId.$invalid && orderForm.transactionId.$dirty}">
+                <label for="transactionId">Payment transaction ID</label>
+                <input type="text" class="form-control" id="transactionId" name="transactionId" ng-model="ordersController.entry.transactionId"
+                       placeholder="Payment transaction ID ..." maxlength="50"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="paymentDate">Payment transaction date</label>
+                <input type="datetime-local" id="paymentDate" class="form-control"
+                       ng-model="ordersController.entry.paymentDate" name="paymentDate" disabled/>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.parcelTrackingKey.$invalid && orderForm.parcelTrackingKey.$dirty}">
+                <label for="parcelTrackingKey">Parcel tracking ID</label>
+                <input type="text" class="form-control" id="parcelTrackingKey" name="parcelTrackingKey" ng-model="ordersController.entry.parcelTrackingKey"
+                       placeholder="Parcel tracking ID ..." maxlength="50"/>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <label for="updateDate">Last modification date</label>
+                <input type="datetime-local" id="updateDate" class="form-control"
+                       ng-model="ordersController.entry.updateDate" name="updateDate" disabled/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="creationDate">Creation date</label>
+                <input type="datetime-local" id="creationDate" class="form-control"
+                       ng-model="ordersController.entry.creationDate" name="creationDate" disabled/>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Order items</h4>
+                <table class="table table-striped table-hover table-condensed text-left">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Sku ID</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="orderItem in ordersController.entry.items" style="cursor:pointer">
+                        <td>{{orderItem.id}}</td>
+                        <td>{{orderItem.skuId}}</td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!--
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Disabled</label><br/>
+                <input type="radio" name="disabled" ng-model="ordersController.entry.disabled" ng-value="true"> Yes
+                <input type="radio" name="disabled" ng-model="ordersController.entry.disabled" ng-value="false"> No
+            </div>
+            <div class="form-group col-md-6">
+                <label>Activated</label><br/>
+                <input type="radio" name="activated" ng-model="ordersController.entry.activated" ng-value="true"> Yes
+                <input type="radio" name="activated" ng-model="ordersController.entry.activated" ng-value="false"> No
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.login.$invalid && orderForm.login.$dirty}">
+                <label for="login">Login</label>
+                <input type="text" class="form-control" id="login" name="login" ng-model="ordersController.entry.login"
+                       placeholder="Login..." maxlength="100" required="true"/>
+                <p class="help-block" ng-show="orderForm.login.$error.required && orderForm.login.$dirty">Login is required</p>
+            </div>
+            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.password.$invalid && orderForm.password.$dirty}">
+                <label for="password">Password</label>
+                <input type="text" class="form-control" id="password" name="password" ng-model="ordersController.entry.password"
+                       placeholder="Password..." maxlength="100" required="true"/>
+                <p class="help-block" ng-show="orderForm.password.$error.required && orderForm.password.$dirty">Password is required</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': orderForm.firstname.$invalid && orderForm.firstname.$dirty}">
+                <label for="firstname">First name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname"
+                       ng-model="ordersController.entry.firstname"
+                       placeholder="First name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="orderForm.firstname.$error.required && orderForm.firstname.$dirty">First name is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': orderForm.lastname.$invalid && orderForm.lastname.$dirty}">
+                <label for="lastname">Last name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname"
+                       ng-model="ordersController.entry.lastname"
+                       placeholder="Last name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="orderForm.lastname.$error.required && orderForm.lastname.$dirty">Last name is required</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': orderForm.lastname.$invalid && orderForm.lastname.$dirty}">
+                <label for="gender">Gender</label>
+                <input type="text" class="form-control" id="gender" name="gender"
+                       ng-model="ordersController.entry.gender"
+                       placeholder="Gender ..." maxlength="30" required="true"/>
+                <p class="help-block" ng-show="orderForm.gender.$error.required && orderForm.gender.$dirty">Gender is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': (orderForm.phoneNumber.$invalid || orderForm.phoneNumber.$error.pattern) && orderForm.phoneNumber.$dirty}">
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
+                       ng-pattern="/^\+?\d+$/" ng-model="ordersController.entry.phoneNumber"
+                       placeholder="Phone number..." maxlength="15"/>
+                <p class="help-block" ng-show="orderForm.phoneNumber.$error.pattern">Format is: optional "+" followed by digits</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6" ng-controller="DatepickerDemoCtrl"
+                 ng-class="{'has-error': orderForm.birthDate.$invalid && orderForm.birthDate.$dirty}">
+                <label for="birthDate">Birth date</label>
+
+                <p class="input-group">
+                    <input type="text" id="birthDate" class="form-control" datepicker-popup
+                           ng-model="ordersController.entry.birthDate" is-open="opened"
+                           datepicker-options="dateOptions"
+                           close-text="Close" name="birthDate"/>
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                            class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+
+            <div class="col-md-6"
+                 ng-class="{'has-error': orderForm.creationDate.$invalid && orderForm.creationDate.$dirty}">
+                <label for="creationDate">Creation date</label>
+                <input type="datetime-local" id="creationDate" class="form-control"
+                       ng-model="ordersController.entry.creationDate" name="creationDate" disabled/>
+            </div>
+
+        </div>
+
+        -->
+
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="orderForm.$invalid"/>
+    </form>
+
+</div>

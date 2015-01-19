@@ -3,19 +3,25 @@
           ng-submit="userForm.$valid && usersController.createOrEdit()" novalidate>
 
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10 text-center">
+            <div class="col-md-1 text-right col-md-push-11">
+                <button type="button" class="btn btn-default" ng-click="usersController.leaveEditView()"><i
+                        class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="usersController.isEditionModeActive">
+                <h4>Edition of user #{{usersController.entry.id}}</h4>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="usersController.isCreationModeActive">
+                <h4>Create a new user</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
                 <span>
                     <alert ng-repeat="alert in usersController.alerts" type="{{alert.type}}"
                            close="usersController.closeAlert($index)">{{alert.msg}}
                     </alert>
                 </span>
-            </div>
-            <div class="col-md-1">
-                <div class="col-md-6 text-right">
-                    <button type="button" class="btn btn-default" ng-click="usersController.leaveEditView()"><i
-                            class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
-                </div>
             </div>
         </div>
 

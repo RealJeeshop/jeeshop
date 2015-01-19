@@ -3,7 +3,6 @@ package org.rembx.jeeshop.order;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.test.TestOrder;
@@ -35,7 +34,6 @@ public class OrdersIT {
     private TestOrder testOrder;
     private SessionContext sessionContextMock;
     private PriceEngine priceEngineMock;
-    private Mailer mailerMock;
     private Orders service;
 
     @BeforeClass
@@ -49,10 +47,9 @@ public class OrdersIT {
         entityManager = entityManagerFactory.createEntityManager();
         sessionContextMock = mock(SessionContext.class);
         priceEngineMock = mock(PriceEngine.class);
-        mailerMock = mock(Mailer.class);
 
         service = new Orders(entityManager, new OrderFinder(entityManager), new UserFinder(entityManager),
-                new MailTemplateFinder(entityManager), mailerMock, sessionContextMock, priceEngineMock);
+                new MailTemplateFinder(entityManager), null  ,sessionContextMock, priceEngineMock);
     }
 
     @Test

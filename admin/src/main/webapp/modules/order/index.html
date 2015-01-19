@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-6 text-left">
                 <p class="input-group">
-                    <input type="text" class="form-control" placeholder="Enter item id, name or description"
+                    <input type="text" class="form-control" placeholder="Search by order id, transaction id, user login, first name or last name"
                            ng-model="ordersController.searchValue"/>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="ordersController.findEntries()"><i
@@ -39,7 +39,6 @@
                 <th>Owner</th>
                 <th class="hidden-xs hidden-sm">Login</th>
                 <th>Status</th>
-                <th class="hidden-xs hidden-sm">Items</th>
                 <th class="hidden-xs hidden-sm">Creation Date</th>
                 <th class="hidden-xs hidden-sm">Last Modification</th>
                 <th></th>
@@ -54,7 +53,6 @@
                 <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
                 </td>
                 <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.items}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
                     {{entry.creationDate|date : 'medium'}}
                 </td>
@@ -75,7 +73,7 @@
                     rotate="false"></pagination>
     </div>
 
-    <div user-form ng-show="ordersController.isEditionModeActive || ordersController.isCreationModeActive">
+    <div order-form ng-show="ordersController.isEditionModeActive || ordersController.isCreationModeActive">
     </div>
 
 </div>

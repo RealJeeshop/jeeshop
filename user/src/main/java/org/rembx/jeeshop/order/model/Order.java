@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -30,20 +28,14 @@ public class Order {
     @NotNull
     User user;
 
-    @Transient
-    Collection<OrderItem> items;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    @XmlTransient
-    Collection<OrderItem> persistedItems;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
+    List<OrderItem> items;
 
     @OneToOne(cascade = CascadeType.ALL)
     Address deliveryAddress;
 
     @OneToOne(cascade = CascadeType.ALL)
     Address billingAddress;
-
-    //PaymentMethod payment;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false,length = 30)
@@ -91,15 +83,9 @@ public class Order {
         this.status = status;
     }
 
-    @PostLoad
-    public void postLoad(){
-        this.items = persistedItems;
-    }
-
     @PrePersist
     public void prePersist() {
         this.creationDate = new Date();
-        this.persistedItems = items;
     }
 
     @PreUpdate
@@ -145,14 +131,6 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Collection<OrderItem> getItems() {
-        return items;
-    }
-
-    public void setItems(Collection<OrderItem> items) {
-        this.items = items;
     }
 
     public OrderStatus getStatus() {
@@ -217,6 +195,14 @@ public class Order {
 
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
     }
 
     @Override

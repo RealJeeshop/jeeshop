@@ -3,9 +3,9 @@ package org.rembx.jeeshop.order;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.expr.ComparableExpressionBase;
+import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
-import org.rembx.jeeshop.order.model.QOrder;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
@@ -101,9 +101,16 @@ public class OrderFinder {
     }
 
     private BooleanExpression buildSearchPredicate(String search) {
-        return order.user.login.containsIgnoreCase(search)
+        BooleanExpression searchExpression =  order.user.login.containsIgnoreCase(search)
                 .or(order.user.firstname.containsIgnoreCase(search))
                 .or(order.user.lastname.containsIgnoreCase(search))
                 .or(order.transactionId.containsIgnoreCase(search));
+
+        if (NumberUtils.isNumber(search)) {
+            Long searchId = Long.parseLong(search);
+            searchExpression = order.user.id.eq(searchId).or(order.transactionId.eq(search));
+        }
+
+        return searchExpression;
     }
 }

@@ -70,7 +70,7 @@ public class UserFinder {
     }
 
     private BooleanExpression buildSearchPredicate(String search) {
-        return user.login.containsIgnoreCase(search)
+        return  user.login.containsIgnoreCase(search)
                 .or(user.firstname.containsIgnoreCase(search))
                 .or(user.lastname.containsIgnoreCase(search));
     }
