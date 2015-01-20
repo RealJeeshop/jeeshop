@@ -84,14 +84,12 @@
                     <th>Owner</th>
                     <th class="hidden-xs hidden-sm">Login</th>
                     <th>Status</th>
-                    <th class="hidden-xs hidden-sm">Items</th>
                     <th class="hidden-xs hidden-sm">Creation Date</th>
                     <th class="hidden-xs hidden-sm">Last Modification</th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="entry in ordersController.entries" style="cursor:pointer">
+                <tr ng-repeat="entry in ordersController.entries">
                     <td ng-click="ordersController.selectEntry(entry.id)">{{entry.id}}</td>
                     <td ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
                         {{entry.user.lastname}}
@@ -99,17 +97,12 @@
                     <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
                     </td>
                     <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
-                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.items}}</td>
                     <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
                         {{entry.creationDate|date : 'medium'}}
                     </td>
                     <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
                         {{entry.updateDate|date
                         : 'medium'}}
-                    </td>
-                    <td>
-                        <a ng-click="ordersController.delete($index,'This will delete item #'+entry.id)" href="#"
-                           class="glyphicon glyphicon-trash"/>
                     </td>
                 </tr>
                 </tbody>

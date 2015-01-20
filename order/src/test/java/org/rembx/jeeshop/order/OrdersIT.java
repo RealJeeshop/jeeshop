@@ -1,10 +1,12 @@
 package org.rembx.jeeshop.order;
 
+import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
+import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
@@ -69,31 +71,31 @@ public class OrdersIT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null,null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null);
+        List<Order> orders = service.findAll(null, 0, 1, null, null,null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedOrder() {
-        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null);
+        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null,null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void count() {
-        assertThat(service.count(null)).isGreaterThan(0);
+        assertThat(service.count(null,null)).isGreaterThan(0);
     }
 
     @Test
     public void count_withUnknownSearchCriteria() {
-        assertThat(service.count("unknown")).isEqualTo(0);
+        assertThat(service.count("unknown",null)).isEqualTo(0);
     }
 
     @Test
@@ -229,6 +231,35 @@ public class OrdersIT {
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
         entityManager.remove(order);
+    }
+
+    @Test
+    public void delete_shouldRemove(){
+
+        entityManager.getTransaction().begin();
+        Order order = new Order();
+        order.setStatus(OrderStatus.CREATED);
+        entityManager.persist(order);
+        entityManager.getTransaction().commit();
+
+        entityManager.getTransaction().begin();
+        service.delete(order.getId());
+        entityManager.getTransaction().commit();
+
+        Assertions.assertThat(entityManager.find(Order.class, order.getId())).isNull();
+    }
+
+    @Test
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+
+        try {
+            entityManager.getTransaction().begin();
+            service.delete(666L);
+            entityManager.getTransaction().commit();
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
     }
 
 }

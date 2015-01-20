@@ -85,7 +85,9 @@ public class Order {
 
     @PrePersist
     public void prePersist() {
-        this.creationDate = new Date();
+        final Date date = new Date();
+        this.creationDate = date;
+        this.updateDate = date;
     }
 
     @PreUpdate

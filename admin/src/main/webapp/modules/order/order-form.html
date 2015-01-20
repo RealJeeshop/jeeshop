@@ -94,6 +94,9 @@
                     <tr>
                         <th>Id</th>
                         <th>Sku ID</th>
+                        <th>Sku Name</th>
+                        <th>Sku Reference</th>
+                        <th>Quantity</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -101,8 +104,10 @@
                     <tr ng-repeat="orderItem in ordersController.entry.items" style="cursor:pointer">
                         <td>{{orderItem.id}}</td>
                         <td>{{orderItem.skuId}}</td>
-                        <td>
-                        </td>
+                        <td>{{ordersController.skuPerOrderItemId[orderItem.id].name}}</td>
+                        <td>{{ordersController.skuPerOrderItemId[orderItem.id].reference}}</td>
+                        <td>{{orderItem.quantity}}</td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>

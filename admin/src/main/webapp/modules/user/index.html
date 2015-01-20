@@ -1,4 +1,4 @@
-<h3 class="text-center page-header">Users <small>(Work in progress)</small></h3>
+<h3 class="text-center page-header">Users</h3>
 
 <div class="text-center" ng-controller="UsersController as usersController">
     <div id="loaderDiv" ng-show="usersController.isProcessing">
@@ -49,7 +49,7 @@
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.creationDate|date : 'medium'}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.updateDate|date : 'medium'}}</td>
                 <td>
-                    <a ng-click="usersController.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
+                    <a ng-click="usersController.delete($index,'You are about to remove user #'+entry.id +' from system')" href="#" class="glyphicon glyphicon-trash" style="color:darkred"/>
                 </td>
             </tr>
             </tbody>

@@ -1,6 +1,5 @@
 <h3 class="text-center page-header">
     Orders
-    <small>(Work in progress)</small>
 </h3>
 
 <div class="text-center" ng-controller="OrdersController as ordersController">
@@ -30,6 +29,10 @@
                             class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>-->
                 </span>
                 </p>
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="ordersController.searchOnlyPending" ng-change="ordersController.findEntries()"/>PENDING orders only</label>
+                    <p class="help-block">Check to search not yet validated orders</p>
+                </div>
             </div>
         </div>
         <table class="table table-striped table-hover table-condensed text-left">
@@ -61,8 +64,8 @@
                     : 'medium'}}
                 </td>
                 <td>
-                    <a ng-click="ordersController.delete($index,'This will delete item #'+entry.id)" href="#"
-                       class="glyphicon glyphicon-trash"/>
+                    <a ng-click="ordersController.delete($index,'You are about to remove order #'+entry.id +' from system')" href="#"
+                       class="glyphicon glyphicon-trash" style="color:darkred"/>
                 </td>
             </tr>
             </tbody>

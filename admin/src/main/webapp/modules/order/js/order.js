@@ -21,6 +21,26 @@
         ctrl.entryChilds = {};
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
+        ctrl.searchOnlyPending = false;
+
+        ctrl.skuPerOrderItemId = [];
+
+        ctrl.getOrderItemsSKUs = function(){
+            if (ctrl.entry.items == null){
+                return;
+            }
+
+            for (i in ctrl.entry.items) {
+                $http.get('rs/skus/' + ctrl.entry.items[i].skuId)
+                    .success(function (data) {
+                       ctrl.skuPerOrderItemId[ctrl.entry.items[i].id] = data;
+                    });
+            }
+
+
+
+
+        };
 
         ctrl.findEntries = function (orderBy, isDesc) {
             ctrl.isProcessing = true;
@@ -30,8 +50,14 @@
             var uri = 'rs/orders?start=' + offset + '&size=' + ctrl.pageSize;
             var countURI = 'rs/orders/count';
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
-                var searchArg = 'search=' + ctrl.searchValue;
-                uri = uri + '&' + searchArg;
+                var searchArg = '&search=' + ctrl.searchValue;
+                uri = uri + searchArg;
+                countURI = countURI + '?' + searchArg;
+            }
+
+            if (ctrl.searchOnlyPending) {
+                var searchArg = '&pending=' + ctrl.searchOnlyPending;
+                uri = uri + searchArg;
                 countURI = countURI + '?' + searchArg;
             }
 
@@ -59,7 +85,7 @@
 
         ctrl.delete = function (index, message) {
             var modalInstance = $modal.open({
-                templateUrl: 'util/confirm-dialog.html',
+                templateUrl: 'util/confirm-delete-danger.html',
                 controller: function ($modalInstance, $scope) {
                     $scope.modalInstance = $modalInstance;
                     $scope.confirmMessage = message;
@@ -91,6 +117,7 @@
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
+                    ctrl.getOrderItemsSKUs();
                 });
         };
 
@@ -132,9 +159,9 @@
 
         ctrl.convertEntryDates = function () {
             // hack for dates returned as timestamp by service
-            ctrl.entry.birthDate = ctrl.entry.birthDate != null ? new Date(ctrl.entry.birthDate) : null;
             ctrl.entry.creationDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
             ctrl.entry.updateDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
+            ctrl.entry.paymentDate = ctrl.entry.paymentDate != null ? new Date(ctrl.entry.paymentDate) : null;
         };
 
         ctrl.leaveEditView = function () {

@@ -55,7 +55,7 @@
 
         ctrl.delete = function (index, message) {
             var modalInstance = $modal.open({
-                templateUrl: 'util/confirm-dialog.html',
+                templateUrl: 'util/confirm-delete-danger.html',
                 controller: function ($modalInstance, $scope) {
                     $scope.modalInstance = $modalInstance;
                     $scope.confirmMessage = message;

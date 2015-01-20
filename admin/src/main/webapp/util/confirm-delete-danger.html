@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <div class="alert alert-danger text-center" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        ITEM REMOVAL<br/><b>No way back !</b>
+    </div>
+</div>
+
+<div class="modal-body">
+    <p>{{confirmMessage}}</p>
+    <p><b>Are you sure?</b> (We strongly recommend you to archive this item instead)</p>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="modalInstance.dismiss()">Cancel</button>
+    <button class="btn btn-danger" ng-click="modalInstance.close()" style="margin-left:1em">Delete</button>
+</div>

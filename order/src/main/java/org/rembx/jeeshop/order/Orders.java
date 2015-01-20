@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.order;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
@@ -82,9 +83,8 @@ public class Orders {
     @RolesAllowed(JeeshopRoles.ADMIN)
     public Order find(@PathParam("orderId") @NotNull Long orderId) {
         Order order = entityManager.find(Order.class, orderId);
-        if (order == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+        checkNotNull(order);
+
         return order;
     }
 
@@ -136,20 +136,33 @@ public class Orders {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+    public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
+                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("pending") Boolean pending) {
         if (search != null)
-            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc);
+            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, pending);
         else
-            return orderFinder.findAll(start, size, orderBy, isDesc);
+            return orderFinder.findAll(start, size, orderBy, isDesc, pending);
+    }
+
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    @Path("/{orderId}")
+    public void delete(@PathParam("orderId") Long orderId) {
+        Order order = entityManager.find(Order.class, orderId);
+        checkNotNull(order);
+        entityManager.remove(order);
     }
 
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search") String search) {
+    public Long count(@QueryParam("search") String search, @QueryParam("pending")Boolean pending) {
         if (search != null)
-            return orderFinder.countBySearchCriteria(search);
+            return orderFinder.countBySearchCriteria(search, pending);
         else
             return orderFinder.countAll();
     }
@@ -163,6 +176,12 @@ public class Orders {
             return orderConfiguration.getFixedDeliveryFee();
         }
         return null;
+    }
+
+    private void checkNotNull(Order order) {
+        if (order == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
 }
