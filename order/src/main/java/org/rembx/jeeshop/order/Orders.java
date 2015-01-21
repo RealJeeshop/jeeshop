@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.order;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
@@ -132,16 +131,34 @@ public class Orders {
         return order;
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public Order modify(@NotNull Order order) {
+        Order existingOrder = entityManager.find(Order.class, order.getId());
+        checkNotNull(existingOrder);
+
+        order.setItems(existingOrder.getItems());
+
+        order.setDeliveryAddress(existingOrder.getDeliveryAddress());
+        order.setBillingAddress(existingOrder.getBillingAddress());
+
+        order.setUser(existingOrder.getUser());
+
+        return entityManager.merge(order);
+    }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
-                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("pending") Boolean pending) {
+                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("validated") Boolean validated) {
         if (search != null)
-            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, pending);
+            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, validated);
         else
-            return orderFinder.findAll(start, size, orderBy, isDesc, pending);
+            return orderFinder.findAll(start, size, orderBy, isDesc, validated);
     }
 
 
@@ -160,9 +177,9 @@ public class Orders {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search") String search, @QueryParam("pending")Boolean pending) {
+    public Long count(@QueryParam("search") String search, @QueryParam("validated")Boolean validated) {
         if (search != null)
-            return orderFinder.countBySearchCriteria(search, pending);
+            return orderFinder.countBySearchCriteria(search, validated);
         else
             return orderFinder.countAll();
     }

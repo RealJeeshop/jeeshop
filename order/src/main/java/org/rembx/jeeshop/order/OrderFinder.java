@@ -39,12 +39,11 @@ public class OrderFinder {
         this.entityManager = entityManager;
     }
 
-    public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc, Boolean pending) {
+    public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc, Boolean validated) {
         JPAQuery query = new JPAQuery(entityManager).from(order);
 
-        if (pending != null && pending){
-            query.where(order.status.in(OrderStatus.CREATED, OrderStatus.ACCEPTED
-            ));
+        if (validated != null && validated){
+            query.where(order.status.in(OrderStatus.VALIDATED));
         }
 
         if (offset != null)
@@ -72,16 +71,16 @@ public class OrderFinder {
                 .count();
     }
 
-    public Long countBySearchCriteria(String searchCriteria, Boolean pending) {
+    public Long countBySearchCriteria(String searchCriteria, Boolean validated) {
         JPAQuery query = new JPAQuery(entityManager)
                 .from(order)
-                .where(buildSearchPredicate(searchCriteria, pending));
+                .where(buildSearchPredicate(searchCriteria, validated));
         return query.count();
     }
 
-    public List<Order> findBySearchCriteria(String searchCriteria, Integer offset, Integer limit, String orderby, Boolean isDesc, Boolean pending) {
+    public List<Order> findBySearchCriteria(String searchCriteria, Integer offset, Integer limit, String orderby, Boolean isDesc, Boolean validated) {
         JPAQuery query = new JPAQuery(entityManager).from(order)
-                .where(buildSearchPredicate(searchCriteria, pending));
+                .where(buildSearchPredicate(searchCriteria, validated));
 
         if (offset != null)
             query.offset(offset);
@@ -104,7 +103,7 @@ public class OrderFinder {
         }
     }
 
-    private BooleanExpression buildSearchPredicate(String search, Boolean pending) {
+    private BooleanExpression buildSearchPredicate(String search, Boolean validated) {
         BooleanExpression searchExpression =  order.user.login.containsIgnoreCase(search)
                 .or(order.user.firstname.containsIgnoreCase(search))
                 .or(order.user.lastname.containsIgnoreCase(search))
@@ -115,8 +114,8 @@ public class OrderFinder {
             searchExpression = order.id.eq(searchId).or(order.transactionId.eq(search));
         }
 
-        if (pending != null && pending){
-            searchExpression.and(order.status.in(OrderStatus.CREATED, OrderStatus.ACCEPTED));
+        if (validated != null && validated){
+            searchExpression.and(order.status.in(OrderStatus.VALIDATED));
         }
 
         return searchExpression;

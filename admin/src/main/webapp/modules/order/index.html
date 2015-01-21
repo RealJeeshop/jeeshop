@@ -30,8 +30,8 @@
                 </span>
                 </p>
                 <div class="checkbox">
-                    <label><input type="checkbox" ng-model="ordersController.searchOnlyPending" ng-change="ordersController.findEntries()"/>PENDING orders only</label>
-                    <p class="help-block">Check to search not yet validated orders</p>
+                    <label><input type="checkbox" ng-model="ordersController.searchOnlyValidated" ng-change="ordersController.findEntries()"/>Validated orders only</label>
+                    <p class="help-block">Check to search validated orders only</p>
                 </div>
             </div>
         </div>

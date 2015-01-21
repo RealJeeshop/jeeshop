@@ -28,6 +28,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
+import static org.rembx.jeeshop.order.model.OrderStatus.VALIDATED;
 
 public class OrdersIT {
 
@@ -256,6 +257,33 @@ public class OrdersIT {
             entityManager.getTransaction().begin();
             service.delete(666L);
             entityManager.getTransaction().commit();
+            fail("should have thrown ex");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
+
+    @Test
+    public void modifyOrder_ShouldModifyOrderBasicAttributesAndPreserveRelationShips() {
+
+        Order detachedOrder = new Order(null, null,null,null,CREATED);
+        detachedOrder.setId(1L);
+
+        service.modify(detachedOrder);
+
+        assertThat(detachedOrder.getDeliveryAddress()).isNotNull();
+        assertThat(detachedOrder.getBillingAddress()).isNotNull();
+        assertThat(detachedOrder.getUser()).isNotNull();
+
+    }
+
+    @Test
+    public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
+
+        Order detachedOrder = new Order();
+        detachedOrder.setId(9999L);
+        try {
+            service.modify(detachedOrder);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());

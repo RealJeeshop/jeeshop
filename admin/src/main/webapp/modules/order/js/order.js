@@ -21,7 +21,7 @@
         ctrl.entryChilds = {};
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
-        ctrl.searchOnlyPending = false;
+        ctrl.searchOnlyValidated = false;
 
         ctrl.skuPerOrderItemId = [];
 
@@ -55,8 +55,8 @@
                 countURI = countURI + '?' + searchArg;
             }
 
-            if (ctrl.searchOnlyPending) {
-                var searchArg = '&pending=' + ctrl.searchOnlyPending;
+            if (ctrl.searchOnlyValidated) {
+                var searchArg = '&validated=' + ctrl.searchOnlyValidated;
                 uri = uri + searchArg;
                 countURI = countURI + '?' + searchArg;
             }
@@ -162,6 +162,8 @@
             ctrl.entry.creationDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
             ctrl.entry.updateDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
             ctrl.entry.paymentDate = ctrl.entry.paymentDate != null ? new Date(ctrl.entry.paymentDate) : null;
+            ctrl.entry.deliveryDate = ctrl.entry.deliveryDate != null ? new Date(ctrl.entry.deliveryDate) : null;
+
         };
 
         ctrl.leaveEditView = function () {
