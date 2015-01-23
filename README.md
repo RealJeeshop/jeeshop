@@ -48,6 +48,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 
 
 * Create server certificate
+
 Execute the following command in a temp directory
 
     ```code
@@ -57,6 +58,7 @@ Execute the following command in a temp directory
 Copy the server.keystore file in to the ${jbos.home.dir}/standalone/configuration folder
 
 * In standalone.xml configuration file :
+
 Add the following http-listener line to the server block
 
     ```xml
