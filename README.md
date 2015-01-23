@@ -48,16 +48,16 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 
 
 * Create server certificate
-**execute the following command in a temp directory
+Execute the following command in a temp directory
 
     ```code
        keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
     ```
-    
-** copy the server.keystore file in to the ${jbos.home.dir}/standalone/configuration folder
+
+Copy the server.keystore file in to the ${jbos.home.dir}/standalone/configuration folder
 
 * In standalone.xml configuration file :
-** add the following http-listener line to the server block
+Add the following http-listener line to the server block
 
     ```xml
         <server name="default-server">
@@ -67,7 +67,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
          </server>
     ```
     
-** add the following security realm block :
+Add the following security realm block :
 
     ```xml
     <security-realms>
@@ -82,7 +82,6 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
     </security-realms>
     ```
 
-TODO, documentation of SSL configuration.
 
 Sample of configuration for a standalone server:
   ```xml
