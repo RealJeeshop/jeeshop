@@ -48,7 +48,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 
 
 * Create server certificate
-** execute the following command in a temp directory
+**execute the following command in a temp directory
 
     ```code
        keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
