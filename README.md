@@ -17,7 +17,8 @@ The following XA datasources are currently used by jeeshop modules and have to b
 * JeeshopDS
 
 Sample of configuration for a standalone server with datasources referencing a single jeeshop database:
-  ```xml
+
+  ``` xml
   <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
       <xa-datasource-property name="ServerName">
           localhost
@@ -67,9 +68,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 
 Execute the following command in a temp directory
 
-    ```xml
     keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
-    ```
 
 Copy the server.keystore file in to the ${jboss.home.dir}/standalone/configuration folder
 
@@ -77,7 +76,6 @@ Copy the server.keystore file in to the ${jboss.home.dir}/standalone/configurati
 
 Add the following security realm block :
 
-    ```xml
     <security-realms>
         ...
         <security-realm name="SSLRealm">
@@ -88,7 +86,6 @@ Add the following security realm block :
             </server-identities>
         </security-realm>
     </security-realms>
-    ```
 
 Add the following http-listener line to the server block
 
