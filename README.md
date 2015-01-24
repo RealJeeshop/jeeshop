@@ -47,7 +47,8 @@ Sample of configuration for a standalone server with datasources referencing a s
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
 * Sample of configuration for a standalone server:
-  ```xml
+
+``` xml
   <security-domain name="jeeshop">
       <authentication>
           <login-module code="Database" flag="required">
@@ -93,14 +94,13 @@ Add the following security realm block :
 
 Add the following http-listener line to the server block
 
-    
-    ``` xml
+``` xml
     <server name="default-server">
         ...
        <https-listener name="default-https" socket-binding="https" security-realm="SSLRealm"/>
        ...
      </server>
-    ```
+  ```
 
 ### JBOSS Modules
 A JBOSS Module named "jeeshop" have to be created to <WILDFLY HOME>/modules directory.
