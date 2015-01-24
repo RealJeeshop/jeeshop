@@ -76,6 +76,7 @@ Copy the server.keystore file in to the ${jboss.home.dir}/standalone/configurati
 
 Add the following security realm block :
 
+``` xml
     <security-realms>
         ...
         <security-realm name="SSLRealm">
@@ -86,6 +87,9 @@ Add the following security realm block :
             </server-identities>
         </security-realm>
     </security-realms>
+  ```
+
+
 
 Add the following http-listener line to the server block
 
