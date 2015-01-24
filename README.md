@@ -45,14 +45,30 @@ Sample of configuration for a standalone server with datasources referencing a s
 ### Security domain configuration
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
+* Sample of configuration for a standalone server:
+  ```xml
+  <security-domain name="jeeshop">
+      <authentication>
+          <login-module code="Database" flag="required">
+              <module-option name="dsJndiName" value="java:/JeeshopDS"/>
+              <module-option name="principalsQuery" value="select password from User where login = ?"/>
+              <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
+              <module-option name="hashAlgorithm" value="SHA-256"/>
+              <module-option name="hashEncoding" value="base64"/>
+              <module-option name="unauthenticatedIdentity" value="guest"/>
+          </login-module>
+      </authentication>
+  </security-domain>
+  ```
 
+#### Configure SSL to secure channels
 
-#### Create server certificate
+* Create server certificate
 
 Execute the following command in a temp directory
 
-    ```code
-       keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
+    ```xml
+    keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
     ```
 
 Copy the server.keystore file in to the ${jboss.home.dir}/standalone/configuration folder
@@ -76,29 +92,14 @@ Add the following security realm block :
 
 Add the following http-listener line to the server block
 
+    
     ```xml
-        <server name="default-server">
-            ...
-           <https-listener name="default-https" socket-binding="https" security-realm="SSLRealm"/>
-           ...
-         </server>
+    <server name="default-server">
+        ...
+       <https-listener name="default-https" socket-binding="https" security-realm="SSLRealm"/>
+       ...
+     </server>
     ```
-
-* Sample of configuration for a standalone server:
-  ```xml
-  <security-domain name="jeeshop">
-      <authentication>
-          <login-module code="Database" flag="required">
-              <module-option name="dsJndiName" value="java:/JeeshopDS"/>
-              <module-option name="principalsQuery" value="select password from User where login = ?"/>
-              <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
-              <module-option name="hashAlgorithm" value="SHA-256"/>
-              <module-option name="hashEncoding" value="base64"/>
-              <module-option name="unauthenticatedIdentity" value="guest"/>
-          </login-module>
-      </authentication>
-  </security-domain>
-  ```
 
 ### JBOSS Modules
 A JBOSS Module named "jeeshop" have to be created to <WILDFLY HOME>/modules directory.
