@@ -5,8 +5,10 @@ import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.order.model.DiscountOrderItem;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
+import org.rembx.jeeshop.order.model.SKUOrderItem;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -54,8 +56,11 @@ public class PriceEngineImpl implements PriceEngine {
 
         for (OrderItem orderItem : order.getItems()){
 
-            SKU sku = entityManager.find(SKU.class,orderItem.getSkuId());
-            price += (sku.getPrice()*orderItem.getQuantity());
+            if (orderItem instanceof SKUOrderItem){
+                SKU sku = entityManager.find(SKU.class,((SKUOrderItem)orderItem).getSkuId());
+                price += (sku.getPrice()*((SKUOrderItem)orderItem).getQuantity());
+            }
+
 
         }
 
@@ -85,6 +90,7 @@ public class PriceEngineImpl implements PriceEngine {
 
         for (Discount discount : userEligibleOrderDiscounts){
             price = discount.processDiscount(price, originalPrice);
+            order.getItems().add(new DiscountOrderItem(discount.getId()));
         }
 
         return price;

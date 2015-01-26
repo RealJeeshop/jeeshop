@@ -122,7 +122,7 @@ public class Orders {
 
         entityManager.persist(order);
 
-        order.setComputedPrice(priceEngine.computePrice(order));
+        order.setPrice(priceEngine.computePrice(order));
 
         if (paymentEngine !=null) {
             order.setPaymentInfo(paymentEngine.execute(order));
@@ -138,11 +138,6 @@ public class Orders {
     public Order modify(@NotNull Order order) {
         Order existingOrder = entityManager.find(Order.class, order.getId());
         checkNotNull(existingOrder);
-
-        order.setItems(existingOrder.getItems());
-
-        order.setDeliveryAddress(existingOrder.getDeliveryAddress());
-        order.setBillingAddress(existingOrder.getBillingAddress());
 
         order.setUser(existingOrder.getUser());
 

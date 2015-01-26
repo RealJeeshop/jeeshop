@@ -31,10 +31,10 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
     List<OrderItem> items;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Address deliveryAddress;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Address billingAddress;
 
     @Enumerated(EnumType.STRING)
@@ -51,8 +51,7 @@ public class Order {
     @Transient
     PaymentInfo paymentInfo; // Used for payment systems such as SIPS
 
-    @Transient
-    Double computedPrice;
+    Double price;
 
     @Column(length = 50)
     private String transactionId;
@@ -155,12 +154,12 @@ public class Order {
         return updateDate;
     }
 
-    public Double getComputedPrice() {
-        return computedPrice;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setComputedPrice(Double computedPrice) {
-        this.computedPrice = computedPrice;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setUpdateDate(Date updateDate) {

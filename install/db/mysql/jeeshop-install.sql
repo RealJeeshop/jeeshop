@@ -223,13 +223,15 @@ CREATE TABLE IF NOT EXISTS Orders (
   paymentDate datetime NULL,
   deliveryDate datetime NULL,
   parcelTrackingKey VARCHAR(50) NULL,
+  price double NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS OrderItem (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   order_id bigint(20) NOT NULL,
-  sku_id bigint (20) NOT NULL,
+  sku_id bigint (20) NULL,
+  discount_id bigint (20) NULL,
   quantity int (11) NOT NULL,
   PRIMARY KEY (id)
 );

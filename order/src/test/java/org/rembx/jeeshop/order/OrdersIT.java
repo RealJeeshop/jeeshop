@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
+import org.rembx.jeeshop.order.model.SKUOrderItem;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
@@ -170,8 +171,8 @@ public class OrdersIT {
     public void create_shouldPersistOrderAndItsOrderItems_AndComputeOrderPrice() throws Exception {
 
         List<OrderItem> orderItems = Arrays.asList(
-                new OrderItem(1L, 2),
-                new OrderItem(2L, 3)
+                new SKUOrderItem(1L, 2),
+                new SKUOrderItem(2L, 3)
         );
 
 
@@ -196,15 +197,15 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
-        OrderItem expectedOrderItem1 = new OrderItem(1L, 2);
+        SKUOrderItem expectedOrderItem1 = new SKUOrderItem(1L, 2);
         expectedOrderItem1.setSkuId(1L);
         expectedOrderItem1.setId(1L);
-        OrderItem expectedOrderItem2 = new OrderItem(2L, 3);
+        SKUOrderItem expectedOrderItem2 = new SKUOrderItem(2L, 3);
         expectedOrderItem2.setSkuId(2L);
         expectedOrderItem2.setId(2L);
 
         assertThat(persistedOrder.getItems()).contains(expectedOrderItem1, expectedOrderItem2);
-        assertThat(order.getComputedPrice()).isEqualTo(79.0);
+        assertThat(order.getPrice()).isEqualTo(79.0);
 
         entityManager.remove(order);
     }
@@ -261,20 +262,6 @@ public class OrdersIT {
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
-    }
-
-    @Test
-    public void modifyOrder_ShouldModifyOrderBasicAttributesAndPreserveRelationShips() {
-
-        Order detachedOrder = new Order(null, null,null,null,CREATED);
-        detachedOrder.setId(1L);
-
-        service.modify(detachedOrder);
-
-        assertThat(detachedOrder.getDeliveryAddress()).isNotNull();
-        assertThat(detachedOrder.getBillingAddress()).isNotNull();
-        assertThat(detachedOrder.getUser()).isNotNull();
-
     }
 
     @Test
