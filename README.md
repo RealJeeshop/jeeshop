@@ -11,6 +11,8 @@ Jeeshop is a e-commerce solution allowing you to setup quickly your store using 
 TODO
 # Deployment
 Jeeshop components can be deployed to any Java EE 7 compatible server.
+## Wildfly 8 Openshift cartridge
+TODO
 ## Wildfly 8
 ### Datasources
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
@@ -64,6 +66,8 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
   ```
 
 #### Configure SSL to secure channels
+
+SSL has to be configured in order to secure credentials sent in requests performed by store customers or Jeeshop-admin users (ie store administrators).
 
 * Create server certificate
 
