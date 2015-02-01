@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS OrderDiscount(
   order_id bigint(20) NOT NULL,
   discount_id bigint(20) NOT NULL,
   discountValue double NULL,
-  UNIQUE KEY UK_Order_discountIds (order_id,discountId)
+  UNIQUE KEY UK_Order_discountIds (order_id,discount_id)
 );
 
 CREATE TABLE IF NOT EXISTS Address (
