@@ -2,7 +2,6 @@
 -- DB: jeeshop - MySql5
 --
 
-
 CREATE TABLE IF NOT EXISTS Catalog (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   description varchar(255) NULL,
@@ -231,9 +230,14 @@ CREATE TABLE IF NOT EXISTS OrderItem (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   order_id bigint(20) NOT NULL,
   sku_id bigint (20) NULL,
-  discount_id bigint (20) NULL,
-  quantity int (11) NOT NULL,
+  quantity int (11) NULL,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS Order_discountIds(
+  order_id bigint(20) NOT NULL,
+  discountIds bigint(20) NOT NULL,
+  UNIQUE KEY UK_Order_discountIds (order_id,discountIds)
 );
 
 CREATE TABLE IF NOT EXISTS Address (
@@ -352,8 +356,11 @@ ALTER TABLE Orders
   ADD CONSTRAINT FK_Orders_User FOREIGN KEY (user_id) REFERENCES User (id);
 
 ALTER TABLE OrderItem
-  ADD CONSTRAINT FK_OrderItem_SKU FOREIGN KEY (sku_id) REFERENCES SKU (id),
   ADD CONSTRAINT FK_OrderItem_Order FOREIGN KEY (order_id) REFERENCES Orders (id);
+
+ALTER TABLE Order_discountIds
+ADD CONSTRAINT FK_Order_discountIds_Order FOREIGN KEY (order_id) REFERENCES Orders(id);
+
 
 ALTER TABLE MailTemplate_Media
   ADD CONSTRAINT FK_MailTemplate_Media_MailTemplate FOREIGN KEY (mailTemplateId) REFERENCES MailTemplate (id),

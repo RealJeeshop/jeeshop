@@ -5,14 +5,13 @@ import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
-import org.rembx.jeeshop.order.model.DiscountOrderItem;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
-import org.rembx.jeeshop.order.model.SKUOrderItem;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public class PriceEngineImpl implements PriceEngine {
     }
 
     @Override
-    public Double computePrice(Order order) {
+    public void computePrice(Order order) {
 
         if (CollectionUtils.isEmpty(order.getItems())){
             throw new IllegalStateException("Order items list is empty "+order);
@@ -56,10 +55,8 @@ public class PriceEngineImpl implements PriceEngine {
 
         for (OrderItem orderItem : order.getItems()){
 
-            if (orderItem instanceof SKUOrderItem){
-                SKU sku = entityManager.find(SKU.class,((SKUOrderItem)orderItem).getSkuId());
-                price += (sku.getPrice()*((SKUOrderItem)orderItem).getQuantity());
-            }
+            SKU sku = entityManager.find(SKU.class,(orderItem).getSkuId());
+            price += (sku.getPrice()*(orderItem).getQuantity());
 
 
         }
@@ -72,7 +69,7 @@ public class PriceEngineImpl implements PriceEngine {
             price += fixedDeliveryFee;
         }
 
-        return price;
+        order.setPrice(price);
 
     }
 
@@ -88,9 +85,13 @@ public class PriceEngineImpl implements PriceEngine {
             return price;
         }
 
+        if (order.getDiscountIds() == null){
+            order.setDiscountIds(new ArrayList<>());
+        }
+
         for (Discount discount : userEligibleOrderDiscounts){
             price = discount.processDiscount(price, originalPrice);
-            order.getItems().add(new DiscountOrderItem(discount.getId()));
+            order.getDiscountIds().add(discount.getId());
         }
 
         return price;

@@ -6,17 +6,13 @@ import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
-import org.rembx.jeeshop.order.model.SKUOrderItem;
 
 import javax.persistence.EntityManager;
-
 import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PriceEngineImplTest { // TODO complete discounts application test
 
@@ -52,9 +48,9 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(11.0);
 
         Order order = new Order();
-        order.setItems(Arrays.asList(new SKUOrderItem(1L,1), new SKUOrderItem(2L,2)));
+        order.setItems(Arrays.asList(new OrderItem(1L,1), new OrderItem(2L,2)));
 
-        Double price = orderPriceEngine.computePrice(order);
+        orderPriceEngine.computePrice(order);
 
         verify(entityManager).find(SKU.class, 1L);
         verify(entityManager).find(SKU.class, 2L);
@@ -62,7 +58,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         verify(orderConfiguration).getFixedDeliveryFee();
 
 
-        assertThat(price).isEqualTo(61.0);
+        assertThat(order.getPrice()).isEqualTo(61.0);
     }
 
 
@@ -79,9 +75,9 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(null);
 
         Order order = new Order();
-        order.setItems(Arrays.asList(new SKUOrderItem(1L,1), new SKUOrderItem(2L,2)));
+        order.setItems(Arrays.asList(new OrderItem(1L,1), new OrderItem(2L,2)));
 
-        Double price = orderPriceEngine.computePrice(order);
+        orderPriceEngine.computePrice(order);
 
         verify(entityManager).find(SKU.class, 1L);
         verify(entityManager).find(SKU.class, 2L);
@@ -89,7 +85,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         verify(orderConfiguration).getFixedDeliveryFee();
 
 
-        assertThat(price).isEqualTo(50.0);
+        assertThat(order.getPrice()).isEqualTo(50.0);
     }
 
     @Test
@@ -98,7 +94,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         Order order = new Order();
 
         try {
-            Double price = orderPriceEngine.computePrice(order);
+            orderPriceEngine.computePrice(order);
             fail("Should have thrown ex");
         }catch (IllegalStateException e){
         }

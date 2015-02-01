@@ -5,9 +5,7 @@ import org.rembx.jeeshop.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +28,9 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
     List<OrderItem> items;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    List<Long> discountIds;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Address deliveryAddress;
@@ -204,6 +205,14 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public List<Long> getDiscountIds() {
+        return discountIds;
+    }
+
+    public void setDiscountIds(List<Long> discountIds) {
+        this.discountIds = discountIds;
     }
 
     @Override

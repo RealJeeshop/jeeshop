@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
-import org.rembx.jeeshop.order.model.SKUOrderItem;
 import org.rembx.jeeshop.order.test.TestOrder;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
@@ -29,7 +28,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
-import static org.rembx.jeeshop.order.model.OrderStatus.VALIDATED;
 
 public class OrdersIT {
 
@@ -38,6 +36,7 @@ public class OrdersIT {
     private TestOrder testOrder;
     private SessionContext sessionContextMock;
     private PriceEngine priceEngineMock;
+    private PaymentTransactionEngine paymentEngineMock;
     private Orders service;
 
     @BeforeClass
@@ -51,9 +50,10 @@ public class OrdersIT {
         entityManager = entityManagerFactory.createEntityManager();
         sessionContextMock = mock(SessionContext.class);
         priceEngineMock = mock(PriceEngine.class);
+        paymentEngineMock = mock(PaymentTransactionEngine.class);
 
         service = new Orders(entityManager, new OrderFinder(entityManager), new UserFinder(entityManager),
-                new MailTemplateFinder(entityManager), null  ,sessionContextMock, priceEngineMock);
+                new MailTemplateFinder(entityManager), null  ,sessionContextMock, priceEngineMock,paymentEngineMock);
     }
 
     @Test
@@ -88,6 +88,20 @@ public class OrdersIT {
         List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null,null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_ByStatus_shouldReturnOrdersWithMatchingStatus() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.CREATED);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+
+    @Test
+    public void findAll_ByStatus_shouldReturnNotReturnOrdersWhenThereAreNoOrdersInGivenStatus() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.DELIVERED);
+        assertThat(orders).isEmpty();
     }
 
     @Test
@@ -168,11 +182,11 @@ public class OrdersIT {
     }
 
     @Test
-    public void create_shouldPersistOrderAndItsOrderItems_AndComputeOrderPrice() throws Exception {
+    public void create_shouldPersistOrderWithOrderItems_computePrice_andProcessPayment() throws Exception {
 
         List<OrderItem> orderItems = Arrays.asList(
-                new SKUOrderItem(1L, 2),
-                new SKUOrderItem(2L, 3)
+                new OrderItem(1L, 2),
+                new OrderItem(2L, 3)
         );
 
 
@@ -181,7 +195,6 @@ public class OrdersIT {
 
         entityManager.getTransaction().begin();
         Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
-        when(priceEngineMock.computePrice(order)).thenReturn(79.0);
 
         service.create(order, null);
         entityManager.getTransaction().commit();
@@ -197,15 +210,14 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
-        SKUOrderItem expectedOrderItem1 = new SKUOrderItem(1L, 2);
+        OrderItem expectedOrderItem1 = new OrderItem(1L, 2);
         expectedOrderItem1.setSkuId(1L);
         expectedOrderItem1.setId(1L);
-        SKUOrderItem expectedOrderItem2 = new SKUOrderItem(2L, 3);
+        OrderItem expectedOrderItem2 = new OrderItem(2L, 3);
         expectedOrderItem2.setSkuId(2L);
         expectedOrderItem2.setId(2L);
 
         assertThat(persistedOrder.getItems()).contains(expectedOrderItem1, expectedOrderItem2);
-        assertThat(order.getPrice()).isEqualTo(79.0);
 
         entityManager.remove(order);
     }

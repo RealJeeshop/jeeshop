@@ -18,12 +18,12 @@
         ctrl.searchValue = null;
         ctrl.isProcessing = false;
         ctrl.entry = {};
-        ctrl.entryChilds = {};
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
-        ctrl.searchOnlyValidated = false;
+        ctrl.searchOnlyPaymentValidated = false;
 
-        ctrl.skuPerOrderItemId = [];
+        ctrl.skuPerId = [];
+        ctrl.discountPerId = [];
 
         ctrl.getOrderItemsSKUs = function(){
             if (ctrl.entry.items == null){
@@ -33,13 +33,24 @@
             for (i in ctrl.entry.items) {
                 $http.get('rs/skus/' + ctrl.entry.items[i].skuId)
                     .success(function (data) {
-                       ctrl.skuPerOrderItemId[ctrl.entry.items[i].id] = data;
+                        ctrl.skuPerId[data.id] = data;
                     });
+
+            }
+        };
+
+        ctrl.getOrderDiscounts = function(){
+            if (ctrl.entry.discountIds == null){
+                return;
             }
 
+            for (i in ctrl.entry.discountIds) {
+                $http.get('rs/discounts/' + ctrl.entry.discountIds[i])
+                    .success(function (data) {
+                        ctrl.discountPerId[data.id] = data;
+                    });
 
-
-
+            }
         };
 
         ctrl.findEntries = function (orderBy, isDesc) {
@@ -55,8 +66,8 @@
                 countURI = countURI + '?' + searchArg;
             }
 
-            if (ctrl.searchOnlyValidated) {
-                var searchArg = '&validated=' + ctrl.searchOnlyValidated;
+            if (ctrl.searchOnlyPaymentValidated) {
+                var searchArg = '&status=PAYMENT_VALIDATED';
                 uri = uri + searchArg;
                 countURI = countURI + '?' + searchArg;
             }
@@ -112,12 +123,15 @@
         };
 
         ctrl.selectEntry = function (id) {
+            ctrl.skuPerId = [];
+            ctrl.discountPerId = [];
             $http.get('rs/orders/' + id)
                 .success(function (data) {
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                     ctrl.getOrderItemsSKUs();
+                    ctrl.getOrderDiscounts();
                 });
         };
 
@@ -171,7 +185,6 @@
             ctrl.isEditionModeActive = false;
             ctrl.isCreationModeActive = false;
             ctrl.entry = {};
-            ctrl.entryChilds = {};
             ctrl.alerts = [];
         };
 

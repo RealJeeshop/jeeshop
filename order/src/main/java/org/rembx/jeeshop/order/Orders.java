@@ -50,7 +50,7 @@ public class Orders {
     private MailTemplateFinder mailTemplateFinder;
 
     @Inject
-    private PaymentEngine paymentEngine;
+    private PaymentTransactionEngine paymentTransactionEngine;
 
     @Inject
     private PriceEngine priceEngine;
@@ -65,7 +65,7 @@ public class Orders {
     }
 
     public Orders(EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
-                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext, PriceEngine priceEngine) {
+                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext, PriceEngine priceEngine, PaymentTransactionEngine paymentTransactionEngine) {
         this.entityManager = entityManager;
         this.orderFinder = orderFinder;
         this.userFinder = userFinder;
@@ -73,6 +73,7 @@ public class Orders {
         this.mailer = mailer;
         this.sessionContext = sessionContext;
         this.priceEngine = priceEngine;
+        this.paymentTransactionEngine = paymentTransactionEngine;
     }
 
 
@@ -93,13 +94,44 @@ public class Orders {
     @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
     public Order create(Order order, @QueryParam("userLogin")String userLogin) {
 
-        User user = null;
+        checkOrder(order);
+
+        assignOrderToUser(order, userLogin);
+
+        order.setStatus(OrderStatus.CREATED);
+
+        priceEngine.computePrice(order);
+
+        assignOrderToOrderItems(order);
+
+        entityManager.persist(order);
+
+        paymentTransactionEngine.processPayment(order);
+
+        return order;
+    }
+
+    private void assignOrderToOrderItems(Order order) {
+        if (CollectionUtils.isEmpty(order.getItems()))
+            return;
+        order.getItems().forEach(orderItem -> {
+            if (orderItem.getId()!=null)
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            orderItem.setOrder(order);
+        });
+    }
+
+    private void checkOrder(Order order) { // TODO Complete checks on OrderItems, checks skuId and discountId visibility. Check that user do not add too much discount.
 
         if (order .getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
                 || (order.getBillingAddress()!=null && order.getBillingAddress().getId() !=null)){
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
+    }
+
+    private void assignOrderToUser(Order order, String userLogin) {
+        User user;
         if (sessionContext.isCallerInRole(JeeshopRoles.USER)){
             user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
             order.setUser(user);
@@ -109,27 +141,8 @@ public class Orders {
             user = userFinder.findByLogin(userLogin);
             order.setUser(user);
         }
-
-        if (CollectionUtils.isNotEmpty(order.getItems())){
-            order.getItems().forEach(orderItem -> {
-                if (orderItem.getId()!=null)
-                    throw new WebApplicationException(Response.Status.BAD_REQUEST);
-                orderItem.setOrder(order);
-            });
-        }
-
-        order.setStatus(OrderStatus.CREATED);
-
-        entityManager.persist(order);
-
-        order.setPrice(priceEngine.computePrice(order));
-
-        if (paymentEngine !=null) {
-            order.setPaymentInfo(paymentEngine.execute(order));
-        }
-
-        return order;
     }
+
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -141,6 +154,8 @@ public class Orders {
 
         order.setUser(existingOrder.getUser());
 
+        order.getItems().forEach(orderItem -> {orderItem.setOrder(order);});
+
         return entityManager.merge(order);
     }
 
@@ -149,11 +164,11 @@ public class Orders {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
     public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
-                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("validated") Boolean validated) {
+                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status) {
         if (search != null)
-            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, validated);
+            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, status);
         else
-            return orderFinder.findAll(start, size, orderBy, isDesc, validated);
+            return orderFinder.findAll(start, size, orderBy, isDesc, status);
     }
 
 
@@ -172,9 +187,9 @@ public class Orders {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search") String search, @QueryParam("validated")Boolean validated) {
+    public Long count(@QueryParam("search") String search, @QueryParam("status")OrderStatus status) {
         if (search != null)
-            return orderFinder.countBySearchCriteria(search, validated);
+            return orderFinder.countBySearchCriteria(search, status);
         else
             return orderFinder.countAll();
     }

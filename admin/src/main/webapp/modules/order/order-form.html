@@ -40,6 +40,10 @@
                     <option value="RETURNED">Returned</option>
                 </select>
             </div>
+            <div class="form-group col-md-6">
+                <label for="price">Price</label>
+                <h5 id="price" style="font-weight: bold">{{ordersController.entry.price}}</h5>
+            </div>
 
         </div>
 
@@ -88,13 +92,13 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-                <h4>Order items</h4>
-                <table class="table table-striped table-hover table-condensed text-left">
+            <div class="form-group col-md-12">
+                <label for="orderItems" >Order SKU items</label>
+                <table id="orderItems" class="table table-striped table-hover table-condensed text-left">
                     <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Sku ID</th>
+                        <th>Sku Id</th>
                         <th>Sku Name</th>
                         <th>Sku Reference</th>
                         <th>Quantity</th>
@@ -105,14 +109,80 @@
                     <tr ng-repeat="orderItem in ordersController.entry.items" style="cursor:pointer">
                         <td>{{orderItem.id}}</td>
                         <td>{{orderItem.skuId}}</td>
-                        <td>{{ordersController.skuPerOrderItemId[orderItem.id].name}}</td>
-                        <td>{{ordersController.skuPerOrderItemId[orderItem.id].reference}}</td>
+                        <td>{{ordersController.skuPerId[orderItem.skuId].name}}</td>
+                        <td>{{ordersController.skuPerId[orderItem.skuId].reference}}</td>
                         <td>{{orderItem.quantity}}</td>
                         <td></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label for="discounts">Order Discount items</label>
+                <table id="discounts" class="table table-striped table-hover table-condensed text-left">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="discountId in ordersController.entry.discountIds" style="cursor:pointer">
+                        <td>{{discountId}}</td>
+                        <td>{{ordersController.discountPerId[discountId].name}}</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <label for="gender">Delivery Adress</label>
+                <input type="text" id="gender" class="form-control" placeholder="Gender..."
+                       ng-model="ordersController.entry.deliveryAddress.gender" name="gender"/>
+                <input type="text" id="firstname" class="form-control" placeholder="Firstname..."
+                       ng-model="ordersController.entry.deliveryAddress.firstname" name="firstname"/>
+                <input type="text" id="lastname" class="form-control" placeholder="Lastname..."
+                       ng-model="ordersController.entry.deliveryAddress.lastname" name="lastname"/>
+                <input type="text" id="company" class="form-control" placeholder="Company..."
+                       ng-model="ordersController.entry.deliveryAddress.company" name="company"/>
+                <input type="text" id="address" class="form-control" placeholder="Address..."
+                       ng-model="ordersController.entry.deliveryAddress.street" name="address"/>
+                <input type="text" id="city" class="form-control" placeholder="City..."
+                       ng-model="ordersController.entry.deliveryAddress.city" name="city"/>
+                <input type="text" id="zipCode" class="form-control" placeholder="Zip code..."
+                       ng-model="ordersController.entry.deliveryAddress.zipCode" name="zipCode"/>
+                <input type="text" id="country" class="form-control" placeholder="Country code..."
+                       ng-model="ordersController.entry.deliveryAddress.countryIso3Code" name="country"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="gender2">Billing Adress</label>
+                <input type="text" id="gender2" class="form-control" placeholder="Gender..."
+                       ng-model="ordersController.entry.billingAddress.gender" name="gender2"/>
+                <input type="text" id="firstname2" class="form-control" placeholder="Firstname..."
+                       ng-model="ordersController.entry.billingAddress.firstname" name="firstname2"/>
+                <input type="text" id="lastname2" class="form-control" placeholder="Lastname..."
+                       ng-model="ordersController.entry.billingAddress.lastname" name="lastname2"/>
+                <input type="text" id="company2" class="form-control" placeholder="Company..."
+                       ng-model="ordersController.entry.billingAddress.company" name="company2"/>
+                <input type="text" id="address2" class="form-control" placeholder="Address..."
+                       ng-model="ordersController.entry.billingAddress.street" name="address2"/>
+                <input type="text" id="city2" class="form-control" placeholder="City..."
+                       ng-model="ordersController.entry.billingAddress.city" name="city2"/>
+                <input type="text" id="zipCode2" class="form-control" placeholder="Zip code..."
+                       ng-model="ordersController.entry.billingAddress.zipCode" name="zipCode2"/>
+                <input type="text" id="country2" class="form-control" placeholder="Country code..."
+                       ng-model="ordersController.entry.billingAddress.countryIso3Code" name="country2"/>
+            </div>
+
         </div>
 
         <!--
