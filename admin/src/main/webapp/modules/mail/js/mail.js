@@ -38,8 +38,8 @@
                     ctrl.totalCount = data;
                     ctrl.isProcessing = false;
                 });
-            }else{
-                uri = uri+'?start=' + offset + '&size=' + ctrl.pageSize;
+            } else {
+                uri = uri + '?start=' + offset + '&size=' + ctrl.pageSize;
             }
 
             $http.get(uri).success(function (data) {
@@ -61,7 +61,8 @@
                     $scope.modalInstance = $modalInstance;
                     $scope.confirmMessage = message;
                 },
-                size: 'sm'});
+                size: 'sm'
+            });
             modalInstance.result.then(function () {
                 ctrl.alerts = [];
                 $http.delete('rs/mailtemplates/' + ctrl.entries[index].id)
@@ -114,9 +115,12 @@
                     ctrl.convertEntryDates();
                 })
                 .error(function (data, status) {
-                    if (status == 409){
-                        ctrl.alerts.push({type: 'danger', msg: 'An e-mail template with same locale and name already exists'})
-                    }else{
+                    if (status == 409) {
+                        ctrl.alerts.push({
+                            type: 'danger',
+                            msg: 'An e-mail template with same locale and name already exists'
+                        })
+                    } else {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
                     }
                 });
@@ -129,10 +133,13 @@
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'});
                     ctrl.convertEntryDates();
                 })
-                .error(function (data,status) {
-                    if (status == 409){
-                        ctrl.alerts.push({type: 'danger', msg: 'An e-mail template with same locale and name already exists'})
-                    }else{
+                .error(function (data, status) {
+                    if (status == 409) {
+                        ctrl.alerts.push({
+                            type: 'danger',
+                            msg: 'An e-mail template with same locale and name already exists'
+                        })
+                    } else {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
                     }
                 });
@@ -157,22 +164,6 @@
             ctrl.entry.updateDate = ctrl.entry.creationDate != null ? new Date(ctrl.entry.creationDate) : null;
         };
 
-        //setup editor options
-         ctrl.editorOptions = {
-         height:'6em',
-         toolbar:null,
-         toolbar_full:null
-         /*toolbarGroups:[
-         { name: 'basicstyles', groups: [ 'basicstyles' ] },
-         { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ] },
-         { name: 'links' },
-         { name: 'tools' },
-         { name: 'insert' },
-         { name: 'styles' },
-         { name: 'colors' },
-         { name: 'document', groups: [ 'mode'] }]
-          */
-         };
     }]);
 
 })();

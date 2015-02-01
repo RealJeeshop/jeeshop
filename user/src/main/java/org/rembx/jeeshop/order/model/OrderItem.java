@@ -3,6 +3,7 @@ package org.rembx.jeeshop.order.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
+import java.net.URI;
 
 /**
  * Order item.
@@ -22,12 +23,25 @@ public class OrderItem {
     private Order order;
 
     @NotNull
+    @Column(name = "product_id")
+    private Long productId;
+
+    @NotNull
     @Column(name = "sku_id")
     private Long skuId;
 
     @NotNull
     @Column(nullable = false)
     private Integer quantity;
+
+    private Double price;
+
+    // Transient computed properties
+    @Transient
+    private String displayName;
+
+    @Transient
+    private URI presentationImageURI;
 
     public OrderItem() {
     }
@@ -69,6 +83,38 @@ public class OrderItem {
         this.order = order;
     }
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public URI getPresentationImageURI() {
+        return presentationImageURI;
+    }
+
+    public void setPresentationImageURI(URI presentationImageURI) {
+        this.presentationImageURI = presentationImageURI;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,7 +122,13 @@ public class OrderItem {
 
         OrderItem orderItem = (OrderItem) o;
 
+        if (displayName != null ? !displayName.equals(orderItem.displayName) : orderItem.displayName != null)
+            return false;
         if (id != null ? !id.equals(orderItem.id) : orderItem.id != null) return false;
+        if (presentationImageURI != null ? !presentationImageURI.equals(orderItem.presentationImageURI) : orderItem.presentationImageURI != null)
+            return false;
+        if (price != null ? !price.equals(orderItem.price) : orderItem.price != null) return false;
+        if (productId != null ? !productId.equals(orderItem.productId) : orderItem.productId != null) return false;
         if (quantity != null ? !quantity.equals(orderItem.quantity) : orderItem.quantity != null) return false;
         if (skuId != null ? !skuId.equals(orderItem.skuId) : orderItem.skuId != null) return false;
 
@@ -86,8 +138,12 @@ public class OrderItem {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (productId != null ? productId.hashCode() : 0);
         result = 31 * result + (skuId != null ? skuId.hashCode() : 0);
         result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (presentationImageURI != null ? presentationImageURI.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
         return result;
     }
 }

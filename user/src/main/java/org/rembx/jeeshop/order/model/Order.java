@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Order entity
@@ -27,10 +28,11 @@ public class Order {
     User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
-    List<OrderItem> items;
+    Set<OrderItem> items;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    List<Long> discountIds;
+    @ElementCollection (fetch = FetchType.EAGER)
+            @CollectionTable(name = "OrderDiscount", joinColumns = @JoinColumn(name = "order_id"))
+    Set<OrderDiscount> orderDiscounts;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Address deliveryAddress;
@@ -49,9 +51,6 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
-    @Transient
-    PaymentInfo paymentInfo; // Used for payment systems such as SIPS
-
     Double price;
 
     @Column(length = 50)
@@ -66,16 +65,23 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date paymentDate;
 
+    // Transient properties
+    @Transient
+    PaymentInfo paymentInfo; // Used for payment systems such as SIPS
+
+    @Transient
+    private Double deliveryFee;
+
     public Order() {
     }
 
-    public Order( List<OrderItem> items, Address deliveryAddress, Address billingAddress) {
+    public Order( Set<OrderItem> items, Address deliveryAddress, Address billingAddress) {
         this.items = items;
         this.deliveryAddress = deliveryAddress;
         this.billingAddress = billingAddress;
     }
 
-    public Order(User user, List<OrderItem> items, Address deliveryAddress, Address billingAddress, OrderStatus status) {
+    public Order(User user, Set<OrderItem> items, Address deliveryAddress, Address billingAddress, OrderStatus status) {
         this.user = user;
         this.items = items;
         this.deliveryAddress = deliveryAddress;
@@ -199,21 +205,30 @@ public class Order {
         this.paymentDate = paymentDate;
     }
 
-    public List<OrderItem> getItems() {
+    public Set<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<OrderItem> items) {
+    public void setItems(Set<OrderItem> items) {
         this.items = items;
     }
 
-    public List<Long> getDiscountIds() {
-        return discountIds;
+    public Set<OrderDiscount> getOrderDiscounts() {
+        return orderDiscounts;
     }
 
-    public void setDiscountIds(List<Long> discountIds) {
-        this.discountIds = discountIds;
+    public void setOrderDiscounts(Set<OrderDiscount> orderDiscounts) {
+        this.orderDiscounts = orderDiscounts;
     }
+
+    public Double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(Double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
 
     @Override
     public boolean equals(Object o) {

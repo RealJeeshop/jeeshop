@@ -230,14 +230,17 @@ CREATE TABLE IF NOT EXISTS OrderItem (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   order_id bigint(20) NOT NULL,
   sku_id bigint (20) NULL,
+  product_id bigint (20) NULL,
   quantity int (11) NULL,
+  price double NULL,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS Order_discountIds(
+CREATE TABLE IF NOT EXISTS OrderDiscount(
   order_id bigint(20) NOT NULL,
-  discountIds bigint(20) NOT NULL,
-  UNIQUE KEY UK_Order_discountIds (order_id,discountIds)
+  discount_id bigint(20) NOT NULL,
+  discountValue double NULL,
+  UNIQUE KEY UK_Order_discountIds (order_id,discountId)
 );
 
 CREATE TABLE IF NOT EXISTS Address (
@@ -358,8 +361,8 @@ ALTER TABLE Orders
 ALTER TABLE OrderItem
   ADD CONSTRAINT FK_OrderItem_Order FOREIGN KEY (order_id) REFERENCES Orders (id);
 
-ALTER TABLE Order_discountIds
-ADD CONSTRAINT FK_Order_discountIds_Order FOREIGN KEY (order_id) REFERENCES Orders(id);
+ALTER TABLE OrderDiscount
+ADD CONSTRAINT FK_OrderDiscount_Orders FOREIGN KEY (order_id) REFERENCES Orders(id);
 
 
 ALTER TABLE MailTemplate_Media

@@ -85,8 +85,10 @@
                  ng-class="{'has-error': mailTemplateForm.content.$invalid && mailTemplateForm.content.$dirty}">
                 <label for="content">Content</label>
 
-                <textarea ckeditor="mailTemplatesCtrl.editorOptions" id="content"
-                          ng-model="mailTemplatesCtrl.entry.content" required="true"></textarea>
+                <textarea class="form-control" id="content"
+                          ng-model="mailTemplatesCtrl.entry.content"
+                          placeholder="Enter a valid Freemarker mail template..." rows="10" ng-required="true"></textarea>
+
 
                 <p class="help-block"
                    ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is

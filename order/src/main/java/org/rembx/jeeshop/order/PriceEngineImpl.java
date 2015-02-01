@@ -6,17 +6,18 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
+import org.rembx.jeeshop.order.model.OrderDiscount;
 import org.rembx.jeeshop.order.model.OrderItem;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Order price engine
- * Computes order's price
+ * Computes order's price and updates Order's properties
  */
 public class PriceEngineImpl implements PriceEngine {
 
@@ -57,8 +58,7 @@ public class PriceEngineImpl implements PriceEngine {
 
             SKU sku = entityManager.find(SKU.class,(orderItem).getSkuId());
             price += (sku.getPrice()*(orderItem).getQuantity());
-
-
+            orderItem.setPrice(price);
         }
 
         final Double fixedDeliveryFee = orderConfiguration.getFixedDeliveryFee();
@@ -67,6 +67,7 @@ public class PriceEngineImpl implements PriceEngine {
 
         if (fixedDeliveryFee != null){
             price += fixedDeliveryFee;
+            order.setDeliveryFee(fixedDeliveryFee);
         }
 
         order.setPrice(price);
@@ -85,13 +86,13 @@ public class PriceEngineImpl implements PriceEngine {
             return price;
         }
 
-        if (order.getDiscountIds() == null){
-            order.setDiscountIds(new ArrayList<>());
+        if (order.getOrderDiscounts() == null){
+            order.setOrderDiscounts(new HashSet<>());
         }
 
         for (Discount discount : userEligibleOrderDiscounts){
             price = discount.processDiscount(price, originalPrice);
-            order.getDiscountIds().add(discount.getId());
+            order.getOrderDiscounts().add(new OrderDiscount(discount.getId(),discount.getDiscountValue()));
         }
 
         return price;

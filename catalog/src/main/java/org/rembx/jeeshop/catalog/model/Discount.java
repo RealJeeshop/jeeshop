@@ -66,6 +66,16 @@ public class Discount extends CatalogItem {
     @XmlTransient
     private List<Product> products;
 
+    @Transient
+    private Boolean rateType;
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    protected void comptuteRateType() {
+        rateType = (type!=null && type.equals(Type.DISCOUNT_RATE));
+    }
+
     /**
      * Cannot be used with other discounts when true
      */
@@ -179,6 +189,18 @@ public class Discount extends CatalogItem {
 
     public void setApplicableTo(ApplicableTo applicableTo) {
         this.applicableTo = applicableTo;
+    }
+
+    public Double getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(Double discountValue) {
+        this.discountValue = discountValue;
+    }
+
+    public Boolean getRateType() {
+        return rateType;
     }
 
     @Override

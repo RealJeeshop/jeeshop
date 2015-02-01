@@ -40,12 +40,12 @@
         };
 
         ctrl.getOrderDiscounts = function(){
-            if (ctrl.entry.discountIds == null){
+            if (ctrl.entry.orderDiscounts == null){
                 return;
             }
 
-            for (i in ctrl.entry.discountIds) {
-                $http.get('rs/discounts/' + ctrl.entry.discountIds[i])
+            for (i in ctrl.entry.orderDiscounts) {
+                $http.get('rs/discounts/' + ctrl.entry.orderDiscounts[i].discountId)
                     .success(function (data) {
                         ctrl.discountPerId[data.id] = data;
                     });

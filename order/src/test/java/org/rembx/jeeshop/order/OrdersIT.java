@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.order;
 
+import com.google.common.collect.Sets;
 import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,8 +22,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -121,7 +122,7 @@ public class OrdersIT {
         address.setId(777L);
         OrderItem orderItemWithId = new OrderItem();
         orderItemWithId.setId(777L);
-        List<OrderItem> orderItems = Arrays.asList(orderItemWithId);
+        Set<OrderItem> orderItems = Sets.newHashSet(orderItemWithId);
 
         try {
             Order order = new Order(null, address, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
@@ -184,7 +185,7 @@ public class OrdersIT {
     @Test
     public void create_shouldPersistOrderWithOrderItems_computePrice_andProcessPayment() throws Exception {
 
-        List<OrderItem> orderItems = Arrays.asList(
+        Set<OrderItem> orderItems = Sets.newHashSet(
                 new OrderItem(1L, 2),
                 new OrderItem(2L, 3)
         );
