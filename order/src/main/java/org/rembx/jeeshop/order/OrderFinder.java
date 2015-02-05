@@ -26,6 +26,7 @@ public class OrderFinder {
     private EntityManager entityManager;
 
     private Map<String, ComparableExpressionBase<?>> orderSortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
+        put("id", order.id);
         put("status", order.status);
         put("creationDate", order.creationDate);
         put("updateDate", order.updateDate);

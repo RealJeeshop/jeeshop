@@ -22,6 +22,8 @@
         ctrl.isCreationModeActive = false;
         ctrl.searchOnlyPaymentValidated = false;
 
+        ctrl.skuId = null;
+
         ctrl.skuPerId = [];
         ctrl.discountPerId = [];
 
@@ -84,6 +86,35 @@
             $http.get(countURI).success(function (data) {
                 ctrl.totalCount = data;
                 ctrl.isProcessing = false;
+            });
+
+        };
+
+        ctrl.payedOrdersAsCSV = function () {
+            ctrl.isProcessing = true;
+            ctrl.alerts = [];
+
+            var uri = 'rs/orders?status=PAYMENT_VALIDATED&orderBy=id&isDesc=false';
+
+            $http.get(uri).success(function (data) {
+                ctrl.entries = data;
+                ctrl.isProcessing = false;
+                var csvContent = "data:text/csv;charset=utf-8,Company,Contact Name,Address,Zip Code,City,SKU ID to be replaced by sku reference\n";
+                for (i in data){
+                    var order = data[i];
+                    for (j in order.items){
+                        var orderItem = order.items[j];
+                        csvContent += order.deliveryAddress.company+','
+                        + order.deliveryAddress.gender + ' '+ order.deliveryAddress.firstname + ' '+ order.deliveryAddress.lastname
+                        + ',' + order.deliveryAddress.street
+                        + ',' + order.deliveryAddress.zipCode
+                        + ',' + order.deliveryAddress.city
+                        + ',' + orderItem.skuId +'\n'; // TODO get skuReference instead
+                    }
+                }
+                var encodedUri = encodeURI(csvContent);
+                window.open(encodedUri);
+
             });
 
         };

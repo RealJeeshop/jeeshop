@@ -59,7 +59,7 @@
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Users</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('mail')">Mails, Newsletters</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')">Inventory</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('supplychain')">Supply chain</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
@@ -108,8 +108,8 @@
                     <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage store catalog items">
                         <a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
                     </li>
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('inventory') }" title="Manage products inventory">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('inventory')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Inventory</span></a>
+                    <li ng-class="{ active:sideMenuCtrl.isSelected('supplychain') }" title="Supply chain tools">
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('supplychain')"><span class="glyphicon glyphicon-barcode"></span><span class="side_menu_item_title">Supply chain</span></a>
                     </li>
                 </ul>
             </div>
