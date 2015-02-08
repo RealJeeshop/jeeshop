@@ -8,6 +8,104 @@
         };
     });
 
+    app.directive("orderEntries", function () {
+        return {
+            restrict: "A",
+            templateUrl: "modules/order/order-entries.html"
+        };
+    });
+
+    app.directive("orderOperations", function () {
+        return {
+            restrict: "A",
+            templateUrl: "modules/order/order-operations.html"
+        };
+    });
+
+    app.controller('OrderTabController', ['$scope', function ($scope) {
+        this.tabId = 1;
+
+        this.selectTab = function (setId) {
+            this.tabId = setId;
+        };
+
+        this.isSelected = function (checkId) {
+            return this.tabId === checkId;
+        };
+    }]);
+
+
+    app.controller('OrderOperationController', ['$http', '$modal', function ($http) {
+
+        var ctrl = this;
+        ctrl.alerts = [];
+        ctrl.isProcessing = false;
+        ctrl.skuId = null;
+
+        ctrl.closeAlert = function (index) {
+            ctrl.alerts.splice(index, 1);
+        };
+
+        var escapeCSVField = function (field) {
+            var escaped =  field.replace(/"/g,'');
+            escaped = escaped.replace(/<br\/*>|<p>/g,' ');
+            escaped = escaped.replace(/<.*>/g,''); // remove html tags
+            return escaped;
+        };
+
+        ctrl.payedOrdersAsCSV = function () {
+            ctrl.isProcessing = true;
+            ctrl.alerts = [];
+
+            var paymentValidatedStatus = "PAYMENT_VALIDATED";
+
+            var uri = 'rs/orders?status='+paymentValidatedStatus+'&orderBy=id&isDesc=false&enhanced=true';
+            if (ctrl.skuId != null){
+                uri += '&skuId='+ctrl.skuId;
+            }
+            $http.get(uri).success(function (orders) {
+                ctrl.isProcessing = false;
+
+                if (orders.length == 0){
+                    ctrl.alerts.push({type: 'warning', msg: 'No orders found matching criteria with status '+paymentValidatedStatus});
+                    return;
+                }
+
+                var csvContent = "Order ID;Order Reference;Company;Gender;First name;Last name;Address;Zip Code;City;Country code (ISO 3166);Phone;E-mail;Product name;Product reference;Quantity\n";
+                for (i in orders){
+                    var order = orders[i];
+                    for (j in order.items){
+                        var orderItem = order.items[j];
+                        csvContent += order.id
+                        + ";" + order.reference
+                        + ";" + escapeCSVField(order.deliveryAddress.company)
+                        + ";" + escapeCSVField(order.deliveryAddress.gender)
+                        + ";" + escapeCSVField(order.deliveryAddress.firstname)
+                        + ";" + escapeCSVField(order.deliveryAddress.lastname)
+                        + ';' + escapeCSVField(order.deliveryAddress.street)
+                        + ';' + escapeCSVField(order.deliveryAddress.zipCode)
+                        + ';' + escapeCSVField(order.deliveryAddress.city)
+                        + ';' + escapeCSVField(order.deliveryAddress.countryIso3Code)
+                        + ';' + escapeCSVField(order.user.phoneNumber)
+                        + ';' + escapeCSVField(order.user.login)
+                        + ';' + escapeCSVField(orderItem.displayName)
+                        + ';' + escapeCSVField(orderItem.skuReference)
+                        + ';' + orderItem.quantity+'\n';
+                    }
+                }
+
+
+                var encodedUri = encodeURI('data:text/csv;charset=utf-8,'+csvContent);
+                window.open(encodedUri);
+
+            }).error(function(){
+                if (orders.length == 0){
+                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                }
+            });
+        };
+    }]);
+
     app.controller('OrdersController', ['$http', '$modal', function ($http, $modal) {
         var ctrl = this;
         ctrl.alerts = [];
@@ -21,8 +119,6 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
         ctrl.searchOnlyPaymentValidated = false;
-
-        ctrl.skuId = null;
 
         ctrl.skuPerId = [];
         ctrl.discountPerId = [];
@@ -90,34 +186,6 @@
 
         };
 
-        ctrl.payedOrdersAsCSV = function () {
-            ctrl.isProcessing = true;
-            ctrl.alerts = [];
-
-            var uri = 'rs/orders?status=PAYMENT_VALIDATED&orderBy=id&isDesc=false';
-
-            $http.get(uri).success(function (data) {
-                ctrl.entries = data;
-                ctrl.isProcessing = false;
-                var csvContent = "data:text/csv;charset=utf-8,Company,Contact Name,Address,Zip Code,City,SKU ID to be replaced by sku reference\n";
-                for (i in data){
-                    var order = data[i];
-                    for (j in order.items){
-                        var orderItem = order.items[j];
-                        csvContent += order.deliveryAddress.company+','
-                        + order.deliveryAddress.gender + ' '+ order.deliveryAddress.firstname + ' '+ order.deliveryAddress.lastname
-                        + ',' + order.deliveryAddress.street
-                        + ',' + order.deliveryAddress.zipCode
-                        + ',' + order.deliveryAddress.city
-                        + ',' + orderItem.skuId +'\n'; // TODO get skuReference instead
-                    }
-                }
-                var encodedUri = encodeURI(csvContent);
-                window.open(encodedUri);
-
-            });
-
-        };
 
         ctrl.findEntries();
 

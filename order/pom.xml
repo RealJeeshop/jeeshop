@@ -39,6 +39,14 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>catalog</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>

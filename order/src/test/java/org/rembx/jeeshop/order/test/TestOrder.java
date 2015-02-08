@@ -1,6 +1,8 @@
 package org.rembx.jeeshop.order.test;
 
+import com.google.common.collect.Sets;
 import org.rembx.jeeshop.order.model.Order;
+import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.User;
@@ -21,6 +23,7 @@ public class TestOrder {
     private static TestOrder instance;
 
     private static Order order1;
+    private static OrderItem orderItem1;
     private static TestUser testUser;
 
     // Date are initialized with java.sql.Timestamp as JPA get a Timestamp instance
@@ -44,7 +47,10 @@ public class TestOrder {
         entityManager.persist(billingAddress);
 
         order1 = new Order(testUser.firstUser(),null, deliveryAddress,billingAddress, OrderStatus.CREATED);
+        orderItem1 = new OrderItem(1L,1L, 2);
+        orderItem1.setOrder(order1);
 
+        order1.setItems(Sets.newHashSet(orderItem1));
         entityManager.persist(order1);
 
         entityManager.getTransaction().commit();

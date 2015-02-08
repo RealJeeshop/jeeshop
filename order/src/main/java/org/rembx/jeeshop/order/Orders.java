@@ -81,11 +81,24 @@ public class Orders {
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Order find(@PathParam("orderId") @NotNull Long orderId) {
+    public Order find(@PathParam("orderId") @NotNull Long orderId,@QueryParam("enhanced") Boolean enhanced) {
         Order order = entityManager.find(Order.class, orderId);
+        if (enhanced!=null && enhanced){
+            orderFinder.enhanceOrder(order);
+        }
         checkNotNull(order);
 
         return order;
+    }
+
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(JeeshopRoles.ADMIN)
+    public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
+                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status,
+                               @QueryParam("skuId") Long skuId, @QueryParam("enhanced") Boolean enhanced) {
+        return orderFinder.findAll(start, size, orderBy, isDesc, search,status, skuId, enhanced != null? enhanced : false);
     }
 
     @POST
@@ -111,38 +124,6 @@ public class Orders {
         return order;
     }
 
-    private void assignOrderToOrderItems(Order order) {
-        if (CollectionUtils.isEmpty(order.getItems()))
-            return;
-        order.getItems().forEach(orderItem -> {
-            if (orderItem.getId()!=null)
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
-            orderItem.setOrder(order);
-        });
-    }
-
-    private void checkOrder(Order order) { // TODO Complete checks on OrderItems, checks skuId and discountId visibility. Check that user do not add too much discount.
-
-        if (order .getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
-                || (order.getBillingAddress()!=null && order.getBillingAddress().getId() !=null)){
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
-
-    }
-
-    private void assignOrderToUser(Order order, String userLogin) {
-        User user;
-        if (sessionContext.isCallerInRole(JeeshopRoles.USER)){
-            user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
-            order.setUser(user);
-        }
-
-        if (sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
-            user = userFinder.findByLogin(userLogin);
-            order.setUser(user);
-        }
-    }
-
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -154,21 +135,9 @@ public class Orders {
 
         order.setUser(existingOrder.getUser());
 
-        order.getItems().forEach(orderItem -> {orderItem.setOrder(order);});
+        order.getItems().forEach(orderItem -> orderItem.setOrder(order));
 
         return entityManager.merge(order);
-    }
-
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
-                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status) {
-        if (search != null)
-            return orderFinder.findBySearchCriteria(search, start, size, orderBy, isDesc, status);
-        else
-            return orderFinder.findAll(start, size, orderBy, isDesc, status);
     }
 
 
@@ -187,11 +156,8 @@ public class Orders {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search") String search, @QueryParam("status")OrderStatus status) {
-        if (search != null)
-            return orderFinder.countBySearchCriteria(search, status);
-        else
-            return orderFinder.countAll();
+    public Long count(@QueryParam("search") String search, @QueryParam("status")OrderStatus status, @QueryParam("skuId") Long skuId) {
+        return orderFinder.countAll(search,status, skuId);
     }
 
     @GET
@@ -205,10 +171,44 @@ public class Orders {
         return null;
     }
 
+
+
+    private void assignOrderToUser(Order order, String userLogin) {
+        User user;
+        if (sessionContext.isCallerInRole(JeeshopRoles.USER)){
+            user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+            order.setUser(user);
+        }
+
+        if (sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
+            user = userFinder.findByLogin(userLogin);
+            order.setUser(user);
+        }
+    }
+
     private void checkNotNull(Order order) {
         if (order == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+    }
+
+    private void assignOrderToOrderItems(Order order) {
+        if (CollectionUtils.isEmpty(order.getItems()))
+            return;
+        order.getItems().forEach(orderItem -> {
+            if (orderItem.getId()!=null)
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            orderItem.setOrder(order);
+        });
+    }
+
+    private void checkOrder(Order order) { // TODO Complete checks on OrderItems, checks skuId and discountId visibility. Check that user does not add too much discount.
+
+        if (order .getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
+                || (order.getBillingAddress()!=null && order.getBillingAddress().getId() !=null)){
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+
     }
 
 }

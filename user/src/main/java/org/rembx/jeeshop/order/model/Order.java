@@ -6,8 +6,8 @@ import org.rembx.jeeshop.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,6 +19,7 @@ import java.util.Set;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Order {
 
+    public static final String ORDER_REF_SEPARATOR = "-";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -72,6 +73,9 @@ public class Order {
     @Transient
     private Double deliveryFee;
 
+    @Transient
+    private String reference;
+
     public Order() {
     }
 
@@ -99,6 +103,17 @@ public class Order {
     @PreUpdate
     public void preUpdate(){
         this.updateDate = new Date();
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    public void computeOrderReference(){
+        SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy");
+        reference = sdf.format(creationDate)+ORDER_REF_SEPARATOR+id;
+        if (transactionId != null){
+            reference += ORDER_REF_SEPARATOR +transactionId;
+        }
     }
 
     public PaymentInfo getPaymentInfo() {
@@ -229,6 +244,13 @@ public class Order {
         this.deliveryFee = deliveryFee;
     }
 
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -48,7 +48,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(11.0);
 
         Order order = new Order();
-        order.setItems(Sets.newHashSet(new OrderItem(1L, 1), new OrderItem(2L, 2)));
+        order.setItems(Sets.newHashSet(new OrderItem(1L,1L, 1), new OrderItem(2L,2L, 2)));
 
         orderPriceEngine.computePrice(order);
 
@@ -75,7 +75,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(null);
 
         Order order = new Order();
-        order.setItems(Sets.newHashSet(new OrderItem(1L, 1), new OrderItem(2L, 2)));
+        order.setItems(Sets.newHashSet(new OrderItem(1L,1L, 1), new OrderItem(2L,2L, 2)));
 
         orderPriceEngine.computePrice(order);
 

@@ -41,13 +41,17 @@ public class OrderItem {
     private String displayName;
 
     @Transient
+    private String skuReference;
+
+    @Transient
     private URI presentationImageURI;
 
     public OrderItem() {
     }
 
-    public OrderItem(Long skuId, Integer quantity) {
+    public OrderItem(Long skuId, Long productId, Integer quantity) {
         this.skuId = skuId;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -113,6 +117,14 @@ public class OrderItem {
 
     public void setPresentationImageURI(URI presentationImageURI) {
         this.presentationImageURI = presentationImageURI;
+    }
+
+    public String getSkuReference() {
+        return skuReference;
+    }
+
+    public void setSkuReference(String skuReference) {
+        this.skuReference = skuReference;
     }
 
     @Override

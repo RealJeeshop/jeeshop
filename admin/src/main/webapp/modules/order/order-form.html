@@ -25,13 +25,13 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="margin-top:1em">
 
             <div class="form-group col-md-6">
                 <label for="status">Status</label>
                 <select class="form-control" name="status" ng-model="ordersController.entry.status" id="status">
                     <option value="CREATED">Created</option>
-                    <option value="APPROVED">Approved</option>
+                    <option value="PAYMENT_VALIDATED">Payment validated</option>
                     <option value="VALIDATED">Validated</option>
                     <option value="READY_FOR_SHIPMENT">Ready for shipment</option>
                     <option value="SHIPPED">Shipped</option>
@@ -40,9 +40,20 @@
                     <option value="RETURNED">Returned</option>
                 </select>
             </div>
+
+        </div>
+
+        <div class="row">
+
+
+            <div class="form-group col-md-6">
+                <label for="reference">Reference</label>
+                <h5 id="reference" style="font-weight: bold; color:navy">{{ordersController.entry.reference}}</h5>
+            </div>
+
             <div class="form-group col-md-6">
                 <label for="price">Price</label>
-                <h5 id="price" style="font-weight: bold">{{ordersController.entry.price}}</h5>
+                <h5 id="price" style="font-weight: bold; color:navy">{{ordersController.entry.price}}</h5>
             </div>
 
         </div>
@@ -184,108 +195,6 @@
             </div>
 
         </div>
-
-        <!--
-
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Disabled</label><br/>
-                <input type="radio" name="disabled" ng-model="ordersController.entry.disabled" ng-value="true"> Yes
-                <input type="radio" name="disabled" ng-model="ordersController.entry.disabled" ng-value="false"> No
-            </div>
-            <div class="form-group col-md-6">
-                <label>Activated</label><br/>
-                <input type="radio" name="activated" ng-model="ordersController.entry.activated" ng-value="true"> Yes
-                <input type="radio" name="activated" ng-model="ordersController.entry.activated" ng-value="false"> No
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.login.$invalid && orderForm.login.$dirty}">
-                <label for="login">Login</label>
-                <input type="text" class="form-control" id="login" name="login" ng-model="ordersController.entry.login"
-                       placeholder="Login..." maxlength="100" required="true"/>
-                <p class="help-block" ng-show="orderForm.login.$error.required && orderForm.login.$dirty">Login is required</p>
-            </div>
-            <div class="form-group col-md-6" ng-class="{'has-error': orderForm.password.$invalid && orderForm.password.$dirty}">
-                <label for="password">Password</label>
-                <input type="text" class="form-control" id="password" name="password" ng-model="ordersController.entry.password"
-                       placeholder="Password..." maxlength="100" required="true"/>
-                <p class="help-block" ng-show="orderForm.password.$error.required && orderForm.password.$dirty">Password is required</p>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="form-group col-md-6"
-                 ng-class="{'has-error': orderForm.firstname.$invalid && orderForm.firstname.$dirty}">
-                <label for="firstname">First name</label>
-                <input type="text" class="form-control" id="firstname" name="firstname"
-                       ng-model="ordersController.entry.firstname"
-                       placeholder="First name..." maxlength="50" required="true"/>
-                <p class="help-block" ng-show="orderForm.firstname.$error.required && orderForm.firstname.$dirty">First name is required</p>
-            </div>
-
-            <div class="form-group col-md-6"
-                 ng-class="{'has-error': orderForm.lastname.$invalid && orderForm.lastname.$dirty}">
-                <label for="lastname">Last name</label>
-                <input type="text" class="form-control" id="lastname" name="lastname"
-                       ng-model="ordersController.entry.lastname"
-                       placeholder="Last name..." maxlength="50" required="true"/>
-                <p class="help-block" ng-show="orderForm.lastname.$error.required && orderForm.lastname.$dirty">Last name is required</p>
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="form-group col-md-6"
-                 ng-class="{'has-error': orderForm.lastname.$invalid && orderForm.lastname.$dirty}">
-                <label for="gender">Gender</label>
-                <input type="text" class="form-control" id="gender" name="gender"
-                       ng-model="ordersController.entry.gender"
-                       placeholder="Gender ..." maxlength="30" required="true"/>
-                <p class="help-block" ng-show="orderForm.gender.$error.required && orderForm.gender.$dirty">Gender is required</p>
-            </div>
-
-            <div class="form-group col-md-6"
-                 ng-class="{'has-error': (orderForm.phoneNumber.$invalid || orderForm.phoneNumber.$error.pattern) && orderForm.phoneNumber.$dirty}">
-                <label for="phoneNumber">Phone number</label>
-                <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
-                       ng-pattern="/^\+?\d+$/" ng-model="ordersController.entry.phoneNumber"
-                       placeholder="Phone number..." maxlength="15"/>
-                <p class="help-block" ng-show="orderForm.phoneNumber.$error.pattern">Format is: optional "+" followed by digits</p>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="col-md-6" ng-controller="DatepickerDemoCtrl"
-                 ng-class="{'has-error': orderForm.birthDate.$invalid && orderForm.birthDate.$dirty}">
-                <label for="birthDate">Birth date</label>
-
-                <p class="input-group">
-                    <input type="text" id="birthDate" class="form-control" datepicker-popup
-                           ng-model="ordersController.entry.birthDate" is-open="opened"
-                           datepicker-options="dateOptions"
-                           close-text="Close" name="birthDate"/>
-                    <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i
-                            class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </p>
-            </div>
-
-            <div class="col-md-6"
-                 ng-class="{'has-error': orderForm.creationDate.$invalid && orderForm.creationDate.$dirty}">
-                <label for="creationDate">Creation date</label>
-                <input type="datetime-local" id="creationDate" class="form-control"
-                       ng-model="ordersController.entry.creationDate" name="creationDate" disabled/>
-            </div>
-
-        </div>
-
-        -->
 
         <input type="submit" class="btn btn-primary" value="Save" ng-disabled="orderForm.$invalid"/>
     </form>

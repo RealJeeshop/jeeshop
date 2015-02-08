@@ -5,6 +5,8 @@ import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
@@ -32,9 +34,13 @@ import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
 
 public class OrdersIT {
 
-    private static EntityManagerFactory entityManagerFactory;
+    private static EntityManagerFactory emf;
+    private static EntityManagerFactory catalogEmf;
     private EntityManager entityManager;
+    private EntityManager catalogEntityManager;
     private TestOrder testOrder;
+    private TestCatalog testCatalog;
+
     private SessionContext sessionContextMock;
     private PriceEngine priceEngineMock;
     private PaymentTransactionEngine paymentEngineMock;
@@ -42,30 +48,44 @@ public class OrdersIT {
 
     @BeforeClass
     public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
+        emf = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
+        catalogEmf = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
+
     }
 
     @Before
     public void setup() {
         testOrder = TestOrder.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
+        testCatalog = TestCatalog.getInstance();
+
+        entityManager = emf.createEntityManager();
+        catalogEntityManager = catalogEmf.createEntityManager();
         sessionContextMock = mock(SessionContext.class);
         priceEngineMock = mock(PriceEngine.class);
         paymentEngineMock = mock(PaymentTransactionEngine.class);
 
-        service = new Orders(entityManager, new OrderFinder(entityManager), new UserFinder(entityManager),
-                new MailTemplateFinder(entityManager), null  ,sessionContextMock, priceEngineMock,paymentEngineMock);
+        service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "19.6")), new UserFinder(entityManager),
+                new MailTemplateFinder(entityManager), null, sessionContextMock, priceEngineMock, paymentEngineMock);
     }
 
     @Test
     public void find() throws Exception {
-        assertThat(service.find(1L)).isNotNull();
+        assertThat(service.find(1L,null)).isEqualTo(testOrder.firstOrder());
+    }
+
+    @Test
+    public void find_withEnhanceResult_shouldReturnEnhancedOrder() throws Exception {
+        Order enhancedOrder = service.find(1L, true);
+
+        assertThat(enhancedOrder).isEqualTo(testOrder.firstOrder());
+
+        assertThatOrderIsEnhanced(enhancedOrder);
     }
 
     @Test
     public void find_withUnknownId_ShouldThrowException() throws Exception {
         try {
-            service.find(999L);
+            service.find(999L,null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
@@ -74,45 +94,90 @@ public class OrdersIT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null,null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null,null);
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedOrder() {
-        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null,null);
+        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByStatus_shouldReturnOrdersWithMatchingStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.CREATED);
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, null, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_withEnhancedResults_shouldReturnEnhancedOrders() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, true);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+        assertThat(orders.get(0).getDeliveryFee()).isNotNull();
+
+        assertThatOrderIsEnhanced(orders.get(0));
+    }
+
+    private void assertThatOrderIsEnhanced(Order order) {
+        order.getItems().forEach(orderItem -> {
+                    Assertions.assertThat(orderItem.getDisplayName()).isNotNull();
+                    Assertions.assertThat(orderItem.getSkuReference()).isNotNull();
+
+                }
+        );
+
+        order.getOrderDiscounts().forEach(orderDiscount -> {
+                    Assertions.assertThat(orderDiscount.getDisplayName()).isNotNull();
+                    Assertions.assertThat(orderDiscount.getRateType()).isNotNull();
+                }
+        );
+    }
+
+    @Test
+    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersInGivenStatus() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.DELIVERED, null, null);
+        assertThat(orders).isEmpty();
+    }
+
+    @Test
+    public void findAll_BySkuId_shouldReturnOrdersWithItemsHavingGivenSkuIdAndStatus() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, 1L, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_BySkuId_shouldReturnOrdersWithItemsHavingGivenSkuId() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 1L, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
 
     @Test
-    public void findAll_ByStatus_shouldReturnNotReturnOrdersWhenThereAreNoOrdersInGivenStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.DELIVERED);
+    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersWithItemsMatchingGivenSKUId() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 2L, null);
         assertThat(orders).isEmpty();
     }
 
     @Test
     public void count() {
-        assertThat(service.count(null,null)).isGreaterThan(0);
+        assertThat(service.count(null, null, null)).isGreaterThan(0);
     }
 
     @Test
     public void count_withUnknownSearchCriteria() {
-        assertThat(service.count("unknown",null)).isEqualTo(0);
+        assertThat(service.count("unknown", null, null)).isEqualTo(0);
     }
 
     @Test
@@ -186,8 +251,8 @@ public class OrdersIT {
     public void create_shouldPersistOrderWithOrderItems_computePrice_andProcessPayment() throws Exception {
 
         Set<OrderItem> orderItems = Sets.newHashSet(
-                new OrderItem(1L, 2),
-                new OrderItem(2L, 3)
+                new OrderItem(1L, 1L, 2),
+                new OrderItem(2L, 2L, 3)
         );
 
 
@@ -211,12 +276,10 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
-        OrderItem expectedOrderItem1 = new OrderItem(1L, 2);
-        expectedOrderItem1.setSkuId(1L);
-        expectedOrderItem1.setId(1L);
-        OrderItem expectedOrderItem2 = new OrderItem(2L, 3);
-        expectedOrderItem2.setSkuId(2L);
-        expectedOrderItem2.setId(2L);
+        OrderItem expectedOrderItem1 = new OrderItem(1L, 1L, 2);
+        expectedOrderItem1.setId(2L);
+        OrderItem expectedOrderItem2 = new OrderItem(2L, 2L, 3);
+        expectedOrderItem2.setId(3L);
 
         assertThat(persistedOrder.getItems()).contains(expectedOrderItem1, expectedOrderItem2);
 
@@ -249,7 +312,7 @@ public class OrdersIT {
     }
 
     @Test
-    public void delete_shouldRemove(){
+    public void delete_shouldRemove() {
 
         entityManager.getTransaction().begin();
         Order order = new Order();
@@ -265,14 +328,14 @@ public class OrdersIT {
     }
 
     @Test
-    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
             entityManager.getTransaction().begin();
             service.delete(666L);
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
@@ -285,7 +348,7 @@ public class OrdersIT {
         try {
             service.modify(detachedOrder);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
+        } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
