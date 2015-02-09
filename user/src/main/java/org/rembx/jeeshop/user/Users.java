@@ -30,6 +30,9 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+
 /**
  * Customer resource
  */
@@ -111,7 +114,7 @@ public class Users {
 
         user.setPassword(hashSha256Base64(user.getPassword()));
 
-        if (!sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
+        if (!sessionContext.isCallerInRole(ADMIN)){
             user.setActivated(false);
             generateActionTokenAndSendMail(user, Mails.userRegistration);
         }
@@ -166,7 +169,7 @@ public class Users {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{userId}")
     public void delete(@NotNull @PathParam("userId") Long userId) {
         User catalog = entityManager.find(User.class, userId);
@@ -178,11 +181,29 @@ public class Users {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
-    public User modify(@NotNull User user) {
-        User existingUser = entityManager.find(User.class, user.getId());
+    @RolesAllowed({ADMIN, USER})
+    public User modify(@NotNull User user) { // TODO Complete IT TEST
+
+        User existingUser = null;
+        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)){
+            existingUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+
+            if (!existingUser.getId().equals(user.getId())||!existingUser.getLogin().equals(user.getLogin())){
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+
+            user.setActivated(existingUser.getActivated());
+            user.setDisabled(existingUser.getDisabled());
+            user.setActionToken(existingUser.getActionToken());
+
+        }
+
+        if (existingUser == null){
+            existingUser = entityManager.find(User.class, user.getId());
+        }
         checkNotNull(existingUser);
         user.setPassword(existingUser.getPassword());
+        user.setCreationDate(existingUser.getCreationDate());
         user.setRoles(existingUser.getRoles());
         return entityManager.merge(user);
     }
@@ -199,7 +220,7 @@ public class Users {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
         if (search != null)
             return userFinder.findBySearchCriteria(search, start, size);
@@ -210,7 +231,7 @@ public class Users {
     @GET
     @Path("/{customerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public User find(@PathParam("customerId") @NotNull Long customerId) {
         User user = entityManager.find(User.class, customerId);
         if (user == null) {
@@ -222,7 +243,7 @@ public class Users {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return userFinder.countBySearchCriteria(search);
@@ -233,7 +254,7 @@ public class Users {
     @GET
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
+    @RolesAllowed({USER, ADMIN})
     public User findCurrentUser(@Context SecurityContext sec) {
 
         User user = userFinder.findByLogin(sec.getUserPrincipal().getName());
