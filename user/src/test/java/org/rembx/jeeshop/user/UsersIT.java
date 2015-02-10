@@ -10,6 +10,7 @@ import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
 import org.rembx.jeeshop.user.test.TestUser;
+import sun.security.acl.PrincipalImpl;
 
 import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ import java.util.UUID;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
+import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 
 public class UsersIT {
@@ -190,7 +192,7 @@ public class UsersIT {
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
 
-        entityManager.remove(user);
+        removeTestUser(user);
     }
 
     @Test
@@ -268,7 +270,7 @@ public class UsersIT {
 
 
     @Test
-    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception{;
+    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception{
 
         try {
             service.activate("unknown_login", UUID.randomUUID().toString());
@@ -313,28 +315,41 @@ public class UsersIT {
     @Test
     public void resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() throws Exception{
 
-        User user = new User("reset1@test.com", "previousPassword", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
-        user.setGender("M.");
+        User user = notActivatedTestUser();
 
-        final UUID actionToken = UUID.randomUUID();
-        user.setActionToken(actionToken);
-        user.setActivated(false);
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-
-        service.resetPassword(user.getLogin(), actionToken.toString(),"newPassword");
+        service.resetPassword(user.getLogin(), user.getActionToken().toString(),"newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getActionToken()).isNotEqualTo("previousPassword");
+        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
         assertThat(updatedUser.getActionToken()).isNull();
+
+        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+
+        removeTestUser(user);
 
     }
 
     @Test
-    public void resetPassword_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception{
+    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedUser() throws Exception{
+
+        User user = notActivatedTestUser();
+
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(user.getLogin()));
+        service.resetPassword(user.getLogin(), null, "newPassword");
+
+        final User updatedUser = entityManager.find(User.class, user.getId());
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
+
+        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+
+        removeTestUser(user);
+    }
+
+    @Test
+    public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception{
 
         try {
             service.resetPassword("unknown_login",null,null);
@@ -342,7 +357,20 @@ public class UsersIT {
         }catch(WebApplicationException e){
             assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
         }
+    }
 
+    @Test
+    public void resetPassword_shouldReturnUnAuthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() throws Exception{
+
+        try {
+            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+
+            service.resetPassword("not_matching_login", null, null);
+            fail("should have thrown ex");
+        }catch(WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        }
     }
 
     @Test
@@ -396,7 +424,30 @@ public class UsersIT {
     }
 
     @Test
-    // TODO
-    public void testFindCurrentUser() throws Exception {
+    public void findCurrentUser_shouldReturnCurrentAuthenticatedUser() throws Exception {
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+
+        assertThat(service.findCurrentUser()).isEqualTo(testUser.firstUser());
     }
+
+    private User notActivatedTestUser() {
+        User user = new User("reset1@test.com", "password", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        user.setGender("M.");
+
+        final UUID actionToken = UUID.randomUUID();
+        user.setActionToken(actionToken);
+        user.setActivated(false);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
+        return user;
+    }
+
+    private void removeTestUser(User user){
+        entityManager.getTransaction().begin();
+        entityManager.remove(user);
+        entityManager.getTransaction().commit();
+    }
+
 }

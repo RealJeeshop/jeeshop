@@ -1,12 +1,9 @@
 package org.rembx.jeeshop.user;
 
 import com.google.common.collect.Sets;
-import com.google.common.hash.Hashing;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.apache.commons.codec.binary.Base64;
 import org.rembx.jeeshop.mail.Mailer;
-import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.*;
 import org.slf4j.Logger;
@@ -22,16 +19,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 /**
  * Customer resource
@@ -67,7 +63,7 @@ public class Users {
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder,CountryChecker countryChecker,
+    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
@@ -85,24 +81,23 @@ public class Users {
     @PermitAll
     public User create(@NotNull User user) {
 
-        if (user.getId() != null){
+        if (user.getId() != null) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-
         User userByLogin = userFinder.findByLogin(user.getLogin());
 
-        if (userByLogin != null){
+        if (userByLogin != null) {
             throw new WebApplicationException(Response.Status.CONFLICT);
         }
 
         final Address userAddress = user.getAddress();
 
-        if (userAddress != null){
-            if (userAddress.getId()!=null){
+        if (userAddress != null) {
+            if (userAddress.getId() != null) {
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
 
-            if ( !countryChecker.isAvailable(userAddress.getCountryIso3Code())) {
+            if (!countryChecker.isAvailable(userAddress.getCountryIso3Code())) {
                 LOG.error("Country {} is not available", userAddress.getCountryIso3Code());
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             }
@@ -114,7 +109,7 @@ public class Users {
 
         user.setPassword(hashSha256Base64(user.getPassword()));
 
-        if (!sessionContext.isCallerInRole(ADMIN)){
+        if (!sessionContext.isCallerInRole(ADMIN)) {
             user.setActivated(false);
             generateActionTokenAndSendMail(user, Mails.userRegistration);
         }
@@ -127,12 +122,12 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}")
     @PermitAll
-    public void activate(@NotNull @PathParam("userLogin") String userLogin, @NotNull String token){
+    public void activate(@NotNull @PathParam("userLogin") String userLogin, @NotNull String token) {
         User user = userFinder.findByLogin(userLogin);
-        if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
+        if (user != null && user.getActionToken() != null && user.getActionToken().equals(UUID.fromString(token))) {
             user.setActivated(true);
             user.setActionToken(null);
-        }else{
+        } else {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
@@ -142,11 +137,11 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}/password")
     @PermitAll
-    public void sendResetPasswordMail(@NotNull @PathParam("userLogin") String userLogin){
+    public void sendResetPasswordMail(@NotNull @PathParam("userLogin") String userLogin) {
         User user = userFinder.findByLogin(userLogin);
-        if (user != null){
+        if (user != null) {
             generateActionTokenAndSendMail(user, Mails.userResetPassword);
-        }else{
+        } else {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
@@ -156,14 +151,28 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}/password")
     @PermitAll
-    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin,@NotNull @QueryParam("token") String token, @NotNull String newPassword) {
-        User user = userFinder.findByLogin(userLogin);
-        if (user != null && user.getActionToken()!= null && user.getActionToken().equals(UUID.fromString(token))){
-            user.setPassword(hashSha256Base64(newPassword));
+    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token, @NotNull String newPassword) {
+
+        User user;
+        if (sessionContext.isCallerInRole(USER)) {
+            user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+
+            if (!userLogin.equals(user.getLogin())) {
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+        } else {
+            user = userFinder.findByLogin(userLogin);
+
+            if (user == null || !user.getActionToken().equals(UUID.fromString(token))) {
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
+            }
             user.setActionToken(null);
-        }else{
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+
+        user.setPassword(hashSha256Base64(newPassword));
+        sendMail(user, Mails.userChangePassword);
+
+
     }
 
     @DELETE
@@ -185,10 +194,10 @@ public class Users {
     public User modify(@NotNull User user) { // TODO Complete IT TEST
 
         User existingUser = null;
-        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)){
+        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
             existingUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
 
-            if (!existingUser.getId().equals(user.getId())||!existingUser.getLogin().equals(user.getLogin())){
+            if (!existingUser.getId().equals(user.getId()) || !existingUser.getLogin().equals(user.getLogin())) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
 
@@ -198,7 +207,7 @@ public class Users {
 
         }
 
-        if (existingUser == null){
+        if (existingUser == null) {
             existingUser = entityManager.find(User.class, user.getId());
         }
         checkNotNull(existingUser);
@@ -255,9 +264,9 @@ public class Users {
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({USER, ADMIN})
-    public User findCurrentUser(@Context SecurityContext sec) {
+    public User findCurrentUser() {
 
-        User user = userFinder.findByLogin(sec.getUserPrincipal().getName());
+        User user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
 
         if (user == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -276,23 +285,22 @@ public class Users {
 
         user.setActionToken(UUID.randomUUID());
 
+        return sendMail(user, mailType);
+    }
+
+    private User sendMail(User user, Mails mailType) {
         MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(mailType.name(), user.getPreferredLocale());
 
         try {
-            Template mailContentTpl = new Template(mailType.name(),mailTemplate.getContent(),new Configuration(Configuration.VERSION_2_3_21));
+            Template mailContentTpl = new Template(mailType.name(), mailTemplate.getContent(), new Configuration(Configuration.VERSION_2_3_21));
             final StringWriter mailBody = new StringWriter();
             mailContentTpl.process(user, mailBody);
             mailer.sendMail(mailTemplate.getSubject(), user.getLogin(), mailBody.toString());
-        }catch (Exception e){
-            LOG.error("Unable to send mail "+mailType+" to user "+user.getLogin(), e);
+        } catch (Exception e) {
+            LOG.error("Unable to send mail " + mailType + " to user " + user.getLogin(), e);
         }
 
         return user;
-    }
-
-    private String hashSha256Base64(String strToHash) {
-        byte[] digest = Hashing.sha256().hashBytes(strToHash.getBytes()).asBytes();
-        return Base64.encodeBase64String(digest);
     }
 
 }

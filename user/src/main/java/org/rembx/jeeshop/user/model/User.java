@@ -68,6 +68,7 @@ public class User {
     private Boolean activated;
 
     @Column(columnDefinition = "BINARY(16)")
+    @XmlTransient
     private UUID actionToken;
 
     private String preferredLocale;
