@@ -285,11 +285,18 @@ public class Users {
 
         user.setActionToken(UUID.randomUUID());
 
-        return sendMail(user, mailType);
+        sendMail(user, mailType);
+
+        return user;
     }
 
-    private User sendMail(User user, Mails mailType) {
+    private void sendMail(User user, Mails mailType) {
         MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(mailType.name(), user.getPreferredLocale());
+
+        if (mailTemplate == null){
+            LOG.debug("Mail template " + mailType + " is not configured." );
+            return;
+        }
 
         try {
             Template mailContentTpl = new Template(mailType.name(), mailTemplate.getContent(), new Configuration(Configuration.VERSION_2_3_21));
@@ -300,7 +307,7 @@ public class Users {
             LOG.error("Unable to send mail " + mailType + " to user " + user.getLogin(), e);
         }
 
-        return user;
+        return;
     }
 
 }
