@@ -260,6 +260,10 @@ public class Order {
         Order order = (Order) o;
 
         if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (parcelTrackingKey != null ? !parcelTrackingKey.equals(order.parcelTrackingKey) : order.parcelTrackingKey != null)
+            return false;
+        if (price != null ? !price.equals(order.price) : order.price != null) return false;
+        if (reference != null ? !reference.equals(order.reference) : order.reference != null) return false;
         if (status != order.status) return false;
         if (transactionId != null ? !transactionId.equals(order.transactionId) : order.transactionId != null)
             return false;
@@ -271,7 +275,23 @@ public class Order {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + (transactionId != null ? transactionId.hashCode() : 0);
+        result = 31 * result + (parcelTrackingKey != null ? parcelTrackingKey.hashCode() : 0);
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", status=" + status +
+                ", price=" + price +
+                ", transactionId='" + transactionId + '\'' +
+                ", parcelTrackingKey='" + parcelTrackingKey + '\'' +
+                ", deliveryFee=" + deliveryFee +
+                ", reference='" + reference + '\'' +
+                '}';
     }
 }

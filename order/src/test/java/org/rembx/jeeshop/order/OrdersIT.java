@@ -15,6 +15,7 @@ import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.Address;
+import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import sun.security.acl.PrincipalImpl;
 
@@ -40,6 +41,7 @@ public class OrdersIT {
     private EntityManager catalogEntityManager;
     private TestOrder testOrder;
     private TestCatalog testCatalog;
+
 
     private SessionContext sessionContextMock;
     private PriceEngine priceEngineMock;
@@ -93,8 +95,31 @@ public class OrdersIT {
     }
 
     @Test
+    public void find_whenClientHasUserRoleAndOrderBelongsToAnotherUser_ShouldThrowException() throws Exception {
+        entityManager.getTransaction().begin();
+        User user = new User("777@test.com", "test","M.", "John", "Doe", "+33616161616",null,null,"fr_FR",null);
+        entityManager.persist(user);
+            entityManager.getTransaction().commit();
+
+            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+            when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl("777@test.com"));
+        try {
+            service.find(1L,null);
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        }finally {
+            entityManager.getTransaction().begin();
+            entityManager.remove(user);
+            entityManager.persist(user);
+
+        }
+    }
+
+    @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null, null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder(), testOrder.secondOrder());
     }
 
     @Test
@@ -113,9 +138,21 @@ public class OrdersIT {
 
     @Test
     public void findAll_ByStatus_shouldReturnOrdersWithMatchingStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, null, null);
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersInGivenStatus() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.DELIVERED, null, null);
+        assertThat(orders).isEmpty();
+    }
+
+    @Test
+    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersWithItemsMatchingGivenSKUId() {
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 2L, null);
+        assertThat(orders).isEmpty();
     }
 
     @Test
@@ -128,30 +165,9 @@ public class OrdersIT {
         assertThatOrderIsEnhanced(orders.get(0));
     }
 
-    private void assertThatOrderIsEnhanced(Order order) {
-        order.getItems().forEach(orderItem -> {
-                    Assertions.assertThat(orderItem.getDisplayName()).isNotNull();
-                    Assertions.assertThat(orderItem.getSkuReference()).isNotNull();
-
-                }
-        );
-
-        order.getOrderDiscounts().forEach(orderDiscount -> {
-                    Assertions.assertThat(orderDiscount.getDisplayName()).isNotNull();
-                    Assertions.assertThat(orderDiscount.getRateType()).isNotNull();
-                }
-        );
-    }
-
-    @Test
-    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersInGivenStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.DELIVERED, null, null);
-        assertThat(orders).isEmpty();
-    }
-
     @Test
     public void findAll_BySkuId_shouldReturnOrdersWithItemsHavingGivenSkuIdAndStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, 1L, null);
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, 1L, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -165,9 +181,58 @@ public class OrdersIT {
 
 
     @Test
-    public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersWithItemsMatchingGivenSKUId() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 2L, null);
-        assertThat(orders).isEmpty();
+    public void findAll_whenClientHasUserRoleOnly_shouldReturnNoneEmptyList_WithoutOrdersWithStatusCREATED() {
+
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+
+        assertThat(service.findAll(null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_whenClientHasUserRoleOnlyAndwithPagination_shouldReturnNoneEmptyListPaginated() {
+
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+
+        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_whenClientHasUserRoleOnlyAndByLogin_shouldReturnSearchedOrder() {
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+
+        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_whenClientHasUserRoleOnlyAndByStatus_shouldReturnOrdersWithMatchingStatus() {
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.firstOrder());
+    }
+
+    @Test
+    public void findAll_whenClientHasUserRoleAndByStatusCREATED_shouldReturnOrdersWithThisStatus() {
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+
+        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.CREATED, null, null);
+        assertThat(orders).isNotEmpty();
+        assertThat(orders).containsExactly(testOrder.secondOrder());
     }
 
     @Test
@@ -244,7 +309,10 @@ public class OrdersIT {
         assertThat(persistedOrder.getBillingAddress()).isEqualTo(billingAddress);
         assertThat(persistedOrder.getDeliveryAddress()).isEqualTo(deliveryAddress);
 
+        entityManager.getTransaction().begin();
         entityManager.remove(order);
+        entityManager.getTransaction().commit();
+
     }
 
     @Test
@@ -283,9 +351,11 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getItems()).contains(expectedOrderItem1, expectedOrderItem2);
 
+        entityManager.getTransaction().begin();
         entityManager.remove(order);
-    }
+        entityManager.getTransaction().commit();
 
+    }
 
     @Test
     public void create_shouldSetGivenUserByLoginInOrder_ForADMINRole() throws Exception {
@@ -308,15 +378,19 @@ public class OrdersIT {
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
+        entityManager.getTransaction().begin();
         entityManager.remove(order);
+        entityManager.getTransaction().commit();
+
     }
+
 
     @Test
     public void delete_shouldRemove() {
 
         entityManager.getTransaction().begin();
         Order order = new Order();
-        order.setStatus(OrderStatus.CREATED);
+        order.setStatus(OrderStatus.VALIDATED);
         entityManager.persist(order);
         entityManager.getTransaction().commit();
 
@@ -351,6 +425,24 @@ public class OrdersIT {
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
+    }
+
+    private void assertThatOrderIsEnhanced(Order order) {
+
+        assertThat(order.getDeliveryFee()).isEqualTo(11.0);
+
+        order.getItems().forEach(orderItem -> {
+                    Assertions.assertThat(orderItem.getDisplayName()).isNotNull();
+                    Assertions.assertThat(orderItem.getSkuReference()).isNotNull();
+
+                }
+        );
+
+        order.getOrderDiscounts().forEach(orderDiscount -> {
+                    Assertions.assertThat(orderDiscount.getDisplayName()).isNotNull();
+                    Assertions.assertThat(orderDiscount.getRateType()).isNotNull();
+                }
+        );
     }
 
 }

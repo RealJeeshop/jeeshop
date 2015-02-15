@@ -25,6 +25,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+
 /**
  * Orders resource.
  */
@@ -80,9 +83,17 @@ public class Orders {
     @GET
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN,USER})
     public Order find(@PathParam("orderId") @NotNull Long orderId,@QueryParam("enhanced") Boolean enhanced) {
         Order order = entityManager.find(Order.class, orderId);
+
+        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
+            User authenticatedUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+            if (!order.getUser().equals(authenticatedUser)){
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+        }
+
         if (enhanced!=null && enhanced){
             orderFinder.enhanceOrder(order);
         }
@@ -94,11 +105,18 @@ public class Orders {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
     public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
                                @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status,
                                @QueryParam("skuId") Long skuId, @QueryParam("enhanced") Boolean enhanced) {
-        return orderFinder.findAll(start, size, orderBy, isDesc, search,status, skuId, enhanced != null? enhanced : false);
+
+        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
+            User authenticatedUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+            return orderFinder.findByUser(authenticatedUser, start, size, orderBy, isDesc, status);
+        }else{
+            return orderFinder.findAll(start, size, orderBy, isDesc, search,status, skuId, enhanced != null? enhanced : false);
+        }
+
     }
 
     @POST

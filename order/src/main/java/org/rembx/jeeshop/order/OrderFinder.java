@@ -27,7 +27,7 @@ import java.util.Map;
 import static org.rembx.jeeshop.order.model.QOrder.order;
 
 /**
- * User finder utility
+ * Order finder utility
  */
 public class OrderFinder {
 
@@ -39,7 +39,7 @@ public class OrderFinder {
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    @PersistenceContext (unitName = CatalogPersistenceUnit.NAME)
+    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager catalogEntityManager;
 
     private static final Map<String, ComparableExpressionBase<?>> orderSortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
@@ -60,7 +60,6 @@ public class OrderFinder {
     }
 
 
-
     public Long countUserCompletedOrders(User user) {
         return new JPAQuery(entityManager)
                 .from(order)
@@ -76,7 +75,7 @@ public class OrderFinder {
         return query.count();
     }
 
-    public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc, String searchCriteria, OrderStatus status,Long skuId, boolean enhanceResult) {
+    public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc, String searchCriteria, OrderStatus status, Long skuId, boolean enhanceResult) {
         JPAQuery query = new JPAQuery(entityManager).from(order)
                 .where(matchesSearchAndStatusAndItemsSkuId(searchCriteria, status, skuId));
 
@@ -87,10 +86,30 @@ public class OrderFinder {
 
         sortBy(orderby, isDesc, query);
 
-        List<Order> orders =  query.list(order);
+        List<Order> orders = query.list(order);
 
         if (enhanceResult)
             orders.forEach(this::enhanceOrder);
+
+        return orders;
+
+    }
+
+    public List<Order> findByUser(User user, Integer offset, Integer limit, String orderby, Boolean isDesc, OrderStatus status) {
+        JPAQuery query = new JPAQuery(entityManager).from(order)
+                .where(
+                        order.user.eq(user),
+                        status != null && status.equals(OrderStatus.CREATED)? null: order.status.ne(OrderStatus.CREATED),
+                        status != null ? order.status.eq(status) : null);
+
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        sortBy(orderby, isDesc, query);
+
+        List<Order> orders = query.list(order);
 
         return orders;
 
@@ -102,12 +121,12 @@ public class OrderFinder {
         if (searchCriteria != null)
             expression = matchesSearchCriteria(searchCriteria);
 
-        if (status != null){
-            expression = expression != null? expression.and(order.status.eq(status)):order.status.eq(status);
+        if (status != null) {
+            expression = expression != null ? expression.and(order.status.eq(status)) : order.status.eq(status);
         }
 
-        if (skuId != null){
-            expression = expression != null? expression.and(order.items.any().skuId.eq(skuId)):order.items.any().skuId.eq(skuId);
+        if (skuId != null) {
+            expression = expression != null ? expression.and(order.items.any().skuId.eq(skuId)) : order.items.any().skuId.eq(skuId);
         }
         return expression;
     }
@@ -124,7 +143,7 @@ public class OrderFinder {
     }
 
     private BooleanExpression matchesSearchCriteria(String search) {
-        BooleanExpression searchExpression =  order.user.login.containsIgnoreCase(search)
+        BooleanExpression searchExpression = order.user.login.containsIgnoreCase(search)
                 .or(order.user.firstname.containsIgnoreCase(search))
                 .or(order.user.lastname.containsIgnoreCase(search))
                 .or(order.transactionId.containsIgnoreCase(search));
@@ -141,6 +160,7 @@ public class OrderFinder {
 
     /**
      * Enhance given order with Catalog items data and order static configuration.
+     *
      * @param order the order to enhance
      */
     public void enhanceOrder(Order order) {
@@ -152,24 +172,24 @@ public class OrderFinder {
             orderItem.setDisplayName(product.getLocalizedPresentation() != null ? product.getLocalizedPresentation().getDisplayName() : product.getName());
             orderItem.setSkuReference(sku.getReference());
             try {
-                if (product.getLocalizedPresentation()!= null)
-                    orderItem.setPresentationImageURI(new URI("products/" + orderItem.getProductId() + "/" + product.getLocalizedPresentation().getLocale() + "/"+product.getLocalizedPresentation().getSmallImage().getUri()));
+                if (product.getLocalizedPresentation() != null)
+                    orderItem.setPresentationImageURI(new URI("products/" + orderItem.getProductId() + "/" + product.getLocalizedPresentation().getLocale() + "/" + product.getLocalizedPresentation().getSmallImage().getUri()));
             } catch (URISyntaxException e) {
-                LOG.error("Error while building image path for item "+orderItem.getId(), e);
+                LOG.error("Error while building image path for item " + orderItem.getId(), e);
             }
         });
 
         order.getOrderDiscounts().forEach(orderDiscount -> {
             Discount discount = catalogEntityManager.find(Discount.class, orderDiscount.getDiscountId());
             discount.setLocalizedPresentation(user.getPreferredLocale());
-            orderDiscount.setDisplayName(discount.getLocalizedPresentation().getDisplayName()!=null?discount.getLocalizedPresentation().getDisplayName():discount.getName());
+            orderDiscount.setDisplayName(discount.getLocalizedPresentation().getDisplayName() != null ? discount.getLocalizedPresentation().getDisplayName() : discount.getName());
             orderDiscount.setRateType(discount.getRateType());
 
             try {
-                if (discount.getLocalizedPresentation()!=null)
-                    orderDiscount.setPresentationImageURI(new URI("discounts/" + orderDiscount.getDiscountId() + "/" + discount.getLocalizedPresentation().getLocale() + "/"+discount.getLocalizedPresentation().getSmallImage().getUri()));
+                if (discount.getLocalizedPresentation() != null)
+                    orderDiscount.setPresentationImageURI(new URI("discounts/" + orderDiscount.getDiscountId() + "/" + discount.getLocalizedPresentation().getLocale() + "/" + discount.getLocalizedPresentation().getSmallImage().getUri()));
             } catch (URISyntaxException e) {
-                LOG.error("Error while building discount path for orderDiscount with discountId "+orderDiscount.getDiscountId(), e);
+                LOG.error("Error while building discount path for orderDiscount with discountId " + orderDiscount.getDiscountId(), e);
             }
         });
 

@@ -96,6 +96,19 @@ public class User {
         this.deliveryAddress = deliveryAddress;
     }
 
+    public User(String login, String password, String gender, String firstname, String lastname, String phoneNumber, Address address, Date birthDate, String preferredLocale, Address deliveryAddress) {
+        this.login = login;
+        this.password = password;
+        this.gender = gender;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.birthDate = birthDate;
+        this.preferredLocale = preferredLocale;
+        this.deliveryAddress = deliveryAddress;
+    }
+
     @PrePersist
     public void prePersist() {
         this.creationDate = new Date();
