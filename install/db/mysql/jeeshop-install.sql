@@ -362,7 +362,7 @@ ALTER TABLE OrderItem
   ADD CONSTRAINT FK_OrderItem_Order FOREIGN KEY (order_id) REFERENCES Orders (id);
 
 ALTER TABLE OrderDiscount
-ADD CONSTRAINT FK_OrderDiscount_Orders FOREIGN KEY (order_id) REFERENCES Orders(id);
+  ADD CONSTRAINT FK_OrderDiscount_Orders FOREIGN KEY (order_id) REFERENCES Orders(id);
 
 
 ALTER TABLE MailTemplate_Media
