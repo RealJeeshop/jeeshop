@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +97,7 @@ public class OrderFinder {
         JPAQuery query = new JPAQuery(entityManager).from(order)
                 .where(
                         order.user.eq(user),
-                        status != null && status.equals(OrderStatus.CREATED)? null: order.status.ne(OrderStatus.CREATED),
+                        status != null && status.equals(OrderStatus.CREATED) ? null : order.status.ne(OrderStatus.CREATED),
                         status != null ? order.status.eq(status) : null);
 
         if (offset != null)
@@ -171,12 +169,9 @@ public class OrderFinder {
             product.setLocalizedPresentation(user.getPreferredLocale());
             orderItem.setDisplayName(product.getLocalizedPresentation() != null ? product.getLocalizedPresentation().getDisplayName() : product.getName());
             orderItem.setSkuReference(sku.getReference());
-            try {
-                if (product.getLocalizedPresentation() != null)
-                    orderItem.setPresentationImageURI(new URI("products/" + orderItem.getProductId() + "/" + product.getLocalizedPresentation().getLocale() + "/" + product.getLocalizedPresentation().getSmallImage().getUri()));
-            } catch (URISyntaxException e) {
-                LOG.error("Error while building image path for item " + orderItem.getId(), e);
-            }
+            if (product.getLocalizedPresentation() != null)
+                orderItem.setPresentationImageURI("products/" + orderItem.getProductId() + "/" + product.getLocalizedPresentation().getLocale() + "/" + product.getLocalizedPresentation().getSmallImage().getUri());
+
         });
 
         order.getOrderDiscounts().forEach(orderDiscount -> {
@@ -185,12 +180,9 @@ public class OrderFinder {
             orderDiscount.setDisplayName(discount.getLocalizedPresentation().getDisplayName() != null ? discount.getLocalizedPresentation().getDisplayName() : discount.getName());
             orderDiscount.setRateType(discount.getRateType());
 
-            try {
-                if (discount.getLocalizedPresentation() != null)
-                    orderDiscount.setPresentationImageURI(new URI("discounts/" + orderDiscount.getDiscountId() + "/" + discount.getLocalizedPresentation().getLocale() + "/" + discount.getLocalizedPresentation().getSmallImage().getUri()));
-            } catch (URISyntaxException e) {
-                LOG.error("Error while building discount path for orderDiscount with discountId " + orderDiscount.getDiscountId(), e);
-            }
+            if (discount.getLocalizedPresentation() != null)
+                orderDiscount.setPresentationImageURI("discounts/" + orderDiscount.getDiscountId() + "/" + discount.getLocalizedPresentation().getLocale() + "/" + discount.getLocalizedPresentation().getSmallImage().getUri());
+
         });
 
         order.setDeliveryFee(orderConfiguration.getFixedDeliveryFee());

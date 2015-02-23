@@ -36,7 +36,7 @@ public class OrderDiscount {
     @Transient
     private String displayName;
     @Transient
-    private URI presentationImageURI;
+    private String presentationImageURI;
     @Transient
     private Boolean rateType;
 
@@ -56,11 +56,11 @@ public class OrderDiscount {
         this.displayName = displayName;
     }
 
-    public URI getPresentationImageURI() {
+    public String getPresentationImageURI() {
         return presentationImageURI;
     }
 
-    public void setPresentationImageURI(URI presentationImageURI) {
+    public void setPresentationImageURI(String presentationImageURI) {
         this.presentationImageURI = presentationImageURI;
     }
 

@@ -58,7 +58,7 @@ public class PriceEngineImpl implements PriceEngine {
 
             SKU sku = entityManager.find(SKU.class,(orderItem).getSkuId());
             price += (sku.getPrice()*(orderItem).getQuantity());
-            orderItem.setPrice(price);
+            orderItem.setPrice(sku.getPrice());
         }
 
         final Double fixedDeliveryFee = orderConfiguration.getFixedDeliveryFee();
@@ -91,8 +91,10 @@ public class PriceEngineImpl implements PriceEngine {
         }
 
         for (Discount discount : userEligibleOrderDiscounts){
-            price = discount.processDiscount(price, originalPrice);
-            order.getOrderDiscounts().add(new OrderDiscount(discount.getId(),discount.getDiscountValue()));
+            if (discount.isEligible(originalPrice)){
+                price = discount.processDiscount(price, originalPrice);
+                order.getOrderDiscounts().add(new OrderDiscount(discount.getId(),discount.getDiscountValue()));
+            }
         }
 
         return price;

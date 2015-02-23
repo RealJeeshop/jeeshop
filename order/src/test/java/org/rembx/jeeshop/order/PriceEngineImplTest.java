@@ -84,8 +84,13 @@ public class PriceEngineImplTest { // TODO complete discounts application test
 
         verify(orderConfiguration).getFixedDeliveryFee();
 
-
         assertThat(order.getPrice()).isEqualTo(50.0);
+        for (OrderItem item : order.getItems()){
+            if (item.getSkuId().equals(1L))
+                assertThat(item.getPrice()).isEqualTo(10.0);
+            else
+                assertThat(item.getPrice()).isEqualTo(20.0);
+        }
     }
 
     @Test

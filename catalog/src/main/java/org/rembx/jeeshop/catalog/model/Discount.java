@@ -30,7 +30,7 @@ public class Discount extends CatalogItem {
         ORDER_NUMBER
     }
 
-    public static enum ApplicableTo{
+    public static enum ApplicableTo {
         ORDER,
         ITEM
     }
@@ -73,7 +73,7 @@ public class Discount extends CatalogItem {
     @PostPersist
     @PostUpdate
     protected void comptuteRateType() {
-        rateType = (type!=null && type.equals(Type.DISCOUNT_RATE));
+        rateType = (type != null && type.equals(Type.DISCOUNT_RATE));
     }
 
     /**
@@ -88,7 +88,7 @@ public class Discount extends CatalogItem {
         this.id = id;
     }
 
-    public Discount(String name, String description, ApplicableTo applicableTo, Type type, Trigger triggerRule, String voucherCode, Double discountValue,Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled) {
+    public Discount(String name, String description, ApplicableTo applicableTo, Type type, Trigger triggerRule, String voucherCode, Double discountValue, Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled) {
         this.name = name;
         this.description = description;
         this.applicableTo = applicableTo;
@@ -104,19 +104,38 @@ public class Discount extends CatalogItem {
         this.disabled = disabled;
     }
 
-    public Double processDiscount(Double price, Double originalPrice){
-        switch (type){
-            case DISCOUNT_RATE:
-                price = price - originalPrice*discountValue/100;
-                break;
-            case ORDER_DISCOUNT_AMOUNT:
-                price -= discountValue;
-                break;
-            case SHIPPING_FEE_DISCOUNT_AMOUNT:
-                price -= discountValue;
+    public boolean isEligible(Double itemsPrice){ // TODO continue implem  of triggerRule and unit tests
+
+        if (triggerRule != null) {
+            switch (triggerRule) {
+                case AMOUNT:
+                    if (itemsPrice < triggerValue) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+        return true;
+    }
+
+    public Double processDiscount(Double currentPrice, Double originItemsPrice) { // TODO continue implem  of triggerRule and unit tests
+
+        if (!isEligible(originItemsPrice)){
+            return currentPrice;
         }
 
-        return price;
+        switch (type) {
+            case DISCOUNT_RATE:
+                currentPrice = currentPrice - originItemsPrice * discountValue / 100;
+                break;
+            case ORDER_DISCOUNT_AMOUNT:
+                currentPrice -= discountValue;
+                break;
+            case SHIPPING_FEE_DISCOUNT_AMOUNT:
+                currentPrice -= discountValue;
+        }
+
+        return currentPrice;
     }
 
     public Type getType() {

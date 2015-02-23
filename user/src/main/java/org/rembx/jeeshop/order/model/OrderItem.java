@@ -44,7 +44,7 @@ public class OrderItem {
     private String skuReference;
 
     @Transient
-    private URI presentationImageURI;
+    private String presentationImageURI;
 
     public OrderItem() {
     }
@@ -111,11 +111,11 @@ public class OrderItem {
         this.price = price;
     }
 
-    public URI getPresentationImageURI() {
+    public String getPresentationImageURI() {
         return presentationImageURI;
     }
 
-    public void setPresentationImageURI(URI presentationImageURI) {
+    public void setPresentationImageURI(String presentationImageURI) {
         this.presentationImageURI = presentationImageURI;
     }
 
