@@ -55,7 +55,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
       <authentication>
           <login-module code="Database" flag="required">
               <module-option name="dsJndiName" value="java:/JeeshopDS"/>
-              <module-option name="principalsQuery" value="select password from User where login = ?"/>
+              <module-option name="principalsQuery" value="select password from User where login = ? and (disabled is null or disabled = 0) and activated = 1"/>
               <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
               <module-option name="hashAlgorithm" value="SHA-256"/>
               <module-option name="hashEncoding" value="base64"/>
