@@ -381,7 +381,7 @@
                         <policy-module code="Delegating" flag="required"/>
                     </authorization>
                 </security-domain>
-                <security-domain name="jeeshop">
+                <security-domain name="jeeshop" cache-type="default">
                     <authentication>
                         <login-module code="Database" flag="required">
                             <module-option name="dsJndiName" value="java:/JeeshopDS"/>

@@ -51,7 +51,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 * Sample of configuration for a standalone server:
 
 ``` xml
-  <security-domain name="jeeshop">
+  <security-domain name="jeeshop" cache-type="default">
       <authentication>
           <login-module code="Database" flag="required">
               <module-option name="dsJndiName" value="java:/JeeshopDS"/>

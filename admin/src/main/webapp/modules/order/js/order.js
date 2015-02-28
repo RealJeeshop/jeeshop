@@ -47,6 +47,9 @@
         };
 
         var escapeCSVField = function (field) {
+            if (field==null){
+                return "";
+            }
             var escaped =  field.replace(/"/g,'');
             escaped = escaped.replace(/<br\/*>|<p>/g,' ');
             escaped = escaped.replace(/<.*>/g,''); // remove html tags
