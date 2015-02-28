@@ -15,7 +15,6 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Size(max = 15)
-@Constraint(validatedBy = {})
 @Pattern(regexp = "\\+?[0-9\\s]+")
 @ReportAsSingleViolation
 @Target({METHOD, FIELD})
