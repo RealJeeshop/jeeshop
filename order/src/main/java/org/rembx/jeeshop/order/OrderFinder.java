@@ -186,5 +186,6 @@ public class OrderFinder {
         });
 
         order.setDeliveryFee(orderConfiguration.getFixedDeliveryFee());
+        order.setVat(orderConfiguration.getVAT());
     }
 }

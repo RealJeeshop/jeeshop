@@ -74,6 +74,9 @@ public class Order {
     private Double deliveryFee;
 
     @Transient
+    private Double vat;
+
+    @Transient
     private String reference;
 
     public Order() {
@@ -250,6 +253,14 @@ public class Order {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public Double getVat() {
+        return vat;
+    }
+
+    public void setVat(Double vat) {
+        this.vat = vat;
     }
 
     @Override

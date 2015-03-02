@@ -66,7 +66,7 @@ public class OrdersIT {
         priceEngineMock = mock(PriceEngine.class);
         paymentEngineMock = mock(PaymentTransactionEngine.class);
 
-        service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "19.6")), new UserFinder(entityManager),
+        service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "20.0")), new UserFinder(entityManager),
                 new MailTemplateFinder(entityManager), null, sessionContextMock, priceEngineMock, paymentEngineMock);
     }
 
@@ -430,6 +430,7 @@ public class OrdersIT {
     private void assertThatOrderIsEnhanced(Order order) {
 
         assertThat(order.getDeliveryFee()).isEqualTo(11.0);
+        assertThat(order.getVat()).isEqualTo(20.0);
 
         order.getItems().forEach(orderItem -> {
                     Assertions.assertThat(orderItem.getDisplayName()).isNotNull();
