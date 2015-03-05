@@ -104,12 +104,12 @@ public class Discount extends CatalogItem {
         this.disabled = disabled;
     }
 
-    public boolean isEligible(Double itemsPrice){ // TODO continue implem  of triggerRule and unit tests
+    public boolean isEligible(Double itemsPrice){ // TODO continue implem  of triggerRule
 
         if (triggerRule != null) {
             switch (triggerRule) {
                 case AMOUNT:
-                    if (itemsPrice < triggerValue) {
+                    if (triggerValue != null && itemsPrice < triggerValue) {
                         return false;
                     }
                     break;
@@ -118,7 +118,7 @@ public class Discount extends CatalogItem {
         return true;
     }
 
-    public Double processDiscount(Double currentPrice, Double originItemsPrice) { // TODO continue implem  of triggerRule and unit tests
+    public Double processDiscount(Double currentPrice, Double originItemsPrice) { // TODO continue implem  of triggerRule
 
         if (!isEligible(originItemsPrice)){
             return currentPrice;
