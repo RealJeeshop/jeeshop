@@ -1,4 +1,4 @@
-<h3 class="text-center page-header">Mails, Newsletters</h3>
+<h3 class="text-center page-header">Emails, Newsletters</h3>
 
 <div class="text-center" ng-controller="MailTemplatesController as mailTemplatesCtrl">
     <div id="loaderDiv" ng-show="mailTemplatesCtrl.isProcessing">
@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-6 text-left">
                 <p class="input-group">
-                    <input type="text" class="form-control" placeholder="Enter newsletter name ..." ng-model="mailTemplatesCtrl.searchValue"/>
+                    <input type="text" class="form-control" placeholder="Enter e-mail template name ..." ng-model="mailTemplatesCtrl.searchValue"/>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="mailTemplatesCtrl.findEntries()"><i class="glyphicon glyphicon-search"></i></button>
                     <button type="button" class="btn btn-default" ng-click="mailTemplatesCtrl.activateCreationMode()"><i
@@ -29,11 +29,11 @@
         <table class="table table-striped table-hover table-condensed text-left">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Locale</th>
-                <th class="hidden-xs hidden-sm">Creation date</th>
-                <th class="hidden-xs hidden-sm">Last modification</th>
+                <th><a href="" ng-click="mailTemplatesCtrl.findEntries('id')">ID</a></th>
+                <th><a href="" ng-click="mailTemplatesCtrl.findEntries('name')">Name</a></th>
+                <th><a href="" ng-click="mailTemplatesCtrl.findEntries('locale')">Locale</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="mailTemplatesCtrl.findEntries('creationDate')">Creation date</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="mailTemplatesCtrl.findEntries('updateDate')">Last modification</a></th>
                 <th></th>
             </tr>
             </thead>
@@ -41,7 +41,7 @@
             <tr ng-repeat="entry in mailTemplatesCtrl.entries" style="cursor:pointer" >
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.id}}</td>
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.name}}</td>
-                <td ng-click="">{{entry.locale}}</td>
+                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.locale}}</td>
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.creationDate|date : 'medium'}}</td>
                 <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.updateDate|date : 'medium'}}</td>
                 <td>

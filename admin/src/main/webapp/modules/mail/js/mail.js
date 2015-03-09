@@ -21,15 +21,24 @@
         ctrl.entryChilds = {};
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
+        ctrl.orderBy = null;
+        ctrl.orderDesc = false;
 
         ctrl.availableLocales = allLocales();
 
-        ctrl.findEntries = function () {
+        ctrl.findEntries = function (orderBy) {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
             var uri = 'rs/mailtemplates';
+
+            if (orderBy != null){
+                ctrl.orderBy = orderBy;
+                ctrl.orderDesc = ! ctrl.orderDesc;
+                uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
+            }
+
             var countURI = 'rs/mailtemplates/count';
 
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {

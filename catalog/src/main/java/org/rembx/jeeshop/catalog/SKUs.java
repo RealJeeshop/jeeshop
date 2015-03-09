@@ -114,11 +114,12 @@ public class SKUs {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(sKU, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(sKU, search, start, size, orderBy, isDesc);
         else
-            return catalogItemFinder.findAll(sKU, start, size);
+            return catalogItemFinder.findAll(sKU, start, size, orderBy, isDesc);
     }
 
     @GET

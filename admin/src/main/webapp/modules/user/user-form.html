@@ -27,14 +27,21 @@
 
         <div class="row">
             <div class="form-group col-md-6">
+                <label>Activated</label><br/>
+                <input type="radio" name="activated" ng-model="usersController.entry.activated" ng-value="true"> Yes
+                <input type="radio" name="activated" ng-model="usersController.entry.activated" ng-value="false"> No
+            </div>
+            <div class="form-group col-md-6">
                 <label>Disabled</label><br/>
                 <input type="radio" name="disabled" ng-model="usersController.entry.disabled" ng-value="true"> Yes
                 <input type="radio" name="disabled" ng-model="usersController.entry.disabled" ng-value="false"> No
             </div>
+        </div>
+        <div class="row">
             <div class="form-group col-md-6">
-                <label>Activated</label><br/>
-                <input type="radio" name="activated" ng-model="usersController.entry.activated" ng-value="true"> Yes
-                <input type="radio" name="activated" ng-model="usersController.entry.activated" ng-value="false"> No
+                <label>Newsletters Subscribed</label><br/>
+                <input type="radio" name="newslettersSubscribed" ng-model="usersController.entry.newslettersSubscribed" ng-value="true"> Yes
+                <input type="radio" name="newslettersSubscribed" ng-model="usersController.entry.newslettersSubscribed" ng-value="false"> No
             </div>
         </div>
 

@@ -128,11 +128,12 @@ public class Products {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(product, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc);
         else
-            return catalogItemFinder.findAll(product, start, size);
+            return catalogItemFinder.findAll(product, start, size, orderBy, isDesc);
     }
 
     @GET

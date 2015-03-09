@@ -29,7 +29,8 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 
 @Path("/discounts")
 @Stateless
-public class Discounts {
+public class
+        Discounts {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -103,11 +104,12 @@ public class Discounts {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Discount> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<Discount> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(discount, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(discount, search, start, size, orderBy, isDesc);
         else
-            return catalogItemFinder.findAll(discount, start, size);
+            return catalogItemFinder.findAll(discount, start, size, orderBy, isDesc);
     }
 
 

@@ -19,3 +19,7 @@
 .side_menu_item_title {
     margin-left:1.5em;
 }
+
+th a{
+    color: #333;
+}

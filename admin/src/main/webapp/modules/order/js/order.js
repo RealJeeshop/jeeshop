@@ -122,6 +122,8 @@
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
         ctrl.searchOnlyPaymentValidated = false;
+        ctrl.orderBy = null;
+        ctrl.orderDesc = false;
 
         ctrl.skuPerId = [];
         ctrl.discountPerId = [];
@@ -154,12 +156,17 @@
             }
         };
 
-        ctrl.findEntries = function (orderBy, isDesc) {
+        ctrl.findEntries = function (orderBy) {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
             var uri = 'rs/orders?start=' + offset + '&size=' + ctrl.pageSize;
+            if (orderBy != null){
+                ctrl.orderBy = orderBy;
+                ctrl.orderDesc = ! ctrl.orderDesc;
+                uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
+            }
             var countURI = 'rs/orders/count';
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 var searchArg = '&search=' + ctrl.searchValue;
@@ -171,10 +178,6 @@
                 var searchArg = '&status=PAYMENT_VALIDATED';
                 uri = uri + searchArg;
                 countURI = countURI + '?' + searchArg;
-            }
-
-            if (orderBy != null && isDesc !=null){
-                uri = uri + '&orderBy=' + orderBy+'&isDesc='+isDesc;
             }
 
             $http.get(uri).success(function (data) {

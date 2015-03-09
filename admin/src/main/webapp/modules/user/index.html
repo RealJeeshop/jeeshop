@@ -1,4 +1,4 @@
-<h3 class="text-center page-header">Users</h3>
+<h3 class="text-center page-header">Customers</h3>
 
 <div class="text-center" ng-controller="UsersController as usersController">
     <div id="loaderDiv" ng-show="usersController.isProcessing">
@@ -29,13 +29,14 @@
         <table class="table table-striped table-hover table-condensed text-left">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>Login</th>
-                <th class="hidden-xs hidden-sm">First name</th>
-                <th class="hidden-xs hidden-sm">Last name</th>
-                <th>Disabled</th>
-                <th class="hidden-xs hidden-sm">Creation date</th>
-                <th class="hidden-xs hidden-sm">Last modification</th>
+                <th><a href="" ng-click="usersController.findEntries('id')">ID</a></th>
+                <th><a href="" ng-click="usersController.findEntries('login')">Login</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="usersController.findEntries('firstname')">First name</a></th>
+                <th class="hidden-xs"><a href="" ng-click="usersController.findEntries('lastname')">Last name</a></th>
+                <th><a href="" ng-click="usersController.findEntries('activated')">Activated</a></th>
+                <th><a href="" ng-click="usersController.findEntries('disabled')">Disabled</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="usersController.findEntries('creationDate')">Creation date</a></th>
+                <th class="hidden-xs hidden-sm hidden-md"><a href="" ng-click="usersController.findEntries('updateDate')">Last modification</a></th>
                 <th></th>
             </tr>
             </thead>
@@ -44,10 +45,11 @@
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.id}}</td>
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.login}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.firstname}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.lastname}}</td>
+                <td class="hidden-xs" ng-click="usersController.selectEntry(entry.id)" >{{entry.lastname}}</td>
+                <td ng-click="usersController.selectEntry(entry.id)" >{{entry.activated ===true?'Yes':'No'}}</td>
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.disabled ===true?'Yes':'No'}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.creationDate|date : 'medium'}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.updateDate|date : 'medium'}}</td>
+                <td class="hidden-xs hidden-sm hidden-md" ng-click="usersController.selectEntry(entry.id)" >{{entry.updateDate|date : 'medium'}}</td>
                 <td>
                     <a ng-click="usersController.delete($index,'You are about to remove user #'+entry.id +' from system')" href="#" class="glyphicon glyphicon-trash" style="color:darkred"/>
                 </td>

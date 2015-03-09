@@ -108,11 +108,12 @@ public class Catalogs {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
-    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
         else
-            return catalogItemFinder.findAll(catalog, start, size);
+            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc);
     }
 
 

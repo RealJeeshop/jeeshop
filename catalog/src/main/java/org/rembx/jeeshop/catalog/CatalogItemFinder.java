@@ -2,6 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.expr.BooleanExpression;
+import com.mysema.query.types.expr.ComparableExpressionBase;
 import com.mysema.query.types.expr.SimpleExpression;
 import com.mysema.query.types.path.EntityPathBase;
 import com.mysema.query.types.path.ListPath;
@@ -15,7 +16,9 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class for common finders on CatalogItem entities
@@ -49,12 +52,12 @@ public class CatalogItemFinder {
 
     }
 
-    public <T extends CatalogItem> List<T> findAll(EntityPathBase<T> entityPathBase, Integer offset, Integer limit) {
+    public <T extends CatalogItem> List<T> findAll(EntityPathBase<T> entityPathBase, Integer offset, Integer limit,String orderBy, Boolean isDesc) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
 
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
 
-        addOffsetAndLimitToQuery(offset, limit, query);
+        addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
         return query.list(entityPathBase);
     }
@@ -69,13 +72,14 @@ public class CatalogItemFinder {
                 .list(hp);
     }
 
-    public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPathBase<T> entityPathBase, String searchCriteria, Integer offset, Integer limit) {
+    public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPathBase<T> entityPathBase, String searchCriteria,
+                                                                Integer offset, Integer limit, String orderBy, Boolean isDesc) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
 
         JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem)
                 .where(buildSearchPredicate(searchCriteria, qCatalogItem));
 
-        addOffsetAndLimitToQuery(offset, limit, query);
+        addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
         return query.list(entityPathBase);
     }
@@ -94,24 +98,6 @@ public class CatalogItemFinder {
         return query.count();
     }
 
-    private void addOffsetAndLimitToQuery(Integer offset, Integer limit, JPAQuery query) {
-        if (offset != null)
-            query.offset(offset);
-        if (limit != null)
-            query.limit(limit);
-    }
-
-    private BooleanExpression buildSearchPredicate(String search, QCatalogItem qCatalogItem) {
-        BooleanExpression searchPredicate = qCatalogItem.name.containsIgnoreCase(search)
-                .or(qCatalogItem.description.containsIgnoreCase(search));
-
-        if (NumberUtils.isNumber(search)) {
-            Long searchId = Long.parseLong(search);
-            searchPredicate = qCatalogItem.id.eq(searchId);
-        }
-        return searchPredicate;
-    }
-
     public <T extends CatalogItem> T filterVisible(T catalogItem, String locale) {
 
         if (catalogItem == null) {
@@ -125,6 +111,46 @@ public class CatalogItemFinder {
         catalogItem.setLocalizedPresentation(locale);
 
         return catalogItem;
+    }
+
+    private void addOffsetAndLimitToQuery(Integer offset, Integer limit, JPAQuery query, String orderBy, Boolean isDesc, QCatalogItem qCatalogItem) {
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        sortBy(orderBy, isDesc, query, qCatalogItem);
+    }
+
+    private BooleanExpression buildSearchPredicate(String search, QCatalogItem qCatalogItem) {
+        BooleanExpression searchPredicate = qCatalogItem.name.containsIgnoreCase(search)
+                .or(qCatalogItem.description.containsIgnoreCase(search));
+
+        if (NumberUtils.isNumber(search)) {
+            Long searchId = Long.parseLong(search);
+            searchPredicate = qCatalogItem.id.eq(searchId);
+        }
+        return searchPredicate;
+    }
+
+    private void sortBy(String orderby, Boolean isDesc, JPAQuery query, QCatalogItem qCatalogItem) {
+
+        Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
+            put("id", qCatalogItem.id);
+            put("name", qCatalogItem.name);
+            put("description", qCatalogItem.description);
+            put("startDate", qCatalogItem.startDate);
+            put("endDate", qCatalogItem.endDate);
+            put("disabled", qCatalogItem.disabled);
+        }};
+
+        if (orderby != null && sortProperties.containsKey(orderby)) {
+            if (isDesc) {
+                query.orderBy(sortProperties.get(orderby).desc());
+            } else {
+                query.orderBy(sortProperties.get(orderby).asc());
+            }
+        }
     }
 
 }

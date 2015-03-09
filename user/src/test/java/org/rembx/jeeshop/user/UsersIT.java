@@ -57,19 +57,19 @@ public class UsersIT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null,null,null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<User> users = service.findAll(null, 0, 1);
+        List<User> users = service.findAll(null, 0, 1,null,null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLogin(), 0, 1);
+        List<User> users = service.findAll(testUser.firstUser().getLogin(), 0, 1,null,null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
@@ -77,14 +77,14 @@ public class UsersIT {
 
     @Test
     public void findAll_ByFirstName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getFirstname(), 0, 1);
+        List<User> users = service.findAll(testUser.firstUser().getFirstname(), 0, 1,null,null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
 
     @Test
     public void findAll_ByLastName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLastname(), 0, 1);
+        List<User> users = service.findAll(testUser.firstUser().getLastname(), 0, 1,null,null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }

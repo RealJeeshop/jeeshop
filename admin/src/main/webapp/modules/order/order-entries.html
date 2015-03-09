@@ -34,20 +34,20 @@
         <table class="table table-striped table-hover table-condensed text-left">
             <thead>
             <tr>
-                <th>Id</th>
-                <th>Reference</th>
-                <th class="hidden-xs">Owner</th>
-                <th class="hidden-xs hidden-sm">Login</th>
-                <th>Status</th>
-                <th class="hidden-xs hidden-sm">Creation Date</th>
-                <th class="hidden-xs hidden-sm">Last Modification</th>
+                <th><a href="" ng-click="ordersController.findEntries('id')">Id</a></th>
+                <th><a href="" ng-click="ordersController.findEntries('id')">Reference</a></th>
+                <th class="hidden-xs"><a href="" ng-click="ordersController.findEntries('owner')">Owner</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="ordersController.findEntries('login')">Login</a></th>
+                <th><a href="" ng-click="ordersController.findEntries('status')">Status</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="ordersController.findEntries('creationDate')">Creation Date</a></th>
+                <th class="hidden-xs hidden-sm hidden-md"><a href="" ng-click="ordersController.findEntries('updateDate')">Last Modification</a></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="entry in ordersController.entries" style="cursor:pointer">
                 <td ng-click="ordersController.selectEntry(entry.id)">{{entry.id}}</td>
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.reference}}</td>
+                <td style="cursor:default">{{entry.reference}}</td>
                 <td class="hidden-xs" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
                     {{entry.user.lastname}}
                 </td>
@@ -57,7 +57,7 @@
                 <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
                     {{entry.creationDate|date : 'medium'}}
                 </td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
+                <td class="hidden-xs hidden-sm hidden-md" ng-click="ordersController.selectEntry(entry.id)">
                     {{entry.updateDate|date
                     : 'medium'}}
                 </td>

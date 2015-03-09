@@ -86,12 +86,13 @@ public class MailTemplates {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (name != null) {
             return mailTemplateFinder.findByName(name);
         }
 
-        return mailTemplateFinder.findAll(start, size);
+        return mailTemplateFinder.findAll(start, size, orderBy, isDesc);
     }
 
     @GET

@@ -70,13 +70,22 @@
                 ctrl.pageSize = 10;
                 ctrl.searchValue = null;
                 ctrl.isProcessing = false;
+                ctrl.orderBy = null;
+                ctrl.orderDesc = false;
 
-                $scope.findEntries = function () {
+                $scope.findEntries = function (orderBy) {
                     ctrl.isProcessing = true;
                     ctrl.alerts = [];
                     var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
                     var uri = 'rs/' + $scope.resource + "?start=" + offset + "&size=" + ctrl.pageSize;
+
+                    if (orderBy != null){
+                        ctrl.orderBy = orderBy;
+                        ctrl.orderDesc = ! ctrl.orderDesc;
+                        uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
+                    }
+
                     var countURI = 'rs/' + $scope.resource + '/count';
                     if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                         var searchArg = 'search=' + ctrl.searchValue;

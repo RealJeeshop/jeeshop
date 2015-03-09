@@ -230,11 +230,12 @@ public class Users {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
-    public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return userFinder.findBySearchCriteria(search, start, size);
+            return userFinder.findBySearchCriteria(search, start, size, orderBy, isDesc);
         else
-            return userFinder.findAll(start, size);
+            return userFinder.findAll(start, size, orderBy, isDesc);
     }
 
     @GET

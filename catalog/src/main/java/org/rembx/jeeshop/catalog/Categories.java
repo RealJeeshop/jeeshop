@@ -127,11 +127,12 @@ public class Categories {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size) {
+    public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(category, search, start, size);
+            return catalogItemFinder.findBySearchCriteria(category, search, start, size, orderBy, isDesc);
         else
-            return catalogItemFinder.findAll(category, start, size);
+            return catalogItemFinder.findAll(category, start, size, orderBy, isDesc);
     }
 
     @GET

@@ -40,8 +40,10 @@ public class OrderFinder {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager catalogEntityManager;
 
-    private static final Map<String, ComparableExpressionBase<?>> orderSortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
+    private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
         put("id", order.id);
+        put("owner", order.user.lastname);
+        put("login", order.user.login);
         put("status", order.status);
         put("creationDate", order.creationDate);
         put("updateDate", order.updateDate);
@@ -131,11 +133,11 @@ public class OrderFinder {
 
 
     private void sortBy(String orderby, Boolean isDesc, JPAQuery query) {
-        if (orderby != null && orderSortProperties.containsKey(orderby)) {
+        if (orderby != null && sortProperties.containsKey(orderby)) {
             if (isDesc) {
-                query.orderBy(orderSortProperties.get(orderby).desc());
+                query.orderBy(sortProperties.get(orderby).desc());
             } else {
-                query.orderBy(orderSortProperties.get(orderby).asc());
+                query.orderBy(sortProperties.get(orderby).asc());
             }
         }
     }

@@ -9,14 +9,12 @@
     <link rel="shortcut icon" href="ico/favicon.ico">
 
     <title>Jeeshop Admin</title>
-
-    <!-- app CSS -->
-    <link href="css/app.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
-
+    <!-- app CSS -->
+    <link href="css/app.css" rel="stylesheet">
 
 </head>
 
@@ -57,8 +55,8 @@
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('order')">Orders</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')">Stats</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Users</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('mail')">Mails, Newsletters</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Customers</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('mail')">Emails, Newsletters</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
@@ -100,12 +98,12 @@
                         <a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
                     </li>
                 </ul>
-                <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage users">
+                <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage customers">
                     <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Customers</span></a>
                     </li>
                     <li ng-class="{ active:sideMenuCtrl.isSelected('mail') }" title="Create and configure newsletters, mail templates">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('mail')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Mails, Newsletters</span></a>
+                        <a href="#" ng-click="sideMenuCtrl.selectEntry('mail')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>
                     </li>
                 </ul>
             </div>

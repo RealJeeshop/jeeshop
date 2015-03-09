@@ -21,13 +21,20 @@
         ctrl.entryChilds = {};
         ctrl.isEditionModeActive = false;
         ctrl.isCreationModeActive = false;
+        ctrl.orderBy = null;
+        ctrl.orderDesc = false;
 
-        ctrl.findEntries = function () {
+        ctrl.findEntries = function (orderBy) {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
             var uri = 'rs/users?start=' + offset + '&size=' + ctrl.pageSize;
+            if (orderBy != null){
+                ctrl.orderBy = orderBy;
+                ctrl.orderDesc = ! ctrl.orderDesc;
+                uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
+            }
             var countURI = 'rs/users/count';
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 var searchArg = 'search=' + ctrl.searchValue;

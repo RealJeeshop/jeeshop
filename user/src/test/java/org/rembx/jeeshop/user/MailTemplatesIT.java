@@ -40,19 +40,19 @@ public class MailTemplatesIT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<MailTemplate> mailTemplates = service.findAll(null, 0, 1);
+        List<MailTemplate> mailTemplates = service.findAll(null, 0, 1, null, null);
         assertThat(mailTemplates).isNotEmpty();
         assertThat(mailTemplates).containsExactly(testMailTemplate.firstMailTemplate());
     }
 
     @Test
     public void findByName_shouldReturnMatchingMailTemplate() {
-        List<MailTemplate> newsletters = service.findAll(testMailTemplate.firstMailTemplate().getName(),null,null);
+        List<MailTemplate> newsletters = service.findAll(testMailTemplate.firstMailTemplate().getName(),null,null, null, null);
         assertThat(newsletters).containsExactly(testMailTemplate.firstMailTemplate());
     }
 
