@@ -33,12 +33,6 @@
 
             var uri = 'rs/mailtemplates';
 
-            if (orderBy != null){
-                ctrl.orderBy = orderBy;
-                ctrl.orderDesc = ! ctrl.orderDesc;
-                uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
-            }
-
             var countURI = 'rs/mailtemplates/count';
 
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
@@ -49,6 +43,12 @@
                 });
             } else {
                 uri = uri + '?start=' + offset + '&size=' + ctrl.pageSize;
+            }
+
+            if (orderBy != null){
+                ctrl.orderBy = orderBy;
+                ctrl.orderDesc = ! ctrl.orderDesc;
+                uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
             }
 
             $http.get(uri).success(function (data) {
