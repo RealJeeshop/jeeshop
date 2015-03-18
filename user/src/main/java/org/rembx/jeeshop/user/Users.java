@@ -170,6 +170,7 @@ public class Users {
         }
 
         user.setPassword(hashSha256Base64(newPassword));
+        user.setActivated(true);
         sendMail(user, Mails.userChangePassword);
 
 
