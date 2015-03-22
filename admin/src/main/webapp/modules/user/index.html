@@ -35,6 +35,7 @@
                 <th class="hidden-xs"><a href="" ng-click="usersController.findEntries('lastname')">Last name</a></th>
                 <th><a href="" ng-click="usersController.findEntries('activated')">Activated</a></th>
                 <th><a href="" ng-click="usersController.findEntries('disabled')">Disabled</a></th>
+                <th class="hidden-xs hidden-sm hidden-md"><a href="" ng-click="usersController.findEntries('disabled')">Newsletters</a></th>
                 <th class="hidden-xs hidden-sm"><a href="" ng-click="usersController.findEntries('creationDate')">Creation date</a></th>
                 <th class="hidden-xs hidden-sm hidden-md"><a href="" ng-click="usersController.findEntries('updateDate')">Last modification</a></th>
                 <th></th>
@@ -48,6 +49,7 @@
                 <td class="hidden-xs" ng-click="usersController.selectEntry(entry.id)" >{{entry.lastname}}</td>
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.activated ===true?'Yes':'No'}}</td>
                 <td ng-click="usersController.selectEntry(entry.id)" >{{entry.disabled ===true?'Yes':'No'}}</td>
+                <td class="hidden-xs hidden-sm hidden-md"  ng-click="usersController.selectEntry(entry.id)" >{{entry.newslettersSubscribed ===true?'Yes':'No'}}</td>
                 <td class="hidden-xs hidden-sm" ng-click="usersController.selectEntry(entry.id)" >{{entry.creationDate|date : 'medium'}}</td>
                 <td class="hidden-xs hidden-sm hidden-md" ng-click="usersController.selectEntry(entry.id)" >{{entry.updateDate|date : 'medium'}}</td>
                 <td>
