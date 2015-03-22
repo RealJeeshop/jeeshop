@@ -7,6 +7,9 @@ Jeeshop is a e-commerce solution allowing you to setup quickly your store using 
 * Java EE 7
 * Java 8
 
+# Links
+Project website: http://jeeshop.org
+
 # Modules
 TODO
 # Deployment
