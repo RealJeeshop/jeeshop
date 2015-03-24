@@ -3,8 +3,10 @@ package org.rembx.jeeshop.user;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.MailTemplate;
+import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
 
@@ -17,6 +19,8 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class MailTemplatesIT {
 
@@ -25,6 +29,7 @@ public class MailTemplatesIT {
     private TestMailTemplate testMailTemplate;
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+    private Mailer mailerMock;
 
     @BeforeClass
     public static void beforeClass() {
@@ -35,7 +40,8 @@ public class MailTemplatesIT {
     public void setup() {
         testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new MailTemplates(entityManager, new MailTemplateFinder(entityManager));
+        mailerMock = mock(Mailer.class);
+        service = new MailTemplates(entityManager, new MailTemplateFinder(entityManager), mailerMock);
     }
 
     @Test
@@ -168,5 +174,33 @@ public class MailTemplatesIT {
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
         }
     }
+
+    @Test
+    public void sendTestEmail_shouldSendMailFromFTLAndPropertiesToRecipient() throws Exception{
+
+        String recipient = "toto@toto.com";
+        User user = new User();
+        user.setGender("Miss");
+        user.setFirstname("Jane");
+        user.setLastname("Doe");
+        service.sendTestEmail(user, Mails.userRegistration.name(),"fr_FR",recipient);
+
+        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), recipient, "<html><body>Welcome Miss Jane Doe</body></html>");
+    }
+
+    @Test
+    public void sendTestEmail_shouldThrowNotFoundExWhenNoMailTemplateFoundForGivenParams() throws Exception{
+
+        try{
+            service.sendTestEmail(null, "unknown","fr_FR","toto@toto.com");
+        }catch (WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+            return;
+        }
+        fail("Should have thrown NOT_FOUND WebApplicationException");
+
+    }
+
+
 
 }
