@@ -109,7 +109,7 @@
         };
     }]);
 
-    app.controller('OrdersController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('OrdersController', ['$http', '$modal','AuthService', function ($http, $modal,AuthService) {
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -156,7 +156,7 @@
             }
         };
 
-        ctrl.findEntries = function (orderBy) {
+        ctrl.findEntries = function (orderBy, orderDesc) {
             ctrl.isProcessing = true;
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
@@ -165,8 +165,12 @@
             if (orderBy != null){
                 ctrl.orderBy = orderBy;
                 ctrl.orderDesc = ! ctrl.orderDesc;
+                if (orderDesc != null){
+                    ctrl.orderDesc = orderDesc;
+                }
                 uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
             }
+
             var countURI = 'rs/orders/count';
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 var searchArg = '&search=' + ctrl.searchValue;
@@ -192,8 +196,9 @@
 
         };
 
-
-        ctrl.findEntries();
+        if (AuthService.isAuthenticated()){
+            ctrl.findEntries();
+        }
 
         ctrl.pageChanged = function () {
             ctrl.findEntries();

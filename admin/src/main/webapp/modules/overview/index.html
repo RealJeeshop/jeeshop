@@ -66,15 +66,15 @@
             <div class="col-xs-8">
                 <h4 ng-show="!ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)">
                     Show last orders
-                    <button type="button" class="btn btn-default btn-sm"><i
-                            class="glyphicon glyphicon-cog"></i></button>
+                    <button type="button" class="btn btn-default">
+                        <i class="glyphicon glyphicon-cog"></i></button>
                 </h4>
-                <h4 ng-show="ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)">
+                <h4 ng-show="ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = false)">
                     Last updated orders
                 </h4>
             </div>
             <div class="col-xs-4 text-right">
-                <button type="button" class="btn btn-default" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)" ng-show="ordersController.showLastOrders"><i
+                <button type="button" class="btn btn-default" ng-click="ordersController.findEntries('updateDate',true)" ng-show="ordersController.showLastOrders"><i
                         class="glyphicon glyphicon-refresh"></i></button>
             </div>
             <table class="table table-striped table-hover table-condensed text-left" ng-show="ordersController.showLastOrders">

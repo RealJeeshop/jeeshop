@@ -214,7 +214,7 @@
 
         var testUser = {
             "id": 5,
-            "login": ctrl.recipient,
+            "login": "fakelogin@test.com",
             "password": "Fake password",
             "firstname": "John",
             "lastname": "Doe",
@@ -228,7 +228,7 @@
             "activated": true,
             "preferredLocale": "fr",
             "newslettersSubscribed": true,
-            "actionToken": "33546011-2e68-4862-889e-a40dd9273866"
+            "actionToken": "01010101-2e01-0101-889e-a40dd9010101"
         };
 
         var testAdress = {
