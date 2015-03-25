@@ -2,7 +2,7 @@ Jeeshop (Work In Progress)
 =======
 
 # Description
-Jeeshop is a e-commerce solution allowing you to setup quickly your store using innovative technologies such as:
+Jeeshop is a e-commerce solution allowing you to setup quickly your store using following technologies :
 * AngularJS
 * Java EE 7
 * Java 8
@@ -10,13 +10,26 @@ Jeeshop is a e-commerce solution allowing you to setup quickly your store using 
 # Links
 Project website: http://jeeshop.org
 
-# Modules
+# Components
+## REST API
 TODO
+
+## Jeeshop-Admin
+TODO
+
 # Deployment
 Jeeshop components can be deployed to any Java EE 7 compatible server.
-## Wildfly 8 Openshift cartridge
+## Apache TomEE 2.x
+This section describes deployment of Jeeshop components to Apache TomEE 2.x.
 TODO
+
+## Wildfly 8 Openshift cartridge
+This section describes deployment of Jeeshop components to Openshift PaaS.
+TODO
+
 ## Wildfly 8
+This section describes deployment of Jeeshop components to a Wildfly 8 server.
+
 ### Datasources
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * JeeshopDS
@@ -47,7 +60,6 @@ Sample of configuration for a standalone server with datasources referencing a s
   </driver>
   ```
   
-
 ### Security domain configuration
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
@@ -71,12 +83,13 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 #### Configure SSL to secure channels
 
 SSL has to be configured in order to secure credentials sent in requests performed by store customers or Jeeshop-admin users (ie store administrators).
+This action is not required under a PaaS such as Openshift. (See Wildfly 8 Openshift cartridge section)
 
 * Create server certificate
 
 Execute the following command in a temp directory
 
-    keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass password -storepass password -dname "cn=Server Administrator,o=jeeshop,c=FR"
+    keytool -genkeypair -alias serverkey -keyalg RSA -keysize 2048 -validity 7360 -keystore server.keystore -keypass <PASSWORD FOR PRIVATE KEY>  -storepass <PASSWORD FOR KEYSTORE> -dname "cn=Server Administrator,o=jeeshop,c=FR"
 
 Copy the server.keystore file in to the ${jboss.home.dir}/standalone/configuration folder
 
@@ -90,14 +103,12 @@ Add the following security realm block :
         <security-realm name="SSLRealm">
             <server-identities>
                 <ssl>
-                    <keystore path="server.keystore" relative-to="jboss.server.config.dir" keystore-password="$(password)"/>
+                    <keystore path="server.keystore" relative-to="jboss.server.config.dir" keystore-password="THE KEYSTORE PASSWORD"/>
                 </ssl>
             </server-identities>
         </security-realm>
     </security-realms>
   ```
-
-
 
 Add the following http-listener line to the server block
 
@@ -109,18 +120,20 @@ Add the following http-listener line to the server block
      </server>
   ```
 
-### JBOSS Modules
+### Jeeshop JBOSS Module
 A JBOSS Module named "jeeshop" have to be created to <WILDFLY HOME>/modules directory.
 It contains multiple configuration properties such as:
-* Mailer (SMTP parameters, Sender...)
+* Mailer parameters (SMTP parameters, Sender...)
 Sample of this module configuration is available in .openshift directory
 
 ## Database setup
-Database installation scripts are provided in ./install/db directory
+Database setup scripts are provided in ./install/db directory
 
-* jeeshop-install.sql contains table creation instructions. It also creates a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see section above)
+* jeeshop-install.sql contains ddl and jeeshop reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see section above). This user should be deleted in production environment for security reason.
 * jeeshop-drop.sql empties database
 * demo-catalog-data contains jeeshop demonstration catalog data
 
 Notes:
-By default, all tables are created in a single script, ie for a single database referenced in server datasources configuration. See "Datasources" section above.
+Current database scripts works with a single database referenced in server datasources configuration. See "Datasources" section above.
+However, it is possible to use several database for each Jeeshop domains. For sample one database for Catalog and another for User and Order domains.
+TODO add section and scripts to document use of databases per domain
