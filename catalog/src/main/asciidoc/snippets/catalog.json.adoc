@@ -1,0 +1,14 @@
+[source,javascript]
+----
+{
+  "id": 1,
+  "name": "Hyperbike catalog",
+  "description": "Catalog of Hyperbike store",
+  "disabled": false,
+  "startDate":"2015-04-05T22:00:00.000Z",
+  "endDate":"2016-04-05T22:00:00.000Z",
+  "visible": true,
+  "localizedPresentation": null,
+  "rootCategoriesIds": null
+}
+----

@@ -1,0 +1,138 @@
+=== Catalogs Resource
+
+Manages catalog items and their relationships. + 
+
+NOTE: Catalog items relationships are always lazyloaded and must be explicitly requested.
+
+==== Get all catalog items
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match item's _id_, _name_ or _description_
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are : 
+_id_ \| _name_ \| _description_ \| _startDate_ \| _endDate_ \| _disabled_
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are : 
+_true_ \| _false_
+
+!====
+| Response Body
+| include::snippets/catalogs.json.adoc[]
+|====
+
+==== Get catalog items count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match item's _id_, _name_ or _description_
+
+!====
+
+| Response Body
+| include::snippets/catalog.json.adoc[]
+|====
+
+==== Get a specific catalog item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_, _user_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! locale
+! No
+! For sample _en_GB_. Could be provided for _user_ role to get localized related presentation item (localized content)
+!====
+
+| Response Body
+| include::snippets/catalog.json.adoc[]
+|====
+
+==== Create a catalog item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item
+! Yes
+! The Catalog item to create. +
+Mandatory properties are : _name_
+!====
+
+| Request Body
+| include::snippets/catalogWithCategories.json.adoc[]
+
+| Response Body
+| include::snippets/catalog.json.adoc[]
+|====

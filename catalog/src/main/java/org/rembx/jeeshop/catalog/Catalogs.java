@@ -57,6 +57,43 @@ public class Catalogs {
         this.catalogItemFinder = catalogItemFinder;
     }
 
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
+            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+        if (search != null)
+            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
+        else
+            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc);
+    }
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    public Long count(@QueryParam("search") String search) {
+        if (search != null)
+            return catalogItemFinder.countBySearchCriteria(catalog, search);
+        else
+            return catalogItemFinder.countAll(catalog);
+    }
+
+
+    @GET
+    @Path("/{catalogId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, USER})
+    public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+
+        if (isAdminUser(sessionContext))
+            return catalog;
+        else
+            return catalogItemFinder.filterVisible(catalog, locale);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,6 +120,7 @@ public class Catalogs {
 
     }
 
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -102,44 +140,6 @@ public class Catalogs {
         catalog.setPresentationByLocale(originalCatalog.getPresentationByLocale());
 
         return entityManager.merge(catalog);
-    }
-
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
-        if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
-        else
-            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc);
-    }
-
-
-    @GET
-    @Path("/count")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Long count(@QueryParam("search") String search) {
-        if (search != null)
-            return catalogItemFinder.countBySearchCriteria(catalog, search);
-        else
-            return catalogItemFinder.countAll(catalog);
-    }
-
-
-    @GET
-    @Path("/{catalogId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, USER})
-    public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
-        Catalog catalog = entityManager.find(Catalog.class, catalogId);
-
-        if (isAdminUser(sessionContext))
-            return catalog;
-        else
-            return catalogItemFinder.filterVisible(catalog, locale);
     }
 
     @GET

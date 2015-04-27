@@ -50,6 +50,7 @@
         <version.failsafe.plugin>2.17</version.failsafe.plugin>
         <version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
         <version.freemarker>2.3.21</version.freemarker>
+		<version.asciidoctor>1.5.2</version.asciidoctor>
 
         <version.weld-se>2.2.5.Final</version.weld-se>
     </properties>
@@ -219,6 +220,11 @@
                     <artifactId>wildfly-maven-plugin</artifactId>
                     <version>${version.wildfly.plugin}</version>
                 </plugin>
+					<plugin>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<version>${version.asciidoctor}</version>
+					</plugin>
             </plugins>
         </pluginManagement>
     </build>

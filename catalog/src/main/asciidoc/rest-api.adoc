@@ -1,0 +1,2 @@
+== Catalog REST Api
+include::Catalogs.adoc[]
