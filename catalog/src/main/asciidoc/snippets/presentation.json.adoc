@@ -1,0 +1,20 @@
+[source,javascript]
+----
+{
+    "id": 9,
+    "locale": "fr_FR",
+    "displayName": "Catalogue des vélos",
+    "promotion": null,
+    "shortDescription": "Description courte ...",
+    "mediumDescription": "Description moyenne ...",
+    "longDescription": "Description longue ...",
+    "thumbnail": null,
+    "smallImage": {
+        "id": 26,
+        "uri": "remi.png"
+    },
+    "largeImage": null,
+    "video": null,
+    "features": {}
+}
+----

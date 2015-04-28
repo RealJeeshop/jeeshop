@@ -90,16 +90,20 @@ _true_ \| _false_
 | GET
 
 | Roles allowed
-| _admin_, _user_
+| All
 
 | Parameters
 |
 !====
 ! Name ! Mandatory ! Description
 
+! Catalog item id
+! Yes
+! id of the catalogItem to retrieve
+
 ! locale
 ! No
-! For sample _en_GB_. Could be provided for _user_ role to get localized related presentation item (localized content)
+! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation item (localized content) in response
 !====
 
 | Response Body
@@ -135,4 +139,151 @@ Mandatory properties are : _name_
 
 | Response Body
 | include::snippets/catalog.json.adoc[]
+|====
+
+==== Modify a catalog item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item
+! Yes
+! The Catalog item to modify. +
+Mandatory properties are : _name_
+!====
+
+| Request Body
+| include::snippets/catalog.json.adoc[]
+
+| Response Body
+| include::snippets/catalog.json.adoc[]
+|====
+
+==== Delete a catalog item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item id
+! Yes
+! id of the catalog item to delete
+
+!====
+|====
+
+==== Get catalog related presentation locales
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/[id]/presentationslocales
+
+| Method
+| GET
+
+| Roles allowed
+| All
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item id
+! Yes
+! id of the catalog item
+
+| Response Body
+|
+[source,javascript]
+----
+["fr_FR","en_GB"]
+----
+|====
+
+==== Get catalog related presentation matching given locale
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/[id]/presentations/[locale]
+
+| Method
+| GET
+
+| Roles allowed
+| All
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item id
+! Yes
+! id of the catalog item
+
+! locale
+! Yes
+! For sample _en_GB_.
+
+| Response Body
+| include::snippets/presentation.json.adoc[]
+|====
+
+==== Get specific catalog related categories
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/catalogs/[id]/categories
+
+| Method
+| GET
+
+| Roles allowed
+| All
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Catalog item id
+! Yes
+! id of the catalogItem to retrieve
+
+! locale
+! No
+! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation items (localized content) in response
+!====
+
+| Response Body
+| include::snippets/categories.json.adoc[]
 |====

@@ -84,7 +84,7 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, USER})
+    @PermitAll
     public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
@@ -145,7 +145,7 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @PermitAll
     public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
@@ -153,7 +153,7 @@ public class Catalogs {
     }
 
     @Path("/{catalogId}/presentations/{locale}")
-    @RolesAllowed(ADMIN)
+    @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("catalogId") @NotNull Long catalogId, @NotNull @PathParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
