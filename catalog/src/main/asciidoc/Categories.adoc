@@ -6,3 +6,6 @@ include::CatalogItem.adoc[]
 
 :relationResourcePath: categories
 include::CatalogItemRelationShip.adoc[]
+
+:relationResourcePath: products
+include::CatalogItemRelationShip.adoc[]

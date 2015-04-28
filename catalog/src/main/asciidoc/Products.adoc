@@ -4,5 +4,8 @@ Manages {itemType} items and their relationships.
 
 include::CatalogItem.adoc[]
 
-:relationResourcePath: categories
+:relationResourcePath: skus
+include::CatalogItemRelationShip.adoc[]
+
+:relationResourcePath: discounts
 include::CatalogItemRelationShip.adoc[]

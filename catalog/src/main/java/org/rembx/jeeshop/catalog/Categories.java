@@ -168,8 +168,9 @@ public class Categories {
         return category.getPresentationByLocale().keySet();
     }
 
+    @GET
     @Path("/{categoryId}/presentations/{locale}")
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);

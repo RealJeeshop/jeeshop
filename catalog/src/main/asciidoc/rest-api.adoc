@@ -1,2 +1,32 @@
 == Catalog REST Api
+
+This documentation specify Jeeshop Catalog module REST Api.
+
+NOTE: The following general principles apply to every REST operations :
+
+- items relationships are always lazyloaded and must be explicitly requested.
+
+:resourceName: Catalogs
+:itemType: catalog
+:resourcePath: catalogs
 include::Catalogs.adoc[]
+
+:resourceName: Categories
+:itemType: category
+:resourcePath: categories
+include::Categories.adoc[]
+
+:resourceName: Products
+:itemType: product
+:resourcePath: products
+include::Products.adoc[]
+
+:resourceName: Stock Keeping Units
+:itemType: sku
+:resourcePath: skus
+include::SKUs.adoc[]
+
+:resourceName: Discounts
+:itemType: discount
+:resourcePath: discounts
+include::Discounts.adoc[]

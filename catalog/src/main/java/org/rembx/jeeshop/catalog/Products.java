@@ -169,8 +169,9 @@ public class Products {
         return product.getPresentationByLocale().keySet();
     }
 
+    @GET
     @Path("/{productId}/presentations/{locale}")
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);

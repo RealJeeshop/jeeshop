@@ -1,0 +1,252 @@
+==== Get all {itemType} items
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match item's _id_, _name_ or _description_
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are : 
+_id_ \| _name_ \| _description_ \| _startDate_ \| _endDate_ \| _disabled_
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are : 
+_true_ \| _false_
+
+!====
+| Response Body
+| include::snippets/{itemType}.list.json.adoc[]
+|====
+
+==== Get {itemType} items count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match item's _id_, _name_ or _description_
+
+!====
+
+| Response Body
+| include::snippets/{itemType}.json.adoc[]
+|====
+
+==== Get a specific {itemType} item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item to retrieve
+
+! locale
+! No
+! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation item (localized content) in response
+!====
+
+| Response Body
+| include::snippets/{itemType}.json.adoc[]
+|====
+
+==== Create a {itemType} item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item
+! Yes
+! The {itemType} item to create. +
+Mandatory properties are : _name_
+!====
+
+| Request Body
+| include::snippets/{itemType}WithCategories.json.adoc[]
+
+| Response Body
+| include::snippets/{itemType}.json.adoc[]
+|====
+
+==== Modify a {itemType} item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item
+! Yes
+! The {itemType} item to modify. +
+Mandatory properties are : _name_
+!====
+
+| Request Body
+| include::snippets/{itemType}.json.adoc[]
+
+| Response Body
+| include::snippets/{itemType}.json.adoc[]
+|====
+
+==== Delete a {itemType} item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item to delete
+
+!====
+|====
+
+==== Get {itemType} item related presentation locales
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/presentationslocales
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item
+
+| Response Body
+|
+[source,javascript]
+----
+["fr_FR","en_GB"]
+----
+|====
+
+==== Get {itemType} item related presentation matching given locale
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/presentations/[locale]
+
+| Method
+| GET
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item
+
+! locale
+! Yes
+! For sample _en_GB_.
+
+| Response Body
+| include::snippets/presentation.json.adoc[]
+|====

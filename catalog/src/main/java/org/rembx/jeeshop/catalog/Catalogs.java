@@ -145,13 +145,14 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed(ADMIN)
     public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         return catalog.getPresentationByLocale().keySet();
     }
 
+    @GET
     @Path("/{catalogId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("catalogId") @NotNull Long catalogId, @NotNull @PathParam("locale") String locale) {

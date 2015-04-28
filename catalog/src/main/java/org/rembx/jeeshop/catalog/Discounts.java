@@ -155,8 +155,9 @@ public class
         return discount.getPresentationByLocale().keySet();
     }
 
+    @GET
     @Path("/{discountId}/presentations/{locale}")
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("discountId") @NotNull Long discountId, @NotNull @PathParam("locale") String locale) {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);

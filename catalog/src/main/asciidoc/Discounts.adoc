@@ -3,6 +3,3 @@
 Manages {itemType} items and their relationships.
 
 include::CatalogItem.adoc[]
-
-:relationResourcePath: categories
-include::CatalogItemRelationShip.adoc[]

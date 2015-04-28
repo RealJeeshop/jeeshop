@@ -1,0 +1,30 @@
+==== Get {itemType} item related {relationResourcePath}
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/{relationResourcePath}
+
+| Method
+| GET
+
+| Roles allowed
+| All
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item to retrieve
+
+! locale
+! No
+! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation items (localized content) matching given locale
+!====
+
+| Response Body
+| include::snippets/skus.json.adoc[]
+|====

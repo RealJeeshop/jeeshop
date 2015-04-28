@@ -155,8 +155,9 @@ public class SKUs {
         return sku.getPresentationByLocale().keySet();
     }
 
+    @GET
     @Path("/{skuId}/presentations/{locale}")
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
