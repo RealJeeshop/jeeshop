@@ -4,8 +4,8 @@
   "name": "Hyperbike catalog",
   "description": "Catalog of Hyperbike store",
   "disabled": false,
-  "startDate":"2015-04-05T22:00:00.000Z",
-  "endDate":"2016-04-05T22:00:00.000Z",
+  "startDate":1403067172000,
+  "endDate":1403067172000,
   "rootCategoriesIds":[1,2]
 }
 ----

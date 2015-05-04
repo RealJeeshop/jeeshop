@@ -1,0 +1,22 @@
+[source,javascript]
+----
+{
+  "id": 4,
+  "name": "First order - 10 percent",
+  "description": "10 percent off for user first order",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "voucherCode": null,
+  "usesPerCustomer": 1,
+  "type": "DISCOUNT_RATE",
+  "triggerRule": "ORDER_NUMBER",
+  "applicableTo": "ORDER",
+  "triggerValue": 1.0,
+  "discountValue": 20.0,
+  "rateType": true,
+  "uniqueUse": true
+}
+----

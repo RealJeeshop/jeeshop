@@ -155,7 +155,6 @@ public class
         return discount.getPresentationByLocale().keySet();
     }
 
-    @GET
     @Path("/{discountId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("discountId") @NotNull Long discountId, @NotNull @PathParam("locale") String locale) {

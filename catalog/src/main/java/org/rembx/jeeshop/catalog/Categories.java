@@ -168,7 +168,6 @@ public class Categories {
         return category.getPresentationByLocale().keySet();
     }
 
-    @GET
     @Path("/{categoryId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {

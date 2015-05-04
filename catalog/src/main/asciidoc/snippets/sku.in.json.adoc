@@ -1,0 +1,20 @@
+[source,javascript]
+----
+{
+  "id": 1,
+  "name": "Energy X1 batch of 10",
+  "description": "Energy X1 batch of 10",
+  "disabled": false,
+  "startDate": 1403067172000,
+  "endDate": 1412139172000,
+  "visible": false,
+  "localizedPresentation": null,
+  "price": 10.0,
+  "currency": "EUR",
+  "reference": "X1213JJLB-1",
+  "threshold": 3,
+  "quantity": 100,
+  "discountsIds": null,
+  "available": true
+}
+----

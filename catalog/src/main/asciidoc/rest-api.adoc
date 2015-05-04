@@ -1,10 +1,8 @@
 == Catalog REST Api
 
-This documentation specify Jeeshop Catalog module REST Api.
-
 NOTE: The following general principles apply to every REST operations :
 
-- items relationships are always lazyloaded and must be explicitly requested.
+- Items relationships are always lazyloaded and must be explicitly requested to retrieve them. (they are not eagerly fetched)
 
 :resourceName: Catalogs
 :itemType: catalog

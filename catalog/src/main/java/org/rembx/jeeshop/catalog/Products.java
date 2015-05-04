@@ -169,7 +169,6 @@ public class Products {
         return product.getPresentationByLocale().keySet();
     }
 
-    @GET
     @Path("/{productId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {

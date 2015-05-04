@@ -1,0 +1,43 @@
+[source,javascript]
+----
+[
+    {
+      "id": 4,
+      "name": "First order - 10 percent",
+      "description": "10 percent off for user first order",
+      "disabled": false,
+      "startDate": null,
+      "endDate": null,
+      "visible": true,
+      "localizedPresentation": null,
+      "voucherCode": null,
+      "usesPerCustomer": 1,
+      "type": "DISCOUNT_RATE",
+      "triggerRule": "ORDER_NUMBER",
+      "applicableTo": "ORDER",
+      "triggerValue": 1.0,
+      "discountValue": 20.0,
+      "rateType": true,
+      "uniqueUse": true
+    },
+    {
+      "id": 5,
+      "name": "Christmas 2015 - Free delivery fee",
+      "description": "Free delivery fee for christmas",
+      "disabled": false,
+      "startDate": 1418598000000,
+      "endDate": 1419980400000,
+      "visible": false,
+      "localizedPresentation": null,
+      "voucherCode": null,
+      "usesPerCustomer": 1,
+      "type": "SHIPPING_FEE_DISCOUNT_AMOUNT",
+      "triggerRule": null,
+      "applicableTo": "ORDER",
+      "triggerValue": null,
+      "discountValue": 12.0,
+      "rateType": false,
+      "uniqueUse": false
+    }
+]
+----

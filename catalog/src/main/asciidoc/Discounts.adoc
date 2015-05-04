@@ -3,3 +3,35 @@
 Manages {itemType} items and their relationships.
 
 include::CatalogItem.adoc[]
+
+==== Get all eligible disounct items related to an order or an item
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/visible
+
+| Method
+| GET
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! applicableTo
+! Yes
+! Possible values are : _ORDER_, _ITEM_
+
+! locale
+! No
+! For sample _en_GB_. Can be provided to get localized related presentation item (localized content) in response
+
+!====
+
+| Response Body
+| include::snippets/{itemType}.list.json.adoc[]
+|====

@@ -152,7 +152,6 @@ public class Catalogs {
         return catalog.getPresentationByLocale().keySet();
     }
 
-    @GET
     @Path("/{catalogId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("catalogId") @NotNull Long catalogId, @NotNull @PathParam("locale") String locale) {

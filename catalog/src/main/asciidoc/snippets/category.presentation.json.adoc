@@ -1,0 +1,23 @@
+[source,javascript]
+----
+{
+    "id": 10,
+    "locale": "fr_FR",
+    "displayName": "VTT",
+    "promotion": null,
+    "shortDescription": "Retrouvez nos meilleurs VTT",
+    "mediumDescription": null,
+    "longDescription": null,
+    "thumbnail": null,
+    "smallImage": {
+        "id": 56,
+        "uri": "vtt_category_small.jpg"
+    },
+    "largeImage": {
+      "id": 56,
+      "uri": "vtt_category_large.jpg"
+    },
+    "video": null,
+    "features": {}
+}
+----

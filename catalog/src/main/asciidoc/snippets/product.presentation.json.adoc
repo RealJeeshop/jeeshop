@@ -1,0 +1,26 @@
+[source,javascript]
+----
+{
+  "id": 7,
+  "locale": "en_US",
+  "displayName": "Energy 2 mountain bike",
+  "promotion": null,
+  "shortDescription": "The new Energy mountain bike produced by Bikester",
+  "mediumDescription": null,
+  "longDescription": "This new mountain bike gives you amazing sensations on city streets, or mountain trails.",
+  "thumbnail": {
+    "id": 24,
+    "uri": "vtt_thumbnail.jpg"
+  },
+  "smallImage": {
+    "id": 23,
+    "uri": "vtt_small.jpg"
+  },
+  "largeImage": {
+    "id": 22,
+    "uri": "vtt_large.jpg"
+  },
+  "video": null,
+  "features": {}
+}
+----

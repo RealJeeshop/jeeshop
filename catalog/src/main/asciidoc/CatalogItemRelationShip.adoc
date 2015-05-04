@@ -1,4 +1,4 @@
-==== Get {itemType} item related {relationResourcePath}
+==== Get {itemType} related {relationResourcePath}
 
 [cols="h,5a"]
 |====
@@ -26,5 +26,5 @@
 !====
 
 | Response Body
-| include::snippets/skus.json.adoc[]
+| include::snippets/{relationItemType}.list.json.adoc[]
 |====

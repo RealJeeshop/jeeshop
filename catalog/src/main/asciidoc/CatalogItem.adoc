@@ -73,7 +73,7 @@ _true_ \| _false_
 | include::snippets/{itemType}.json.adoc[]
 |====
 
-==== Get a specific {itemType} item
+==== Get a specific {itemType}
 
 [cols="h,5a"]
 |====
@@ -84,7 +84,13 @@ _true_ \| _false_
 | GET
 
 | Roles allowed
-| ALL
+| 
+ifeval::["{itemType}" == "discount"]
+_admin_
+endif::[]
+ifeval::["{itemType}" != "discount"]
+ALL
+endif::[]
 
 | Parameters
 |
@@ -104,7 +110,7 @@ _true_ \| _false_
 | include::snippets/{itemType}.json.adoc[]
 |====
 
-==== Create a {itemType} item
+==== Create a {itemType}
 
 [cols="h,5a"]
 |====
@@ -129,13 +135,13 @@ Mandatory properties are : _name_
 !====
 
 | Request Body
-| include::snippets/{itemType}WithCategories.json.adoc[]
+| include::snippets/{itemType}.in.json.adoc[]
 
 | Response Body
 | include::snippets/{itemType}.json.adoc[]
 |====
 
-==== Modify a {itemType} item
+==== Modify a {itemType}
 
 [cols="h,5a"]
 |====
@@ -166,7 +172,7 @@ Mandatory properties are : _name_
 | include::snippets/{itemType}.json.adoc[]
 |====
 
-==== Delete a {itemType} item
+==== Delete a {itemType}
 
 [cols="h,5a"]
 |====
@@ -191,7 +197,7 @@ Mandatory properties are : _name_
 !====
 |====
 
-==== Get {itemType} item related presentation locales
+==== Get {itemType} related locales
 
 [cols="h,5a"]
 |====
@@ -221,7 +227,7 @@ Mandatory properties are : _name_
 ----
 |====
 
-==== Get {itemType} item related presentation matching given locale
+==== Get {itemType} localized content
 
 [cols="h,5a"]
 |====
@@ -248,5 +254,109 @@ Mandatory properties are : _name_
 ! For sample _en_GB_.
 
 | Response Body
-| include::snippets/presentation.json.adoc[]
+| include::snippets/{itemType}.presentation.json.adoc[]
+|====
+
+==== Delete {itemType} localized content
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/presentations/[locale]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item
+
+! locale
+! Yes
+! For sample _en_GB_.
+
+| Response Body
+| include::snippets/{itemType}.presentation.json.adoc[]
+|====
+
+==== Create {itemType} localized content
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/presentations/[locale]
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item
+
+! locale
+! Yes
+! For sample _en_GB_.
+
+! Presentation object
+! Yes
+! a valid Presentation object
+
+| Request Body
+| include::snippets/{itemType}.presentation.json.adoc[]
+
+| Response Body
+| include::snippets/{itemType}.presentation.json.adoc[]
+|====
+
+==== Modify {itemType} localized content
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/{resourcePath}/[id]/presentations/[locale]
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! {itemType} item id
+! Yes
+! id of the {itemType} item
+
+! locale
+! Yes
+! For sample _en_GB_.
+
+! Presentation object
+! Yes
+! a valid Presentation object
+
+| Request Body
+| include::snippets/{itemType}.presentation.json.adoc[]
+
+| Response Body
+| include::snippets/{itemType}.presentation.json.adoc[]
 |====

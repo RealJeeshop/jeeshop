@@ -155,7 +155,6 @@ public class SKUs {
         return sku.getPresentationByLocale().keySet();
     }
 
-    @GET
     @Path("/{skuId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {

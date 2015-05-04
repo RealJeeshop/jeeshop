@@ -1,0 +1,20 @@
+[source,javascript]
+----
+{
+    "id": 33,
+    "locale": "en_US",
+    "displayName": "Free delivery fee for christmas !",
+    "promotion": null,
+    "shortDescription": "Delivery fee is free for all orders for Christmas.",
+    "mediumDescription": "",
+    "longDescription": "",
+    "thumbnail": null,
+    "smallImage": {
+        "id": 26,
+        "uri": "free_delivery_fee.jpg"
+    },
+    "largeImage": null,
+    "video": null,
+    "features": {}
+}
+----

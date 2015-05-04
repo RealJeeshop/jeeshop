@@ -1,0 +1,15 @@
+[source,javascript]
+----
+{
+  "id": 2,
+  "name": "Energy X2",
+  "description": "VTT Energy X2",
+  "disabled": false,
+  "startDate": 1403067172000,
+  "endDate": 1402980772000,
+  "visible": false,
+  "localizedPresentation": null,
+  "childSKUsIds": null,
+  "discountsIds": null
+}
+----
