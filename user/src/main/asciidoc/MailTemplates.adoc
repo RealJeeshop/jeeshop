@@ -1,0 +1,51 @@
+=== Mail template Resource
+
+Manages mail templates.
+
+==== Get all mail templates
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates
+
+| Method
+| GET
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! name
+! No
+! Mail template name to search
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are :
+_id_ \| _name_ \| _locale_ \| _creationDate_ \| _updateDate_
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are :
+_true_ \| _false_
+
+!====
+
+| Response Body
+| include::snippets/MailTemplate.list.json.adoc[]
+|====

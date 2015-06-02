@@ -1,0 +1,52 @@
+=== User Resource
+
+Manages users.
+
+==== Get all users
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match user's  _login_, _first name_, or _last name_
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are :
+_id_ \| _login_ \| _gender_ \| _firstname_ \| _lastname_ \| _disabled_ \| _activated_ \| _newslettersSubscribed_
+\| _birthDate_ \| _ phoneNumber_ \| _preferredLocale_ \| _creationDate_ \| _updateDate
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are :
+_true_ \| _false_
+
+!====
+
+| Response Body
+| include::snippets/User.list.json.adoc[]
+|====

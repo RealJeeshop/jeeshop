@@ -1,0 +1,9 @@
+== User REST Api
+
+NOTE: The following general principles apply to every REST operations :
+
+- Items relationships are always lazyloaded and must be explicitly requested to retrieve them. (they are not eagerly fetched)
+
+include::Users.adoc[]
+
+include::MailTemplates.adoc[]
