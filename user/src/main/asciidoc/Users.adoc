@@ -45,8 +45,356 @@ _id_ \| _login_ \| _gender_ \| _firstname_ \| _lastname_ \| _disabled_ \| _activ
 Possible values are :
 _true_ \| _false_
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
 !====
 
 | Response Body
 | include::snippets/User.list.json.adoc[]
+|====
+
+
+==== Get users count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match item's _id_, _name_ or _description_
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+!====
+
+| Response Body
+| include::snippets/user_count.json.adoc[]
+|====
+
+==== Get a specific user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! user id
+! Yes
+! id of the user item to retrieve
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! No result found matching given parameters
+!====
+
+| Response Body
+| include::snippets/user.json.adoc[]
+|====
+
+==== Create a user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users
+
+| Method
+| POST
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! user item
+! Yes
+! The user to create. +
+Mandatory properties are : _login_, _password_, _firstname_, _lastname_ 
+!====
+
+| Request Body
+| include::snippets/user.in.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 400
+! When provided user entity or related entities have an id defined. (Id is created during persistence and cannot be provided for entity creation). Also happens when user country  does not belong to allowed countries list
+! 409
+! When a user with same login already exists (login is unique)
+
+| Response Body
+| include::snippets/user.json.adoc[]
+|====
+
+==== Modify a user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_, _user_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! user item
+! Yes
+! The user to modify. +
+Mandatory properties are : _login_, _password_, _firstname_, _lastname_ 
+!====
+
+| Request Body
+| include::snippets/user.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 401
+! When provided user entity to modify does not match current authenticated user entity
+
+| Response Body
+| include::snippets/user.json.adoc[]
+|====
+
+==== Delete a user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! user id
+! Yes
+! id of the user to delete
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
+|====
+
+
+==== Activate a user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/[login]
+
+| Method
+| PUT
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! login
+! Yes
+! The user login, used as a key to retrieve the persisted user item to activate. 
+
+! token
+! Yes
+! An activation token provided to user during creation. 
+!====
+
+| Request Body
+| include::snippets/UUID.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no user found matching provided login
+
+| Response Body
+| 
+|====
+
+==== Request user password reset
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/[login]/password
+
+| Method
+| POST
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! login
+! Yes
+! The user login, used as a key to retrieve the persisted user item to activate. 
+
+!====
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no user found matching provided login
+
+|====
+
+==== Reset user password
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/[login]/password
+
+| Method
+| PUT
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! login
+! Yes
+! The user login, used as a key to retrieve the persisted user item to activate. 
+
+! token
+! Yes
+! A reset password token provided to user by e-mail during "Request user password" process.
+
+! new password
+! Yes
+! A new user password. 
+
+!====
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 401
+! When provided user login does not match current authenticated user login
+! 404
+! When no user found matching provided login and token
+
+|====
+
+==== Authenticate a user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users
+
+| Method
+| HEAD
+
+| Roles allowed
+| ALL
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Basic realm
+! Yes
+! Standard Basic HTTP header with basic realm containing user login and password ("login:password" string Base 64 encoded)
+
+!====
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
 |====

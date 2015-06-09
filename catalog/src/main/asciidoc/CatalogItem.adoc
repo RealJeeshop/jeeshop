@@ -70,7 +70,7 @@ _true_ \| _false_
 !====
 
 | Response Body
-| include::snippets/{itemType}.json.adoc[]
+| include::snippets/{itemType}_count.json.adoc[]
 |====
 
 ==== Get a specific {itemType}
