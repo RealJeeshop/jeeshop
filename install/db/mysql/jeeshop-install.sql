@@ -287,6 +287,16 @@ CREATE TABLE IF NOT EXISTS MailTemplate_Media (
   PRIMARY KEY (mailTemplateId,mediaId)
 );
 
+CREATE TABLE IF NOT EXISTS Newsletter (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  name varchar(100) NOT NULL,
+  mailTemplateName varchar(100) NOT NULL,
+  creationDate datetime NOT NULL,
+  updateDate datetime NULL,
+  dueDate datetime NULL,
+  PRIMARY KEY (id)
+);
+
 --
 -- Constraints
 --
