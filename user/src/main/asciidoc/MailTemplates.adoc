@@ -13,7 +13,7 @@ Manages mail templates.
 | GET
 
 | Roles allowed
-| ALL
+| _admin_
 
 | Parameters
 |
@@ -44,8 +44,189 @@ _id_ \| _name_ \| _locale_ \| _creationDate_ \| _updateDate_
 Possible values are :
 _true_ \| _false_
 
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
 !====
 
 | Response Body
 | include::snippets/MailTemplate.list.json.adoc[]
+|====
+
+
+==== Get mail templates count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+!====
+
+| Response Body
+| include::snippets/mailtemplate_count.json.adoc[]
+|====
+
+
+==== Get a specific mail template
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Mail template id
+! Yes
+! id of the mail template to retrieve
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! No result found matching given parameters
+!====
+
+| Response Body
+| include::snippets/mailtemplate.json.adoc[]
+|====
+
+==== Create a mail template
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Mail template
+! Yes
+! The mail template to create. +
+Mandatory properties are : _name_, _content_, _subject_
+!====
+
+| Request Body
+| include::snippets/mailtemplate.in.json.adoc[]
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 409
+! When a mailtemplate with same name and locale already exists
+
+| Response Body
+| include::snippets/mailtemplate.json.adoc[]
+|====
+
+==== Modify a mail template
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Mail template item
+! Yes
+! The mail template to modify. +
+Mandatory properties are : _name_, _content_, _subject_
+!====
+
+| Request Body
+| include::snippets/ma template.json.adoc[]
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 409
+! When a mailtemplate with same name and locale but another id already exists
+
+| Response Body
+| include::snippets/mailtemplate.json.adoc[]
+|====
+
+==== Delete a mail template
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/mailtemplates/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Mail template id
+! Yes
+! id of the mail template to delete
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
 |====
