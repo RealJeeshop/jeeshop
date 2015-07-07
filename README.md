@@ -2,30 +2,44 @@ Jeeshop (Work In Progress)
 =======
 
 # Description
-Jeeshop is a e-commerce solution allowing you to setup quickly your store using following technologies :
-* AngularJS
-* Java EE 7
-* Java 8
+Jeeshop is a e-commerce solution allowing you to setup quickly your online store using following technologies :
+* Java EE 7 and Java 8 for e-commerce back-end
+* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin) UI front-end
+
+It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST apis designed for your store front-end application (typically a javascript rich client application)
+* Products catalog
+* Discounts
+* Shopping cart
+* Users management
 
 # Links
 Project website: http://jeeshop.org
 
 # Components
-## REST API
-TODO
 
-## Jeeshop-Admin
-TODO
+## <a name="Jeeshop-Admin">Jeeshop-Admin</a>
+Jeeshop-Admin is a responsive AngularJS client application designed to manage efficiently your store.
+It consumes Jeeshop [REST api backend](#backend) to perform store management operations.
 
-# Deployment
+## <a name="backend">REST back-end</a>
+Jeeshop back-end provides a set of REST apis designed to enable e-commerce and user management in your store front-end application.
+They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin) management operations.
+
+These resources are organized per functional domain :
+* Catalog - provide product catalogs related resources
+* User - provide user management related resources
+* Order - provided orders management related resources
+
+Related documentation:
+* [Catalog REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
+* [User REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
+
+## <a name="backend">Jeestore</a> TODO
+Jeestore is an AngularJS front-end demo application application which consumes Jeeshop [REST api backend](#backend)
+You can just suit it to your needs when you plan to use AngularJS for your store front-end.
+
+# Installation
 Jeeshop components can be deployed to any Java EE 7 compatible server.
-## Apache TomEE 2.x
-This section describes deployment of Jeeshop components to Apache TomEE 2.x.
-TODO
-
-## Wildfly 8 Openshift cartridge
-This section describes deployment of Jeeshop components to Openshift PaaS.
-TODO
 
 ## Wildfly 8
 This section describes deployment of Jeeshop components to a Wildfly 8 server.
@@ -137,3 +151,11 @@ Notes:
 Current database scripts works with a single database referenced in server datasources configuration. See "Datasources" section above.
 However, it is possible to use several database for each Jeeshop domains. For sample one database for Catalog and another for User and Order domains.
 TODO add section and scripts to document use of databases per domain
+
+## Apache TomEE 2.x
+This section describes deployment of Jeeshop components to Apache TomEE 2.x.
+TODO
+
+## Wildfly 8 Openshift cartridge
+This section describes deployment of Jeeshop components to Openshift PaaS.
+TODO
