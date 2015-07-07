@@ -10,7 +10,7 @@ It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and
 * Shopping cart
 * Users management
 
- Jeeshop uses following technologies :
+Jeeshop uses following technologies :
 * Java EE 7 and Java 8 for e-commerce back-end
 * AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
