@@ -32,6 +32,12 @@ include::CatalogItem.adoc[]
 
 !====
 
+
+!====
+! Code ! Meaning
+! 200
+! Success
+
 | Response Body
 | include::snippets/{itemType}.list.json.adoc[]
 |====

@@ -40,6 +40,14 @@ _id_ \| _name_ \| _description_ \| _startDate_ \| _endDate_ \| _disabled_
 Possible values are : 
 _true_ \| _false_
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
+
 !====
 | Response Body
 | include::snippets/{itemType}.list.json.adoc[]
@@ -66,6 +74,14 @@ _true_ \| _false_
 ! search
 ! No
 ! Search criteria. Value should match item's _id_, _name_ or _description_
+
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
 
 !====
 
@@ -104,6 +120,19 @@ endif::[]
 ! locale
 ! No
 ! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation item (localized content) in response
+
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 403
+! When provided authenticated has user role (not admin) and item is not visible
+! 404
+! When no item found matching given parameters
+
 !====
 
 | Response Body
@@ -137,6 +166,13 @@ Mandatory properties are : _name_
 | Request Body
 | include::snippets/{itemType}.in.json.adoc[]
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
 | Response Body
 | include::snippets/{itemType}.json.adoc[]
 |====
@@ -168,6 +204,16 @@ Mandatory properties are : _name_
 | Request Body
 | include::snippets/{itemType}.json.adoc[]
 
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found matching given parameters
+
 | Response Body
 | include::snippets/{itemType}.json.adoc[]
 |====
@@ -194,7 +240,16 @@ Mandatory properties are : _name_
 ! Yes
 ! id of the {itemType} item to delete
 
+
+| Response HTTP statuses
+| 
 !====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found matching given parameters
+
 |====
 
 ==== Get {itemType} related locales
@@ -218,6 +273,15 @@ Mandatory properties are : _name_
 ! {itemType} item id
 ! Yes
 ! id of the {itemType} item
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found matching given parameters
 
 | Response Body
 |
@@ -253,6 +317,15 @@ Mandatory properties are : _name_
 ! Yes
 ! For sample _en_GB_.
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found matching given parameters
+
 | Response Body
 | include::snippets/{itemType}.presentation.json.adoc[]
 |====
@@ -282,6 +355,15 @@ Mandatory properties are : _name_
 ! locale
 ! Yes
 ! For sample _en_GB_.
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found matching given parameters
 
 | Response Body
 | include::snippets/{itemType}.presentation.json.adoc[]
@@ -320,6 +402,17 @@ Mandatory properties are : _name_
 | Request Body
 | include::snippets/{itemType}.presentation.json.adoc[]
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 400
+! When there is an existing presentation configured for given locale
+! 404
+! When no item found matching given parameters
+
 | Response Body
 | include::snippets/{itemType}.presentation.json.adoc[]
 |====
@@ -356,6 +449,17 @@ Mandatory properties are : _name_
 
 | Request Body
 | include::snippets/{itemType}.presentation.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 400
+! When not presentation found matching given parameters
+! 404
+! When no item found matching given parameters
 
 | Response Body
 | include::snippets/{itemType}.presentation.json.adoc[]

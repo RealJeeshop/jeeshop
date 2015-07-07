@@ -25,6 +25,15 @@
 ! For sample _en_GB_. Can be provided for _user_ role to get localized related presentation items (localized content) matching given locale
 !====
 
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! When no item found with given parameters
+
 | Response Body
 | include::snippets/{relationItemType}.list.json.adoc[]
 |====

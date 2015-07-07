@@ -122,7 +122,7 @@ _true_ \| _false_
 ! 200
 ! Success
 ! 404
-! No result found matching given parameters
+! No user found matching given parameters
 !====
 
 | Response Body
