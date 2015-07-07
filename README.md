@@ -2,15 +2,17 @@ Jeeshop (Work In Progress)
 =======
 
 # Description
-Jeeshop is a e-commerce solution allowing you to setup quickly your online store using following technologies :
-* Java EE 7 and Java 8 for e-commerce back-end
-* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin) UI front-end
+Jeeshop is a e-commerce solution allowing you to setup quickly your online store.
 
 It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST apis designed for your store front-end application (typically a javascript rich client application)
 * Products catalog
 * Discounts
 * Shopping cart
 * Users management
+
+ Jeeshop uses following technologies :
+* Java EE 7 and Java 8 for e-commerce back-end
+* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
 # Links
 Project website: http://jeeshop.org
