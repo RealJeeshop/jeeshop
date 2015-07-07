@@ -46,7 +46,7 @@ Jeeshop components can be deployed to any Java EE 7 compatible server.
 ## Wildfly 8
 This section describes deployment of Jeeshop components to a Wildfly 8 server.
 
-### Datasources
+### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * JeeshopDS
 
@@ -76,7 +76,7 @@ Sample of configuration for a standalone server with datasources referencing a s
   </driver>
   ```
   
-### Security domain configuration
+### <a name="wildfly-authentication">Security domain configuration</a>
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
 * Sample of configuration for a standalone server:
@@ -99,7 +99,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 #### Configure SSL to secure channels
 
 SSL has to be configured in order to secure credentials sent in requests performed by store customers or Jeeshop-admin users (ie store administrators).
-This action is not required under a PaaS such as Openshift. (See Wildfly 8 Openshift cartridge section)
+This action is not required under a PaaS such as Openshift. (See [Wildfly 8 Openshift cartridge](#openshift))
 
 * Create server certificate
 
@@ -145,12 +145,12 @@ Sample of this module configuration is available in .openshift directory
 ## Database setup
 Database setup scripts are provided in ./install/db directory
 
-* jeeshop-install.sql contains ddl and jeeshop reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see section above). This user should be deleted in production environment for security reason.
+* jeeshop-install.sql contains ddl and jeeshop reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
 * jeeshop-drop.sql empties database
 * demo-catalog-data contains jeeshop demonstration catalog data
 
 Notes:
-Current database scripts works with a single database referenced in server datasources configuration. See "Datasources" section above.
+Current database scripts works with a single database referenced in server datasources configuration. See [Datasources](#wildfly-datasources) section above.
 However, it is possible to use several database for each Jeeshop domains. For sample one database for Catalog and another for User and Order domains.
 TODO add section and scripts to document use of databases per domain
 
@@ -158,6 +158,6 @@ TODO add section and scripts to document use of databases per domain
 This section describes deployment of Jeeshop components to Apache TomEE 2.x.
 TODO
 
-## Wildfly 8 Openshift cartridge
+## <a name="openshift">Wildfly 8 Openshift cartridge</a>
 This section describes deployment of Jeeshop components to Openshift PaaS.
 TODO
