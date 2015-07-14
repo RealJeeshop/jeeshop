@@ -1,0 +1,36 @@
+=== General Jeeshop REST principles
+
+==== Methods
+
+[options="header"]
+|===============
+|Method|Operations
+|+GET+|Get a single resource or get a collection of resources.
+|+POST+|Create a new resource.
+|+PUT+|Update properties of an existing resource.
+|+DELETE+|Delete an existing resource.
+|+HEAD+|Check authentication credentials. (Only available on User resource)
+
+|===============
+
+The media-type of HTTP requests should be set to application/json. +
+The media-type of HTTP responses is always application/json unless binary content is requested (eg. deployment resource data), the media-type of the content is used.
+
+Items relationships are always lazy loaded and must be explicitly requested to get them. (they are not eagerly fetched)
+
+==== Authentication and authorization
+Jeeshop REST API operations are protected by role based access. Therefore, most of REST operations require authentication. +
+Jeeshop authentication and authorization are managed using https://docs.oracle.com/javase/7/docs/technotes/guides/security/jaas/JAASRefGuide.html[JaaS]. See https://github.com/remibantos/jeeshop#security-domain-configuration[this documentation] for details about Jeeshop JaaS configuration on Wildfly application server. +
+Currently, only Basic HTTP access authentication is documented, so you should include a +Authorization: Basic ...==+ HTTP-header when performing requests to API methods which are not public.
+
+NOTE: For security purpose we only allow Basic Authentication in combination with HTTPS. See https://github.com/remibantos/jeeshop#configure-ssl-to-secure-channels[this documentation] for details about Jeeshop SSL configuration on Wildfly application server.
+
+Each REST operation documentation declares one or many roles which are required for method use :
+
+* _admin_ - Role dedicated to admin / back office operations. (Typically, it has to be set on Jeeshop administrators accounts for Jeeshop-Admin application use)
+* _user_ - Default role bound to Jeeshop users. (Every online store registered users have this role)
+* _ALL_ - Public. Methods which declare this role are public. Authentication is not required for their use.
+
+
+
+

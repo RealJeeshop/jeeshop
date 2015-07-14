@@ -34,7 +34,8 @@ These resources are organized per functional domain :
 
 Related documentation:
 * [Catalog REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
-* [User REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
+* [Order REST api](http://jeeshop.org/docs/1.0/rest/order/generated-docs/rest-api.html)
+* [User REST api](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
 
 ## <a name="backend">Jeestore</a> TODO
 Jeestore is an AngularJS front-end demo application application which consumes Jeeshop [REST api backend](#backend)
@@ -43,8 +44,8 @@ You can just suit it to your needs when you plan to use AngularJS for your store
 # Installation
 Jeeshop components can be deployed to any Java EE 7 compatible server.
 
-## Wildfly 8
-This section describes deployment of Jeeshop components to a Wildfly 8 server.
+## Wildfly (8 and 9 versions)
+This section describes deployment of Jeeshop components to a Wildfly server.
 
 ### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
@@ -99,7 +100,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 #### Configure SSL to secure channels
 
 SSL has to be configured in order to secure credentials sent in requests performed by store customers or Jeeshop-admin users (ie store administrators).
-This action is not required under a PaaS such as Openshift. (See [Wildfly 8 Openshift cartridge](#openshift))
+This action is not required under a PaaS such as Openshift. (See [Wildfly Openshift cartridge](#openshift))
 
 * Create server certificate
 
@@ -126,7 +127,7 @@ Add the following security realm block :
     </security-realms>
   ```
 
-Add the following http-listener line to the server block
+Add the following http-listener line to the server block (in undertow subsystem)
 
 ``` xml
     <server name="default-server">
@@ -141,6 +142,33 @@ A JBOSS Module named "jeeshop" have to be created to <WILDFLY HOME>/modules dire
 It contains multiple configuration properties such as:
 * Mailer parameters (SMTP parameters, Sender...)
 Sample of this module configuration is available in .openshift directory
+
+### Jeeshop media directory
+
+To serve uploaded media files related to Jeeshop catalog, the following configurations have to be added in standalone.xml configuration file:
+
+Add the following in undertow subsystem
+
+``` xml
+<subsystem xmlns="urn:jboss:domain:undertow:1.2">
+            ...
+            <server name="default-server">
+               ...
+                <host name="default-host" alias="localhost">
+                   ...
+                    <location name="/jeeshop-media" handler="jeeshop-media"/>
+                   ...
+                </host>
+            </server>
+            ...
+            <handlers>
+                ...
+                <file name="jeeshop-media" path="/home/remi/jeeshop-media" directory-listing="true"/>
+                ...
+            </handlers>
+            ...
+        </subsystem>
+  ```
 
 ## Database setup
 Database setup scripts are provided in ./install/db directory
@@ -158,6 +186,6 @@ TODO add section and scripts to document use of databases per domain
 This section describes deployment of Jeeshop components to Apache TomEE 2.x.
 TODO
 
-## <a name="openshift">Wildfly 8 Openshift cartridge</a>
+## <a name="openshift">Wildfly Openshift cartridge</a>
 This section describes deployment of Jeeshop components to Openshift PaaS.
 TODO

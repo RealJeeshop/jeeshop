@@ -1,0 +1,310 @@
+=== Order resource
+
+Manages user orders.
+
+==== Get user/all orders
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_,_user_ +
+When authenticated user has _user_ role and but not _admin_ one, fetches only user's orders. +
+When user has _admin_ role, all orders are returned.
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search (applicable for _admin_ role only)
+! No
+! Search criteria. Value should match user's  _login_, _first name_, or _last name_ or order's id, transaction id
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are :
+_id_ \| _owner_ (user lastname) \| _login_  \| _status_ \| _creationDate_ \| _updateDate
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are :
+_true_ \| _false_
+
+! status
+! No
+! order status. +
+Possible values are :
+_CREATED_ \| _VALIDATED_ \| _PAYMENT_VALIDATED_ \| _CANCELLED_ \| _READY_FOR_SHIPMENT_ \| _SHIPPED_ \| _DELIVERED_ \| _RETURNED_
+
+! skuId (applicable for _admin_ role only)
+! No
+! id of sku related to order
+
+! enhanced (applicable for _admin_ role only)
+! No
+! boolean flag to get enhanced order with static order configuration and catalog related items. +
+Possible values are : _true_ \| _false_
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
+!====
+
+| Response Body
+| include::snippets/Order.list.json.adoc[]
+|====
+
+
+==== Get orders count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! search
+! No
+! Search criteria. Value should match user's  _login_, _first name_, or _last name_ or order's id, transaction id
+
+! status
+! No
+! order status. +
+Possible values are :
+_CREATED_ \| _VALIDATED_ \| _PAYMENT_VALIDATED_ \| _CANCELLED_ \| _READY_FOR_SHIPMENT_ \| _SHIPPED_ \| _DELIVERED_ \| _RETURNED_
+
+! skuId (applicable for _admin_ role only)
+! No
+! id of sku related to order
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+!====
+
+| Response Body
+| include::snippets/order_count.json.adoc[]
+|====
+
+==== Get a specific order
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_, _user_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! order id
+! Yes
+! id of the order item to retrieve
+
+! enhanced
+! No
+! boolean flag to get enhanced order with static order configuration and catalog related items. +
+Possible values are : _true_ \| _false_
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 401
+! When requested order does not belong to user
+! 404
+! No result found matching given parameters
+!====
+
+| Response Body
+| include::snippets/order.json.adoc[]
+|====
+
+==== Get fixed delivery fee configuration
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders/fixeddeliveryfee
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+!====
+
+| Response Body
+| include::snippets/order.fixeddeliveryfee.json.adoc[]
+|====
+
+==== Create an order
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders
+
+| Method
+| POST
+
+| Description
+| Create provided order and performs operations such as validation, pricing, payment triggering ... See user guide (TODO) for details
+
+| Roles allowed
+| _admin_, _user_ +
+
+For _user_ role, this order will be bound to current authenticated user. +
+For _admin_ role, userLogin parameter must be provided to bind related user to this order.
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! order item
+! Yes
+! The order to create. +
+
+! userLogin item (applicable to _admin_ role only)
+! Yes
+! The login of a user to link to this order. +
+
+!====
+
+| Request Body
+| include::snippets/order.in.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 400
+! When provided order validation process fails or when related entities have an id defined. (Id is created during persistence and cannot be provided for entity creation).
+
+| Response Body
+| include::snippets/user.json.adoc[]
+|====
+
+==== Modify an order
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! order item
+! Yes
+! The order to modify. +
+
+!====
+
+| Request Body
+| include::snippets/order.json.adoc[]
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! Not found
+
+| Response Body
+| include::snippets/order.json.adoc[]
+|====
+
+==== Delete an order
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/orders/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! order id
+! Yes
+! id of the order to delete
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
+|====

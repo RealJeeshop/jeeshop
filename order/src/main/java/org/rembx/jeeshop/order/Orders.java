@@ -174,7 +174,7 @@ public class Orders {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.ADMIN)
-    public Long count(@QueryParam("search") String search, @QueryParam("status")OrderStatus status, @QueryParam("skuId") Long skuId) {
+    public Long count(@QueryParam("search") String search, @QueryParam("status") OrderStatus status, @QueryParam("skuId") Long skuId) {
         return orderFinder.countAll(search,status, skuId);
     }
 

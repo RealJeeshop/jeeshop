@@ -1,4 +1,4 @@
-=== User Resource
+=== User resource
 
 Manages users.
 
@@ -123,6 +123,34 @@ _true_ \| _false_
 ! Success
 ! 404
 ! No user found matching given parameters
+!====
+
+| Response Body
+| include::snippets/user.json.adoc[]
+|====
+
+==== Get current authenticated user
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/users/current
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! No result found matching given parameters
 !====
 
 | Response Body

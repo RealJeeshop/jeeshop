@@ -1,0 +1,93 @@
+=== Medias resource
+
+==== Get a specific media file
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/medias/[type]/[id]/[locale]/[filename]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! type
+! Yes
+! Media related item type such as "product" or "category"
+
+! id
+! Yes
+! Media related item id
+
+! locale
+! No
+! For sample _en_GB_
+
+! filename
+! No
+! media file name
+
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! No result found matching given parameters
+!====
+|====
+
+==== Upload a media file
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/medias/[type]/[id]/[locale]/upload
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_ +
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! type
+! Yes
+! Media related item type such as "product" or "category"
+
+! id
+! Yes
+! Media related item id
+
+! locale
+! No
+! For sample _en_GB_
+
+!====
+
+| Request header
+| Content-Type = "multipart/form-data"
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 500
+! In case of internal error during upload
+
+|====

@@ -1,4 +1,4 @@
-=== {resourceName} Resource
+=== {resourceName} resource
 
 Manages {itemType} items and their relationships.
 

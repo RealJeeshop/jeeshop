@@ -1,0 +1,7 @@
+== Order REST API
+
+include::../../../../common/src/main/asciidoc/rest-api-general.adoc[]
+
+include::Orders.adoc[]
+
+include::EligibleDiscounts.adoc[]

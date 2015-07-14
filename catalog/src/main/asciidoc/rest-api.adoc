@@ -1,9 +1,6 @@
-== Catalog REST Api
+== Catalog REST API
 
-NOTE: The following general principles apply to every REST operations :
-
-- Items relationships are always lazyloaded and must be explicitly requested to retrieve them. (they are not eagerly fetched)
-- Role based access requires authentication. Authentication is performed using JaaS for operations which require specific roles such as _admin_ or _user_, in a stateless way for each request. See https://github.com/remibantos/jeeshop#security-domain-configuration[this link] for details about JaaS configuration in Jeeshop backend.
+include::../../../../common/src/main/asciidoc/rest-api-general.adoc[]
 
 :resourceName: Catalogs
 :itemType: catalog
@@ -29,3 +26,5 @@ include::SKUs.adoc[]
 :itemType: discount
 :resourcePath: discounts
 include::Discounts.adoc[]
+
+include::Medias.adoc[]

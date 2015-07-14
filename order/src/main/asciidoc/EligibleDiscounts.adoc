@@ -1,0 +1,41 @@
+=== Eligible order discounts resource
+
+Manages user orders.
+
+==== Get eligible order discounts
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/discounts/eligible
+
+| Method
+| GET
+
+| Description
+| Returns all discounts eligible for current authenticated user's next order.
+
+| Roles allowed
+| _user_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! locale
+! No
+! For sample _en_GB_. Can be provided get localized related presentation item (localized content) in response
+
+| Response HTTP statuses
+| 
+!====
+! Code ! Meaning
+! 200
+! Success
+
+!====
+
+| Response Body
+| include::snippets/Discount.list.json.adoc[]
+|====

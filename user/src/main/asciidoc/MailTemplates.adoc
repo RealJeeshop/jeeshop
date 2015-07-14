@@ -1,4 +1,4 @@
-=== Mail template Resource
+=== Mail template resource
 
 Manages mail templates.
 

@@ -77,5 +77,40 @@
 
     </dependencies>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>output-html</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceHighlighter>coderay</sourceHighlighter>
+                    <backend>html5</backend>
+                    <attributes>
+                        <imagesdir>./images</imagesdir>
+                        <toc>left</toc>
+                        <toclevels>3</toclevels>
+                        <numbered></numbered>
+                        <icons>font</icons>
+                        <sectanchors>true</sectanchors>
+                        <!-- set the idprefix to blank -->
+                        <idprefix/>
+                        <idseparator>-</idseparator>
+                        <docinfo1>true</docinfo1>
+                    </attributes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
 
