@@ -145,7 +145,7 @@ Sample of this module configuration is available in .openshift directory
 
 ### Jeeshop media directory
 
-To serve uploaded media files related to Jeeshop catalog, the following configurations have to be added in standalone.xml configuration file:
+To serve Jeeshop catalog media files uploaded through Jeeshop-Admin, the following configurations have to be added in standalone.xml configuration file:
 
 Add the following in undertow subsystem
 
