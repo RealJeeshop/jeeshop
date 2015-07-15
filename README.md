@@ -28,9 +28,9 @@ Jeeshop back-end provides a set of REST apis designed to enable e-commerce and u
 They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin) management operations.
 
 These resources are organized per functional domain :
-* Catalog - provide product catalogs related resources
-* User - provide user management related resources
-* Order - provided orders management related resources
+* Catalog - provides product catalogs related resources
+* User - provides user management related resources
+* Order - provides orders management related resources
 
 Related documentation:
 * [Catalog REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
