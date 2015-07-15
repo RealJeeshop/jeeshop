@@ -42,7 +42,7 @@ Jeestore is an AngularJS front-end demo application application which consumes J
 You can just suit it to your needs when you plan to use AngularJS for your store front-end.
 
 # Installation
-Jeeshop components can be deployed to any Java EE 7 compatible server.
+Jeeshop components can be deployed to any Java EE 7 application server (Web and full profile)
 
 ## Wildfly (8 and 9 versions)
 This section describes deployment of Jeeshop components to a Wildfly server.
