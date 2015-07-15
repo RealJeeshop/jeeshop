@@ -38,7 +38,7 @@ Related documentation:
 * [User REST api](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
 
 ## <a name="backend">Jeestore</a> TODO
-Jeestore is an AngularJS front-end demo application application which consumes Jeeshop [REST api backend](#backend)
+Jeestore is a AngularJS front-end demo application application which consumes Jeeshop [REST api backend](#backend)
 You can just suit it to your needs when you plan to use AngularJS for your store front-end.
 
 # Installation
