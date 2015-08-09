@@ -9,6 +9,7 @@
     });
 
     app.controller('UsersController', ['$http', '$modal', function ($http, $modal) {
+
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -23,6 +24,48 @@
         ctrl.isCreationModeActive = false;
         ctrl.orderBy = null;
         ctrl.orderDesc = false;
+
+      ctrl.resetPassword = function (login) {
+
+        $modal.open({
+          templateUrl: 'util/reset-password-dialog.html',
+          size: 'lg',
+          controller: modalInstanceCtrl,
+          resolve: {
+            login: function () {
+              return login;
+            }
+          }
+        });
+      };
+
+      var modalInstanceCtrl = function ($modalInstance, $scope, login) {
+
+        $scope.modalInstance = $modalInstance;
+
+        $scope.submitForm = function () {
+
+          var newPassword = $scope.newPassword;
+          var confirmNewPassword = $scope.confirmNewPassword;
+
+          if (newPassword === confirmNewPassword) {
+
+            var uri = 'rs/users/' + login + '/' + newPassword;
+            $http.put(uri).success(function (data) {
+              ctrl.isProcessing = false;
+            }).error(function (data) {
+              ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+            });
+            $scope.modalInstance.dismiss('close');
+          } else {
+            $scope.nomatch = true;
+          }
+        };
+
+        $scope.cancelForm = function () {
+          $scope.modalInstance.dismiss('close');
+        };
+      };
 
         ctrl.findEntries = function (orderBy) {
             ctrl.isProcessing = true;
@@ -86,11 +129,13 @@
 
         this.activateCreationMode = function () {
             ctrl.isCreationModeActive = true;
+          ctrl.isEditionModeActive = false;
         };
 
         ctrl.selectEntry = function (id) {
             $http.get('rs/users/' + id)
                 .success(function (data) {
+                ctrl.isCreationModeActive = false;
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
                     ctrl.convertEntryDates();

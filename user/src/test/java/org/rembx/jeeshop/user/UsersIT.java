@@ -360,7 +360,7 @@ public class UsersIT {
     }
 
     @Test
-    public void resetPassword_shouldReturnUnAuthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() throws Exception{
+    public void resetPassword_shouldReturnUnauthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() throws Exception {
 
         try {
             when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);

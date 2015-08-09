@@ -135,7 +135,7 @@ public class Users {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userLogin}/password")
+    @Path("/{userLogin}")
     @PermitAll
     public void sendResetPasswordMail(@NotNull @PathParam("userLogin") String userLogin) {
         User user = userFinder.findByLogin(userLogin);
@@ -149,9 +149,10 @@ public class Users {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userLogin}/password")
+    @Path("/{userLogin}/{password}")
     @PermitAll
-    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token, @NotNull String newPassword) {
+    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token,
+                              @NotNull @PathParam("password") String newPassword) {
 
         User user;
         if (sessionContext.isCallerInRole(USER)) {

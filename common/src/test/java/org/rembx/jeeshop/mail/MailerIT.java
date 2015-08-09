@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 /**
  * Created by remi on 19/10/14.
  */
+@Ignore
 public class MailerIT {
 
     protected static Weld weld;
