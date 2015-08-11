@@ -233,10 +233,10 @@ public class UsersIT {
         service.create(user);
         entityManager.getTransaction().commit();
 
-        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),testMailTemplate.userRegistrationMailTemplate().getContent());
+        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMailTemplate.userRegistrationMailTemplate().getContent());
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(),user.getLogin(),"<html><body>Welcome M. John Doe</body></html>");
+        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         final User persistedUser = entityManager.find(User.class, user.getId());
         assertThat(persistedUser).isNotNull();
@@ -384,7 +384,7 @@ public class UsersIT {
     }
 
     @Test
-    public void modifyUnknown_ShouldThrowNotFoundException() {
+    public void modifyUnknownUser_ShouldThrowNotFoundException() {
         User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
 
         detachedUser.setId(9999L);
@@ -393,6 +393,23 @@ public class UsersIT {
             fail("should have thrown ex");
         }catch (WebApplicationException e){
             assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        }
+    }
+
+    @Test
+    public void modify_ShouldThrowUnauthorizedError_WhenAuthenticatedUserDoesNotMatchLogin() throws Exception {
+
+        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        
+        try {
+            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+
+            service.modify(detachedUserToModify);
+            
+            fail("should have thrown ex");
+        }catch(WebApplicationException e){
+            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
         }
     }
 

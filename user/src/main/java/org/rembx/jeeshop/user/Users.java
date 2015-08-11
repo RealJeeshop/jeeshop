@@ -135,7 +135,7 @@ public class Users {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userLogin}")
+    @Path("/{userLogin}/password")
     @PermitAll
     public void sendResetPasswordMail(@NotNull @PathParam("userLogin") String userLogin) {
         User user = userFinder.findByLogin(userLogin);
@@ -149,10 +149,10 @@ public class Users {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userLogin}/{password}")
+    @Path("/{userLogin}/password")
     @PermitAll
     public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token,
-                              @NotNull @PathParam("password") String newPassword) {
+                              @NotNull String newPassword) {
 
         User user;
         if (sessionContext.isCallerInRole(USER)) {
@@ -193,7 +193,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, USER})
-    public User modify(@NotNull User user) { // TODO Complete IT TEST
+    public User modify(@NotNull User user) {
 
         User existingUser = null;
         if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {

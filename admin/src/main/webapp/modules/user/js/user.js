@@ -28,7 +28,7 @@
       ctrl.resetPassword = function (login) {
 
         $modal.open({
-          templateUrl: 'util/reset-password-dialog.html',
+          templateUrl: 'modules/user/reset-password-dialog.html',
           size: 'lg',
           controller: modalInstanceCtrl,
           resolve: {
@@ -50,8 +50,8 @@
 
           if (newPassword === confirmNewPassword) {
 
-            var uri = 'rs/users/' + login + '/' + newPassword;
-            $http.put(uri).success(function (data) {
+            var uri = 'rs/users/' + login + '/password';
+            $http.put(uri, newPassword).success(function (data) {
               ctrl.isProcessing = false;
             }).error(function (data) {
               ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
