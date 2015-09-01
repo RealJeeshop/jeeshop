@@ -1,14 +1,217 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html ng-app="store" lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Welcome</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="images/Favicon-64.ico">
+
+    <title>Jeeshop store demo</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome-4.2.0.min.css" rel="stylesheet">
+
+    <link href="css/app.css" rel="stylesheet">
+
 </head>
-<body>
-REST Resources:
-    <ul>
-        <li><a href="backend/rs/catalog"></a></li>
-        <li><a href="backend/rs/category"></a></li>
-    </ul>
+
+<body ng-controller="LoginController as loginCtrl">
+
+<div id="cnil_bar" ng-show="!cnilCtrl.accepted" ng-controller="CnilController as cnilCtrl">
+    <alert type="info"
+           close="cnilCtrl.accepted = true">
+        <div>{{'cnil.advert' | translate}}</div>
+        <a ui-sref="cgv" ng-click="cnilCtrl.accepted = true">
+            {{'see.more.information' | translate}}</a>
+    </alert>
+</div>
+
+<!-- Begin page content -->
+<h1 class="text-center  bottom-grey-fin-bar" id="logo-row">
+    <a ui-sref="home">
+        <img src="images/logo.jpg" class="logo" alt="Jeeshop store">
+    </a>
+</h1>
+
+<div class="container-fluid main-container" id="main-menu-container">
+
+    <div class="row no-marding main-menu" ng-controller="MenuController as menuCtrl">
+        <div class="col-xs-6 text-left no-marding visible-sm visible-md visible-lg">
+            <ul class="nav nav-pills" style="display: inline-block;">
+                <li ng-class="{active:menuCtrl.isState('home') && loginCtrl.isAuthenticated() }">
+                    <a ui-sref="home" class="glyphicon glyphicon-home">
+                    </a>
+                </li>
+
+                <li ng-class="{ active:menuCtrl.isState('categories') }">
+                    <a ui-sref="categories">
+                        {{'page.categories.title' | translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-xs-6 text-right no-marding visible-sm visible-md visible-lg">
+            <ul class="nav nav-pills" style="display: inline-block;">
+
+                <li ng-class="{ active:menuCtrl.isState('home') && loginCtrl.isAuthenticated() }"
+                    ng-show="!loginCtrl.isAuthenticated()" ng-controller="LoginResetModalController as loginModalCtrl">
+                    <a ui-sref="home" ng-click="loginModalCtrl.openLoginModal()">
+                        {{'login.title' | translate}}
+                    </a>
+                </li>
+
+                <li ng-class="{active:!loginCtrl.isAuthenticated()}"
+                    ng-show="!loginCtrl.isAuthenticated()"
+                    ng-controller="SubscriptionModalController as subscrModalCtrl">
+                    <a ui-sref="home" ng-click="subscrModalCtrl.openSubscriptionModal()">
+                        {{'subscribe.button' | translate}}
+                    </a>
+                </li>
+
+                <li ng-class="{ active:(menuCtrl.isState('account.data') || menuCtrl.isState('account.orders'))}" ng-show="loginCtrl.isAuthenticated()">
+                    <a ui-sref="account.data">
+                        {{'home.button.account' | translate}}
+                    </a>
+                </li>
+                <li ng-show="loginCtrl.isAuthenticated()" ng-controller="ShoppingCartController as cartCtrl">
+                    <a ng-show="cartCtrl.getItemsQuantity() > 0" ng-click="cartCtrl.openShoppingCartModal()"
+                       style="cursor: pointer"
+                       class="glyphicon glyphicon-shopping-cart">({{cartCtrl.getItemsQuantity()}})</a>
+                </li>
+                <li ng-show="loginCtrl.isAuthenticated()">
+                    <a ui-sref="home" ng-click="loginCtrl.logout()" class="glyphicon glyphicon-off">
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <nav class="navbar visible-xs">
+            <div class="col-xs-6">
+                <ul class="nav nav-pills ">
+                    <li ng-show="loginCtrl.isAuthenticated()">
+                        <a ui-sref="home" ng-click="loginCtrl.logout()" class="glyphicon glyphicon-off mobile-menu-icon">
+                        </a>
+                    </li>
+                    <li ng-show="!loginCtrl.isAuthenticated()"  ng-controller="LoginResetModalController as loginModalCtrl">
+                        <a ui-sref="home" ng-click="loginModalCtrl.openLoginModal()" class="glyphicon glyphicon-log-in mobile-menu-icon">
+                        </a>
+                    </li>
+                    <li ng-show="loginCtrl.isAuthenticated()" ng-controller="ShoppingCartController as cartCtrl">
+                        <a ng-show="cartCtrl.getItemsQuantity() > 0" ng-click="cartCtrl.openShoppingCartModal()"
+                           style="cursor: pointer"
+                           class="glyphicon glyphicon-shopping-cart mobile-menu-icon"><span style="font-weight: normal">({{cartCtrl.getItemsQuantity()}})</span> </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-header col-xs-6">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse text-center">
+                <ul class="nav navbar-nav">
+                    <li ng-class="{ active:menuCtrl.isState('home') }"  >
+                        <a ui-sref="home" class="mobile-menu-item">
+                            {{'home.button.home' | translate}}
+                        </a>
+                    </li>
+                    <li ng-class="{ active:menuCtrl.isState('categories') }">
+                        <a ui-sref="categories" class="mobile-menu-item">
+                            {{'page.categories.title' | translate}}
+                        </a>
+                    </li>
+
+                    <li ng-class="{ active:(menuCtrl.isState('account.data')|| menuCtrl.isState('account.orders')) }" ng-show="loginCtrl.isAuthenticated()">
+                        <a ui-sref="account.data" class="mobile-menu-item">
+                            {{'home.button.account' | translate}}
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+</div>
+
+
+<div ui-view></div>
+
+
+<div class="container-fluid main-container">
+    <div class="row no-marding footer">
+        <div class="col-md-12 no-marding text-left top-grey-fin-bar">
+        </div>
+    </div>
+    <div class="row no-marding text-right">
+        <div class="col-md-12 no-marding footer-copyright">
+            &copy; {{'footer.copyright'|translate}}
+        </div>
+    </div>
+</div>
+
+
+<!-- LIBS -->
+
+<script src="js/lib/jquery-2.1.3.min.js"></script>
+<script src="js/lib/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/lib/ie10-viewport-bug-workaround.js"></script>
+<script src="js/lib/angular.js"></script>
+<script src="js/lib/angular-sanitize.min.js"></script>
+<script src="js/lib/i18n/angular-locale_fr.js"></script>
+<script src="js/lib/ui-bootstrap-tpls-0.12.1.min.js"></script>
+<script src="js/lib/angular-ui-router.min.js"></script>
+<script src="js/lib/angular-cookies.min.js"></script>
+<script src="js/lib/angular-translate/angular-translate.min.js"></script>
+<script src="js/lib/angular-translate/angular-translate-loader-partial.min.js"></script>
+<script type="text/javascript" src="js/lib/stringview-min.js"></script>
+
+<!-- Site -->
+<script src="js/login.js"></script>
+<script src="js/order.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+
+    (function () {
+
+        $(window).scroll(function () {
+            var mainMenuContainer = $('#main-menu-container'),
+                    mainMenu = $('.main-menu'),
+                    scroll = $(window).scrollTop();
+
+            var logoRow = $('#logo-row');
+
+            if (scroll >= logoRow.height()) {
+                mainMenu.removeClass('row');
+                mainMenuContainer.addClass('fixed-top-menu-container');
+                mainMenuContainer.removeClass('main-container');
+                mainMenu.addClass('fixed-main-menu');
+            }
+            else {
+                mainMenu.addClass('row');
+                mainMenuContainer.removeClass('fixed-top-menu-container');
+                mainMenuContainer.addClass('main-container');
+                mainMenu.removeClass('fixed-main-menu');
+
+            }
+        });
+
+        $('.mobile-menu-item').on('click', function(){
+            $(".navbar-toggle").click()
+        });
+
+    })();
+
+</script>
+
 </body>
 </html>

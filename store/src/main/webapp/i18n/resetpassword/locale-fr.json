@@ -1,0 +1,5 @@
+{
+    "page.resetPassword.title" : "Réinitialisation de votre mot de passe",
+    "password.new.placeholder" : "Nouveau mot de passe",
+    "reset.password.succeed" : "Votre mot de passe a été réinitialisé avec succès"
+}

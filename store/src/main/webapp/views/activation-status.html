@@ -1,0 +1,21 @@
+<div ng-controller="ActivationController as activCtrl" ng-init="activCtrl.activate()" class="no-marding main-container">
+
+    <div class="row no-marding" >
+        <div class="col-md-2"></div>
+        <div class="col-md-8 text-page-area">
+            <p ng-bind-html="'page.activation.success' | translate"></p>
+
+            <p>
+                <a ui-sref="home" ng-click="loginModalCtrl.openLoginModal()" ng-controller="LoginResetModalController as loginModalCtrl" class="site-link">
+                    {{'login.title' | translate}}
+                </a>
+            </p>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+
+    <div id="loaderDiv" ng-show="activCtrl.isProcessing">
+        <img src="../images/loading.gif" class="ajax-loader"/>
+    </div>
+
+</div>

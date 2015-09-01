@@ -1,0 +1,25 @@
+{
+  "menu.account.data":"Mes données personnelles",
+  "menu.account.orders":"Mes commandes",
+  "password.existing.placeholder" : "Mot de passe actuel",
+  "password.new.placeholder" : "Nouveau mot de passe",
+  "confirmpassword.new.placeholder" : "Confirmez votre nouveau mot de passe",
+  "account.personaldata.modify" : "Mes informations de contact",
+  "account.password.modify" : "Changer mon mot de passe",
+  "button.update" : "Mettre à jour",
+  "password.change.success" : "Votre mot de passe a été modifié",
+  "data.change.success" : "Vos informations ont été mises à jour",
+  "ordermodal.title" : "Commande",
+
+  "order.reference.title" : "Référence",
+  "order.price.title" : "Prix",
+  "order.status.title" : "Statut",
+  "order.creationDate.title" : "Date",
+  "order.status.PAYMENT_VALIDATED" : "Paiment effectué",
+  "order.status.VALIDATED" : "Validée",
+  "order.status.CANCELLED" : "Annulée",
+  "order.status.READY_FOR_SHIPMENT" : "Prête pour expédition",
+  "order.status.SHIPPED" : "Expédiée",
+  "order.status.DELIVERED" : "Livrée",
+  "order.status.RETURNED" : "Retournée"
+}

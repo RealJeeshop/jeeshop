@@ -1,0 +1,170 @@
+<div class="container-fluid">
+    <div class="row no-marding home-bg visible-md visible-lg">
+        <div class="col-md-12 no-marding">
+            <div class="row no-marding">
+                <div class="col-md-12 presentation text-center">
+                    <p>{{'home.presentation.title' | translate}}</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="row no-marding">
+            <div class="col-md-12 presentation presentation2 text-center" style="padding-bottom: 0">
+                <p ng-bind-html="'home.presentation' | translate"></p>
+            </div>
+        </div>
+        <div class="row no-marding">
+            <div class="col-md-12 presentation-link text-center">
+                <a ui-sref="categories">
+                    <button type="button" class="btn btn-primary" style="font-size: 1em">
+                        {{'page.categories.link' | translate}}
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row no-marding home-bg home-bg-sm visible-sm">
+    <div class="col-sm-12 no-marding">
+        <div class="row no-marding">
+            <div class="col-sm-12 presentation text-center">
+                <p>{{'home.presentation.title' | translate}}</p>
+            </div>
+        </div>
+        <div class="row no-marding">
+            <div class="col-sm-12 presentation presentation2 text-center" style="padding-bottom: 0">
+                <p ng-bind-html="'home.presentation' | translate"></p>
+            </div>
+        </div>
+        <div class="row no-marding">
+            <div class="col-md-12 presentation-link text-center">
+                <a ui-sref="categories">
+                    <button type="button" class="btn btn-primary" style="font-size: 1em">
+                        {{'page.categories.link' | translate}}
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row no-marding home-bg home-bg-xs visible-xs">
+    <div class="col-xs-12 presentation text-center">
+        <p>{{'home.presentation.title' | translate}}</p>
+    </div>
+</div>
+</div>
+
+
+<div class="container-fluid main-container">
+
+    <div class="row no-marding home-subscription">
+        <div class="col-sm-8 text-center">
+            <p>{{'home.subscription'|translate}}
+            </p>
+        </div>
+        <div class="col-sm-4 text-center" ng-controller="SubscriptionModalController as subscrModalCtrl">
+            <button type="button" class="btn btn-primary" style="font-size: 1em"
+                    ng-click="subscrModalCtrl.openSubscriptionModal()">
+                {{'subscribe.button' | translate}}
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid purple-bg">
+
+    <div class="main-container">
+        <div class="row">
+            <div class="col-xs-12 text-center" style="padding-top: 2em; padding-bottom: 1em">
+                <p class="slogan">{{'home.slogan'|translate}}</p>
+
+                <p class="sub-slogan">{{'home.subslogan'|translate}}</p>
+            </div>
+        </div>
+        <div class="row visible-lg" style="padding-top: 1em; padding-bottom: 3em">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5 text-center">
+                <p style="float:left" class="sub-slogan-presentation text-center">
+                    <br/>
+                    <span ng-bind-html="'home.subslogan.pres1'|translate"></span>
+                </p>
+            </div>
+
+            <div class="col-lg-5">
+                <p style="float:right;margin-right: 2em" class="sub-slogan-presentation text-center">
+                    <br/>
+                    <span ng-bind-html="'home.subslogan.pres2'|translate"></span>
+                </p>
+            </div>
+            <div class="col-lg-1"></div>
+
+        </div>
+
+
+        <div class="row visible-xs visible-sm visible-md" style="padding-top: 1em;">
+            <div class="col-sm-1"></div>
+            <div class="col-xs-12 col-sm-5 text-center" style="padding-bottom: 3em">
+                <br/>
+
+                <p class="sub-slogan-presentation text-center">
+                    <br/>
+                    <span ng-bind-html="'home.subslogan.pres1'|translate"></span>
+                </p>
+            </div>
+
+            <div class="col-xs-12 col-sm-5 text-center" style="padding-bottom: 3em">
+                <br/>
+
+                <p class="sub-slogan-presentation text-center">
+                    <br/>
+                    <span ng-bind-html="'home.subslogan.pres2'|translate"></span>
+                    <br/><img style="margin-top: 1em" src="../images/Fleche-bas.png"/>
+                </p>
+            </div>
+            <div class="col-sm-1"></div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container-fluid purple-bg">
+    <div class="main-container">
+
+        <div ng-controller="DiscountsController as discountsCtrl">
+            <div class="row no-marding" ng-repeat="discountBy3 in discountsCtrl.discounts">
+
+                <div class="col-xs-12 col-sm-6 col-lg-4 promotion text-center no-marding"
+                     ng-repeat="discount in discountBy3">
+
+                    <div>
+                        <img
+                                ng-src="jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"
+                                alt="promotions"/>
+                        <br/>
+                        {{discount.localizedPresentation.displayName}}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="share-this-page">
+        <ul>
+            <li><a href="https://www.facebook.com" target="blank" class="btn share-facebook"><i
+                    class="fa fa-facebook"></i> <span class="sr-only">Partager sur Facebook</span></a></li>
+            <li><a href="https://twitter.com" target="blank" class="btn share-twitter"><i
+                    class="fa fa-twitter"></i> <span class="sr-only">Partager sur twitter</span></a></li>
+            <li><a href="https://plus.google.com" target="blank" class="btn share-gplus"><i
+                    class="fa fa-google-plus"></i> <span class="sr-only">Partager sur google+</span></a></li>
+        </ul>
+    </div>
+
+</div>
+

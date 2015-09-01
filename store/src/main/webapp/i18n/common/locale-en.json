@@ -1,0 +1,35 @@
+{
+  "home.button.home": "Home",
+  "home.button.account": "My account",
+
+  "button.submit" : "Submit",
+
+  "main.title": "Jeeshop store",
+
+  "footer.copyright": "Jeeshop store demo - All rights reserved - 2015",
+
+  "login.title": "Sign In",
+  "login.button": "Sign In",
+  "login.placeholder": "Login",
+  "password.placeholder": "Password",
+
+  "password.forgotpassword": "Password forgotten ?",
+  "forgotten.password.title": "Reset your password",
+  "forgotten.login.help": "Please provide your login to reset your password",
+  "reset.button": "Reset",
+  "password.reset.help": "An e-mail describing password reset procedure will be sent to you",
+
+  "cnil.advert" : "By visiting this website, you accept use of cookies in order to propose offers and services matching your preferences.",
+  "see.more.information" : "More information",
+
+  "cancel.button": "Cancel",
+  "form.field.required": "Field required",
+
+  "button.close" : "Close",
+
+  "error.technical": "An error occurred. Please try again later",
+  "error.mailAlreadyExist": "An account with this e-mail address already exist",
+  "error.authentication": "E-mail or password is not valid",
+  "error.user.unknown" :  "Sorry, we cannot retrieve your account with provided information",
+  "error.token.unknown" :  "This action can only be performed once"
+}

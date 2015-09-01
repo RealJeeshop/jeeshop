@@ -1,0 +1,35 @@
+{
+  "home.button.home": "Accueil",
+  "home.button.account": "Mon compte",
+
+  "button.submit" : "Soumettre",
+
+  "main.title": "Jeeshop store",
+
+  "footer.copyright": "Boutique de démonstration Jeeshop - Tous droits réservés - 2015",
+
+  "login.title": "Connexion",
+  "login.button": "Connexion",
+  "login.placeholder": "Identifiant",
+  "password.placeholder": "Mot de passe",
+
+  "password.forgotpassword": "Mot de passe oublié ?",
+  "forgotten.password.title": "Réinitialisez votre mot de passe",
+  "forgotten.login.help": "Veuillez fournir votre identifiant pour réinitialiser votre mot de passe",
+  "reset.button": "Réinitialiser",
+  "password.reset.help":"Un e-mail vous sera envoyé indiquant la procédure de réinitialisation de votre mot de passe",
+
+  "cnil.advert" : "En visitant ce site, vous acceptez l'utilisation de cookies afin de vous proposer des services et des offres adaptés à vos préférences.",
+  "see.more.information" : "En savoir plus",
+
+  "cancel.button": "Annuler",
+  "form.field.required": "Ce champ est obligatoire",
+
+  "button.close" : "Fermer",
+
+  "error.technical": "Une erreur est survenue. Veuillez réessayer ultérieurement",
+  "error.mailAlreadyExist": "Un compte correspondant à cette adresse e-mail existe déjà",
+  "error.authentication": "L'e-mail ou le mot de passe saisi est incorrect",
+  "error.user.unknown" :  "Cette adresse e-mail ne correspond à aucun compte utilisateur connu",
+  "error.token.unknown" :  "Cette action ne peut être effectuée qu'une seule fois"
+}
