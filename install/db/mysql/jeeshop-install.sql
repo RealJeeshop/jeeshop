@@ -388,7 +388,7 @@ ALTER TABLE User_Role
 --
 
 INSERT INTO User (birthDate, creationDate, activated, gender, firstname, lastname, login, password, phoneNumber, address_id, deliveryAddress_id)
-VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'M.' , 'Gerald', 'Min', 'admin', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
+VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'M.' , 'Gerald', 'Min', 'admin@jeeshop.org', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', NULL, NULL);
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');
