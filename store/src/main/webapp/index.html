@@ -62,14 +62,6 @@
                     </a>
                 </li>
 
-                <li ng-class="{active:!loginCtrl.isAuthenticated()}"
-                    ng-show="!loginCtrl.isAuthenticated()"
-                    ng-controller="SubscriptionModalController as subscrModalCtrl">
-                    <a ui-sref="home" ng-click="subscrModalCtrl.openSubscriptionModal()">
-                        {{'subscribe.button' | translate}}
-                    </a>
-                </li>
-
                 <li ng-class="{ active:(menuCtrl.isState('account.data') || menuCtrl.isState('account.orders'))}" ng-show="loginCtrl.isAuthenticated()">
                     <a ui-sref="account.data">
                         {{'home.button.account' | translate}}
