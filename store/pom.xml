@@ -75,7 +75,7 @@
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
-                            <warName>${project.parent.artifactId}-${project.artifactId}</warName>
+                            <warName>ROOT</warName>
                             <outputDirectory>deployments</outputDirectory>
                         </configuration>
                     </plugin>
