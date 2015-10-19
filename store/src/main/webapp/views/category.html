@@ -1,0 +1,273 @@
+<div ng-controller="RestrictedAreaController" ng-show="loginCtrl.isAuthenticated">
+    <div ng-controller="CarouselCategoryCtrl as cdomCtrl">
+
+        <div class="container-fluid purple-bg" style="padding-bottom: 1.5em;">
+            <div class="main-container">
+
+                <div class="site-page-header text-center">
+                    {{category.localizedPresentation.displayName}}
+                </div>
+
+                <!-- Carousel is not visible for mobile -->
+                <div class="row no-marding visible-sm visible-md visible-lg">
+                    <div class="categories-carousel">
+                        <carousel interval="myInterval">
+                            <slide ng-repeat="slide in slides" active="slide.active">
+                                <div class="row" style="padding-bottom: 1em; padding-top: 0.5em">
+                                    <div class="col-sm-12 category-header text-center">
+                                        {{'catalogitem.till' | translate}} {{slide.endDate|date : 'shortDate'}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3 text-right" style="padding-bottom: 1em"><img
+                                            ng-src="jeeshop-media/products/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"
+                                            style="height: 300px;width: auto;margin-left: 1em"/>
+                                    </div>
+                                    <div class="col-sm-1 visible-sm"></div>
+                                    <div class="col-sm-3 no-marding text-left"
+                                         ng-controller="ShoppingCartController as cartCtrl">
+                                        <h5 ng-bind-html="slide.localizedPresentation.displayName"></h5>
+
+                                        <p class="product-promotion"
+                                           ng-bind-html="slide.localizedPresentation.promotion"></p>
+                                        <img src="../images/pastille-prix-direct.png"
+                                             style="width:4.5em;height:auto;margin-right: 1em;float: right">
+
+                                        <p ng-show="productsSku[slide.id] != null">
+                                            <span class="product-price">{{productsSku[slide.id].price | number : 2}} € </span>
+                                            <span class="product-price" style="font-size: 1.2em">{{'price.ttc' | translate}}</span>
+                                            <br/><span style="font-style: italic"
+                                                       ng-show="productsSku[slide.id].numberOfBottles > 1">{{'item.packof'| translate}} {{productsSku[slide.id].numberOfBottles}}
+                                    <br/>{{'item.soit' | translate}} {{productsSku[slide.id].price / productsSku[slide.id].numberOfBottles | number : 2}} € {{'price.ttc' | translate}} {{'item.thebottle1' | translate}}</span>
+                                        <span style="font-style: italic"
+                                              ng-show="productsSku[slide.id].numberOfBottles == 1">{{'item.thebottle2' | translate}}</span>
+                                        </p>
+                                        <br/>
+
+                                        <div class="btn-group sku-quantity"  role="group">
+                                            <button type="button" class="btn btn-primary"
+                                                    ng-click="cartCtrl.decrementSkuQuantity(productsSku[slide.id].id)"
+                                                    ng-disabled="!cartCtrl.isDecrementable(productsSku[slide.id].id)">
+                                                <i class="glyphicon glyphicon-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default">
+                                                {{cartCtrl.getSkuQuantity(productsSku[slide.id].id)}}
+                                            </button>
+                                            <button type="button" class="btn btn-primary"
+                                                    ng-disabled="!cartCtrl.isIncrementable(productsSku[slide.id])"
+                                                    ng-click="cartCtrl.incrementSkuQuantity(productsSku[slide.id].id)">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                            </button>
+                                        </div>
+                                        <br/>
+                                        <button type="button" class="btn btn-primary" style="margin-top: 2em;"
+                                                ng-click="cartCtrl.addItemToCart(productsSku[slide.id].id, slide.id)">
+                                            {{'button.add.shoppingcart'|translate}}
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5 col-md-6 no-marding text-justify">
+                                        <div class="row" style="padding-bottom: 1em">
+                                            <ul class="col-md-12 nav nav-pills"
+                                                style="display: inline-block; margin-left:1em;">
+                                                <li ng-class="{active:cdomCtrl.isState('comment')}">
+                                                    <a ng-click="cdomCtrl.setState('comment')">
+                                                        {{'product.comment.title' | translate}}
+                                                    </a>
+                                                </li>
+                                                <li ng-class="{ active:cdomCtrl.isState('features') }">
+                                                    <a ng-click="cdomCtrl.setState('features')">
+                                                        {{'product.features.title' | translate}}
+                                                    </a>
+                                                </li>
+                                                <li ng-class="{ active:cdomCtrl.isState('advices') }"
+                                                    class="visible-md visible-lg">
+                                                    <a ng-click="cdomCtrl.setState('advices')">
+                                                        {{'product.advices.title' | translate}}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="row no-marding" style="padding-bottom: 1em">
+                                            <div class="col-md-10 no-marding text-left">
+                                                <p class="product-description" ng-show="cdomCtrl.isState('comment')"
+                                                   ng-bind-html="slide.localizedPresentation.shortDescription"></p>
+
+                                                <p class="product-description" ng-show="cdomCtrl.isState('advices')"
+                                                   ng-bind-html="slide.localizedPresentation.mediumDescription"></p>
+
+                                                <div ng-show="cdomCtrl.isState('features')">
+                                                    <p class="product-description"
+                                                       ng-repeat="(key, value) in slide.localizedPresentation.features">
+                                                        <b>{{key}}</b> : {{value}}
+                                                    </p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </slide>
+                        </carousel>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid main-container">
+
+            <div ng-controller="ShoppingCartController as cartCtrl">
+
+                <div class="row no-marding visible-sm visible-md visible-lg" style="margin-top:1em">
+                    <div class="col-sm-6 category-box text-center no-marding" ng-class="{'category-box-right': ($index+1)%2==1, 'category-box-left':($index+1)%2==0}"
+                         ng-repeat="discount in discounts">
+                        <img style="width: 4.5em;height: auto"
+                             ng-src="jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"/>
+                        <span style="margin-left:1em" >{{discount.localizedPresentation.displayName}}</span>
+                    </div>
+                </div>
+
+                <div class="row no-marding visible-xs" style="margin-top:1em">
+                    <div class="col-xs-12 category-box text-left no-marding" style="margin-top: 1em"
+                         ng-repeat="discount in discounts">
+                        <img style="width: 4.5em;height: auto"
+                             ng-src="jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"/>
+                        <span style="margin-left:1em" >{{discount.localizedPresentation.displayName}}</span>
+                    </div>
+                </div>
+
+                <!-- PC tablets, three columns-->
+                <div class="row category-box-row no-marding visible-sm visible-md visible-lg"
+                     ng-repeat="products3 in products3Column">
+                    <div class="col-sm-4 category-box"
+                         ng-class="{'category-box-left': ($index+1)%3==2, 'category-box-right':($index+1)%3==0}"
+                         ng-repeat="product in products3">
+                        <div class="row">
+                            <div class="col-sm-12 category-header text-center">
+                                {{'catalogitem.till' | translate}} {{product.endDate|date : 'shortDate'}}
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:1em">
+                            <div class="col-sm-4" style="text-align: center">
+                                <img class="product-box-img"
+                                     ng-src="jeeshop-media/products/{{product.id}}/{{product.localizedPresentation.locale}}/{{product.localizedPresentation.smallImage.uri}}"/>
+
+                            </div>
+                            <div class="col-sm-8">
+                                <h5 ng-bind-html="product.localizedPresentation.displayName"></h5>
+                                <img style="height: 2.5em; width:auto; margin-top:0.5em"
+                                     ng-show="product.localizedPresentation.thumbnail.uri != null"
+                                     ng-src="jeeshop-media/products/{{product.id}}/{{product.localizedPresentation.locale}}/{{product.localizedPresentation.thumbnail.uri}}"/>
+
+                                <p class="product-promotion" ng-bind-html="product.localizedPresentation.promotion"></p>
+
+                                <p ng-show="productsSku[product.id] != null">
+                                    <span class="product-price">{{productsSku[product.id].price | number : 2}} € </span>
+                                    <span class="product-price"
+                                          style="font-size: 1.2em">{{'price.ttc' | translate}}</span>
+
+                                    <br/><span style="font-style: italic"
+                                               ng-show="productsSku[product.id].numberOfBottles > 1">{{'item.packof'| translate}} {{productsSku[product.id].numberOfBottles}}
+                                    <br/>{{'item.soit' | translate}} {{productsSku[product.id].price / productsSku[product.id].numberOfBottles | number : 2}} € {{'price.ttc' | translate}} {{'item.thebottle1' | translate}}</span>
+                                    <span style="font-style: italic"
+                                          ng-show="productsSku[product.id].numberOfBottles == 1">{{'item.thebottle2' | translate}}</span>
+                                </p>
+                                <br/>
+
+                                <div class="btn-group sku-quantity" role="group">
+                                    <button type="button" class="btn btn-primary"
+                                            ng-click="cartCtrl.decrementSkuQuantity(productsSku[product.id].id)"
+                                            ng-disabled="!cartCtrl.isDecrementable(productsSku[product.id].id)">
+                                        <i class="glyphicon glyphicon-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        {{cartCtrl.getSkuQuantity(productsSku[product.id].id)}}
+                                    </button>
+                                    <button type="button" class="btn btn-primary"
+                                            ng-disabled="!cartCtrl.isIncrementable(productsSku[product.id])"
+                                            ng-click="cartCtrl.incrementSkuQuantity(productsSku[product.id].id)">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                </div>
+                                <br/>
+                                <button type="button" class="btn btn-primary" style="margin-top: 2em;"
+                                        ng-click="cartCtrl.addItemToCart(productsSku[product.id].id, product.id)">
+                                    {{'button.add.shoppingcart'|translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile one column -->
+            <div ng-controller="ShoppingCartController as cartCtrl">
+                <div class="row category-box-row no-marding visible-xs" ng-repeat="product in slides">
+                    <div class="col-xs-12 category-box">
+                        <div class="row">
+                            <div class="col-xs-12 category-header text-center">
+                                {{'catalogitem.till' | translate}} {{product.endDate|date : 'shortDate'}}
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:1em">
+                            <div class="col-xs-4" style="text-align: center">
+                                <img class="product-box-img"
+                                     ng-src="jeeshop-media/products/{{product.id}}/{{product.localizedPresentation.locale}}/{{product.localizedPresentation.smallImage.uri}}"/>
+
+                            </div>
+                            <div class="col-xs-8">
+                                <h5 ng-bind-html="product.localizedPresentation.displayName"></h5>
+                                <img style="height: 2.5em; width:auto; margin-top:0.5em"
+                                     ng-show="product.localizedPresentation.thumbnail.uri != null"
+                                     ng-src="jeeshop-media/products/{{product.id}}/{{product.localizedPresentation.locale}}/{{product.localizedPresentation.thumbnail.uri}}"/>
+                                <img src="../images/pastille-prix-direct.png"
+                                     style="width:4.5em;height:auto;margin-right: 1em;float: right">
+
+                                <p class="product-promotion" ng-bind-html="product.localizedPresentation.promotion"></p>
+
+                                <p ng-show="productsSku[product.id] != null">
+                                    <span class="product-price">{{productsSku[product.id].price | number : 2}} € </span>
+                                    <span class="product-price"
+                                          style="font-size: 1.2em">{{'price.ttc' | translate}}</span>
+                                    <br/><span style="font-style: italic"
+                                               ng-show="productsSku[product.id].numberOfBottles > 1">{{'item.packof'| translate}} {{productsSku[product.id].numberOfBottles}}
+                                    <br/>{{'item.soit' | translate}} {{productsSku[product.id].price / productsSku[product.id].numberOfBottles | number : 2}} € {{'price.ttc' | translate}} {{'item.thebottle1' | translate}}</span>
+                                    <span style="font-style: italic"
+                                          ng-show="productsSku[product.id].numberOfBottles == 1">{{'item.thebottle2' | translate}}</span>
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="btn-group sku-quantity" role="group">
+                                    <button type="button" class="btn btn-primary"
+                                            ng-click="cartCtrl.decrementSkuQuantity(productsSku[product.id].id)"
+                                            ng-disabled="!cartCtrl.isDecrementable(productsSku[product.id].id)">
+                                        <i class="glyphicon glyphicon-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        {{cartCtrl.getSkuQuantity(productsSku[product.id].id)}}
+                                    </button>
+                                    <button type="button" class="btn btn-primary"
+                                            ng-disabled="!cartCtrl.isIncrementable(productsSku[product.id])"
+                                            ng-click="cartCtrl.incrementSkuQuantity(productsSku[product.id].id)">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                </div>
+                                <br/>
+                                <button type="button" class="btn btn-primary" style="margin-top: 2em;"
+                                        ng-click="cartCtrl.addItemToCart(productsSku[product.id].id, product.id)">
+                                    {{'button.add.shoppingcart'|translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

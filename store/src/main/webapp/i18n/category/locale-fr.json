@@ -1,0 +1,39 @@
+{
+  "page.category.title": "TO BE DYNAMISED",
+  "product.comment.title" : "Commentaires",
+  "product.features.title" : "Fiche technique",
+  "product.advices.title" : "Conseils",
+  "button.add.shoppingcart": "Ajouter au panier",
+
+  "shoppingcart.validate" : "Valider mon Panier",
+  "shoppingcart.continue" : "Poursuivre mes achats",
+  "shoppingcart.title" : "Mon Panier",
+  "shoppingcart.item" :"ARTICLE",
+  "shoppingcart.quantity" :"QUANTITE",
+  "shoppingcart.price":"PRIX",
+  "shoppingcart.total":"TOTAL",
+  "price.ttc": "TTC",
+  "price.ht": "HT",
+
+  "page.delivery.title" : "Livraison",
+  "billing.address.title" : "ADRESSE DE FACTURATION",
+  "delivery.address.title" : "ADRESSE DE LIVRAISON",
+  "delivery.mode" : "METHODE DE LIVRAISON",
+  "delivery.mode.ups" : "Livraison par transporteur",
+  "delivery.dates" : "DELAI DE LIVRAISON",
+  "delivery.date" : "DELAI DE LIVRAISON",
+  "cgv.agreement" : "J'accepte les <a class=\"site-link\"  uisref=\"cgv\">conditions générales de vente</a>",
+  "button.continue": "Continuer",
+  "address.billing.showlink" : "Fournir une adresse de facturation différente",
+  "address.billing.hide" : "Masquer",
+
+  "button.order.confirm" : "Je règle ma commande",
+  "button.order.new" : "J'annule ma commande",
+  "button.order.continue" : "Je confirme ma commande",
+
+  "page.orderconfirm.title" : "Confirmation",
+
+  "page.payment.title" : "Paiement",
+  "payment.defaultMessage1" : "<h5>Vous n'avez pas encore complété votre paiement ?</h5> Cliquez sur le bouton suivant afin de retourner sur la plate-forme de paiement :",
+  "payment.defaultMessage2" : "<h5>Votre paiement a été effectué avec succès ou vous souhaitez annuler votre commande ?</h5> Cliquez sur le bouton suivant :"
+}

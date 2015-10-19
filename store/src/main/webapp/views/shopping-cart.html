@@ -1,0 +1,120 @@
+<div class="modal-content site-modal-content">
+    <div class="modal-header site-modal-header">
+        <span>{{'shoppingcart.title' | translate}}</span>
+    </div>
+
+    <div class="modal-body" style="padding-left:1em; padding-right: 1em">
+
+        <div class="row bottom-grey-fin-bar no-marding">
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-4">
+                <h5>{{'shoppingcart.item'|translate}}</h5>
+            </div>
+            <div class="col-xs-3">
+                <h5>{{'shoppingcart.quantity'|translate}}</h5>
+            </div>
+            <div class="col-xs-3">
+                <h5>{{'shoppingcart.price'|translate}}</h5>
+            </div>
+        </div>
+
+        <div class="row no-marding" ng-repeat="item in items" style="padding-top: 1em">
+            <div class="col-xs-2" style="text-align: center">
+                <img class="product-box-img" style="height: 10em; width: auto"
+                     ng-src="jeeshop-media/products/{{item.product.id}}/{{item.product.localizedPresentation.locale}}/{{item.product.localizedPresentation.smallImage.uri}}"/>
+
+            </div>
+            <div class="col-xs-4 text-left" style="padding-top: 4em">
+                <p ng-bind-html="item.product.localizedPresentation.displayName"></p>
+            </div>
+            <div class="col-xs-3 text-center" style="padding-top: 4em">
+                <div class="btn-group sku-quantity" style="float: left" role="group">
+                    <button type="button" class="btn btn-primary"
+                            ng-click="decrementSkuQuantity(item.sku.id)" ng-disabled="!isDecrementable(item.sku.id)">
+                        <i class="glyphicon glyphicon-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        {{item.quantity}}
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!isIncrementable(item.sku)"
+                            ng-click="incrementSkuQuantity(item.sku.id)" >
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs-3 text-left" style="padding-top: 4em">
+                <p>
+                    {{item.sku.price | number : 2}} € {{'price.ttc' | translate}}
+                    <br/>
+                    <span style="font-style: italic"
+                       ng-show="item.sku.numberOfBottles > 1">{{'item.packof'| translate}} {{item.sku.numberOfBottles}}
+                    </span>
+                    <span style="font-style: italic"
+                          ng-show="item.sku.numberOfBottles == 1">{{'item.thebottle2' | translate}}
+                    </span>
+                </p>
+            </div>
+        </div>
+        <div class="row no-marding" style="margin-top: 1em">
+            <div class="col-xs-2 text-center">
+                <img style="width:3.5em;height:auto" src="../images/pastille-livraison.png">
+            </div>
+            <div class="col-xs-4" style="text-align: left; padding-top: 1em">
+                <p>
+                    {{'delivery.mode.ups'|translate}}
+                </p>
+            </div>
+            <div class="col-xs-3 text-left" style="padding-top: 1em">
+            </div>
+            <div class="col-xs-3 text-left" style="padding-top: 1em">
+                <p>
+                    {{shippingFee | number : 2}} € {{'price.ttc' | translate}}
+                </p>
+            </div>
+        </div>
+        <div class="row no-marding" style="padding-top: 1em"
+             ng-repeat="discount in discounts" ng-show="(discount.triggerRule!='AMOUNT' || discount.triggerValue <= getItemsPrice())">
+            <div class="col-xs-2 text-center">
+                <img style="width:3.5em; height: auto"
+                     ng-src="jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"/>
+            </div>
+            <div class="col-xs-4 text-left" style="padding-top: 1em">
+                <p>{{discount.localizedPresentation.displayName}}</p>
+            </div>
+            <div class="col-xs-3">
+            </div>
+            <div class="col-xs-3 text-left" style="padding-top: 1em">
+                <p>
+                        <span ng-show="(discount.type == 'ORDER_DISCOUNT_AMOUNT' || discount.type == 'SHIPPING_FEE_DISCOUNT_AMOUNT')">
+                            - {{discount.discountValue | number : 2}} €</span>
+                        <span ng-show="discount.type == 'DISCOUNT_RATE'">
+                            - {{discount.discountValue}} %</span>
+                </p>
+            </div>
+        </div>
+        <div class="row no-marding top-grey-fin-bar" style="margin-top: 1em">
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-4">
+            </div>
+            <div class="col-xs-3">
+                <h5 style="text-decoration: none">{{'shoppingcart.total'|translate}}</h5>
+            </div>
+            <div class="col-xs-3">
+                <h5 style="text-decoration: none">{{getOrdersPrice() | number : 2}} € {{'price.ttc' | translate}}</h5>
+            </div>
+        </div>
+
+        <div class="row no-marding" style="padding-top: 1em">
+            <div class="col-xs-12 text-right no-marding">
+                <button type="button" class="btn btn-default"  ng-click="cancel()">
+                    {{'shoppingcart.continue' | translate}}
+                </button>
+                <button type="button" style="margin-left: 1em" class="btn btn-primary" ng-click="validateShoppingCart()">
+                    {{'shoppingcart.validate' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

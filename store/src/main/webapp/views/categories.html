@@ -1,0 +1,150 @@
+<div ng-controller="CarouselCategoriesCtrl">
+
+    <div class="container-fluid purple-bg" style="padding-bottom: 1.5em;">
+        <div class="main-container ">
+
+            <div class="site-page-header text-center">
+                {{'page.categories.title' | translate}}
+            </div>
+
+            <!-- Carousel is not visible for mobile -->
+            <div class="row no-marding visible-sm visible-md visible-lg">
+                <div class="categories-carousel">
+                    <carousel interval="myInterval">
+                        <slide ng-repeat="slide in slides" active="slide.active">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-8 category-header text-center"  style="padding-top: 0.5em">
+                                    {{'catalogitem.till' | translate}} {{slide.endDate|date : 'shortDate'}}
+                                </div>
+                                <div class="col-sm-2">
+                                    <img src="../images/pastille-prix-direct.png" style="width:5em;height:auto;padding-top:0.5em;padding-bottom:0;margin:0">
+                                </div>
+                            </div>
+                            <div class="row" style="padding-bottom:3em">
+                                <div class="col-sm-1">
+                                </div>
+                                <div class="col-lg-5 text-center visible-lg"><img style="height: 300px; width:auto; margin:0"
+                                                                                  ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"/>
+                                </div>
+                                <div class="col-md-5 text-center visible-md"><img style="height: 250px; width:auto; margin:0"
+                                                                                  ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"/>
+                                </div>
+                                <div class="col-sm-5 text-center visible-sm"><img style="height: 200px; width:auto; margin:0"
+                                                                                  ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"/>
+                                </div>
+                                <div class="col-sm-5 text-justify">
+                                    <h5>
+                                        <span ng-bind-html="slide.localizedPresentation.displayName"></span>
+                                    </h5>
+                                    <span ng-bind-html="slide.localizedPresentation.shortDescription"></span>
+                                    <br/><br/>
+                                    <img style="height: 3.5em; width:auto; margin:0" ng-show="slide.localizedPresentation.thumbnail.uri != null"
+                                         ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.thumbnail.uri}}"/>
+                                    <p class="text-center">
+                                        <button type="button" class="btn btn-primary" style="margin-top: 2em;"
+                                                ng-controller="SubscriptionModalController as subscrCtrl"
+                                                ng-click="(loginCtrl.isAuthenticated() && exploreCategory(slide.id)) || (!loginCtrl.isAuthenticated() && subscrCtrl.openSubscriptionModal())">
+                                            {{'button.sale.access'|translate}}
+                                        </button>
+                                    </p>
+                                </div>
+                                <div class="col-sm-1 text-left">
+                                </div>
+                            </div>
+                        </slide>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid main-container">
+        <!-- PC tablets, two columns-->
+        <div class="row category-box-row no-marding visible-sm visible-md visible-lg row-eq-height"
+             ng-repeat="categoryTuple in domainContents">
+            <div class="col-sm-6 category-box" ng-class="{'category-box-left': $odd, 'category-box-right':$even}"
+                 ng-repeat="slide in categoryTuple">
+                <div class="row">
+                    <div class="col-sm-12 category-header text-center">
+                        {{'catalogitem.till' | translate}} {{slide.endDate|date : 'shortDate'}}
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em;padding-bottom: 1em">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text-center">
+                        <h5>
+                            <span ng-bind-html="slide.localizedPresentation.displayName"></span>
+                        </h5>
+                    </div>
+                    <div class="col-sm-3">
+                        <img style="height: 2.5em; width:auto; float: right" ng-show="slide.localizedPresentation.thumbnail.uri != null"
+                             ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.thumbnail.uri}}"/>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-5" style="text-align: center">
+                        <img class="product-box-img" style="height: auto; max-width:400px; width: 100%;"
+                             ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"/>
+                        <br/><br/>
+                        <button type="button" class="btn btn-primary" style="margin-top: 2em;margin-bottom: 1em"
+                                ng-controller="SubscriptionModalController as subscrCtrl"
+                                ng-click="(loginCtrl.isAuthenticated() && exploreCategory(slide.id)) || (!loginCtrl.isAuthenticated() && subscrCtrl.openSubscriptionModal())">
+                            {{'button.sale.access'|translate}}
+                        </button>
+                    </div>
+                    <div class="col-md-7"><span ng-bind-html="slide.localizedPresentation.mediumDescription"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile one column -->
+        <div class="row category-box-row no-marding visible-xs" ng-repeat="slide in slides">
+            <div class="col-sm-12 category-box">
+                <div class="row">
+                    <div class="col-xs-9 category-header text-center">
+                        {{'catalogitem.till' | translate}} {{slide.endDate|date : 'shortDate'}}
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <img src="../images/pastille-prix-direct.png" style="width:4em;height:auto;">
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em;padding-bottom: 1em">
+                    <div class="col-xs-9 text-left">
+                        <h5>
+                            <span ng-bind-html="slide.localizedPresentation.displayName"></span>
+                        </h5>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <img style="height: 2.5em; width:auto; float: right" ng-show="slide.localizedPresentation.thumbnail.uri != null"
+                             ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.thumbnail.uri}}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12" style="text-align: center">
+                        <img class="product-box-img" style="height: auto; max-width:450px; width: 100%; margin:0"
+                             ng-src="jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.largeImage.uri}}"/>
+                        <br/>
+                        <button type="button" class="btn btn-primary" style="margin-top: 2em;margin-bottom: 1em"
+                                ng-controller="SubscriptionModalController as subscrCtrl"
+                                ng-click="(loginCtrl.isAuthenticated() && exploreCategory(slide.id)) || (!loginCtrl.isAuthenticated() && subscrCtrl.openSubscriptionModal())">
+                            {{'button.sale.access'|translate}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span ng-bind-html="slide.localizedPresentation.mediumDescription"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+

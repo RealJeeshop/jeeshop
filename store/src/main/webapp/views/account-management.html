@@ -1,0 +1,24 @@
+<div ng-controller="RestrictedAreaController" ng-show="loginCtrl.isAuthenticated">
+    <div class="main-container">
+        <div class="site-page-header text-center">
+            {{'home.button.account' | translate}}
+        </div>
+
+        <div class="row no-marding">
+            <div class="col-xs-12 no-marding">
+                <ul class="nav nav-pills main-menu" ng-controller="AccountMenuController as accMenuCtrl">
+                    <li ng-class="{ active:accMenuCtrl.isState('account.data') }">
+                        <a ui-sref="account.data">{{'menu.account.data'|translate}}</a>
+                    </li>
+                    <li ng-class="{ active:accMenuCtrl.isState('account.orders') }">
+                        <a ui-sref="account.orders">{{'menu.account.orders'|translate}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div ui-view class="no-marding"></div>
+
+    </div>
+</div>

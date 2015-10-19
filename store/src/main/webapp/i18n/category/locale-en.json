@@ -1,0 +1,39 @@
+{
+    "page.category.title": "TO BE DYNAMISED",
+    "product.comment.title" : "Comments",
+    "product.features.title" : "Features",
+    "product.advices.title" : "Advices",
+    "button.add.shoppingcart": "Add to shopping cart",
+
+    "shoppingcart.validate": "Validate order",
+    "shoppingcart.continue" : "Continue shopping",
+    "shoppingcart.title" : "My Shopping Cart",
+    "shoppingcart.item" :"ITEM",
+    "shoppingcart.quantity" :"QUANTITY",
+    "shoppingcart.price":"PRICE",
+    "shoppingcart.total":"TOTAL",
+    "price.ttc": "with taxes",
+    "price.ht": "without taxes",
+
+    "page.delivery.title" : "Delivery",
+    "billing.address.title" : "BILLING ADDRESS",
+    "delivery.address.title" : "DELIVERY ADDRESS",
+    "delivery.mode" : "DELIVERY METHOD",
+    "delivery.mode.ups" : "Package delivery company",
+    "delivery.dates" : "DELIVERY DATES",
+    "delivery.date" : "DELIVERY DATE",
+    "cgv.agreement" : "I agree to the <a class=\"site-link\" uisref=\"cgv\">terms of sale</a>",
+    "button.continue" : "Continue",
+    "address.billing.showlink" : "Provide another billing address",
+    "address.billing.hide" : "Hide",
+
+    "button.order.confirm" : "I pay my order",
+    "button.order.new" : "I cancel my order",
+    "button.order.continue" : "I confirm my order",
+
+    "page.orderconfirm.title" : "Order confirm",
+
+    "page.payment.title" : "Payment",
+    "payment.defaultMessage1" : "<h5>Vous n'avez pas encore complété votre paiement ?</h5> Cliquez sur le bouton suivant afin de retourner sur la plate-forme de paiement :",
+    "payment.defaultMessage2" : "<h5>Votre paiement a été effectué avec succès ou vous souhaitez annuler votre commande ?</h5> Cliquez sur le bouton suivant :"
+}

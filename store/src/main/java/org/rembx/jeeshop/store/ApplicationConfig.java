@@ -1,9 +1,9 @@
-package org.rembx.jeeshop.backend;
+package org.rembx.jeeshop.store;
 
-import org.rembx.jeeshop.catalog.Catalogs;
-import org.rembx.jeeshop.catalog.Categories;
-import org.rembx.jeeshop.catalog.Products;
-import org.rembx.jeeshop.catalog.SKUs;
+import org.rembx.jeeshop.catalog.*;
+import org.rembx.jeeshop.order.EligibleDiscounts;
+import org.rembx.jeeshop.order.Fees;
+import org.rembx.jeeshop.order.Orders;
 import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
@@ -25,7 +25,12 @@ public class ApplicationConfig extends Application {
         classes.add(Categories.class);
         classes.add(Products.class);
         classes.add(SKUs.class);
+        classes.add(Discounts.class);
+        classes.add(EligibleDiscounts.class);
         classes.add(Users.class);
+        classes.add(Orders.class);
+        classes.add(Fees.class);
+        //classes.add(SIPSAutoResponse.class);
         return classes;
     }
 }
