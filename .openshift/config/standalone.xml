@@ -409,8 +409,10 @@
                 <http-listener name="default" socket-binding="http" proxy-address-forwarding="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
+                    <location name="/jeeshop-media" handler="jeeshop-media"/>
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
+                    <filter-ref name="custom-max-age" predicate="path-suffix['.js'] or path-suffix ['.json'] or path-suffix ['.html'] or path-suffix ['.css'] or path-suffix ['.jpg'] or path-suffix ['.jpeg'] or path-suffix ['.png'] or path-suffix ['.gif']"/>
                 </host>
             </server>
             <servlet-container name="default">
@@ -418,10 +420,12 @@
             </servlet-container>
             <handlers>
                 <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
+                <file name="jeeshop-media" path="${env.OPENSHIFT_DATA_DIR}/jeeshop-media" directory-listing="false"/>
             </handlers>
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="WildFly/8"/>
                 <response-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow/1"/>
+                <response-header name="custom-max-age" header-name="Cache-Control" header-value="max-age=600, public"/>
             </filters>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:1.2">
