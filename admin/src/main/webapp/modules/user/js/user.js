@@ -58,7 +58,7 @@
               $http.post(uri, newPassword)
                   .success(function () {
                       ctrl.isProcessing = false;
-                      ctrl.alerts.push({type: 'success', msg: 'An email has been sent to your inbox'});
+                      ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});
                   })
                   .error(function () {
                       ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
