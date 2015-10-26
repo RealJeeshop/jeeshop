@@ -27,16 +27,20 @@
 
       ctrl.resetPassword = function (login) {
 
-        $modal.open({
-          templateUrl: 'modules/user/reset-password-dialog.html',
-          size: 'lg',
-          controller: modalInstanceCtrl,
-          resolve: {
-            login: function () {
-              return login;
-            }
-          }
-        });
+          var resetPasswordDialog = $modal.open({
+              templateUrl: 'modules/user/reset-password-dialog.html',
+              size: 'lg',
+              controller: modalInstanceCtrl,
+              resolve: {
+                  login: function () {
+                      return login;
+                  }
+              }
+          });
+
+          resetPasswordDialog.result.then(function success() {
+          }, function error() {
+          });
       };
 
       var modalInstanceCtrl = function ($modalInstance, $scope, login) {
@@ -51,12 +55,17 @@
           if (newPassword === confirmNewPassword) {
 
             var uri = 'rs/users/' + login + '/password';
-            $http.put(uri, newPassword).success(function (data) {
-              ctrl.isProcessing = false;
-            }).error(function (data) {
-              ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+              $http.post(uri, newPassword)
+                  .success(function () {
+                      ctrl.isProcessing = false;
+                      ctrl.alerts.push({type: 'success', msg: 'An email has been sent to your inbox'});
+                  })
+                  .error(function () {
+                      ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
             });
-            $scope.modalInstance.dismiss('close');
+
+              $scope.modalInstance.dismiss('close');
+
           } else {
             $scope.nomatch = true;
           }
