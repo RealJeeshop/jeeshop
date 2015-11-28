@@ -349,6 +349,23 @@ public class UsersIT {
     }
 
     @Test
+    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedADMINUser() throws Exception{
+
+        User user = notActivatedTestUser();
+
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
+        service.resetPassword(user.getLogin(), null, "newPassword");
+
+        final User updatedUser = entityManager.find(User.class, user.getId());
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
+
+        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+
+        removeTestUser(user);
+    }
+
+    @Test
     public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception{
 
         try {

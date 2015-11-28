@@ -55,7 +55,7 @@
           if (newPassword === confirmNewPassword) {
 
             var uri = 'rs/users/' + login + '/password';
-              $http.post(uri, newPassword)
+              $http.put(uri, newPassword)
                   .success(function () {
                       ctrl.isProcessing = false;
                       ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});

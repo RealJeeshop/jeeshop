@@ -43,7 +43,7 @@
                 var encoded = stringView.toBase64();
                 $http.defaults.headers.common.Authorization = 'Basic ' + encoded;
                 var success = false;
-                $http.head('rs/users').
+                $http.head('rs/users/administrators').
                     success(function(data){
                         auth.wrapper.logged = true;
                         auth.wrapper.login = credentials.login;
