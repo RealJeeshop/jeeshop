@@ -9,6 +9,7 @@
     });
 
     app.controller('UsersController', ['$http', '$modal', function ($http, $modal) {
+
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -23,6 +24,57 @@
         ctrl.isCreationModeActive = false;
         ctrl.orderBy = null;
         ctrl.orderDesc = false;
+
+      ctrl.resetPassword = function (login) {
+
+          var resetPasswordDialog = $modal.open({
+              templateUrl: 'modules/user/reset-password-dialog.html',
+              size: 'lg',
+              controller: modalInstanceCtrl,
+              resolve: {
+                  login: function () {
+                      return login;
+                  }
+              }
+          });
+
+          resetPasswordDialog.result.then(function success() {
+          }, function error() {
+          });
+      };
+
+      var modalInstanceCtrl = function ($modalInstance, $scope, login) {
+
+        $scope.modalInstance = $modalInstance;
+
+        $scope.submitForm = function () {
+
+          var newPassword = $scope.newPassword;
+          var confirmNewPassword = $scope.confirmNewPassword;
+
+          if (newPassword === confirmNewPassword) {
+
+            var uri = 'rs/users/' + login + '/password';
+              $http.put(uri, newPassword)
+                  .success(function () {
+                      ctrl.isProcessing = false;
+                      ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});
+                  })
+                  .error(function () {
+                      ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+            });
+
+              $scope.modalInstance.dismiss('close');
+
+          } else {
+            $scope.nomatch = true;
+          }
+        };
+
+        $scope.cancelForm = function () {
+          $scope.modalInstance.dismiss('close');
+        };
+      };
 
         ctrl.findEntries = function (orderBy) {
             ctrl.isProcessing = true;
@@ -86,11 +138,13 @@
 
         this.activateCreationMode = function () {
             ctrl.isCreationModeActive = true;
+          ctrl.isEditionModeActive = false;
         };
 
         ctrl.selectEntry = function (id) {
             $http.get('rs/users/' + id)
                 .success(function (data) {
+                ctrl.isCreationModeActive = false;
                     ctrl.isEditionModeActive = true;
                     ctrl.entry = data;
                     ctrl.convertEntryDates();

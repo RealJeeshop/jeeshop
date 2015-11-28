@@ -5,17 +5,17 @@ import com.dumbster.smtp.SmtpMessage;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-
-/**
- * Created by remi on 19/10/14.
- */
 public class MailerIT {
+    
+    Logger LOG = LoggerFactory.getLogger(MailerIT.class);
 
     protected static Weld weld;
     protected static WeldContainer container;
@@ -68,7 +68,7 @@ public class MailerIT {
             mailer.sendMail("Test Subject", "test@test.com", "<h1>Hello</h1>");
             fail("should have thrown ex");
         }catch (MessagingException e){
-
+            LOG.error("Caught error during mail sending", e);
         }
     }
 }

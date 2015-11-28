@@ -151,10 +151,17 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}/password")
     @PermitAll
-    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token, @NotNull String newPassword) {
+    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token,
+                              @NotNull String newPassword) {
 
         User user;
-        if (sessionContext.isCallerInRole(USER)) {
+
+        if (sessionContext.isCallerInRole(ADMIN)) {
+
+            user = userFinder.findByLogin(userLogin);
+
+        } else if (sessionContext.isCallerInRole(USER)) {
+
             user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
 
             if (!userLogin.equals(user.getLogin())) {
@@ -192,7 +199,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, USER})
-    public User modify(@NotNull User user) { // TODO Complete IT TEST
+    public User modify(@NotNull User user) {
 
         User existingUser = null;
         if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
@@ -226,13 +233,21 @@ public class Users {
         return true;
     }
 
+    @HEAD
+    @Path("/administrators")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    public Boolean authenticateAdminUser() {
+        return true;
+    }
+
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
     public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return userFinder.findBySearchCriteria(search, start, size, orderBy, isDesc);
         else
@@ -295,8 +310,8 @@ public class Users {
     private void sendMail(User user, Mails mailType) {
         MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(mailType.name(), user.getPreferredLocale());
 
-        if (mailTemplate == null){
-            LOG.debug("Mail template " + mailType + " is not configured." );
+        if (mailTemplate == null) {
+            LOG.debug("Mail template " + mailType + " is not configured.");
             return;
         }
 
