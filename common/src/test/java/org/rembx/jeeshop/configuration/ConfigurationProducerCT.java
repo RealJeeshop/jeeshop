@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Injection test using weld container
  */
-public class ConfigurationProducerIT {
+public class ConfigurationProducerCT {
 
     protected static Weld weld;
     protected static WeldContainer container;

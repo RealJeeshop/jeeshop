@@ -1,7 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import com.google.common.collect.Sets;
-import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,15 +23,17 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
 
-public class OrdersIT {
+public class OrdersCT {
 
     private static EntityManagerFactory emf;
     private static EntityManagerFactory catalogEmf;
@@ -72,7 +72,7 @@ public class OrdersIT {
 
     @Test
     public void find() throws Exception {
-        assertThat(service.find(1L,null)).isEqualTo(testOrder.firstOrder());
+        assertThat(service.find(1L, null)).isEqualTo(testOrder.firstOrder());
     }
 
     @Test
@@ -87,29 +87,29 @@ public class OrdersIT {
     @Test
     public void find_withUnknownId_ShouldThrowException() throws Exception {
         try {
-            service.find(999L,null);
+            service.find(999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
     public void find_whenClientHasUserRoleAndOrderBelongsToAnotherUser_ShouldThrowException() throws Exception {
         entityManager.getTransaction().begin();
-        User user = new User("777@test.com", "test","M.", "John", "Doe", "+33616161616",null,null,"fr_FR",null);
+        User user = new User("777@test.com", "test", "M.", "John", "Doe", "+33616161616", null, null, "fr_FR", null);
         entityManager.persist(user);
-            entityManager.getTransaction().commit();
+        entityManager.getTransaction().commit();
 
-            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-            when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl("777@test.com"));
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl("777@test.com"));
         try {
-            service.find(1L,null);
+            service.find(1L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
-        }finally {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
+        } finally {
             entityManager.getTransaction().begin();
             entityManager.remove(user);
             entityManager.persist(user);
@@ -230,7 +230,7 @@ public class OrdersIT {
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(null, 0, 1, null, null,OrderStatus.CREATED, null, null);
+        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.secondOrder());
     }
@@ -252,14 +252,14 @@ public class OrdersIT {
         address.setId(777L);
         OrderItem orderItemWithId = new OrderItem();
         orderItemWithId.setId(777L);
-        Set<OrderItem> orderItems = Sets.newHashSet(orderItemWithId);
+        Set<OrderItem> orderItems = Collections.singleton(orderItemWithId);
 
         try {
             Order order = new Order(null, address, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
             service.create(order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
 
         try {
@@ -267,7 +267,7 @@ public class OrdersIT {
             service.create(order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
 
         try {
@@ -275,7 +275,7 @@ public class OrdersIT {
             service.create(order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
     }
 
@@ -318,10 +318,9 @@ public class OrdersIT {
     @Test
     public void create_shouldPersistOrderWithOrderItems_computePrice_andProcessPayment() throws Exception {
 
-        Set<OrderItem> orderItems = Sets.newHashSet(
-                new OrderItem(1L, 1L, 2),
-                new OrderItem(2L, 2L, 3)
-        );
+        Set<OrderItem> orderItems = new HashSet<>();
+        orderItems.add(new OrderItem(1L, 1L, 2));
+        orderItems.add(new OrderItem(2L, 2L, 3));
 
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
@@ -345,11 +344,9 @@ public class OrdersIT {
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
         OrderItem expectedOrderItem1 = new OrderItem(1L, 1L, 2);
-        expectedOrderItem1.setId(2L);
         OrderItem expectedOrderItem2 = new OrderItem(2L, 2L, 3);
-        expectedOrderItem2.setId(3L);
 
-        assertThat(persistedOrder.getItems()).contains(expectedOrderItem1, expectedOrderItem2);
+        assertThat(persistedOrder.getItems()).hasSize(2);
 
         entityManager.getTransaction().begin();
         entityManager.remove(order);
@@ -398,7 +395,7 @@ public class OrdersIT {
         service.delete(order.getId());
         entityManager.getTransaction().commit();
 
-        Assertions.assertThat(entityManager.find(Order.class, order.getId())).isNull();
+        assertThat(entityManager.find(Order.class, order.getId())).isNull();
     }
 
     @Test
@@ -410,7 +407,7 @@ public class OrdersIT {
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -423,7 +420,7 @@ public class OrdersIT {
             service.modify(detachedOrder);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -433,15 +430,15 @@ public class OrdersIT {
         assertThat(order.getVat()).isEqualTo(20.0);
 
         order.getItems().forEach(orderItem -> {
-                    Assertions.assertThat(orderItem.getDisplayName()).isNotNull();
-                    Assertions.assertThat(orderItem.getSkuReference()).isNotNull();
+                    assertThat(orderItem.getDisplayName()).isNotNull();
+                    assertThat(orderItem.getSkuReference()).isNotNull();
 
                 }
         );
 
         order.getOrderDiscounts().forEach(orderDiscount -> {
-                    Assertions.assertThat(orderDiscount.getDisplayName()).isNotNull();
-                    Assertions.assertThat(orderDiscount.getRateType()).isNotNull();
+                    assertThat(orderDiscount.getDisplayName()).isNotNull();
+                    assertThat(orderDiscount.getRateType()).isNotNull();
                 }
         );
     }

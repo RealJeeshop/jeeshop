@@ -1,11 +1,12 @@
 package org.rembx.jeeshop.catalog;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.expr.ComparableExpressionBase;
-import com.mysema.query.types.expr.SimpleExpression;
-import com.mysema.query.types.path.EntityPathBase;
-import com.mysema.query.types.path.ListPath;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.querydsl.core.types.dsl.ListPath;
+import com.querydsl.core.types.dsl.SimpleExpression;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -34,17 +35,17 @@ public class CatalogItemFinder {
         this.entityManager = entityManager;
     }
 
-    public <T extends CatalogItem> List<T> findVisibleCatalogItems(EntityPathBase<T> entityPathBase, List<T> items, String locale) {
-        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+    public <T extends CatalogItem> List<T> findVisibleCatalogItems(EntityPath<T> entityPath, List<T> items, String locale) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
         Date now = new Date();
-        List<T> results = new JPAQuery(entityManager)
-                .from(qCatalogItem).where(
+        List<T> results = new JPAQueryFactory(entityManager)
+                .selectFrom(entityPath).where(
                         qCatalogItem.disabled.isFalse(),
                         qCatalogItem.endDate.after(now).or(qCatalogItem.endDate.isNull()),
                         qCatalogItem.startDate.before(now).or(qCatalogItem.startDate.isNull()),
                         qCatalogItem.in(items)
                 )
-                .list(entityPathBase);
+                .fetch();
 
         results.forEach((catalogItem) -> catalogItem.setLocalizedPresentation(locale));
 
@@ -52,50 +53,50 @@ public class CatalogItemFinder {
 
     }
 
-    public <T extends CatalogItem> List<T> findAll(EntityPathBase<T> entityPathBase, Integer offset, Integer limit,String orderBy, Boolean isDesc) {
-        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+    public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
-        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
+        JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath);
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.list(entityPathBase);
+        return query.fetch();
     }
 
 
-    public <T extends CatalogItem, P extends CatalogItem> List<P> findForeignHolder(EntityPathBase<P> hp,
+    public <T extends CatalogItem, P extends CatalogItem> List<P> findForeignHolder(EntityPath<P> hp,
                                                                                     ListPath<T, ? extends SimpleExpression<T>> h, T c) {
 
-        return new JPAQuery(entityManager)
-                .from(hp)
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(hp)
                 .where(h.contains(c))
-                .list(hp);
+                .fetch();
     }
 
-    public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPathBase<T> entityPathBase, String searchCriteria,
+    public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPath<T> entityPath, String searchCriteria,
                                                                 Integer offset, Integer limit, String orderBy, Boolean isDesc) {
-        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
-        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem)
+        JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath)
                 .where(buildSearchPredicate(searchCriteria, qCatalogItem));
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.list(entityPathBase);
+        return query.fetch();
     }
 
-    public Long countAll(EntityPathBase<? extends CatalogItem> entityPathBase) {
-        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
-        JPAQuery query = new JPAQuery(entityManager).from(qCatalogItem);
-        return query.count();
+    public Long countAll(EntityPath<? extends CatalogItem> entityPath) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        JPAQuery query = new JPAQueryFactory(entityManager).selectFrom(qCatalogItem);
+        return query.fetchCount();
     }
 
-    public Long countBySearchCriteria(EntityPathBase<? extends CatalogItem> entityPathBase, String searchCriteria) {
-        QCatalogItem qCatalogItem = new QCatalogItem(entityPathBase);
-        JPAQuery query = new JPAQuery(entityManager)
-                .from(qCatalogItem)
+    public Long countBySearchCriteria(EntityPath<? extends CatalogItem> entityPath, String searchCriteria) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        JPAQuery query = new JPAQueryFactory(entityManager)
+                .selectFrom(qCatalogItem)
                 .where(buildSearchPredicate(searchCriteria, qCatalogItem));
-        return query.count();
+        return query.fetchCount();
     }
 
     public <T extends CatalogItem> T filterVisible(T catalogItem, String locale) {
@@ -133,7 +134,7 @@ public class CatalogItemFinder {
         return searchPredicate;
     }
 
-    private void sortBy(String orderby, Boolean isDesc, JPAQuery query, QCatalogItem qCatalogItem) {
+    private <T extends CatalogItem> void sortBy(String orderby, Boolean isDesc, JPAQuery<T> query, QCatalogItem qCatalogItem) {
 
         Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
             put("id", qCatalogItem.id);

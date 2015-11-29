@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class MailerIT {
+public class MailerCT {
     
-    Logger LOG = LoggerFactory.getLogger(MailerIT.class);
+    Logger LOG = LoggerFactory.getLogger(MailerCT.class);
 
     protected static Weld weld;
     protected static WeldContainer container;

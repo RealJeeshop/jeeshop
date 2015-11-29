@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.test.Assertions;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
 import javax.persistence.EntityManager;
@@ -16,11 +15,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
-public class CatalogsIT {
+public class CatalogsCT {
 
     private Catalogs service;
 
@@ -87,8 +86,8 @@ public class CatalogsIT {
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
         Catalog catalog = service.find(testCatalog.getId(), null);
-        Assertions.assertThat(catalog).isNotNull();
-        Assertions.assertThat(catalog.isVisible()).isTrue();
+        assertThat(catalog).isNotNull();
+        assertThat(catalog.isVisible()).isTrue();
     }
 
     @Test
@@ -111,7 +110,7 @@ public class CatalogsIT {
             service.modify(detachedCatalogToModify);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -161,7 +160,7 @@ public class CatalogsIT {
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
         }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 

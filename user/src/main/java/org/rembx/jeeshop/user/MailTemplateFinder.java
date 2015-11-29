@@ -1,7 +1,8 @@
 package org.rembx.jeeshop.user;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.ComparableExpressionBase;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.rembx.jeeshop.user.model.QMailTemplate.mailTemplate;
-import static org.rembx.jeeshop.user.model.QUser.user;
 
 /**
  * Newsletter finder utility
@@ -41,27 +41,27 @@ public class MailTemplateFinder {
 
     public MailTemplate findByNameAndLocale(String name, String locale) {
 
-        if (locale == null){
+        if (locale == null) {
             locale = DEFAULT_LOCALE;
         }
 
-        return new JPAQuery(entityManager)
-                .from(mailTemplate).where(
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(mailTemplate).where(
                         mailTemplate.name.eq(name)
-                .and(mailTemplate.locale.eq(locale).or(mailTemplate.locale.startsWith(locale))))
-                .singleResult(mailTemplate);
+                                .and(mailTemplate.locale.eq(locale).or(mailTemplate.locale.startsWith(locale))))
+                .fetchOne();
     }
 
     public List<MailTemplate> findByName(String name) {
 
-        return new JPAQuery(entityManager)
-                .from(mailTemplate).where(
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(mailTemplate).where(
                         mailTemplate.name.startsWith(name))
-                .list(mailTemplate);
+                .fetch();
     }
 
     public List<MailTemplate> findAll(Integer offset, Integer limit, String orderBy, Boolean isDesc) {
-        JPAQuery query = new JPAQuery(entityManager).from(mailTemplate);
+        JPAQuery<MailTemplate> query = new JPAQueryFactory(entityManager).selectFrom(mailTemplate);
 
         if (offset != null)
             query.offset(offset);
@@ -70,16 +70,16 @@ public class MailTemplateFinder {
 
         sortBy(orderBy, isDesc, query);
 
-        return query.list(mailTemplate);
+        return query.fetch();
 
     }
 
     public Long countAll() {
-        JPAQuery query = new JPAQuery(entityManager).from(mailTemplate);
-        return query.count();
+        JPAQuery query = new JPAQueryFactory(entityManager).selectFrom(mailTemplate);
+        return query.fetchCount();
     }
 
-    private void sortBy(String orderby, Boolean isDesc, JPAQuery query) {
+    private void sortBy(String orderby, Boolean isDesc, JPAQuery<MailTemplate> query) {
         if (orderby != null && sortProperties.containsKey(orderby)) {
             if (isDesc) {
                 query.orderBy(sortProperties.get(orderby).desc());

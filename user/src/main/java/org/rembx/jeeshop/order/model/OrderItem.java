@@ -158,4 +158,18 @@ public class OrderItem {
         result = 31 * result + (price != null ? price.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", skuId=" + skuId +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", displayName='" + displayName + '\'' +
+                ", skuReference='" + skuReference + '\'' +
+                ", presentationImageURI='" + presentationImageURI + '\'' +
+                '}';
+    }
 }

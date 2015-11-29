@@ -1,8 +1,9 @@
 package org.rembx.jeeshop.user;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.expr.ComparableExpressionBase;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
@@ -46,14 +47,14 @@ public class UserFinder {
     }
 
     public User findByLogin(String login) {
-        return new JPAQuery(entityManager)
-                .from(user).where(
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(user).where(
                         user.login.eq(login))
-                .singleResult(user);
+                .fetchOne();
     }
 
     public List<User> findAll(Integer offset, Integer limit, String orderBy, Boolean isDesc) {
-        JPAQuery query = new JPAQuery(entityManager).from(user);
+        JPAQuery<User> query = new JPAQueryFactory(entityManager).selectFrom(user);
 
         if (offset != null)
             query.offset(offset);
@@ -62,24 +63,24 @@ public class UserFinder {
 
         sortBy(orderBy, isDesc, query);
 
-        return query.list(user);
+        return query.fetch();
 
     }
 
     public Long countAll() {
-        JPAQuery query = new JPAQuery(entityManager).from(user);
-        return query.count();
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(user)
+                .fetchCount();
     }
 
     public Long countBySearchCriteria(String searchCriteria) {
-        JPAQuery query = new JPAQuery(entityManager)
-                .from(user)
+        JPAQuery<User> query = new JPAQueryFactory(entityManager).selectFrom(user)
                 .where(buildSearchPredicate(searchCriteria));
-        return query.count();
+        return query.fetchCount();
     }
 
-    public List<User> findBySearchCriteria(String searchCriteria, Integer offset, Integer limit,String orderBy, Boolean isDesc) {
-        JPAQuery query = new JPAQuery(entityManager).from(user)
+    public List<User> findBySearchCriteria(String searchCriteria, Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+        JPAQuery<User> query = new JPAQueryFactory(entityManager).selectFrom(user)
                 .where(buildSearchPredicate(searchCriteria));
 
         if (offset != null)
@@ -89,16 +90,16 @@ public class UserFinder {
 
         sortBy(orderBy, isDesc, query);
 
-        return query.list(user);
+        return query.fetch();
     }
 
     private BooleanExpression buildSearchPredicate(String search) {
-        return  user.login.containsIgnoreCase(search)
+        return user.login.containsIgnoreCase(search)
                 .or(user.firstname.containsIgnoreCase(search))
                 .or(user.lastname.containsIgnoreCase(search));
     }
 
-    private void sortBy(String orderby, Boolean isDesc, JPAQuery query) {
+    private void sortBy(String orderby, Boolean isDesc, JPAQuery<User> query) {
         if (orderby != null && sortProperties.containsKey(orderby)) {
             if (isDesc) {
                 query.orderBy(sortProperties.get(orderby).desc());

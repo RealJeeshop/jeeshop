@@ -17,12 +17,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class MailTemplatesIT {
+public class MailTemplatesCT {
 
     private MailTemplates service;
 
@@ -58,7 +58,7 @@ public class MailTemplatesIT {
 
     @Test
     public void findByName_shouldReturnMatchingMailTemplate() {
-        List<MailTemplate> newsletters = service.findAll(testMailTemplate.firstMailTemplate().getName(),null,null, null, null);
+        List<MailTemplate> newsletters = service.findAll(testMailTemplate.firstMailTemplate().getName(), null, null, null, null);
         assertThat(newsletters).containsExactly(testMailTemplate.firstMailTemplate());
     }
 
@@ -69,12 +69,12 @@ public class MailTemplatesIT {
             service.find(999L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
-    public void count(){
+    public void count() {
         assertThat(service.count()).isGreaterThan(0);
     }
 
@@ -85,9 +85,9 @@ public class MailTemplatesIT {
     }
 
     @Test
-    public void create_shouldPersist(){
+    public void create_shouldPersist() {
 
-        MailTemplate mailTemplate = new MailTemplate("TestNewsletter","en_GB","test content","Test Subject");
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter", "en_GB", "test content", "Test Subject");
 
         entityManager.getTransaction().begin();
         service.create(mailTemplate);
@@ -98,22 +98,22 @@ public class MailTemplatesIT {
     }
 
     @Test
-    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndName(){
+    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndName() {
 
-        MailTemplate mailTemplate = new MailTemplate("Newsletter1","fr_FR","test content","Test Subject");
+        MailTemplate mailTemplate = new MailTemplate("Newsletter1", "fr_FR", "test content", "Test Subject");
 
         try {
             service.create(mailTemplate);
             fail("Should have thrown exception");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.CONFLICT);
         }
 
     }
 
     @Test
     public void modify_ShouldModify() {
-        MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2","fr_FR", "test2 content", "Test2 Subject");
+        MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2", "fr_FR", "test2 content", "Test2 Subject");
         detachedMailTemplateToModify.setId(testMailTemplate.firstMailTemplate().getId());
 
         service.modify(detachedMailTemplateToModify);
@@ -122,16 +122,16 @@ public class MailTemplatesIT {
 
 
     @Test
-    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndNameAndDifferentID(){
+    public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndNameAndDifferentID() {
 
-        MailTemplate mailTemplate = new MailTemplate(Mails.userRegistration.name(),"fr_FR","test content","Test Subject");
+        MailTemplate mailTemplate = new MailTemplate(Mails.userRegistration.name(), "fr_FR", "test content", "Test Subject");
         mailTemplate.setId(testMailTemplate.firstMailTemplate().getId());
 
         try {
             service.modify(mailTemplate);
             fail("Should have thrown exception");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.CONFLICT);
         }
 
     }
@@ -144,15 +144,15 @@ public class MailTemplatesIT {
         try {
             service.modify(detachedMailTemplate);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
-    public void delete_shouldRemove(){
+    public void delete_shouldRemove() {
         entityManager.getTransaction().begin();
-        MailTemplate mailTemplate = new MailTemplate("TestNewsletter3","fr_FR","test content 3","Test Subject3");
+        MailTemplate mailTemplate = new MailTemplate("TestNewsletter3", "fr_FR", "test content 3", "Test Subject3");
         entityManager.persist(mailTemplate);
         entityManager.getTransaction().commit();
 
@@ -164,43 +164,42 @@ public class MailTemplatesIT {
     }
 
     @Test
-    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
         try {
             entityManager.getTransaction().begin();
             service.delete(666L);
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
-    public void sendTestEmail_shouldSendMailFromFTLAndPropertiesToRecipient() throws Exception{
+    public void sendTestEmail_shouldSendMailFromFTLAndPropertiesToRecipient() throws Exception {
 
         String recipient = "toto@toto.com";
         User user = new User();
         user.setGender("Miss");
         user.setFirstname("Jane");
         user.setLastname("Doe");
-        service.sendTestEmail(user, Mails.userRegistration.name(),"fr_FR",recipient);
+        service.sendTestEmail(user, Mails.userRegistration.name(), "fr_FR", recipient);
 
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), recipient, "<html><body>Welcome Miss Jane Doe</body></html>");
     }
 
     @Test
-    public void sendTestEmail_shouldThrowNotFoundExWhenNoMailTemplateFoundForGivenParams() throws Exception{
+    public void sendTestEmail_shouldThrowNotFoundExWhenNoMailTemplateFoundForGivenParams() throws Exception {
 
-        try{
-            service.sendTestEmail(null, "unknown","fr_FR","toto@toto.com");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        try {
+            service.sendTestEmail(null, "unknown", "fr_FR", "toto@toto.com");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
             return;
         }
         fail("Should have thrown NOT_FOUND WebApplicationException");
 
     }
-
 
 
 }

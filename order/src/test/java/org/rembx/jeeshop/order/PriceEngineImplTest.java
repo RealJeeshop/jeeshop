@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.DiscountFinder;
@@ -9,9 +8,11 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 
 import javax.persistence.EntityManager;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class PriceEngineImplTest { // TODO complete discounts application test
@@ -25,13 +26,13 @@ public class PriceEngineImplTest { // TODO complete discounts application test
 
 
     @Before
-    public void setup(){
-        entityManager =  mock(EntityManager.class);
-        orderConfiguration =  mock(OrderConfiguration.class);
+    public void setup() {
+        entityManager = mock(EntityManager.class);
+        orderConfiguration = mock(OrderConfiguration.class);
         orderFinder = mock(OrderFinder.class);
         discountFinder = mock(DiscountFinder.class);
 
-        orderPriceEngine = new PriceEngineImpl(entityManager,orderConfiguration, orderFinder, discountFinder);
+        orderPriceEngine = new PriceEngineImpl(entityManager, orderConfiguration, orderFinder, discountFinder);
     }
 
 
@@ -48,7 +49,10 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(11.0);
 
         Order order = new Order();
-        order.setItems(Sets.newHashSet(new OrderItem(1L,1L, 1), new OrderItem(2L,2L, 2)));
+        Set<OrderItem> items = new HashSet<>();
+        items.add(new OrderItem(1L, 1L, 1));
+        items.add(new OrderItem(2L, 2L, 2));
+        order.setItems(items);
 
         orderPriceEngine.computePrice(order);
 
@@ -75,7 +79,10 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         when(orderConfiguration.getFixedDeliveryFee()).thenReturn(null);
 
         Order order = new Order();
-        order.setItems(Sets.newHashSet(new OrderItem(1L,1L, 1), new OrderItem(2L,2L, 2)));
+        Set<OrderItem> items = new HashSet<>();
+        items.add(new OrderItem(1L, 1L, 1));
+        items.add(new OrderItem(2L, 2L, 2));
+        order.setItems(items);
 
         orderPriceEngine.computePrice(order);
 
@@ -85,7 +92,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         verify(orderConfiguration).getFixedDeliveryFee();
 
         assertThat(order.getPrice()).isEqualTo(50.0);
-        for (OrderItem item : order.getItems()){
+        for (OrderItem item : order.getItems()) {
             if (item.getSkuId().equals(1L))
                 assertThat(item.getPrice()).isEqualTo(10.0);
             else
@@ -101,7 +108,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
         try {
             orderPriceEngine.computePrice(order);
             fail("Should have thrown ex");
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
         }
     }
 }

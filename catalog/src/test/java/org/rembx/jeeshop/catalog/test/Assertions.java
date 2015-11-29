@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by remi on 25/05/14.
  */
-public class Assertions extends org.fest.assertions.Assertions {
+public class Assertions extends org.assertj.core.api.Assertions{
 
     public static TestCatalog.CatalogItemAssert assertThat(CatalogItem catalogItem) {
         return new TestCatalog.CatalogItemAssert(catalogItem);

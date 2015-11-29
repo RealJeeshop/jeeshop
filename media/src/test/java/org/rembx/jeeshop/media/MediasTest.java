@@ -9,7 +9,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public class MediasTest {

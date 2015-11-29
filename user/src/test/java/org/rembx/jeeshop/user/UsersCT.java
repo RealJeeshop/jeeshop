@@ -22,13 +22,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 
-public class UsersIT {
+public class UsersCT {
 
     private Users service;
 
@@ -52,24 +52,24 @@ public class UsersIT {
         mailerMock = mock(Mailer.class);
         sessionContextMock = mock(SessionContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
-                new CountryChecker("FRA,GBR"),new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
+                new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null,null,null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<User> users = service.findAll(null, 0, 1,null,null);
+        List<User> users = service.findAll(null, 0, 1, null, null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLogin(), 0, 1,null,null);
+        List<User> users = service.findAll(testUser.firstUser().getLogin(), 0, 1, null, null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
@@ -77,14 +77,14 @@ public class UsersIT {
 
     @Test
     public void findAll_ByFirstName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getFirstname(), 0, 1,null,null);
+        List<User> users = service.findAll(testUser.firstUser().getFirstname(), 0, 1, null, null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
 
     @Test
     public void findAll_ByLastName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLastname(), 0, 1,null,null);
+        List<User> users = service.findAll(testUser.firstUser().getLastname(), 0, 1, null, null);
         assertThat(users).isNotEmpty();
         assertThat(users).containsExactly(testUser.firstUser());
     }
@@ -100,23 +100,23 @@ public class UsersIT {
             service.find(999L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
-    public void count(){
+    public void count() {
         assertThat(service.count(null)).isGreaterThan(0);
     }
 
 
     @Test
-    public void count_withUnknownSearchCriteria(){
+    public void count_withUnknownSearchCriteria() {
         assertThat(service.count("unknown")).isEqualTo(0);
     }
 
     @Test
-    public void create_shouldThrowBadRequestExWhenUserHasAnId() throws Exception{
+    public void create_shouldThrowBadRequestExWhenUserHasAnId() throws Exception {
 
         User user = new User();
         user.setId(777L);
@@ -124,13 +124,13 @@ public class UsersIT {
         try {
             service.create(user);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
     }
 
     @Test
-    public void create_shouldThrowConflictExWhenUserWithGivenLoginAlreadyExists() throws Exception{
+    public void create_shouldThrowConflictExWhenUserWithGivenLoginAlreadyExists() throws Exception {
 
         User user = new User();
         user.setLogin("test@test.com");
@@ -138,13 +138,13 @@ public class UsersIT {
         try {
             service.create(user);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.CONFLICT.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.CONFLICT);
         }
     }
 
     @Test
-    public void create_shouldThrowBadRequestExceptionExWhenUsersCountryIsNotAvailable() throws Exception{
+    public void create_shouldThrowBadRequestExceptionExWhenUsersCountryIsNotAvailable() throws Exception {
 
         User user = new User();
         user.setLogin("toto@toto.com");
@@ -155,13 +155,13 @@ public class UsersIT {
         try {
             service.create(user);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
     }
 
     @Test
-    public void create_shouldThrowBadRequestExceptionExWhenUserAddressHasAnId() throws Exception{
+    public void create_shouldThrowBadRequestExceptionExWhenUserAddressHasAnId() throws Exception {
 
         User user = new User();
         user.setLogin("toto@toto.com");
@@ -172,15 +172,15 @@ public class UsersIT {
         try {
             service.create(user);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
         }
     }
 
     @Test
-    public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception{
+    public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception {
 
-        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
@@ -196,9 +196,9 @@ public class UsersIT {
     }
 
     @Test
-    public void create_shouldPersistEndUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception{
+    public void create_shouldPersistEndUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception {
 
-        User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
 
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
@@ -218,12 +218,12 @@ public class UsersIT {
     }
 
     @Test
-    public void create_shouldJustPersistEndUserEvenWhenExceptionDuringMailSending() throws Exception{
+    public void create_shouldJustPersistEndUserEvenWhenExceptionDuringMailSending() throws Exception {
 
-        User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
 
-        Address address = new Address("7 blue street", "Nowhere", "00001", "John", "Doe","M.",null, "FRA");
+        Address address = new Address("7 blue street", "Nowhere", "00001", "John", "Doe", "M.", null, "FRA");
 
         user.setAddress(address);
 
@@ -246,9 +246,9 @@ public class UsersIT {
     }
 
     @Test
-    public void activate_shouldActivateUserAndClearActionToken() throws Exception{
+    public void activate_shouldActivateUserAndClearActionToken() throws Exception {
 
-        User user = new User("activate1@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("activate1@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
 
         final UUID actionToken = UUID.randomUUID();
@@ -270,20 +270,20 @@ public class UsersIT {
 
 
     @Test
-    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception{
+    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception {
 
         try {
             service.activate("unknown_login", UUID.randomUUID().toString());
             fail("should have thrown ex");
-        }catch(WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
 
     }
 
 
     @Test
-    public void sendResetPasswordMail_shouldGenerateActionTokenAndSendResetPasswordMail() throws Exception{
+    public void sendResetPasswordMail_shouldGenerateActionTokenAndSendResetPasswordMail() throws Exception {
 
         entityManager.getTransaction().begin();
         service.sendResetPasswordMail(testUser.firstUser().getLogin());
@@ -301,23 +301,23 @@ public class UsersIT {
     }
 
     @Test
-    public void sendResetPasswordMail_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception{
+    public void sendResetPasswordMail_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception {
 
         try {
             service.sendResetPasswordMail("unknown_login");
             fail("should have thrown ex");
-        }catch(WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
 
     }
 
     @Test
-    public void resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() throws Exception{
+    public void resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() throws Exception {
 
         User user = notActivatedTestUser();
 
-        service.resetPassword(user.getLogin(), user.getActionToken().toString(),"newPassword");
+        service.resetPassword(user.getLogin(), user.getActionToken().toString(), "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
@@ -331,7 +331,7 @@ public class UsersIT {
     }
 
     @Test
-    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedUser() throws Exception{
+    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedUser() throws Exception {
 
         User user = notActivatedTestUser();
 
@@ -349,7 +349,7 @@ public class UsersIT {
     }
 
     @Test
-    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedADMINUser() throws Exception{
+    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedADMINUser() throws Exception {
 
         User user = notActivatedTestUser();
 
@@ -366,13 +366,13 @@ public class UsersIT {
     }
 
     @Test
-    public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception{
+    public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception {
 
         try {
-            service.resetPassword("unknown_login",null,null);
+            service.resetPassword("unknown_login", null, null);
             fail("should have thrown ex");
-        }catch(WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -385,14 +385,14 @@ public class UsersIT {
 
             service.resetPassword("not_matching_login", null, null);
             fail("should have thrown ex");
-        }catch(WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
         }
     }
 
     @Test
     public void modifyUser_ShouldModifyUser() {
-        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
 
         detachedUserToModify.setId(testUser.firstUser().getId());
 
@@ -402,38 +402,38 @@ public class UsersIT {
 
     @Test
     public void modifyUnknownUser_ShouldThrowNotFoundException() {
-        User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
 
         detachedUser.setId(9999L);
         try {
             service.modify(detachedUser);
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
     @Test
     public void modify_ShouldThrowUnauthorizedError_WhenAuthenticatedUserDoesNotMatchLogin() throws Exception {
 
-        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
-        
+        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
+
         try {
             when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
             when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
 
             service.modify(detachedUserToModify);
-            
+
             fail("should have thrown ex");
-        }catch(WebApplicationException e){
-            assertThat(e.getResponse().getStatus()).isEqualTo(Response.Status.UNAUTHORIZED.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
         }
     }
 
     @Test
-    public void delete_shouldRemove(){
+    public void delete_shouldRemove() {
         entityManager.getTransaction().begin();
-        User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
         entityManager.persist(user);
         entityManager.getTransaction().commit();
@@ -446,14 +446,14 @@ public class UsersIT {
     }
 
     @Test
-    public void delete_NotExistingEntry_shouldThrowNotFoundEx(){
+    public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
         try {
             entityManager.getTransaction().begin();
             service.delete(666L);
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
-        }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -465,7 +465,7 @@ public class UsersIT {
     }
 
     private User notActivatedTestUser() {
-        User user = new User("reset1@test.com", "password", "John", "Doe", "+33616161616",null,new Date(),"fr_FR",null);
+        User user = new User("reset1@test.com", "password", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
 
         final UUID actionToken = UUID.randomUUID();
@@ -478,7 +478,7 @@ public class UsersIT {
         return user;
     }
 
-    private void removeTestUser(User user){
+    private void removeTestUser(User user) {
         entityManager.getTransaction().begin();
         entityManager.remove(user);
         entityManager.getTransaction().commit();

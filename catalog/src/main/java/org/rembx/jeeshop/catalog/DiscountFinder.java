@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
-import com.mysema.query.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
@@ -12,9 +12,6 @@ import java.util.List;
 
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 
-/**
- * Created by remi on 21/12/14.
- */
 public class DiscountFinder {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
@@ -34,21 +31,18 @@ public class DiscountFinder {
      * @return the visible discounts: not disabled, with startDate and endDate respectively before and after now and without
      * voucher code
      */
-    public List<Discount> findVisibleDiscounts( ApplicableTo applicableTo, String locale) {
+    public List<Discount> findVisibleDiscounts(ApplicableTo applicableTo, String locale) {
         Date now = new Date();
-        List<Discount> results = new JPAQuery(entityManager)
-                .from(discount).where(
+        List<Discount> results = new JPAQueryFactory(entityManager)
+                .selectFrom(discount).where(
                         discount.disabled.isFalse(),
                         discount.endDate.after(now).or(discount.endDate.isNull()),
                         discount.startDate.before(now).or(discount.startDate.isNull()),
                         discount.applicableTo.eq(applicableTo),
                         discount.voucherCode.isNull()
-                )
-                .list(discount);
+                ).fetch();
 
-        results.forEach((discount) -> {
-            discount.setLocalizedPresentation(locale);
-        });
+        results.forEach((discount) -> discount.setLocalizedPresentation(locale));
 
         return results;
 
@@ -64,22 +58,20 @@ public class DiscountFinder {
      */
     public List<Discount> findEligibleOrderDiscounts(String locale, Long completedOrderNumbers) {
         Date now = new Date();
-        List<Discount> results = new JPAQuery(entityManager)
-                .from(discount).where(
+        List<Discount> results = new JPAQueryFactory(entityManager)
+                .selectFrom(discount).where(
                         discount.disabled.isFalse(),
                         discount.endDate.after(now).or(discount.endDate.isNull()),
                         discount.startDate.before(now).or(discount.startDate.isNull()),
                         discount.applicableTo.eq(ApplicableTo.ORDER),
                         discount.triggerRule.ne(Discount.Trigger.ORDER_NUMBER).or(
-                                discount.triggerValue.eq(completedOrderNumbers.doubleValue() +1)
+                                discount.triggerValue.eq(completedOrderNumbers.doubleValue() + 1)
                         ),
                         discount.voucherCode.isNull()
                 )
-                .list(discount);
+                .fetch();
 
-        results.forEach((discount) -> {
-            discount.setLocalizedPresentation(locale);
-        });
+        results.forEach((discount) -> discount.setLocalizedPresentation(locale));
 
         return results;
 

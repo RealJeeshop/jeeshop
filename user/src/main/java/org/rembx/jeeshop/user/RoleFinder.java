@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.user;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-import org.rembx.jeeshop.user.model.*;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.rembx.jeeshop.user.model.Role;
+import org.rembx.jeeshop.user.model.RoleName;
+import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 import static org.rembx.jeeshop.user.model.QRole.role;
 
@@ -26,10 +26,10 @@ public class RoleFinder {
     }
 
     public Role findByName(RoleName name) {
-        return new JPAQuery(entityManager)
-                .from(role).where(
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(role).where(
                         role.name.eq(name))
-                .singleResult(role);
+                .fetchOne();
     }
 
 }

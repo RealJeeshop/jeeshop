@@ -16,9 +16,9 @@ import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class PresentationResourceIT {
+public class PresentationResourceCT {
 
     private PresentationResource service;
 

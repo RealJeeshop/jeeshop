@@ -1,8 +1,9 @@
 package org.rembx.jeeshop.order;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.expr.BooleanExpression;
-import com.mysema.query.types.expr.ComparableExpressionBase;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
@@ -12,8 +13,6 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -28,8 +27,6 @@ import static org.rembx.jeeshop.order.model.QOrder.order;
  * Order finder utility
  */
 public class OrderFinder {
-
-    private final static Logger LOG = LoggerFactory.getLogger(OrderFinder.class);
 
     @Inject
     private OrderConfiguration orderConfiguration;
@@ -61,22 +58,22 @@ public class OrderFinder {
 
 
     public Long countUserCompletedOrders(User user) {
-        return new JPAQuery(entityManager)
-                .from(order)
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(order)
                 .where(
                         order.user.eq(user),
                         order.status.notIn(OrderStatus.CREATED, OrderStatus.CANCELLED, OrderStatus.RETURNED))
-                .count();
+                .fetchCount();
     }
 
     public Long countAll(String searchCriteria, OrderStatus status, Long skuId) {
-        JPAQuery query = new JPAQuery(entityManager).from(order)
+        JPAQuery<Order> query = new JPAQueryFactory(entityManager).selectFrom(order)
                 .where(matchesSearchAndStatusAndItemsSkuId(searchCriteria, status, skuId));
-        return query.count();
+        return query.fetchCount();
     }
 
     public List<Order> findAll(Integer offset, Integer limit, String orderby, Boolean isDesc, String searchCriteria, OrderStatus status, Long skuId, boolean enhanceResult) {
-        JPAQuery query = new JPAQuery(entityManager).from(order)
+        JPAQuery<Order> query = new JPAQueryFactory(entityManager).selectFrom(order)
                 .where(matchesSearchAndStatusAndItemsSkuId(searchCriteria, status, skuId));
 
         if (offset != null)
@@ -86,7 +83,7 @@ public class OrderFinder {
 
         sortBy(orderby, isDesc, query);
 
-        List<Order> orders = query.list(order);
+        List<Order> orders = query.fetch();
 
         if (enhanceResult)
             orders.forEach(this::enhanceOrder);
@@ -96,7 +93,7 @@ public class OrderFinder {
     }
 
     public List<Order> findByUser(User user, Integer offset, Integer limit, String orderby, Boolean isDesc, OrderStatus status) {
-        JPAQuery query = new JPAQuery(entityManager).from(order)
+        JPAQuery<Order> query = new JPAQueryFactory(entityManager).selectFrom(order)
                 .where(
                         order.user.eq(user),
                         status != null && status.equals(OrderStatus.CREATED) ? null : order.status.ne(OrderStatus.CREATED),
@@ -109,10 +106,7 @@ public class OrderFinder {
 
         sortBy(orderby, isDesc, query);
 
-        List<Order> orders = query.list(order);
-
-        return orders;
-
+        return query.fetch();
     }
 
     private BooleanExpression matchesSearchAndStatusAndItemsSkuId(String searchCriteria, OrderStatus status, Long skuId) {
@@ -132,7 +126,7 @@ public class OrderFinder {
     }
 
 
-    private void sortBy(String orderby, Boolean isDesc, JPAQuery query) {
+    private void sortBy(String orderby, Boolean isDesc, JPAQuery<Order> query) {
         if (orderby != null && sortProperties.containsKey(orderby)) {
             if (isDesc) {
                 query.orderBy(sortProperties.get(orderby).desc());

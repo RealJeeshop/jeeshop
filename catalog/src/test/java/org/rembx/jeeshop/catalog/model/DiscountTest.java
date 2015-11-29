@@ -2,7 +2,7 @@ package org.rembx.jeeshop.catalog.model;
 
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.rembx.jeeshop.catalog.model.Discount.ApplicableTo.ORDER;
 import static org.rembx.jeeshop.catalog.model.Discount.Trigger.AMOUNT;
 import static org.rembx.jeeshop.catalog.model.Discount.Type.DISCOUNT_RATE;

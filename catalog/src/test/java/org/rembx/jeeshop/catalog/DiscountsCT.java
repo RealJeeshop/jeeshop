@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.catalog;
 
-import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +21,7 @@ import static org.rembx.jeeshop.catalog.model.Discount.Trigger.QUANTITY;
 import static org.rembx.jeeshop.catalog.model.Discount.Type.DISCOUNT_RATE;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThat;
 
-public class DiscountsIT {
+public class DiscountsCT {
 
     private Discounts service;
 
@@ -78,7 +77,7 @@ public class DiscountsIT {
             service.modify(detachedDiscountToModify);
             fail("should have thrown ex");
         }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
@@ -116,7 +115,7 @@ public class DiscountsIT {
         service.delete(discount.getId());
         entityManager.getTransaction().commit();
 
-        Assertions.assertThat(entityManager.find(Discount.class, discount.getId())).isNull();
+        assertThat(entityManager.find(Discount.class, discount.getId())).isNull();
     }
 
     @Test
@@ -128,7 +127,7 @@ public class DiscountsIT {
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
         }catch (WebApplicationException e){
-            assertThat(e.getResponse().getStatus() == Response.Status.NOT_FOUND.getStatusCode());
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 

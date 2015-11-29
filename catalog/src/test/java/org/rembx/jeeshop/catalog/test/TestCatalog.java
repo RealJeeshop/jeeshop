@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.catalog.test;
 
-import org.fest.assertions.GenericAssert;
+import org.assertj.core.api.AbstractAssert;
 import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.rembx.jeeshop.catalog.model.Discount.ApplicableTo.ORDER;
 import static org.rembx.jeeshop.catalog.model.Discount.Trigger.AMOUNT;
 import static org.rembx.jeeshop.catalog.model.Discount.Type.DISCOUNT_RATE;
@@ -192,9 +192,9 @@ public class TestCatalog {
         return discount1;
     }
 
-    public static class CatalogItemAssert extends GenericAssert<CatalogItemAssert, CatalogItem> {
+    public static class CatalogItemAssert extends AbstractAssert<CatalogItemAssert, CatalogItem> {
         CatalogItemAssert(CatalogItem actual) {
-            super(CatalogItemAssert.class, actual);
+            super(actual, CatalogItemAssert.class);
         }
 
         public CatalogItemAssert hasLocalizedPresentationShortDescription(String locale, String text) {
@@ -204,10 +204,10 @@ public class TestCatalog {
         }
     }
 
-    public static class CategoriesAssert extends GenericAssert<CategoriesAssert, List<Category>> {
+    public static class CategoriesAssert extends AbstractAssert<CategoriesAssert, List<Category>> {
 
         CategoriesAssert(List<Category> actual) {
-            super(CategoriesAssert.class, actual);
+            super(actual, CategoriesAssert.class);
         }
 
         /**
@@ -229,10 +229,10 @@ public class TestCatalog {
 
     }
 
-    public static class ProductsAssert extends GenericAssert<ProductsAssert, List<Product>> {
+    public static class ProductsAssert extends AbstractAssert<ProductsAssert, List<Product>> {
 
         ProductsAssert(List<Product> actual) {
-            super(ProductsAssert.class, actual);
+            super(actual, ProductsAssert.class);
         }
 
         /**
@@ -245,10 +245,10 @@ public class TestCatalog {
 
     }
 
-    public static class SKUsAssert extends GenericAssert<SKUsAssert, List<SKU>> {
+    public static class SKUsAssert extends AbstractAssert<SKUsAssert, List<SKU>> {
 
         SKUsAssert(List<SKU> actual) {
-            super(SKUsAssert.class, actual);
+            super(actual, SKUsAssert.class);
         }
 
         /**
@@ -264,10 +264,10 @@ public class TestCatalog {
 
     }
 
-    public static class SKUDiscountsAssert extends GenericAssert<SKUDiscountsAssert, List<Discount>> {
+    public static class SKUDiscountsAssert extends AbstractAssert<SKUDiscountsAssert, List<Discount>> {
 
         SKUDiscountsAssert(List<Discount> actual) {
-            super(SKUDiscountsAssert.class, actual);
+            super(actual, SKUDiscountsAssert.class);
         }
 
         /**
