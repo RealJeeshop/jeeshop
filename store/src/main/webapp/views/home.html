@@ -13,15 +13,6 @@
                 <p ng-bind-html="'home.presentation' | translate"></p>
             </div>
         </div>
-        <div class="row no-marding">
-            <div class="col-md-12 presentation-link text-center">
-                <a ui-sref="categories">
-                    <button type="button" class="btn btn-primary" style="font-size: 1em">
-                        {{'page.categories.link' | translate}}
-                    </button>
-                </a>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -48,34 +39,4 @@
 </div>
 
 
-<div class="row no-marding" ng-controller="CarouselCategoriesCtrl">
-    <div class="categories-carousel">
-        <carousel interval="myInterval">
-            <slide ng-repeat="slide in slides" active="slide.active">
-                <div class="row">
-                    <div class="col-md-12" style="padding-top:1em">
-                        <h5>
-                            <span ng-bind-html="slide.localizedPresentation.promotion"></span>
-                        </h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8" style="text-align: center; padding-bottom:3em">
-                        <div style="float:left">
-                            <img class="product-box-img" style="height: auto; max-width:400px; width: 100%;"
-                             ng-src="/jeeshop-media/categories/{{slide.id}}/{{slide.localizedPresentation.locale}}/{{slide.localizedPresentation.smallImage.uri}}"/>
-                        </div>
-                        <div style="float:left; margin-left:5em">
-                            <button type="button" class="btn btn-primary" style="margin-top: 2em;margin-bottom: 1em"
-                                ng-controller="SubscriptionModalController as subscrCtrl"
-                                ng-click="(loginCtrl.isAuthenticated() && exploreCategory(slide.id)) || (!loginCtrl.isAuthenticated() && subscrCtrl.openSubscriptionModal())">
-                            {{'button.sale.access'|translate}}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </slide>
-        </carousel>
-    </div>
-</div>
+<root-categories></root-categories>

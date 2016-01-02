@@ -28,5 +28,6 @@
   "subscription.login.invalid": "L'identifiant doit faire au moins 8 caractères",
   "subscription.password.invalid": "Le mot de passe doit faire au moins 8 caractères",
   "subscription.confirmpassword.invalid": "Le mot de passe de confirmation ne correspond pas",
-  "page.categories.link" : "Voir les vélos et accessoires"
+  "menu.bikes" : "Vélos",
+  "menu.accessories" : "Accessoires"
 }

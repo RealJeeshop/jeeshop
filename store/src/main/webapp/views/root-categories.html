@@ -1,0 +1,20 @@
+<div class="row no-marding" ng-controller="RootCategoriesCtrl as rootCatCtrl">
+    <div>
+        <carousel interval="20000">
+            <slide ng-repeat="category in rootCatCtrl.rootCategories" active="category.active">
+                <div class="row">
+                    <div class="col-md-12 promotion" style="padding-top:1em">
+                        <h1 ng-bind-html="category.localizedPresentation.promotion | uppercase"
+                            ng-click="rootCatCtrl.openCategory(category.id)"></h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                            <img ng-src="/jeeshop-media/categories/{{category.id}}/{{category.localizedPresentation.locale}}/{{category.localizedPresentation.largeImage.uri}}"
+                                 ng-click="rootCatCtrl.openCategory(category.id)"/>
+                        </div>
+                </div>
+            </slide>
+        </carousel>
+    </div>
+</div>

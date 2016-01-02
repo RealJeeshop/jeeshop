@@ -28,5 +28,6 @@
   "subscription.login.invalid": "Login must be at least 8 characters long",
   "subscription.password.invalid": "Password must be at least 8 characters long",
   "subscription.confirmpassword.invalid": "Confirm password does not match",
-  "page.categories.link" : "Go to bikes and accessories"
+  "menu.bikes" : "Bikes",
+  "menu.accessories" : "Accessories"
 }

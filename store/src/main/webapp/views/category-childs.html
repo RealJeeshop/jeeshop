@@ -1,0 +1,38 @@
+<div ng-controller="CategoryChildsCtrl as catChildsCtrl">
+    <carousel interval="20000">
+        <slide ng-repeat="item in items" active="item.active">
+            <div class="row">
+                <div class="col-md-12 promotion" style="padding-top:1em">
+                    <h2 ng-bind-html="item.localizedPresentation.promotion | uppercase"
+                        ng-click="catChildsCtrl.openCategory(item)"></h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                    <img ng-src="{{catChildsCtrl.getLargeImageUri(item)}}"
+                         ng-click="catChildsCtrl.openCategory(item)"/>
+                </div>
+            </div>
+        </slide>
+    </carousel>
+</div>
+
+<div class="container-fluid main-container" ng-controller="CategoryChildsCtrl as catChildsCtrl">
+    <div ng-if="$index % 2 == 0" class="row" ng-repeat="item in items">
+        <div class="col-sm-5 box-item text-left">
+            <h3 class="text-center" ng-click="catChildsCtrl.openCategory(items[$index])"
+                ng-bind-html="items[$index].localizedPresentation.promotion"></h3>
+            <img ng-src="{{catChildsCtrl.getLargeImageUri(items[$index])}}"
+                 ng-click="catChildsCtrl.openCategory(items[$index])"/>
+            <p ng-bind-html="items[$index].localizedPresentation.shortDescription"></p>
+        </div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-5 box-item text-right">
+            <h3 class="text-center" ng-click="catChildsCtrl.openCategory(items[$index + 1])"
+                ng-bind-html="items[$index + 1].localizedPresentation.promotion"></h3>
+            <img ng-src="{{catChildsCtrl.getLargeImageUri(items[$index + 1])}}"
+                 ng-click="catChildsCtrl.openCategory(items[$index + 1])"/>
+            <p ng-bind-html="items[$index + 1].localizedPresentation.shortDescription"></p>
+        </div>
+    </div>
+</div>

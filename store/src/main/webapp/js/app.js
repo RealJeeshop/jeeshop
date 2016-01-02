@@ -1,6 +1,6 @@
 (function () {
 
-    var app = angular.module('store', ['ui.bootstrap', 'ngCookies', 'ngSanitize', 'ui.router', 'pascalprecht.translate', 'store-login', 'store-order']);
+    var app = angular.module('store', ['ui.bootstrap', 'ngCookies', 'ngSanitize', 'ui.router', 'pascalprecht.translate', 'store-login', 'store-order', 'store-catalog']);
 
     app.controller('LoginResetModalController', ['$modal', function ($modal) {
 
@@ -314,137 +314,7 @@
 
     }]);
 
-    // All available categories controller
-    app.controller('CarouselCategoriesCtrl', function ($scope, $http, $locale, $state) {
-        $scope.myInterval = 15000;
-        var slides = $scope.slides = [];
-        var categoryContents = $scope.categoryContents = [];
 
-        $scope.fillSlidesAndCategories = function () {
-
-            $http.get('rs/catalogs/1/categories?locale=' + $locale.id)
-                .success(function (data) {
-                    var categories = data;
-                    for (i = 0; i < categories.length; i++) {
-
-                        if (((i + 1) % 2) == 0) {
-                            categoryContents.push(categories.slice(i - 1, i + 1));
-                        } else if (i == categories.length - 1) {
-                            categoryContents.push([categories[i]]);
-                        }
-
-                        slides.push(categories[i]);
-
-                    }
-                })
-                .error(function (data, status) {
-                    //TODO
-                });
-        };
-
-        $scope.exploreCategory = function (categoryId) {
-            $state.go('category', {'categoryId': categoryId});
-        };
-
-        $scope.fillSlidesAndCategories();
-
-    });
-
-    // Single category controller
-    app.controller('CarouselCategoryCtrl', function ($scope, $http, $locale, $stateParams) {
-        $scope.myInterval = 20000;
-        $scope.category = {};
-        $scope.discounts = [];
-
-        $scope.productsSku = [];
-        var slides = $scope.slides = []; // Array of products for slide displaying
-        var products3Column = $scope.products3Column = []; // Array of products arranged by 3
-        var ctrl = this;
-
-        ctrl.state = 'comment';
-
-        $scope.getCategoryInfo = function () {
-
-            $http.get('rs/categories/' + $stateParams.categoryId + '?locale=' + $locale.id)
-                .success(function (data) {
-                    $scope.category = data;
-                })
-                .error(function (data, status) {
-                    // TODO
-                });
-        };
-
-        $scope.getEligibleDiscounts = function () {
-            $http.get('rs/discounts/eligible?locale=' + $locale.id)
-                .success(function (discounts) {
-                    $scope.discounts = discounts;
-                });
-        };
-
-        ctrl.setState = function (state) {
-            ctrl.state = state;
-        };
-
-        ctrl.isState = function (state) {
-            return ctrl.state == state;
-        };
-
-        $scope.fillSlidesAndProducts = function () {
-
-            $http.get('rs/categories/' + $stateParams.categoryId + '/products?locale=' + $locale.id)
-                .success(function (data) {
-                    var products = data;
-                    for (i = 0; i < products.length; i++) {
-
-                        fillSlidesProductsAndSkus(i, products);
-
-                    }
-                })
-                .error(function (data, status) {
-                    // TODO
-                });
-        };
-
-        // One sku per product for now
-        var fillSlidesProductsAndSkus = function (i, products) {
-
-            var productId = products[i].id;
-
-            $http.get('rs/products/' + productId + '/skus?locale=' + $locale.id)
-                .success(function (data) {
-                    var skus = data;
-                    var sku = null;
-                    if (skus.length >= 1) {
-                        sku = skus[0];
-                    }
-
-                    if (sku == null || !sku.available) {
-                        return;
-                    }
-
-                    $scope.productsSku[productId] = sku;
-
-                    sku.numberOfBottles = parseInt(sku.name.substr(sku.name.length - 1)); // Enhance sku with number of bottles from sku name
-
-                    slides.push(products[i]);
-
-                    if (products3Column[products3Column.length - 1] == null || products3Column[products3Column.length - 1].length == 3) {
-                        products3Column.push([]);
-                    }
-
-                    products3Column[products3Column.length - 1].push(products[i]);
-
-                })
-                .error(function (data, status) {
-                    // TODO
-                });
-        };
-
-        $scope.getCategoryInfo();
-        $scope.fillSlidesAndProducts();
-        $scope.getEligibleDiscounts();
-
-    });
 
     app.controller('DatepickerCtrl', function ($scope) {
 
@@ -465,8 +335,8 @@
 
         var ctrl = this;
 
-        ctrl.isState = function (state) {
-            return $state.is(state) || (state == 'home' && $state.is('index'));
+        ctrl.isState = function (state, params) {
+            return $state.is(state, params) || (state == 'home' && $state.is('index'));
         };
 
     });
@@ -481,12 +351,6 @@
 
     });
 
-    app.controller('CnilController', function () {
-        var ctrl = this;
-
-        ctrl.accepted = false;
-
-    });
 
     app.config(function ($stateProvider, $urlRouterProvider, $translateProvider, $translatePartialLoaderProvider, $locationProvider) {
         // For any unmatched url, redirect to /state1
@@ -532,19 +396,15 @@
                     $translate.refresh();
                 }
             })
-            .state('categories', {
-                url: "/categories",
-                templateUrl: 'views/categories.html',
-                controller: function ($translatePartialLoader, $translate) {
-                    $translatePartialLoader.addPart('categories');
-                    $translate.refresh();
-                }
-            })
             .state('category', {
                 url: "/category/:categoryId",
-                templateUrl: 'views/category.html',
+                templateUrl: 'views/category.html'
+            })
+            .state('product', {
+                url: "/product/:productId",
+                templateUrl: 'views/product.html',
                 controller: function ($translatePartialLoader, $translate) {
-                    $translatePartialLoader.addPart('category');
+                    $translatePartialLoader.addPart('product');
                     $translate.refresh();
                 }
             })
@@ -598,8 +458,7 @@
         $translatePartialLoaderProvider.addPart('common');
         $translatePartialLoaderProvider.addPart('home');
         $translatePartialLoaderProvider.addPart('activation');
-        $translatePartialLoaderProvider.addPart('categories');
-        $translatePartialLoaderProvider.addPart('category');
+        $translatePartialLoaderProvider.addPart('product');
         $translatePartialLoaderProvider.addPart('account');
         $translatePartialLoaderProvider.addPart('resetpassword');
 
