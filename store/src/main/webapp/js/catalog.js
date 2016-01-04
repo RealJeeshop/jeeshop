@@ -8,7 +8,7 @@
         };
     });
 
-    app.directive("categoryChilds", function(){
+    app.directive("categoryChilds", function () {
         return {
             restrict: "E",
             templateUrl: "views/category-childs.html",
@@ -21,17 +21,19 @@
 
 
     // Root categories controller
-    app.controller('RootCategoriesCtrl', function ($scope, $http, $locale, $state) {
+    app.controller('RootCategoriesCtrl', function ($scope, $http, $translate, $state) {
 
         var ctrl = this;
         ctrl.rootCategories = [];
 
+        var locale = $translate.use();
+
         var findRootCategories = function () {
 
-            $http.get('rs/catalogs/1/categories?locale=' + $locale.id)
+
+            $http.get('rs/catalogs/1/categories?locale=' + locale)
                 .success(function (data) {
-                    var categories = data;
-                    ctrl.rootCategories = categories;
+                    ctrl.rootCategories = data;
 
                 })
                 .error(function (data, status) {
@@ -48,9 +50,11 @@
     });
 
     // Category controller
-    app.controller('CategoryCtrl', function ($scope, $http, $locale, $stateParams) {
+    app.controller('CategoryCtrl', function ($scope, $http, $translate, $stateParams) {
 
         var ctrl = this;
+
+        var locale = $translate.use();
 
         ctrl.category = {};
 
@@ -59,7 +63,7 @@
 
         var findCategory = function () {
 
-            $http.get('rs/categories/' + $stateParams.categoryId + '?locale=' + $locale.id)
+            $http.get('rs/categories/' + $stateParams.categoryId + '?locale=' + locale)
                 .success(function (data) {
                     ctrl.category = data;
                 })
@@ -77,7 +81,7 @@
 
         var findChildCategories = function () {
 
-            $http.get('rs/categories/' + $stateParams.categoryId + '/categories?locale=' + $locale.id)
+            $http.get('rs/categories/' + $stateParams.categoryId + '/categories?locale=' + locale)
                 .success(function (data) {
                     $scope.childCategories = data;
                 })
@@ -88,7 +92,7 @@
 
         var findChildProducts = function () {
 
-            $http.get('rs/categories/' + $stateParams.categoryId + '/products?locale=' + $locale.id)
+            $http.get('rs/categories/' + $stateParams.categoryId + '/products?locale=' + locale)
                 .success(function (data) {
                     $scope.childProducts = data;
                 })
@@ -124,62 +128,61 @@
         var itemType = $scope.itemtype;
 
         ctrl.openCategory = function (item) {
-            if (itemType == "categories"){
+            if (itemType == "categories") {
                 $state.go('category', {'categoryId': item.id});
-            }else if (itemType == "products"){
+            } else if (itemType == "products") {
                 $state.go('product', {'productId': item.id});
             }
         };
 
-        ctrl.getLargeImageUri = function(item){
-            return "/jeeshop-media/"+itemType+"/" + item.id + "/" + item.localizedPresentation.locale + "/" + item.localizedPresentation.largeImage.uri;
+        ctrl.getLargeImageUri = function (item) {
+            return "/jeeshop-media/" + itemType + "/" + item.id + "/" + item.localizedPresentation.locale + "/" + item.localizedPresentation.largeImage.uri;
         };
     });
 
-        // Product controller
-    app.controller('ProductCtrl', function ($scope, $http, $locale, $stateParams) {
+    // Product controller
+    app.controller('ProductCtrl', function ($scope, $http, $translate, $stateParams) {
 
         var ctrl = this;
 
-        var slides = $scope.slides = []; // Array of products for slide displaying
-        var products3Column = $scope.products3Column = []; // Array of products arranged by 3
+        var locale = $translate.use();
 
-        ctrl.productsSku = [];
+        ctrl.product = {};
+        ctrl.skus = [];
 
-        // One sku per product for now
-        var getProductSkus = function (i, products) {
+        ctrl.selectedSku = null;
 
-            var productId = products[i].id;
+        var findProduct = function () {
 
-            $http.get('rs/products/' + productId + '/skus?locale=' + $locale.id)
+            $http.get('rs/products/' + $stateParams.productId + '?locale=' + locale)
                 .success(function (data) {
-                    var skus = data;
-                    var sku = null;
-                    if (skus.length >= 1) {
-                        sku = skus[0];
-                    }
-
-                    if (sku == null || !sku.available) {
-                        return;
-                    }
-
-                    $scope.productsSku[productId] = sku;
-
-                    sku.numberOfBottles = parseInt(sku.name.substr(sku.name.length - 1)); // Enhance sku with number of bottles from sku name
-
-                    slides.push(products[i]);
-
-                    if (products3Column[products3Column.length - 1] == null || products3Column[products3Column.length - 1].length == 3) {
-                        products3Column.push([]);
-                    }
-
-                    products3Column[products3Column.length - 1].push(products[i]);
-
+                    ctrl.product = data;
+                    findProductSkus();
                 })
                 .error(function (data, status) {
                     // TODO
                 });
         };
+
+        // One sku per product for now
+        var findProductSkus = function () {
+
+            $http.get('rs/products/' + $stateParams.productId + '/skus?locale=' + locale)
+                .success(function (data) {
+                    ctrl.skus = data;
+                    ctrl.selectedSku = ctrl.skus[0];
+                })
+                .error(function (data, status) {
+                    // TODO
+                });
+        };
+
+        ctrl.getLargeImageUri = function () {
+            return "/jeeshop-media/products/" + ctrl.product.id + "/" + ctrl.product.localizedPresentation.locale + "/" + ctrl.product.localizedPresentation.largeImage.uri;
+        };
+
+        findProduct();
+
     });
 })();
 

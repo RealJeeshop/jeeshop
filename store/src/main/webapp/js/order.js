@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('store-order', ['ngSanitize', 'ui.router']);
 
-    app.controller('ShoppingCartController', ['$modal', 'ShoppingCart', '$scope', '$state', function ($modal, ShoppingCart, $scope, $state) {
+    app.controller('ShoppingCartController', ['$modal', 'ShoppingCart', function ($modal, ShoppingCart) {
         var ctrl = this;
         ctrl.skusQuantity = {};
 
@@ -15,11 +15,9 @@
         };
 
         ctrl.addItemToCart = function (skuId, productId) {
-
-            if (ctrl.skusQuantity[skuId] > 0) {
-                ShoppingCart.addItem(skuId, productId, ctrl.skusQuantity[skuId]);
+                ctrl.skusQuantity[skuId] += 1;
+                ShoppingCart.addItem(skuId, productId, 1);
                 ctrl.openShoppingCartModal();
-            }
         };
 
         ctrl.incrementSkuQuantity = function (skuId) {
@@ -66,7 +64,7 @@
 
         };
 
-        var ShoppingCartModalCtrl = function ($scope, $state, $modalInstance, ShoppingCart, $http, $locale, AuthService) {
+        var ShoppingCartModalCtrl = function ($scope, $state, $modalInstance, ShoppingCart, $http, $translate, AuthService) {
 
             $scope.isProcessing = false;
 
@@ -74,6 +72,7 @@
             $scope.vat = null;
             $scope.discounts = [];
 
+            var locale = $translate.use();
             var ctrl = this;
 
             // array of {sku,quantity,product}
@@ -91,7 +90,7 @@
 
 
             if (AuthService.isAuthenticated()){
-                $http.get('rs/discounts/eligible?locale=' + $locale.id)
+                $http.get('rs/discounts/eligible?locale=' + locale)
                     .success(function (discounts) {
                         $scope.discounts = discounts;
                     });
@@ -197,13 +196,15 @@
 
     }]);
 
-    app.factory('ShoppingCart', ['$http', '$locale', function ($http, $locale) {
+    app.factory('ShoppingCart', ['$http', '$translate', function ($http, $translate) {
         var cart = this;
         cart.items = []; //Array of [skuId->{quantity, productId}]
         cart.order = {}; // The order to be created
         cart.paymentFormResponse = "";
         cart.itemsQuantity = 0;
         cart.orderCreated = false; // true means created in backend
+
+        var locale = $translate.use();
 
         var computeShoppingCartQuantity = function () {
             var count = 0;
@@ -258,12 +259,12 @@
                 var enhancedItems = [];
 
                 for (var skuId in cart.items) {
-                    $http.get('rs/skus/' + skuId + '?locale=' + $locale.id)
+                    $http.get('rs/skus/' + skuId + '?locale=' + locale)
                         .success(function (sku) {
 
                             sku.numberOfBottles = parseInt(sku.name.substr(sku.name.length - 1)); // Enhance sku with number of bottles from sku name
 
-                            $http.get('rs/products/' + cart.items[sku.id].productId + '?locale=' + $locale.id)
+                            $http.get('rs/products/' + cart.items[sku.id].productId + '?locale=' + locale)
                                 .success(function (product) {
                                     enhancedItems.push({
                                         sku: sku,
@@ -359,13 +360,15 @@
 
     }]);
 
-    app.controller('OrderConfirmController', ['ShoppingCart', '$state', '$http', '$scope', '$sce', '$locale', function (ShoppingCart, $state, $http, $scope, $sce, $locale) {
+    app.controller('OrderConfirmController', ['ShoppingCart', '$state', '$http', '$scope', '$sce', '$translate', function (ShoppingCart, $state, $http, $scope, $sce, $translate) {
 
         var ctrl = this;
 
         ctrl.shippingFee = 0.0;
         ctrl.vat = 0.0;
         ctrl.discounts = [];
+
+        var locale = $translate.use();
 
         ctrl.order = {};
         $scope.isProcessing = false;
@@ -426,7 +429,7 @@
 
         ctrl.getEligibleDiscounts = function () {
 
-            $http.get('rs/discounts/eligible?locale=' + $locale.id)
+            $http.get('rs/discounts/eligible?locale=' + locale)
                 .success(function (discounts) {
                     ctrl.discounts = discounts;
                 });

@@ -1,120 +1,258 @@
-<div ng-controller="RestrictedAreaController">
+<div class="main-container" ng-show="loginCtrl.isAuthenticated">
 
-    <div class="main-container" ng-show="loginCtrl.isAuthenticated">
+    <div class="site-page-header text-center">
+        {{'page.delivery.title' | translate}}
+    </div>
 
-        <div class="site-page-header text-center">
-            {{'page.delivery.title' | translate}}
+    <form name="deliveryForm"
+          ng-submit="deliveryForm.$valid && (agreement||orderContactCtrl.isOrderCreated()) && orderContactCtrl.createOrderWithContactInfo()"
+          novalidate
+          ng-controller="OrderContactInfoController as orderContactCtrl">
+
+        <div class="row no-marding">
+            <div class="col-sm-6 text-page-area" style="margin-bottom: 2em">
+                <h5>{{'delivery.mode'|translate}}</h5>
+
+                <p>
+                    <input type="radio" name="ups" value="" checked> {{'delivery.mode.ups'|translate}}
+                    &nbsp;<img style="width:4.5em;height:auto" src="../images/pastille-livraison.png">
+                    <br/>
+                </p>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-5 text-page-area" style="margin-bottom: 2em">
+                <h5 ng-show="orderContactCtrl.items.length > 1">{{'delivery.dates'|translate}}</h5>
+                <h5 ng-show="orderContactCtrl.items.length <= 1">{{'delivery.date'|translate}}</h5>
+                <div style="margin-top: 1em">
+                    <i>10 jours ouvrés</i>
+                </div>
+            </div>
+
         </div>
 
-        <form name="deliveryForm"
-              ng-submit="deliveryForm.$valid && (agreement||orderContactCtrl.isOrderCreated()) && orderContactCtrl.createOrderWithContactInfo()" novalidate
-              ng-controller="OrderContactInfoController as orderContactCtrl">
+        <div class="row no-marding">
 
-            <div class="row no-marding">
-                <div class="col-sm-6 text-page-area" style="margin-bottom: 2em">
-                    <h5>{{'delivery.mode'|translate}}</h5>
+            <!-- DELIVERY ADDRESS -->
 
-                    <p>
-                        <input type="radio" name="ups" value="" checked> {{'delivery.mode.ups'|translate}}
-                        &nbsp;<img style="width:4.5em;height:auto" src="../images/pastille-livraison.png">
-                        <br/>
-                    </p>
+            <div class="col-sm-6 text-page-area ">
+                <h5>{{'delivery.address.title' | translate}}</h5>
+
+                <div class="form-group"
+                     ng-class="{'has-error': (deliveryForm.gender2.$invalid && (deliveryForm.gender2.$dirty || deliveryForm.$submitted ))}">
+                    <select class="form-control input-gender" name="gender2"
+                            ng-model="orderContactCtrl.order.deliveryAddress.gender" ng-required="true"
+                            ng-disabled="orderContactCtrl.isOrderCreated()">
+                        <option value="" selected disabled>{{'subscription.gender' | translate}}</option>
+                        <option value="{{'subscription.gender.mr' | translate}}">{{'subscription.gender.mr' |
+                            translate}}
+                        </option>
+                        <option value="{{'subscription.gender.miss' | translate}}">{{'subscription.gender.miss' |
+                            translate}}
+                        </option>
+                    </select>
+
+                    <p class="help-block"
+                       ng-show="(deliveryForm.gender2.$error.required && (deliveryForm.gender2.$dirty|| deliveryForm.$submitted ))">
+                        {{'form.field.required' | translate}}</p>
                 </div>
-                <div class="col-sm-1"></div>
-                <div class="col-sm-5 text-page-area" style="margin-bottom: 2em">
-                    <h5 ng-show="orderContactCtrl.items.length > 1">{{'delivery.dates'|translate}}</h5>
-                    <h5 ng-show="orderContactCtrl.items.length <= 1">{{'delivery.date'|translate}}</h5>
-                    <div style="margin-top: 1em">
-                        <i>10 jours ouvrés</i>
+                <div class="form-group">
+                    <div ng-class="{'has-error': (deliveryForm.firstname2.$invalid && (deliveryForm.firstname2.$dirty || deliveryForm.$submitted ))}">
+                        <input type="text" class="form-control input-firstname"
+                               name="firstname2"
+                               placeholder="{{'firstname.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.firstname" ng-required="true"
+                               maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()">
+
+                        <p class="help-block"
+                           ng-show="(deliveryForm.firstname2.$error.required && (deliveryForm.firstname2.$dirty|| deliveryForm.$submitted ))">
+                            {{'form.field.required' | translate}}</p>
+                    </div>
+                    <div ng-class="{'has-error': (deliveryForm.lastname2.$invalid && (deliveryForm.lastname2.$dirty|| deliveryForm.$submitted ))}">
+                        <input type="text" class="form-control"
+                               name="lastname2"
+                               placeholder="{{'lastname.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.lastname" ng-required="true"
+                               maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+
+                        <p class="help-block"
+                           ng-show="(deliveryForm.lastname2.$error.required && (deliveryForm.lastname2.$dirty|| deliveryForm.$submitted ))">
+                            {{'form.field.required' | translate}}</p>
+                    </div>
+                    <div ng-class="{'has-error': (deliveryForm.company2.$invalid && (deliveryForm.company2.$dirty || deliveryForm.$submitted ))}">
+                        <input type="text" class="form-control"
+                               name="company2"
+                               placeholder="{{'company.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.company" maxlength="50"
+                               ng-disabled="orderContactCtrl.isOrderCreated()">
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <div ng-class="{'has-error': deliveryForm.address2.$invalid && (deliveryForm.address2.$dirty|| deliveryForm.$submitted )}">
+                        <input type="text" class="form-control input-address"
+                               name="address2"
+                               placeholder="{{'address.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.street" maxlength="100"
+                               ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                    </div>
+                    <div ng-class="{'has-error': deliveryForm.city2.$invalid && (deliveryForm.city2.$dirty|| deliveryForm.$submitted )}">
+                        <input type="text" class="form-control"
+                               name="city2"
+                               placeholder="{{'city.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.city" maxlength="100"
+                               ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                    </div>
+                    <div ng-class="{'has-error': deliveryForm.zipcode2.$invalid && (deliveryForm.zipcode2.$dirty|| deliveryForm.$submitted )}">
+                        <input type="text" class="form-control"
+                               name="zipcode2"
+                               placeholder="{{'zipcode.placeholder' | translate}}"
+                               ng-model="orderContactCtrl.order.deliveryAddress.zipCode" maxlength="10"
+                               ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                     ng-class="{'has-error': (deliveryForm.country2.$invalid && (deliveryForm.country2.$dirty || deliveryForm.$submitted ))}">
+                    <select class="form-control input-country" name="country2"
+                            ng-model="orderContactCtrl.order.deliveryAddress.countryIso3Code"
+                            ng-disabled="orderContactCtrl.isOrderCreated()"
+                            ng-required="true">
+                        <option value="" selected disabled>{{'country.placeholder' | translate}}</option>
+                        <option value="FRA">{{'subscription.country.fra' | translate}}</option>
+                        <option value="GBR">{{'subscription.country.gbr' | translate}}</option>
+                        <option value="DEU">{{'subscription.country.deu' | translate}}</option>
+                        <option value="LUX">{{'subscription.country.lux' | translate}}</option>
+                        <option value="BEL">{{'subscription.country.bel' | translate}}</option>
+                    </select>
+
+                    <p class="help-block"
+                       ng-show="(deliveryForm.country2.$error.required && (deliveryForm.country2.$dirty|| deliveryForm.$submitted ))">
+                        {{'form.field.required' | translate}}</p>
+                </div>
+
+                <div class="checkbox"
+                     ng-class="{'has-error': !(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted )}">
+                    <br/>
+                    <label><input type="checkbox" name="agreement"
+                                  ng-model="agreement"/><span
+                            ng-bind-html="'cgv.agreement'|translate"></span></label>
+
+                    <p class="help-block"
+                       ng-show="(!(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted ))">
+                        {{'subscription.agreement.required' | translate}}</p>
+                </div>
             </div>
 
-            <div class="row no-marding">
+            <div class="col-sm-1 visible-sm visible-md visible-lg"></div>
 
-                <!-- DELIVERY ADDRESS -->
 
-                <div class="col-sm-6 text-page-area ">
-                    <h5>{{'delivery.address.title' | translate}}</h5>
+            <!-- BILLING ADDRESS -->
+            <div class="col-sm-5 text-page-area">
+
+                <div ng-show="!orderContactCtrl.showBillingAddress">
+                    <a class="site-link" ng-click="orderContactCtrl.showBillingAddress = true">{{'address.billing.showlink'
+                        | translate}}</a>
+                </div>
+
+                <div ng-show="orderContactCtrl.showBillingAddress">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <h5>{{'billing.address.title' | translate}}</h5>
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <h5 style="font-weight: normal;text-decoration: none"><a class="site-link"
+                                                                                     ng-click="orderContactCtrl.showBillingAddress = false">{{'address.billing.hide'
+                                | translate}}</a></h5>
+                        </div>
+                    </div>
 
                     <div class="form-group"
-                         ng-class="{'has-error': (deliveryForm.gender2.$invalid && (deliveryForm.gender2.$dirty || deliveryForm.$submitted ))}">
-                        <select class="form-control input-gender" name="gender2"
-                                ng-model="orderContactCtrl.order.deliveryAddress.gender" ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()">
+                         ng-class="{'has-error': (deliveryForm.gender1.$invalid && (deliveryForm.gender1.$dirty || deliveryForm.$submitted ))}">
+                        <select class="form-control input-gender" name="gender1"
+                                ng-model="orderContactCtrl.order.billingAddress.gender"
+                                ng-required="orderContactCtrl.showBillingAddress"
+                                ng-disabled="orderContactCtrl.isOrderCreated()">
                             <option value="" selected disabled>{{'subscription.gender' | translate}}</option>
                             <option value="{{'subscription.gender.mr' | translate}}">{{'subscription.gender.mr' |
                                 translate}}
                             </option>
-                            <option value="{{'subscription.gender.miss' | translate}}">{{'subscription.gender.miss' |
+                            <option value="{{'subscription.gender.miss' | translate}}">{{'subscription.gender.miss'
+                                |
                                 translate}}
                             </option>
                         </select>
 
                         <p class="help-block"
-                           ng-show="(deliveryForm.gender2.$error.required && (deliveryForm.gender2.$dirty|| deliveryForm.$submitted ))">
+                           ng-show="(deliveryForm.gender1.$error.required && (deliveryForm.gender1.$dirty|| deliveryForm.$submitted ))">
                             {{'form.field.required' | translate}}</p>
                     </div>
                     <div class="form-group">
-                        <div ng-class="{'has-error': (deliveryForm.firstname2.$invalid && (deliveryForm.firstname2.$dirty || deliveryForm.$submitted ))}">
+                        <div ng-class="{'has-error': (deliveryForm.firstname1.$invalid && (deliveryForm.firstname1.$dirty || deliveryForm.$submitted ))}">
                             <input type="text" class="form-control input-firstname"
-                                   name="firstname2"
+                                   name="firstname1"
                                    placeholder="{{'firstname.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.firstname" ng-required="true"
-                                   maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()">
+                                   ng-model="orderContactCtrl.order.billingAddress.firstname"
+                                   ng-required="orderContactCtrl.showBillingAddress" maxlength="50"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()">
 
                             <p class="help-block"
-                               ng-show="(deliveryForm.firstname2.$error.required && (deliveryForm.firstname2.$dirty|| deliveryForm.$submitted ))">
+                               ng-show="(deliveryForm.firstname1.$error.required && (deliveryForm.firstname1.$dirty|| deliveryForm.$submitted ))">
                                 {{'form.field.required' | translate}}</p>
                         </div>
-                        <div ng-class="{'has-error': (deliveryForm.lastname2.$invalid && (deliveryForm.lastname2.$dirty|| deliveryForm.$submitted ))}">
+                        <div ng-class="{'has-error': (deliveryForm.lastname1.$invalid && (deliveryForm.lastname1.$dirty|| deliveryForm.$submitted ))}">
                             <input type="text" class="form-control"
-                                   name="lastname2"
+                                   name="lastname1"
                                    placeholder="{{'lastname.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.lastname" ng-required="true"
-                                   maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                                   ng-model="orderContactCtrl.order.billingAddress.lastname"
+                                   ng-required="orderContactCtrl.showBillingAddress" maxlength="50"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()"/>
 
                             <p class="help-block"
-                               ng-show="(deliveryForm.lastname2.$error.required && (deliveryForm.lastname2.$dirty|| deliveryForm.$submitted ))">
+                               ng-show="(deliveryForm.lastname1.$error.required && (deliveryForm.lastname1.$dirty|| deliveryForm.$submitted ))">
                                 {{'form.field.required' | translate}}</p>
                         </div>
-                        <div ng-class="{'has-error': (deliveryForm.company2.$invalid && (deliveryForm.company2.$dirty || deliveryForm.$submitted ))}">
+                        <div ng-class="{'has-error': (deliveryForm.company1.$invalid && (deliveryForm.company1.$dirty || deliveryForm.$submitted ))}">
                             <input type="text" class="form-control"
-                                   name="company2"
+                                   name="company1"
                                    placeholder="{{'company.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.company" maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()">
+                                   ng-model="orderContactCtrl.order.billingAddress.company" maxlength="50"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div ng-class="{'has-error': deliveryForm.address2.$invalid && (deliveryForm.address2.$dirty|| deliveryForm.$submitted )}">
+                        <div ng-class="{'has-error': deliveryForm.address1.$invalid && (deliveryForm.address1.$dirty|| deliveryForm.$submitted )}">
                             <input type="text" class="form-control input-address"
-                                   name="address2"
+                                   name="address1"
                                    placeholder="{{'address.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.street" maxlength="100"
-                                   ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                                   ng-model="orderContactCtrl.order.billingAddress.street" maxlength="100"
+                                   ng-required="orderContactCtrl.showBillingAddress"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()"/>
                         </div>
-                        <div ng-class="{'has-error': deliveryForm.city2.$invalid && (deliveryForm.city2.$dirty|| deliveryForm.$submitted )}">
+                        <div ng-class="{'has-error': deliveryForm.city1.$invalid && (deliveryForm.city1.$dirty|| deliveryForm.$submitted )}">
                             <input type="text" class="form-control"
-                                   name="city2"
+                                   name="city1"
                                    placeholder="{{'city.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.city" maxlength="100"
-                                   ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                                   ng-model="orderContactCtrl.order.billingAddress.city" maxlength="100"
+                                   ng-required="orderContactCtrl.showBillingAddress"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()"/>
                         </div>
-                        <div ng-class="{'has-error': deliveryForm.zipcode2.$invalid && (deliveryForm.zipcode2.$dirty|| deliveryForm.$submitted )}">
+                        <div ng-class="{'has-error': deliveryForm.zipcode1.$invalid && (deliveryForm.zipcode1.$dirty|| deliveryForm.$submitted )}">
                             <input type="text" class="form-control"
-                                   name="zipcode2"
+                                   name="zipcode1"
                                    placeholder="{{'zipcode.placeholder' | translate}}"
-                                   ng-model="orderContactCtrl.order.deliveryAddress.zipCode" maxlength="10"
-                                   ng-required="true" ng-disabled="orderContactCtrl.isOrderCreated()"/>
+                                   ng-model="orderContactCtrl.order.billingAddress.zipCode" maxlength="10"
+                                   ng-required="orderContactCtrl.showBillingAddress"
+                                   ng-disabled="orderContactCtrl.isOrderCreated()"/>
                         </div>
                     </div>
 
                     <div class="form-group"
-                         ng-class="{'has-error': (deliveryForm.country2.$invalid && (deliveryForm.country2.$dirty || deliveryForm.$submitted ))}">
-                        <select class="form-control input-country" name="country2"
-                                ng-model="orderContactCtrl.order.deliveryAddress.countryIso3Code" ng-disabled="orderContactCtrl.isOrderCreated()"
-                                ng-required="true">
+                         ng-class="{'has-error': (deliveryForm.country1.$invalid && (deliveryForm.country1.$dirty || deliveryForm.$submitted ))}">
+                        <select class="form-control input-country" name="country1"
+                                ng-model="orderContactCtrl.order.billingAddress.countryIso3Code"
+                                ng-required="orderContactCtrl.showBillingAddress"
+                                ng-disabled="orderContactCtrl.isOrderCreated()">
                             <option value="" selected disabled>{{'country.placeholder' | translate}}</option>
                             <option value="FRA">{{'subscription.country.fra' | translate}}</option>
                             <option value="GBR">{{'subscription.country.gbr' | translate}}</option>
@@ -124,160 +262,33 @@
                         </select>
 
                         <p class="help-block"
-                           ng-show="(deliveryForm.country2.$error.required && (deliveryForm.country2.$dirty|| deliveryForm.$submitted ))">
+                           ng-show="(deliveryForm.country1.$error.required && (deliveryForm.country1.$dirty|| deliveryForm.$submitted ))">
                             {{'form.field.required' | translate}}</p>
                     </div>
-
-                    <div class="checkbox"
-                         ng-class="{'has-error': !(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted )}">
-                        <br/>
-                        <label><input type="checkbox" name="agreement"
-                                      ng-model="agreement"/><span
-                                ng-bind-html="'cgv.agreement'|translate"></span></label>
-
-                        <p class="help-block"
-                           ng-show="(!(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted ))">
-                            {{'subscription.agreement.required' | translate}}</p>
-                    </div>
-                </div>
-
-                <div class="col-sm-1 visible-sm visible-md visible-lg"></div>
-
-
-                <!-- BILLING ADDRESS -->
-                <div class="col-sm-5 text-page-area">
-
-                    <div ng-show="!orderContactCtrl.showBillingAddress">
-                        <a class="site-link" ng-click="orderContactCtrl.showBillingAddress = true">{{'address.billing.showlink'
-                            | translate}}</a>
-                    </div>
-
-                    <div ng-show="orderContactCtrl.showBillingAddress">
-                        <div class="row">
-                            <div class="col-xs-8">
-                                <h5>{{'billing.address.title' | translate}}</h5>
-                            </div>
-                            <div class="col-xs-4 text-right">
-                                <h5 style="font-weight: normal;text-decoration: none"><a class="site-link"
-                                                                                         ng-click="orderContactCtrl.showBillingAddress = false">{{'address.billing.hide'
-                                    | translate}}</a></h5>
-                            </div>
-                        </div>
-
-                        <div class="form-group"
-                             ng-class="{'has-error': (deliveryForm.gender1.$invalid && (deliveryForm.gender1.$dirty || deliveryForm.$submitted ))}">
-                            <select class="form-control input-gender" name="gender1"
-                                    ng-model="orderContactCtrl.order.billingAddress.gender"
-                                    ng-required="orderContactCtrl.showBillingAddress" ng-disabled="orderContactCtrl.isOrderCreated()">
-                                <option value="" selected disabled>{{'subscription.gender' | translate}}</option>
-                                <option value="{{'subscription.gender.mr' | translate}}">{{'subscription.gender.mr' |
-                                    translate}}
-                                </option>
-                                <option value="{{'subscription.gender.miss' | translate}}">{{'subscription.gender.miss'
-                                    |
-                                    translate}}
-                                </option>
-                            </select>
-
-                            <p class="help-block"
-                               ng-show="(deliveryForm.gender1.$error.required && (deliveryForm.gender1.$dirty|| deliveryForm.$submitted ))">
-                                {{'form.field.required' | translate}}</p>
-                        </div>
-                        <div class="form-group">
-                            <div ng-class="{'has-error': (deliveryForm.firstname1.$invalid && (deliveryForm.firstname1.$dirty || deliveryForm.$submitted ))}">
-                                <input type="text" class="form-control input-firstname"
-                                       name="firstname1"
-                                       placeholder="{{'firstname.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.firstname"
-                                       ng-required="orderContactCtrl.showBillingAddress" maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()">
-
-                                <p class="help-block"
-                                   ng-show="(deliveryForm.firstname1.$error.required && (deliveryForm.firstname1.$dirty|| deliveryForm.$submitted ))">
-                                    {{'form.field.required' | translate}}</p>
-                            </div>
-                            <div ng-class="{'has-error': (deliveryForm.lastname1.$invalid && (deliveryForm.lastname1.$dirty|| deliveryForm.$submitted ))}">
-                                <input type="text" class="form-control"
-                                       name="lastname1"
-                                       placeholder="{{'lastname.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.lastname"
-                                       ng-required="orderContactCtrl.showBillingAddress" maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()"/>
-
-                                <p class="help-block"
-                                   ng-show="(deliveryForm.lastname1.$error.required && (deliveryForm.lastname1.$dirty|| deliveryForm.$submitted ))">
-                                    {{'form.field.required' | translate}}</p>
-                            </div>
-                            <div ng-class="{'has-error': (deliveryForm.company1.$invalid && (deliveryForm.company1.$dirty || deliveryForm.$submitted ))}">
-                                <input type="text" class="form-control"
-                                       name="company1"
-                                       placeholder="{{'company.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.company" maxlength="50" ng-disabled="orderContactCtrl.isOrderCreated()">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div ng-class="{'has-error': deliveryForm.address1.$invalid && (deliveryForm.address1.$dirty|| deliveryForm.$submitted )}">
-                                <input type="text" class="form-control input-address"
-                                       name="address1"
-                                       placeholder="{{'address.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.street" maxlength="100"
-                                       ng-required="orderContactCtrl.showBillingAddress" ng-disabled="orderContactCtrl.isOrderCreated()"/>
-                            </div>
-                            <div ng-class="{'has-error': deliveryForm.city1.$invalid && (deliveryForm.city1.$dirty|| deliveryForm.$submitted )}">
-                                <input type="text" class="form-control"
-                                       name="city1"
-                                       placeholder="{{'city.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.city" maxlength="100"
-                                       ng-required="orderContactCtrl.showBillingAddress" ng-disabled="orderContactCtrl.isOrderCreated()"/>
-                            </div>
-                            <div ng-class="{'has-error': deliveryForm.zipcode1.$invalid && (deliveryForm.zipcode1.$dirty|| deliveryForm.$submitted )}">
-                                <input type="text" class="form-control"
-                                       name="zipcode1"
-                                       placeholder="{{'zipcode.placeholder' | translate}}"
-                                       ng-model="orderContactCtrl.order.billingAddress.zipCode" maxlength="10"
-                                       ng-required="orderContactCtrl.showBillingAddress" ng-disabled="orderContactCtrl.isOrderCreated()"/>
-                            </div>
-                        </div>
-
-                        <div class="form-group"
-                             ng-class="{'has-error': (deliveryForm.country1.$invalid && (deliveryForm.country1.$dirty || deliveryForm.$submitted ))}">
-                            <select class="form-control input-country" name="country1"
-                                    ng-model="orderContactCtrl.order.billingAddress.countryIso3Code"
-                                    ng-required="orderContactCtrl.showBillingAddress" ng-disabled="orderContactCtrl.isOrderCreated()">
-                                <option value="" selected disabled>{{'country.placeholder' | translate}}</option>
-                                <option value="FRA">{{'subscription.country.fra' | translate}}</option>
-                                <option value="GBR">{{'subscription.country.gbr' | translate}}</option>
-                                <option value="DEU">{{'subscription.country.deu' | translate}}</option>
-                                <option value="LUX">{{'subscription.country.lux' | translate}}</option>
-                                <option value="BEL">{{'subscription.country.bel' | translate}}</option>
-                            </select>
-
-                            <p class="help-block"
-                               ng-show="(deliveryForm.country1.$error.required && (deliveryForm.country1.$dirty|| deliveryForm.$submitted ))">
-                                {{'form.field.required' | translate}}</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row no-marding" style="padding-top: 2em">
-                <div class="col-sm-6 text-page-area text-center">
-                    <button type="button" class="btn btn-default" ng-click="orderContactCtrl.continueShopping()">
-                        {{'shoppingcart.continue' | translate}}
-                    </button>
-                </div>
-                <div class="col-sm-1 visible-sm visible-md visible-lg"></div>
-                <div class="col-sm-5 text-page-area text-center">
-                    <button type="button" class="btn btn-default" ng-click="orderContactCtrl.cleanOrder()">
-                        {{'button.order.new'
-                        | translate}}
-                    </button>
-                    <button type="submit" class="btn btn-primary" style="margin-left: 2em">{{'button.order.continue' | translate}}</button>
                 </div>
 
             </div>
-        </form>
-        <div id="loaderDiv" ng-show="isProcessing">
-            <img src="../images/loading.gif" class="ajax-loader"/>
         </div>
+        <div class="row no-marding" style="padding-top: 2em">
+            <div class="col-sm-6 text-page-area text-center">
+                <button type="button" class="btn btn-default" ng-click="orderContactCtrl.continueShopping()">
+                    {{'shoppingcart.continue' | translate}}
+                </button>
+            </div>
+            <div class="col-sm-1 visible-sm visible-md visible-lg"></div>
+            <div class="col-sm-5 text-page-area text-center">
+                <button type="button" class="btn btn-default" ng-click="orderContactCtrl.cleanOrder()">
+                    {{'button.order.new'
+                    | translate}}
+                </button>
+                <button type="submit" class="btn btn-primary" style="margin-left: 2em">{{'button.order.continue' |
+                    translate}}
+                </button>
+            </div>
+
+        </div>
+    </form>
+    <div id="loaderDiv" ng-show="isProcessing">
+        <img src="../images/loading.gif" class="ajax-loader"/>
     </div>
 </div>

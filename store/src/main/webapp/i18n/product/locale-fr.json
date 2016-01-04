@@ -5,6 +5,7 @@
   "product.advices.title" : "Conseils",
   "button.add.shoppingcart": "Ajouter au panier",
 
+  "shoppingcart.add" : "Acheter",
   "shoppingcart.validate" : "Valider mon Panier",
   "shoppingcart.continue" : "Poursuivre mes achats",
   "shoppingcart.title" : "Mon Panier",
@@ -22,6 +23,7 @@
   "delivery.mode.ups" : "Livraison par transporteur",
   "delivery.dates" : "DELAI DE LIVRAISON",
   "delivery.date" : "DELAI DE LIVRAISON",
+  "delivery.fee" : "Delivery fee",
   "cgv.agreement" : "J'accepte les <a class=\"site-link\"  uisref=\"cgv\">conditions générales de vente</a>",
   "button.continue": "Continuer",
   "address.billing.showlink" : "Fournir une adresse de facturation différente",

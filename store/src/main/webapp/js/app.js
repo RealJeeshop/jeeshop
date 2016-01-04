@@ -444,13 +444,13 @@
 
         // TODO pull request to angular-translate
         var getLocale = function () {
-            var availableLang = ['fr'];
+            var availableLang = ['en','fr'];
             var nav = window.navigator;
             var locale = ((angular.isArray(nav.languages) ? nav.languages[0] : nav.language || nav.browserLanguage || nav.systemLanguage || nav.userLanguage) || '').split('-').join('_');
 
             var lang_id = locale.substr(0, 2);
             if (!locale || locale.length == 0 || availableLang.indexOf(lang_id) == -1) {
-                lang_id = 'fr';
+                lang_id = 'en';
             }
             return lang_id;
         };

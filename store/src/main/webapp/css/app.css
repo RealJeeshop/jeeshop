@@ -228,7 +228,32 @@ h3 {
 }
 
 .product-price {
-    font-size: 2em;
+    margin-top:1em;
+}
+
+.product-price span {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.5em;
+}
+.product-price select {
+    margin-right:2em;
+}
+
+.shopping-cart img {
+    height: 10em; width: auto
+}
+
+.shopping-cart .row {
+    padding-top: 1em
+}
+
+.shopping-cart-item .col-xs-3{
+    padding-top: 7em
+}
+
+.shopping-cart-title {
+    font-weight: bold;
 }
 
 .sku-quantity button {
@@ -291,6 +316,15 @@ h3 {
 
 .box-item img:hover{
     cursor: pointer;
+}
+
+.product-box img {
+    width:90%;
+    max-width:1024px;
+}
+
+.product-feature-row {
+    padding: 1em;
 }
 
 .carousel a:hover {
