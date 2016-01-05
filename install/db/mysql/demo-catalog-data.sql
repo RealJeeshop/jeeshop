@@ -21,79 +21,6 @@ SET time_zone = "+00:00";
 --
 
 --
--- Dumping data for table `Catalog`
---
-
-INSERT INTO `Catalog` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
-(1, 'Catalog of Hyperbike store', b'0', NULL, 'Hyperbike catalog', NULL);
-
---
--- Dumping data for table `Catalog_Category`
---
-
-INSERT INTO `Catalog_Category` (`catalogId`, `categoryId`, `orderIdx`) VALUES
-(1, 1, 0),
-(1, 2, 1);
-
---
--- Dumping data for table `Category`
---
-
-INSERT INTO `Category` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
-(1, 'Bikes main category', b'0', NULL, 'Bikes', NULL),
-(2, 'Accessories main category', b'0', NULL, 'Accessories', NULL),
-(3, 'Tires rubric', b'0', NULL, 'Tires', NULL),
-(4, 'Brackets rubric', b'0', NULL, 'Brackets', NULL),
-(5, 'Handlebar rubric', b'0', NULL, 'Handlebar', NULL),
-(6, 'Wheels rubric', b'0', '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52'),
-(7, 'Mountain Bikes category', b'0', NULL, 'Mountain Bikes', NULL),
-(12, 'Racing Bikes category', b'0', NULL, 'Racing Bikes', NULL);
-
---
--- Dumping data for table `Category_Category`
---
-
-INSERT INTO `Category_Category` (`parentCategoryId`, `childCategoryId`, `orderIdx`) VALUES
-(2, 3, 0),
-(2, 4, 1),
-(2, 5, 2),
-(2, 6, 3),
-(1, 7, 0),
-(1, 12, 1);
-
---
--- Dumping data for table `Category_Presentation`
---
-
-INSERT INTO `Category_Presentation` (`catalogItemId`, `presentationId`) VALUES
-(1, 13),
-(1, 14),
-(2, 15),
-(2, 16),
-(7, 17),
-(12, 19),
-(12, 20),
-(7, 21);
-
---
--- Dumping data for table `Category_Product`
---
-
-INSERT INTO `Category_Product` (`categoryId`, `productId`, `orderIdx`) VALUES
-(7, 1, 0),
-(7, 2, 1),
-(12, 3, 0),
-(12, 4, 1),
-(3, 5, 0);
-
---
--- Dumping data for table `Discount`
---
-
-INSERT INTO `Discount` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`, `discountValue`, `triggerValue`, `triggerRule`, `type`, `applicableTo`, `uniqueUse`, `usesPerCustomer`, `voucherCode`) VALUES
-(1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1, NULL, 'AMOUNT', 'DISCOUNT_RATE', '', b'1', 1, NULL);
-
---
 -- Dumping data for table `Media`
 --
 
@@ -131,6 +58,13 @@ INSERT INTO `Media` (`id`, `uri`) VALUES
 (39, 'energy_x2.jpg');
 
 --
+-- Dumping data for table `Catalog`
+--
+
+INSERT INTO `Catalog` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
+(1, 'Catalog of Hyperbike store', b'0', NULL, 'Hyperbike catalog', NULL);
+
+--
 -- Dumping data for table `Presentation`
 --
 
@@ -152,6 +86,94 @@ INSERT INTO `Presentation` (`id`, `displayName`, `promotion`, `features`, `local
 (27, 'L', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
+-- Dumping data for table `Product`
+--
+
+INSERT INTO `Product` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
+(1, 'VTT energy X1', b'0', NULL, 'Energy X1', NULL),
+(2, 'VTT Energy X2', b'0', NULL, 'Energy X2', NULL),
+(3, 'VTC Lazer V2', b'1', NULL, 'Lazer V2', NULL),
+(4, 'VTC Beam 3000', b'0', '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52'),
+(5, 'Michelin NX01 tire', b'0', NULL, 'Michelin NX01', NULL);
+
+--
+-- Dumping data for table `Category`
+--
+
+INSERT INTO `Category` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
+(1, 'Bikes main category', b'0', NULL, 'Bikes', NULL),
+(2, 'Accessories main category', b'0', NULL, 'Accessories', NULL),
+(3, 'Tires rubric', b'0', NULL, 'Tires', NULL),
+(4, 'Brackets rubric', b'0', NULL, 'Brackets', NULL),
+(5, 'Handlebar rubric', b'0', NULL, 'Handlebar', NULL),
+(6, 'Wheels rubric', b'0', '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52'),
+(7, 'Mountain Bikes category', b'0', NULL, 'Mountain Bikes', NULL),
+(12, 'Racing Bikes category', b'0', NULL, 'Racing Bikes', NULL);
+
+--
+-- Dumping data for table `Category_Category`
+--
+
+INSERT INTO `Category_Category` (`parentCategoryId`, `childCategoryId`, `orderIdx`) VALUES
+(2, 3, 0),
+(2, 4, 1),
+(2, 5, 2),
+(2, 6, 3),
+(1, 7, 0),
+(1, 12, 1);
+
+--
+-- Dumping data for table `Catalog_Category`
+--
+
+INSERT INTO `Catalog_Category` (`catalogId`, `categoryId`, `orderIdx`) VALUES
+(1, 1, 0),
+(1, 2, 1);
+
+--
+-- Dumping data for table `Discount`
+--
+
+INSERT INTO `Discount` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`, `discountValue`, `triggerValue`, `triggerRule`, `type`, `applicableTo`, `uniqueUse`, `usesPerCustomer`, `voucherCode`) VALUES
+(1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1, NULL, 'AMOUNT', 'DISCOUNT_RATE', '', b'1', 1, NULL);
+
+
+--
+-- Dumping data for table `Product_Presentation`
+--
+
+INSERT INTO `Product_Presentation` (`catalogItemId`, `presentationId`) VALUES
+(1, 22),
+(1, 23),
+(2, 24),
+(2, 25);
+
+--
+-- Dumping data for table `Category_Presentation`
+--
+
+INSERT INTO `Category_Presentation` (`catalogItemId`, `presentationId`) VALUES
+(1, 13),
+(1, 14),
+(2, 15),
+(2, 16),
+(7, 17),
+(12, 19),
+(12, 20),
+(7, 21);
+
+--
+-- Dumping data for table `Category_Product`
+--
+
+INSERT INTO `Category_Product` (`categoryId`, `productId`, `orderIdx`) VALUES
+(7, 1, 0),
+(7, 2, 1),
+(12, 3, 0),
+(12, 4, 1),
+(3, 5, 0);
+
+--
 -- Dumping data for table `Presentation_Feature`
 --
 
@@ -170,37 +192,7 @@ INSERT INTO `Presentation_Feature` (`presentationId`, `name`, `value`) VALUES
 (23, 'Suspension', 'Pas de suspension arrière.'),
 (23, 'Tailles', 'M|L|XL');
 
---
--- Dumping data for table `Product`
---
 
-INSERT INTO `Product` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
-(1, 'VTT energy X1', b'0', NULL, 'Energy X1', NULL),
-(2, 'VTT Energy X2', b'0', NULL, 'Energy X2', NULL),
-(3, 'VTC Lazer V2', b'1', NULL, 'Lazer V2', NULL),
-(4, 'VTC Beam 3000', b'0', '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52'),
-(5, 'Michelin NX01 tire', b'0', NULL, 'Michelin NX01', NULL);
-
---
--- Dumping data for table `Product_Presentation`
---
-
-INSERT INTO `Product_Presentation` (`catalogItemId`, `presentationId`) VALUES
-(1, 22),
-(1, 23),
-(2, 24),
-(2, 25);
-
---
--- Dumping data for table `Product_SKU`
---
-
-INSERT INTO `Product_SKU` (`productId`, `skuId`, `orderIdx`) VALUES
-(1, 1, 0),
-(1, 2, 1),
-(2, 3, 0),
-(5, 4, 0),
-(4, 6, 0);
 
 --
 -- Dumping data for table `SKU`
@@ -213,6 +205,18 @@ INSERT INTO `SKU` (`id`, `description`, `disabled`, `endDate`, `name`, `startDat
 (4, 'Michelin NX01', b'0', NULL, 'Michelin NX01', NULL, NULL, 10, 2, 'X1213JJLB-4', 3),
 (5, 'Lazer V2', b'0', NULL, 'Lazer V2', NULL, NULL, 10, 100, 'X1213JJLB-5', 3),
 (6, 'Beam 3000', b'0', NULL, 'Beam 3000', NULL, NULL, NULL, NULL, NULL, NULL);
+
+
+--
+-- Dumping data for table `Product_SKU`
+--
+
+INSERT INTO `Product_SKU` (`productId`, `skuId`, `orderIdx`) VALUES
+(1, 1, 0),
+(1, 2, 1),
+(2, 3, 0),
+(5, 4, 0),
+(4, 6, 0);
 
 --
 -- Dumping data for table `SKU_Discount`
