@@ -9,7 +9,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="order in ordersHistCtrl.orders" style="cursor:pointer" ng-click="ordersHistCtrl.openOrderHistoryModal(order.id)">
+    <tr ng-repeat="order in ordersHistCtrl.orders" style="cursor:pointer"
+        ng-click="ordersHistCtrl.openOrderHistoryModal(order.id)">
         <td class="visible-md visible-lg">{{order.reference}}</td>
         <td>{{order.price | number : 2}} € {{'price.ttc' | translate}}</td>
         <td>{{'order.status.'+order.status |translate}}</td>
@@ -19,5 +20,5 @@
 </table>
 
 <div id="loaderDiv" ng-show="isProcessing">
-    <img src="../images/loading.gif" class="ajax-loader"/>
+    <img src="images/loading.gif" class="ajax-loader"/>
 </div>

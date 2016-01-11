@@ -20,7 +20,7 @@
     "billing.address.title" : "BILLING ADDRESS",
     "delivery.address.title" : "DELIVERY ADDRESS",
     "delivery.mode" : "DELIVERY METHOD",
-    "delivery.mode.ups" : "Package delivery company",
+    "delivery.mode.truck" : "Package delivery company",
     "delivery.dates" : "DELIVERY DATES",
     "delivery.date" : "DELIVERY DATE",
     "delivery.fee" : "Delivery fee",

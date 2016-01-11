@@ -1,6 +1,7 @@
 {
   "home.button.home": "Accueil",
   "home.button.account": "Mon compte",
+  "register.button" : "Je m'inscris",
 
   "button.submit" : "Soumettre",
 
@@ -13,7 +14,6 @@
   "login.placeholder": "Identifiant",
   "password.placeholder": "Mot de passe",
 
-  "password.forgotpassword": "Mot de passe oublié ?",
   "forgotten.password.title": "Réinitialisez votre mot de passe",
   "forgotten.login.help": "Veuillez fournir votre identifiant pour réinitialiser votre mot de passe",
   "reset.button": "Réinitialiser",

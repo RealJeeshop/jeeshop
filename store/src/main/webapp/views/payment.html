@@ -1,6 +1,7 @@
-<div ng-controller="RestrictedAreaController">
+<div ng-controller="RestrictedAccessController as restrictAccessCtrl"
+     ng-show="restrictAccessCtrl.hasAccess()">
 
-    <div class="main-container" ng-show="loginCtrl.isAuthenticated">
+    <div class="main-container">
 
         <div class="site-page-header text-center">
             {{'page.payment.title' | translate}}

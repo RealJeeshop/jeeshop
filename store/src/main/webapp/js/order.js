@@ -307,7 +307,7 @@
         };
     }]);
 
-    app.controller('OrderContactInfoController', ['ShoppingCart', '$state', '$http', '$scope', function (ShoppingCart, $state, $http,$scope) {
+    app.controller('OrderContactInfoController', ['ShoppingCart', '$state', '$http', 'AuthService', function (ShoppingCart, $state, $http,AuthService) {
 
         var ctrl = this;
 
@@ -335,7 +335,13 @@
             }
 
             ShoppingCart.addOrder(ctrl.order);
-            $state.go("orderconfirm");
+
+            ShoppingCart.addOrder(ctrl.order);
+            if (AuthService.isAuthenticated()){
+                $state.go("orderconfirm");
+            }else{
+                $state.go("login", {targetState : "orderConfirm"});
+            }
         };
 
         ctrl.getShippingFee = function () {

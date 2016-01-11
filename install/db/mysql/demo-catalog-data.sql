@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Jan 04, 2016 at 01:58 AM
--- Server version: 5.5.46-0ubuntu0.14.04.2
--- PHP Version: 5.5.9-1ubuntu4.14
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -21,7 +12,7 @@ SET time_zone = "+00:00";
 --
 
 --
--- Dumping data for table `Media`
+-- data for table `Media`
 --
 
 INSERT INTO `Media` (`id`, `uri`) VALUES
@@ -58,14 +49,14 @@ INSERT INTO `Media` (`id`, `uri`) VALUES
 (39, 'energy_x2.jpg');
 
 --
--- Dumping data for table `Catalog`
+-- data for table `Catalog`
 --
 
 INSERT INTO `Catalog` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
 (1, 'Catalog of Hyperbike store', b'0', NULL, 'Hyperbike catalog', NULL);
 
 --
--- Dumping data for table `Presentation`
+-- data for table `Presentation`
 --
 
 INSERT INTO `Presentation` (`id`, `displayName`, `promotion`, `features`, `locale`, `shortDescription`, `mediumDescription`, `longDescription`, `largeImage_id`, `smallImage_id`, `thumbnail_id`, `video_id`) VALUES
@@ -86,7 +77,7 @@ INSERT INTO `Presentation` (`id`, `displayName`, `promotion`, `features`, `local
 (27, 'L', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
--- Dumping data for table `Product`
+-- data for table `Product`
 --
 
 INSERT INTO `Product` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
@@ -97,7 +88,7 @@ INSERT INTO `Product` (`id`, `description`, `disabled`, `endDate`, `name`, `star
 (5, 'Michelin NX01 tire', b'0', NULL, 'Michelin NX01', NULL);
 
 --
--- Dumping data for table `Category`
+-- data for table `Category`
 --
 
 INSERT INTO `Category` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`) VALUES
@@ -111,7 +102,7 @@ INSERT INTO `Category` (`id`, `description`, `disabled`, `endDate`, `name`, `sta
 (12, 'Racing Bikes category', b'0', NULL, 'Racing Bikes', NULL);
 
 --
--- Dumping data for table `Category_Category`
+-- data for table `Category_Category`
 --
 
 INSERT INTO `Category_Category` (`parentCategoryId`, `childCategoryId`, `orderIdx`) VALUES
@@ -123,7 +114,7 @@ INSERT INTO `Category_Category` (`parentCategoryId`, `childCategoryId`, `orderId
 (1, 12, 1);
 
 --
--- Dumping data for table `Catalog_Category`
+-- data for table `Catalog_Category`
 --
 
 INSERT INTO `Catalog_Category` (`catalogId`, `categoryId`, `orderIdx`) VALUES
@@ -131,7 +122,7 @@ INSERT INTO `Catalog_Category` (`catalogId`, `categoryId`, `orderIdx`) VALUES
 (1, 2, 1);
 
 --
--- Dumping data for table `Discount`
+-- data for table `Discount`
 --
 
 INSERT INTO `Discount` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`, `discountValue`, `triggerValue`, `triggerRule`, `type`, `applicableTo`, `uniqueUse`, `usesPerCustomer`, `voucherCode`) VALUES
@@ -139,7 +130,7 @@ INSERT INTO `Discount` (`id`, `description`, `disabled`, `endDate`, `name`, `sta
 
 
 --
--- Dumping data for table `Product_Presentation`
+-- data for table `Product_Presentation`
 --
 
 INSERT INTO `Product_Presentation` (`catalogItemId`, `presentationId`) VALUES
@@ -149,7 +140,7 @@ INSERT INTO `Product_Presentation` (`catalogItemId`, `presentationId`) VALUES
 (2, 25);
 
 --
--- Dumping data for table `Category_Presentation`
+-- data for table `Category_Presentation`
 --
 
 INSERT INTO `Category_Presentation` (`catalogItemId`, `presentationId`) VALUES
@@ -163,7 +154,7 @@ INSERT INTO `Category_Presentation` (`catalogItemId`, `presentationId`) VALUES
 (7, 21);
 
 --
--- Dumping data for table `Category_Product`
+-- data for table `Category_Product`
 --
 
 INSERT INTO `Category_Product` (`categoryId`, `productId`, `orderIdx`) VALUES
@@ -174,7 +165,7 @@ INSERT INTO `Category_Product` (`categoryId`, `productId`, `orderIdx`) VALUES
 (3, 5, 0);
 
 --
--- Dumping data for table `Presentation_Feature`
+-- data for table `Presentation_Feature`
 --
 
 INSERT INTO `Presentation_Feature` (`presentationId`, `name`, `value`) VALUES
@@ -195,7 +186,7 @@ INSERT INTO `Presentation_Feature` (`presentationId`, `name`, `value`) VALUES
 
 
 --
--- Dumping data for table `SKU`
+-- data for table `SKU`
 --
 
 INSERT INTO `SKU` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`, `currency`, `price`, `quantity`, `reference`, `threshold`) VALUES
@@ -208,7 +199,7 @@ INSERT INTO `SKU` (`id`, `description`, `disabled`, `endDate`, `name`, `startDat
 
 
 --
--- Dumping data for table `Product_SKU`
+-- data for table `Product_SKU`
 --
 
 INSERT INTO `Product_SKU` (`productId`, `skuId`, `orderIdx`) VALUES
@@ -219,19 +210,32 @@ INSERT INTO `Product_SKU` (`productId`, `skuId`, `orderIdx`) VALUES
 (4, 6, 0);
 
 --
--- Dumping data for table `SKU_Discount`
+-- data for table `SKU_Discount`
 --
 
 INSERT INTO `SKU_Discount` (`skuId`, `discountId`, `orderIdx`) VALUES
 (5, 1, 0);
 
 --
--- Dumping data for table `SKU_Presentation`
+-- data for table `SKU_Presentation`
 --
 
 INSERT INTO `SKU_Presentation` (`catalogItemId`, `presentationId`) VALUES
 (1, 26),
 (2, 27);
+
+--
+-- Contenu de la table `MailTemplate`
+--
+
+INSERT INTO `MailTemplate` (`id`, `name`, `locale`, `content`, `subject`, `creationDate`, `updateDate`) VALUES
+  (1, 'userRegistration', 'fr', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Bienvenue ${gender} ${firstname} ${lastname},</h3>\n\n<p>Vous venez de cr&eacute;er un compte <a href="https://apps-jeeshop.rhcloud.com"><em>Jeeshop store demo</em></a>.</p>\n\n<p>Nous vous invitons &agrave; copier le lien ci-dessous dans la barre d''adresse de votre navigateur internet afin d&#39;activer votre compte&nbsp;: <em>(1)</em></p>\n<pre>&nbsp;</pre>\n<pre>https://apps-jeeshop.rhcloud.com/jeeshop-store/#!/activation/${login}/${actionToken}</pre>\n<pre>&nbsp;</pre>\n<p>A tr&egrave;s bient&ocirc;t</p>', 'Activation de votre compte Jeeshop store demo', '2016-01-11 01:42:08', NULL),
+  (2, 'userRegistration', 'en', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Welcome ${gender} ${firstname} ${lastname},</h3>\n\n<p>You have subscribed to <a href="https://apps-jeeshop.rhcloud.com"><em>Jeeshop store demo</em></a>.</p>\n\n<p>Please activate your account by clicking on link below : <em>(1)</em></p>\n<pre>&nbsp;</pre>\n<pre>https://apps-jeeshop.rhcloud.com/jeeshop-store/#!/activation/${login}/${actionToken}</pre>\n<pre>&nbsp;</pre>\n<p>Best regards</p>', 'Activation of your Jeeshop store demo account', '2016-01-11 01:43:11', NULL),
+  (3, 'userResetPassword', 'fr', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Bonjour ${gender} ${firstname} ${lastname},</h3>\n\n<p>Vous venez d&#39;effectuer une demande de r&eacute;initialisation de votre mot de passe sur <a href="https://apps-jeeshop.rhcloud.com"><em>Jeeshop store demo</em></a>.</p>\n\n<p>Nous vous invitons &agrave; copier le lien ci-dessous dans la barre d''adresse de votre navigateur internet afin de r&eacute;initialiser votre mot de passe : <em>(1)</em></p>\n<pre>&nbsp;</pre>\n<pre>https://apps-jeeshop.rhcloud.com/jeeshop-store/#!/resetpassword/${login}/${actionToken}</pre>\n<pre>&nbsp;</pre>\n<p>A tr&egrave;s bient&ocirc;t,</p>', 'Réinitialisation de votre mot de passe Jeeshop store demo', '2016-01-11 01:44:19', NULL),
+  (4, 'userResetPassword', 'en', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Hello ${gender} ${firstname} ${lastname},</h3>\n\n<p>You have have submitted the reset password from <a href="https://apps-jeeshop.rhcloud.com"><em>Jeeshop store demo</em></a>.</p>\n\n<p>Please click on link below to reset your password : <em>(1)</em></p>\n<pre>&nbsp;</pre>\n<pre>https://apps-jeeshop.rhcloud.com/jeeshop-store/#!/resetpassword/${login}/${actionToken}</pre>\n<pre>&nbsp;</pre>\n<p>Best regards</p>', 'Reset of your Jeeshop store demo password', '2016-01-11 01:45:12', NULL),
+  (5, 'orderValidated', 'fr', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Bonjour ${user.gender} ${user.firstname} ${user.lastname},</h3>\n\n<p>Nous avons le plaisir de vous confirmer la validation de votre commande numéro <strong>${reference}</strong></p>\n\n<p>Vous recevrez prochainement un e-mail lors de son expédition par nos services.</p>\n\n<h3><em>Détail : </em></h3>\n\n<table style="width:100%;border-width:1px; border-style=solid; text-align:justify">\n    <thead>\n    <th></th>\n    <th>Article</th>\n    <th>Quantité</th>\n    <th>Prix</th>\n    </thead>\n    <tbody>\n    <#list items as item>\n    <tr>\n        <td style="text-align:center">\n            <img src="https://apps-jeeshop.rhcloud.com/jeeshop-media/${item.presentationImageURI}" style="width:4em;height:auto"></img>\n        </td>\n        <td>${item.displayName}</td>\n        <td>${item.quantity}</td>\n        <td>${item.price} € TTC</td>\n    </tr>\n    </#list>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>Livraison par transporteur</td>\n        <td></td>\n        <td>${deliveryFee} € TTC</td>\n    </tr>\n    <#list orderDiscounts as orderDiscount>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>${orderDiscount.displayName}</td>\n        <td></td>\n        <td>- ${orderDiscount.discountValue} <#if orderDiscount.rateType>%<#else>€ TTC</#if></td>\n    </tr>\n    </#list>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><i>Total HT</i></td>\n        <td><i>#{price*100/(100+vat); m2M2} €</i></td>\n    </tr>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><b><i>Total TTC</i><b></td>\n        <td><b><i>${price} €</i></b></td>\n    </tr>\n    </tbody>\n</table>\n<br/>\n\n<table style="width:100%">\n    <tr>\n        <td style="width:45%">\n            <h4>Adresse de livraison</h4>\n            <p>\n            ${deliveryAddress.gender}\n  ${deliveryAddress.firstname}\n  ${deliveryAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Société</i></b>\n                <br/>\n            ${deliveryAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Adresse</i></b>\n                <br/>\n            ${deliveryAddress.street}\n                <br/>\n            ${deliveryAddress.city}\n                <br/>\n            ${deliveryAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Pays</i></b>\n                <br/>\n            ${deliveryAddress.countryIso3Code}\n            </p>\n        </td>\n        <td style="width:10%"></td>\n        <td style="width:45%">\n            <h4>Adresse de facturation</h4>\n            <p>\n            ${billingAddress.gender}\n  ${billingAddress.firstname}\n  ${billingAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Société</i></b>\n                <br/>\n            ${billingAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Adresse</i></b>\n                <br/>\n            ${billingAddress.street}\n                <br/>\n            ${billingAddress.city}\n                <br/>\n            ${billingAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Pays</i></b>\n                <br/>\n            ${billingAddress.countryIso3Code}\n            </p>\n        </td>\n    </tr>\n</table>\n\n<p>Cordialement</p>', 'Confirmation de votre commande', '2016-01-11 01:46:33', NULL),
+  (6, 'orderValidated', 'en', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Hello ${user.gender} ${user.firstname} ${user.lastname},</h3>\n\n<p>We are glad to confim the validation of your order <strong>${reference}</strong></p>\n\n<p>You will receive another e-mail when it will be shipped.</p>\n\n<h3><em>Details :</em></h3>\n\n<table style="width:100%;border-width:1px; border-style=solid; text-align:justify">\n    <thead>\n    <th></th>\n    <th>Item</th>\n    <th>Quantity</th>\n    <th>Price</th>\n    </thead>\n    <tbody>\n    <#list items as item>\n    <tr>\n        <td style="text-align:center">\n            <img src="https://apps-jeeshop.rhcloud.com/jeeshop-media/${item.presentationImageURI}" style="width:4em;height:auto"></img>\n        </td>\n        <td>${item.displayName}</td>\n        <td>${item.quantity}</td>\n        <td>${item.price} €</td>\n    </tr>\n    </#list>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>Package delivery company</td>\n        <td></td>\n        <td>${deliveryFee} €</td>\n    </tr>\n    <#list orderDiscounts as orderDiscount>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>${orderDiscount.displayName}</td>\n        <td></td>\n        <td>- ${orderDiscount.discountValue} <#if orderDiscount.rateType>%<#else>€</#if></td>\n    </tr>\n    </#list>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><i>Total HT</i></td>\n        <td><i>#{price*100/(100+vat); m2M2} €</i></td>\n    </tr>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><b><i>Total TTC</i><b></td>\n        <td><b><i>${price} €</i></b></td>\n    </tr>\n    </tbody>\n</table>\n<br/>\n\n<table style="width:100%">\n    <tr>\n        <td style="width:45%">\n            <h4>Delivery address</h4>\n            <p>\n            ${deliveryAddress.gender}\n  ${deliveryAddress.firstname}\n  ${deliveryAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Company</i></b>\n                <br/>\n            ${deliveryAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Address</i></b>\n                <br/>\n            ${deliveryAddress.street}\n                <br/>\n            ${deliveryAddress.city}\n                <br/>\n            ${deliveryAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Country</i></b>\n                <br/>\n            ${deliveryAddress.countryIso3Code}\n            </p>\n        </td>\n        <td style="width:10%"></td>\n        <td style="width:45%">\n            <h4>Billing address</h4>\n            <p>\n            ${billingAddress.gender}\n  ${billingAddress.firstname}\n  ${billingAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Company</i></b>\n                <br/>\n            ${billingAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Address</i></b>\n                <br/>\n            ${billingAddress.street}\n                <br/>\n            ${billingAddress.city}\n                <br/>\n            ${billingAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Country</i></b>\n                <br/>\n            ${billingAddress.countryIso3Code}\n            </p>\n        </td>\n    </tr>\n</table>\n\n<p>Best regards</p>', 'Confirmation of your order', '2016-01-11 01:47:09', NULL);
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -1,0 +1,24 @@
+<div class="container-fluid main-container" ng-controller="RestrictedAccessController as restrictAccessCtrl"
+     ng-show="restrictAccessCtrl.hasAccess()">
+
+    <h1 class="text-center">
+        {{'home.button.account' | translate}}
+    </h1>
+
+    <div class="row no-marding">
+        <div class="col-xs-12 no-marding">
+            <ul class="nav nav-pills main-menu" ng-controller="AccountMenuController as accMenuCtrl">
+                <li ng-class="{ active:accMenuCtrl.isState('account.data') }">
+                    <a ui-sref="account.data">{{'menu.account.data'|translate}}</a>
+                </li>
+                <li ng-class="{ active:accMenuCtrl.isState('account.orders') }">
+                    <a ui-sref="account.orders">{{'menu.account.orders'|translate}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div ui-view class="no-marding"></div>
+
+</div>

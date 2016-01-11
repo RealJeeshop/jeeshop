@@ -184,5 +184,34 @@
         findProduct();
 
     });
+
+    app.controller('DiscountsController', ['$http', '$locale', function ($http, $locale) {
+        var ctrl = this;
+
+        ctrl.discounts = [];
+
+        ctrl.fillVisibleOrderDiscounts = function () {
+            $http.get('rs/discounts/visible?applicableTo=ORDER&locale=' + $locale.id)
+                .success(function (discounts) {
+                    var discountsBy3 = [];
+                    for (i = 0; i < discounts.length; i++) {
+
+                        discountsBy3.push(discounts[i]);
+
+                        if ((discountsBy3.length == 3) || (i == discounts.length - 1)) {
+                            ctrl.discounts.push(discountsBy3);
+                            discountsBy3 = [];
+                        }
+                    }
+                })
+                .error(function (data, status) {
+                    //TODO Handle case Discounts are not retrievable ?
+                });
+        };
+
+
+        ctrl.fillVisibleOrderDiscounts();
+
+    }]);
 })();
 

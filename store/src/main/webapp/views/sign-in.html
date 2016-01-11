@@ -1,0 +1,62 @@
+<div class="container-fluid main-container" ng-controller="LoginController as loginCtrl">
+
+    <form name="loginForm" ng-submit="loginForm.$valid && loginCtrl.login()" novalidate>
+
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <div class="form-group"
+                     ng-class="{'has-error': loginCtrl.hasAuthenticationFailed() || ((loginForm.$submitted || loginForm.login.$dirty) && (loginForm.login.$error.required || loginForm.login.$invalid))}">
+                    <input type="email" class="form-control input-email" name="login"
+                           placeholder="{{'email.placeholder' | translate}}"
+                           ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="100"
+                    />
+                    <p class="help-block"
+                       ng-show="loginForm.login.$error.required && (loginForm.$submitted||loginForm.login.$dirty)">
+                        {{'form.field.required' | translate}}</p>
+                </div>
+                <div class="form-group"
+                     ng-class="{'has-error': loginCtrl.hasAuthenticationFailed() || ((loginForm.$submitted || loginForm.password.$dirty) && (loginForm.password.$error.required || loginForm.password.$invalid))}">
+                    <input type="password" class="form-control input-password" id="password" name="password"
+                           placeholder="{{'password.placeholder' | translate}}"
+                           ng-model="loginCtrl.credentials.password" ng-required="true"
+                           maxlength="50"
+                    />
+                    <p class="help-block"
+                       ng-show="loginCtrl.hasAuthenticationFailed()">
+                        {{'error.authentication' | translate}}</p>
+                    <p class="help-block"
+                       ng-show="loginForm.password.$error.required && (loginForm.$submitted||loginForm.password.$dirty)">
+                        {{'form.field.required' | translate}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                {{'subscribe.notyetmember' | translate}} <a ui-sref="signup">{{'subscribe.link' | translate}}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-push-3 text-right">
+                <a ui-sref="initresetpasswd">{{'password.forgotpassword' | translate}}</a>
+            </div>
+        </div>
+
+
+        <div class="row" style="margin-top:1em">
+            <div class="col-md-6 col-md-push-3 text-right">
+                <button type="button" class="btn btn-default" ng-click="loginCtrl.cancel()">{{'cancel.button' |
+                    translate}}
+                </button>
+                <button style="margin-left: 1em" type="submit" class="btn btn-primary">{{'button.submit' | translate}}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div id="loaderDiv" ng-show="loginCtrl.isProcessing">
+        <img src="images/loading.gif" class="ajax-loader"/>
+    </div>
+
+</div>

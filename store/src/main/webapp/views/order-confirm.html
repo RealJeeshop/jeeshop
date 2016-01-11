@@ -1,6 +1,7 @@
-<div ng-controller="RestrictedAreaController">
+<div ng-controller="RestrictedAccessController as restrictAccessCtrl"
+     ng-show="restrictAccessCtrl.hasAccess()">
 
-    <div class="main-container" ng-show="loginCtrl.isAuthenticated">
+    <div class="main-container">
 
         <div class="site-page-header text-center">
                 {{'page.orderconfirm.title' | translate}}
@@ -50,7 +51,7 @@
                         </div>
                         <div class="col-xs-6" style="text-align: left; padding-top: 1em">
                             <p>
-                                {{'delivery.mode.ups'|translate}}
+                                {{'delivery.mode.truck'|translate}}
                             </p>
                         </div>
 
@@ -211,7 +212,7 @@
             </div>
 
             <div id="loaderDiv" ng-show="isProcessing">
-                <img src="../images/loading.gif" class="ajax-loader"/>
+                <img src="images/loading.gif" class="ajax-loader"/>
             </div>
 
         </div>

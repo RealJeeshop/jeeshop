@@ -1,11 +1,8 @@
-<div class="main-container" ng-show="loginCtrl.isAuthenticated">
-
-    <div class="site-page-header text-center">
-        {{'page.delivery.title' | translate}}
-    </div>
+<!-- TODO clean forms duplicated -->
+<div class="container-fluid main-container">
 
     <form name="deliveryForm"
-          ng-submit="deliveryForm.$valid && (agreement||orderContactCtrl.isOrderCreated()) && orderContactCtrl.createOrderWithContactInfo()"
+          ng-submit="deliveryForm.$valid && orderContactCtrl.createOrderWithContactInfo()"
           novalidate
           ng-controller="OrderContactInfoController as orderContactCtrl">
 
@@ -14,8 +11,8 @@
                 <h5>{{'delivery.mode'|translate}}</h5>
 
                 <p>
-                    <input type="radio" name="ups" value="" checked> {{'delivery.mode.ups'|translate}}
-                    &nbsp;<img style="width:4.5em;height:auto" src="../images/pastille-livraison.png">
+                    <input type="radio" name="deliverymode" value="" checked> {{'delivery.mode.truck'|translate}}
+                    &nbsp;<i class="fa fa-2x fa-truck"></i>
                     <br/>
                 </p>
             </div>
@@ -120,9 +117,6 @@
                         <option value="" selected disabled>{{'country.placeholder' | translate}}</option>
                         <option value="FRA">{{'subscription.country.fra' | translate}}</option>
                         <option value="GBR">{{'subscription.country.gbr' | translate}}</option>
-                        <option value="DEU">{{'subscription.country.deu' | translate}}</option>
-                        <option value="LUX">{{'subscription.country.lux' | translate}}</option>
-                        <option value="BEL">{{'subscription.country.bel' | translate}}</option>
                     </select>
 
                     <p class="help-block"
@@ -130,17 +124,6 @@
                         {{'form.field.required' | translate}}</p>
                 </div>
 
-                <div class="checkbox"
-                     ng-class="{'has-error': !(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted )}">
-                    <br/>
-                    <label><input type="checkbox" name="agreement"
-                                  ng-model="agreement"/><span
-                            ng-bind-html="'cgv.agreement'|translate"></span></label>
-
-                    <p class="help-block"
-                       ng-show="(!(agreement||orderContactCtrl.isOrderCreated()) && (deliveryForm.agreement.$dirty|| deliveryForm.$submitted ))">
-                        {{'subscription.agreement.required' | translate}}</p>
-                </div>
             </div>
 
             <div class="col-sm-1 visible-sm visible-md visible-lg"></div>
@@ -256,9 +239,6 @@
                             <option value="" selected disabled>{{'country.placeholder' | translate}}</option>
                             <option value="FRA">{{'subscription.country.fra' | translate}}</option>
                             <option value="GBR">{{'subscription.country.gbr' | translate}}</option>
-                            <option value="DEU">{{'subscription.country.deu' | translate}}</option>
-                            <option value="LUX">{{'subscription.country.lux' | translate}}</option>
-                            <option value="BEL">{{'subscription.country.bel' | translate}}</option>
                         </select>
 
                         <p class="help-block"
@@ -289,6 +269,6 @@
         </div>
     </form>
     <div id="loaderDiv" ng-show="isProcessing">
-        <img src="../images/loading.gif" class="ajax-loader"/>
+        <img src="images/loading.gif" class="ajax-loader"/>
     </div>
 </div>

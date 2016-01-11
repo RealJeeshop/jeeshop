@@ -83,13 +83,6 @@ h3 {
     height: auto;
 }
 
-.site-page-header {
-    margin-top: 0.3em;
-    padding-bottom: 0.7em;
-    font-size: 3em;
-    font-style: italic;
-}
-
 .top-grey-fin-bar {
     border-top-style: solid;
     border-top-width: 1px;
@@ -108,11 +101,6 @@ h3 {
 
 .main-menu a:hover {
     color: #fff;
-}
-
-.mobile-menu-icon {
-    margin-top: 0.25em;
-    font-size: 1.3em;
 }
 
 .fixed-top-menu-container {

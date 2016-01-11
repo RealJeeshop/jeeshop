@@ -1,6 +1,7 @@
 {
   "home.button.home": "Home",
   "home.button.account": "My account",
+  "register.button" : "Register",
 
   "button.submit" : "Submit",
 
@@ -13,7 +14,6 @@
   "login.placeholder": "Login",
   "password.placeholder": "Password",
 
-  "password.forgotpassword": "Password forgotten ?",
   "forgotten.password.title": "Reset your password",
   "forgotten.login.help": "Please provide your login to reset your password",
   "reset.button": "Reset",
