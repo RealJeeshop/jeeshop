@@ -60,6 +60,13 @@ h3 {
     color:slategrey;
 }
 
+h3 {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 1.1em;
+    color:slategrey;
+}
+
 
 .no-marding {
     padding: 0;

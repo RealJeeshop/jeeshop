@@ -340,7 +340,7 @@
             if (AuthService.isAuthenticated()){
                 $state.go("orderconfirm");
             }else{
-                $state.go("login", {targetState : "orderConfirm"});
+                $state.go("login", {target : "orderconfirm"});
             }
         };
 
@@ -379,7 +379,10 @@
         ctrl.order = {};
         $scope.isProcessing = false;
         ctrl.items = [];
-        ctrl.paymentFormResponse = ShoppingCart.paymentFormResponse;
+
+        /* SIPS */
+        //ctrl.paymentFormResponse = ShoppingCart.paymentFormResponse;
+
         ctrl.orderCreated = false;
 
         ctrl.transactionProcessed = ShoppingCart.transactionProcessed;
@@ -409,9 +412,11 @@
                 .success(function (data) {
                     $scope.isProcessing = false;
                     ctrl.order = data;
+
+                    /* SIPS
                     ShoppingCart.paymentFormResponse = $sce.trustAsHtml(
                         "<script type=\"text/javascript\">$(\"#payment-wrapper form\").submit(function () {angular.element('#orderconfirmcontroller').controller().setTransactionProcessedToTrue();$(\"#payment-wrapper\").hide();}); </script>"
-                        +ctrl.order.paymentInfo.paymentFormResponse);
+                        +ctrl.order.paymentInfo.paymentFormResponse);*/
 
                     ShoppingCart.setOrderCreated();
                     $state.go("payment");
@@ -483,7 +488,7 @@
 
         ctrl.cleanOrder = function(){
             ShoppingCart.cleanUp();
-            $state.go('categories');
+            $state.go('account.orders');
         };
 
         ctrl.goBackToPaymentPlatform = function(){

@@ -1,11 +1,7 @@
 <div ng-controller="RestrictedAccessController as restrictAccessCtrl"
      ng-show="restrictAccessCtrl.hasAccess()">
 
-    <div class="main-container">
-
-        <div class="site-page-header text-center">
-                {{'page.orderconfirm.title' | translate}}
-        </div>
+    <div class="container-fluid main-container">
 
         <div ng-controller="OrderConfirmController as orderConfirmCtrl">
             <div class="row no-marding">
@@ -47,7 +43,7 @@
                     </div>
                     <div class="row no-marding" style="padding-top: 1em">
                         <div class="col-xs-3 text-center">
-                            <img style="width:4em;height:auto" src="../images/pastille-livraison.png">
+                            <i class="fa fa-2x fa-truck"></i>
                         </div>
                         <div class="col-xs-6" style="text-align: left; padding-top: 1em">
                             <p>

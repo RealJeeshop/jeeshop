@@ -35,8 +35,6 @@
             return $state.is(state);
         };
 
-        $state.go('account.data');
-
     });
 
 
@@ -85,7 +83,7 @@
                 templateUrl: 'views/activation-status.html'
             })
             .state('login', {
-                url: "/signin",
+                url: "/signin/:target",
                 templateUrl: "views/sign-in.html",
                 controller: function ($translatePartialLoader, $translate) {
                     $translatePartialLoader.addPart('login');
@@ -127,11 +125,11 @@
                 }
             })
             .state('account.data', {
-                url: "/account/data",
+                url: "/data",
                 templateUrl: "views/user-account-data.html"
             })
             .state('account.orders', {
-                url: "/account/orders",
+                url: "/orders",
                 templateUrl: "views/user-account-orders.html"
             })
             .state('delivery', {
@@ -154,19 +152,6 @@
             }
         });
 
-        // TODO pull request to angular-translate
-        var getLocale = function () {
-            var availableLang = ['en', 'fr'];
-            var nav = window.navigator;
-            var locale = ((angular.isArray(nav.languages) ? nav.languages[0] : nav.language || nav.browserLanguage || nav.systemLanguage || nav.userLanguage) || '').split('-').join('_');
-
-            var lang_id = locale.substr(0, 2);
-            if (!locale || locale.length == 0 || availableLang.indexOf(lang_id) == -1) {
-                lang_id = 'en';
-            }
-            return lang_id;
-        };
-
         $translatePartialLoaderProvider.addPart('common');
         $translatePartialLoaderProvider.addPart('home');
         $translatePartialLoaderProvider.addPart('login');
@@ -181,9 +166,10 @@
             urlTemplate: 'i18n/{part}/locale-{lang}.json'
         });
 
-        $translateProvider.determinePreferredLanguage(function () {
-            return getLocale();
-        });
+        $translateProvider
+            .registerAvailableLanguageKeys(['en', 'fr'])
+            .determinePreferredLanguage()
+            .fallbackLanguage('en');
 
     });
 })();

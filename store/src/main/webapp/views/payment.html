@@ -1,35 +1,19 @@
-<div ng-controller="RestrictedAccessController as restrictAccessCtrl"
-     ng-show="restrictAccessCtrl.hasAccess()">
+<div ng-controller="RestrictedAccessController as restrictAccessCtrl">
 
-    <div class="main-container">
+    <div class="container-fluid main-container">
 
-        <div class="site-page-header text-center">
-            {{'page.payment.title' | translate}}
-        </div>
-
-        <div id="orderconfirmcontroller" class="row" ng-controller="OrderConfirmController as orderConfirmCtrl"  ng-show="!orderConfirmCtrl.transactionProcessed">
-            <div class="col-sm-2 visible-sm visible-md visible-lg"></div>
-            <div class="col-sm-8 text-page-area" id="payment-methods">
-                <div ng-show="orderConfirmCtrl.paymentFormResponse == ''" id="default-message">
-                    <span ng-bind-html="'payment.defaultMessage1'|translate"></span>
-                    <br/>
-                    <button type="button" class="btn btn-primary" ng-click="orderConfirmCtrl.goBackToPaymentPlatform()">
-                        {{'button.order.confirm' | translate}}
-                    </button>
-                    <br/><br/>
-                    <span ng-bind-html="'payment.defaultMessage2'|translate"></span>
-                    <br/>
+        <div id="orderconfirmcontroller" class="row" ng-controller="OrderConfirmController as orderConfirmCtrl"
+             ng-show="!orderConfirmCtrl.transactionProcessed">
+            <div class="col-sm-8 col-sm-push-2 text-page-area" id="payment-methods">
+                <h3 class="text-center">{{'payment.defaultMessage' | translate}}</h3>
+                <div class="text-right">
                     <button type="button" class="btn btn-default" ng-click="orderConfirmCtrl.cleanOrder()">
                         {{'shoppingcart.continue'
                         | translate}}
                     </button>
                 </div>
-                <div ng-bind-html="orderConfirmCtrl.paymentFormResponse" ng-show="orderConfirmCtrl.paymentFormResponse != ''"
-                     id="payment-wrapper">
-                </div>
             </div>
 
-            <div class="col-sm-2 visible-sm visible-md visible-lg" ></div>
         </div>
     </div>
 </div>

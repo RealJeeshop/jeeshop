@@ -30,7 +30,6 @@
 
         var findRootCategories = function () {
 
-
             $http.get('rs/catalogs/1/categories?locale=' + locale)
                 .success(function (data) {
                     ctrl.rootCategories = data;

@@ -5,7 +5,7 @@
         $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     }]);
 
-    app.factory('AuthService', ['$http', '$state', function ($http, $state) {
+    app.factory('AuthService', ['$http', '$stateParams','$state', function ($http, $stateParams, $state) {
         var auth = this;
         auth.wrapper = {
             logged: false,
@@ -23,7 +23,11 @@
                     auth.wrapper.logged = true;
                     auth.wrapper.login = credentials.login;
                     auth.wrapper.hasAuthenticationFailed = false;
-                    $state.go('account');
+                    if ($stateParams.target !== ""){
+                        $state.go($stateParams.target);
+                    }else {
+                        $state.go('account.data');
+                    }
                 }).
                 error(function () {
                     auth.wrapper.hasAuthenticationFailed = true;
@@ -48,7 +52,7 @@
         };
     }]);
 
-    app.controller('LoginController', ['AuthService', '$state', function (AuthService, $state) {
+    app.controller('LoginController', ['AuthService', '$state', '$stateParams', function (AuthService, $state) {
 
         var ctrl = this;
 
@@ -74,6 +78,7 @@
             ctrl.isProcessing = true;
             AuthService.login(ctrl.credentials);
             ctrl.isProcessing = false;
+
         };
 
         ctrl.cancel = function () {

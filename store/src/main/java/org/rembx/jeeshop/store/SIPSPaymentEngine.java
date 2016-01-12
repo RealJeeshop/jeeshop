@@ -4,7 +4,7 @@ import org.rembx.jeeshop.order.PaymentTransactionEngine;
 import org.rembx.jeeshop.order.model.Order;
 
 // TODO
-public class SIPSPaymentEngine implements PaymentTransactionEngine {
+public class SIPSPaymentEngine /*implements PaymentTransactionEngine*/ {
 
     /*private final static Logger LOG = LoggerFactory.getLogger(SIPSPaymentEngine.class);
 
@@ -12,7 +12,7 @@ public class SIPSPaymentEngine implements PaymentTransactionEngine {
     public static final String MERCHANT_ID = "1234"; // Your MerchantId here
     public static final String MERCHANT_COUNTRY = "fr";
 */
-    @Override
+    //@Override
     public void processPayment(Order order) {
         /*LOG.info("Start payment process Order : " + order);
 

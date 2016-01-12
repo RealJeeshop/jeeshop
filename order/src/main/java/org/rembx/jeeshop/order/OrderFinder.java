@@ -165,9 +165,8 @@ public class OrderFinder {
             product.setLocalizedPresentation(user.getPreferredLocale());
             orderItem.setDisplayName(product.getLocalizedPresentation() != null ? product.getLocalizedPresentation().getDisplayName() : product.getName());
             orderItem.setSkuReference(sku.getReference());
-            if (product.getLocalizedPresentation() != null)
+            if (product.getLocalizedPresentation() != null && product.getLocalizedPresentation().getSmallImage() != null)
                 orderItem.setPresentationImageURI("products/" + orderItem.getProductId() + "/" + product.getLocalizedPresentation().getLocale() + "/" + product.getLocalizedPresentation().getSmallImage().getUri());
-
         });
 
         order.getOrderDiscounts().forEach(orderDiscount -> {
@@ -176,9 +175,8 @@ public class OrderFinder {
             orderDiscount.setDisplayName(discount.getLocalizedPresentation().getDisplayName() != null ? discount.getLocalizedPresentation().getDisplayName() : discount.getName());
             orderDiscount.setRateType(discount.getRateType());
 
-            if (discount.getLocalizedPresentation() != null)
+            if (discount.getLocalizedPresentation() != null && discount.getLocalizedPresentation().getSmallImage() != null)
                 orderDiscount.setPresentationImageURI("discounts/" + orderDiscount.getDiscountId() + "/" + discount.getLocalizedPresentation().getLocale() + "/" + discount.getLocalizedPresentation().getSmallImage().getUri());
-
         });
 
         order.setDeliveryFee(orderConfiguration.getFixedDeliveryFee());

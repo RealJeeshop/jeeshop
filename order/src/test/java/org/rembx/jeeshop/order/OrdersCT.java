@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
+import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
@@ -32,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
+import static org.rembx.jeeshop.order.model.OrderStatus.PAYMENT_VALIDATED;
 
 public class OrdersCT {
 
@@ -45,13 +47,14 @@ public class OrdersCT {
 
     private SessionContext sessionContextMock;
     private PriceEngine priceEngineMock;
-    private PaymentTransactionEngine paymentEngineMock;
+    private PaymentTransactionEngine paymentTransactionEngine;
     private Orders service;
 
     @BeforeClass
     public static void beforeClass() {
         emf = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
         catalogEmf = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
+
 
     }
 
@@ -64,10 +67,13 @@ public class OrdersCT {
         catalogEntityManager = catalogEmf.createEntityManager();
         sessionContextMock = mock(SessionContext.class);
         priceEngineMock = mock(PriceEngine.class);
-        paymentEngineMock = mock(PaymentTransactionEngine.class);
+        final MailTemplateFinder mailTemplateFinder = new MailTemplateFinder(entityManager);
+        paymentTransactionEngine = new DefaultPaymentTransactionEngine(
+                new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("20", "3")),
+                mailTemplateFinder, new Mailer(), catalogEntityManager);
 
         service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "20.0")), new UserFinder(entityManager),
-                new MailTemplateFinder(entityManager), null, sessionContextMock, priceEngineMock, paymentEngineMock);
+                mailTemplateFinder, null, sessionContextMock, priceEngineMock, paymentTransactionEngine);
     }
 
     @Test
@@ -280,7 +286,7 @@ public class OrdersCT {
     }
 
     @Test
-    public void create_shouldPersistOrderAndItsAddressesInCascade_SetCurrentUserToOrderForUserRole() throws Exception {
+    public void create_shouldPersistOrderAndItsAddressesInCascade_SetCurrentUserToOrderForUserRole_AndProcessPayment() throws Exception {
 
         Address deliveryAddress = new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA");
         Address billingAddress = new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA");
@@ -289,7 +295,9 @@ public class OrdersCT {
         when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
-        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA"));
+        Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA"));
+
+        order.setOrderDiscounts(new HashSet<>());
 
         service.create(order, null);
         entityManager.getTransaction().commit();
@@ -300,7 +308,7 @@ public class OrdersCT {
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 
         assertThat(persistedOrder).isNotNull();
-        assertThat(persistedOrder.getStatus()).isEqualTo(CREATED);
+        assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
@@ -328,6 +336,7 @@ public class OrdersCT {
 
         entityManager.getTransaction().begin();
         Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        order.setOrderDiscounts(new HashSet<>());
 
         service.create(order, null);
         entityManager.getTransaction().commit();
@@ -339,7 +348,7 @@ public class OrdersCT {
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 
         assertThat(persistedOrder).isNotNull();
-        assertThat(persistedOrder.getStatus()).isEqualTo(CREATED);
+        assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
@@ -361,7 +370,9 @@ public class OrdersCT {
         when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
-        Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        order.setOrderDiscounts(new HashSet<>());
+
         service.create(order, "test@test.com");
         entityManager.getTransaction().commit();
 
@@ -371,7 +382,7 @@ public class OrdersCT {
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 
         assertThat(persistedOrder).isNotNull();
-        assertThat(persistedOrder.getStatus()).isEqualTo(CREATED);
+        assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
 
