@@ -11,8 +11,8 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    margin-left: -32px; /* -1 * image width / 2 */
-    margin-top: -32px; /* -1 * image height / 2 */
+    margin-left: -32px;
+    margin-top: -32px;
     display: block;
 }
 
@@ -59,14 +59,6 @@ h3 {
     font-size: 1.1em;
     color:slategrey;
 }
-
-h3 {
-    font-style: italic;
-    font-weight: bold;
-    font-size: 1.1em;
-    color:slategrey;
-}
-
 
 .no-marding {
     padding: 0;
@@ -161,6 +153,7 @@ h3 {
     height: 350px;
     background-size: cover !important;
     border-top: 4px solid rgba(202, 166, 202, 0.3);
+    border-bottom: 4px solid #dddddd;
 }
 
 .home-bg-sm {
@@ -175,6 +168,11 @@ h3 {
     background-color: lightblue;
 }
 
+.discount img{
+    height: 6em;
+    width: auto;
+}
+
 
 .home-bg .presentation {
     color: #fff;
@@ -186,14 +184,7 @@ h3 {
 
 .home-bg .presentation2 {
     font-size: 2.3em;
-}
-
-.home-bg .presentation-link {
-    padding-top: 30px;
-}
-
-.home-bg-sm .presentation-link {
-    padding-top: 20px;
+    padding-top:3em;
 }
 
 .home-bg-sm .presentation {
@@ -397,13 +388,6 @@ input.form-control {
     text-decoration: none;
 }
 
-/** Video frame **/
-.video-frame {
-    /*padding-left: 8.33333%;*/
-}
-
-/* Page with text content (CGV, Who are we ...)*/
-
 .text-page-header {
     margin-top: 3em;
     margin-bottom: 2em;
@@ -428,65 +412,6 @@ input.form-control {
 
 .text-page-area .line-spaced {
     line-height: 200%;
-}
-
-.img-label {
-    margin-top: 1em;
-    font-weight: normal;
-    color: #4C4C4C;
-    font-style: italic;
-}
-
-.share-this-page{
-    position:fixed;
-    top: 35%;
-    right: 0;
-    transition: all 150ms ease 0s;
-}
-
-.share-this-page ul {
-    list-style: outside none none;
-}
-
-.share-this-page ul li a {
-    position: relative;
-    display: block;
-    width: 2em;
-    height: 2em;
-    font-size: 1.5em;
-    color: #999;
-    text-align: center;
-    margin-bottom: 0.2em;
-    background-color: #f2f2f2;
-}
-
-.share-this-page ul li a:hover, .share-this-page ul li a:focus {
-    color: #FFF;
-}
-
-
-.share-this-page ul li a.share-facebook:focus{
-    background-color: #223d96;
-}
-
-.share-this-page ul li a.share-facebook:hover{
-    background-color: #3952a1;
-}
-
-.share-this-page ul li a.share-gplus:focus{
-    background-color: #c33b25;
-}
-
-.share-this-page ul li a.share-gplus:hover{
-    background-color: #e24931;
-}
-
-.share-this-page ul li a.share-twitter:focus{
-    background-color: #1c94ee;
-}
-
-.share-this-page ul li a.share-twitter:hover{
-    background-color: #50aaf1;
 }
 
 

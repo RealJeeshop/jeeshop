@@ -1,8 +1,6 @@
 package org.rembx.jeeshop.order;
 
-import org.rembx.jeeshop.role.JeeshopRoles;
-
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -31,7 +29,7 @@ public class Fees {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/shipping")
-    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
+    @PermitAll
     public Double getShippingFee() {
         if (orderConfiguration!=null){
             return orderConfiguration.getFixedDeliveryFee();
@@ -43,7 +41,7 @@ public class Fees {
     @GET
     @Path("/vat")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
+    @PermitAll
     public Double getVAT() {
         if (orderConfiguration!=null){
             return orderConfiguration.getVAT();
