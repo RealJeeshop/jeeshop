@@ -1,12 +1,12 @@
 package org.rembx.jeeshop.role;
 
 /**
- * Created by remi on 25/05/14.
+ * Jeeshop roles
  */
 public interface JeeshopRoles {
 
-    public final static String USER = "user";
-    public final static String ADMIN = "admin";
-    public final static String CONTENT_ADMIN = "content_administrator";
+    String USER = "user";
+    String ADMIN = "admin";
+    String ADMIN_READONLY = "adminRO";
 
 }

@@ -13,6 +13,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+
 /**
  * Sub-resource of CatalogItem resources (Catalogs, Categories,...) dedicated to a Presentation instance.
  * @Author remi
@@ -47,7 +49,7 @@ public class PresentationResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public void delete() {
         checkEntityNotNull();
         parentCatalogItem.getPresentationByLocale().remove(presentation.getLocale());
@@ -61,7 +63,7 @@ public class PresentationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Presentation createLocalizedPresentation(Presentation presentation) {
 
         if (this.presentation != null) {
@@ -81,7 +83,7 @@ public class PresentationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(value = Transactional.TxType.REQUIRES_NEW)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Presentation modifyLocalizedPresentation(Presentation presentation) {
         checkEntityNotNull();
 

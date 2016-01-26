@@ -23,6 +23,8 @@ import java.util.Set;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 /**
  * @author remi
@@ -55,7 +57,7 @@ public class Categories {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Category create(Category category) {
         if (category.getChildCategories() != null) {
             List<Category> newCategories = new ArrayList<>();
@@ -74,7 +76,7 @@ public class Categories {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{categoryId}")
     public void delete(@PathParam("categoryId") Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
@@ -97,7 +99,7 @@ public class Categories {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Category modify(Category category) {
         Category originalCategory = entityManager.find(Category.class, category.getId());
         checkNotNull(originalCategory);
@@ -126,7 +128,7 @@ public class Categories {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
@@ -138,7 +140,7 @@ public class Categories {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return catalogItemFinder.countBySearchCriteria(category, search);
@@ -161,7 +163,7 @@ public class Categories {
     @GET
     @Path("/{categoryId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Set<String> findPresentationsLocales(@PathParam("categoryId") @NotNull Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);

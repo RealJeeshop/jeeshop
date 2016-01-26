@@ -22,6 +22,8 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 /**
  * @author remi
@@ -55,7 +57,7 @@ public class Products {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Product create(Product product) {
         if (product.getChildSKUsIds() != null) {
             List<SKU> newSkus = new ArrayList<>();
@@ -74,7 +76,7 @@ public class Products {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{productId}")
     public void delete(@PathParam("productId") Long productId) {
         Product product = entityManager.find(Product.class, productId);
@@ -98,7 +100,7 @@ public class Products {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Product modify(Product product) {
         Product originalProduct = entityManager.find(Product.class, product.getId());
         checkNotNull(originalProduct);
@@ -127,7 +129,7 @@ public class Products {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
@@ -139,7 +141,7 @@ public class Products {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return catalogItemFinder.countBySearchCriteria(product, search);
@@ -162,7 +164,7 @@ public class Products {
     @GET
     @Path("/{productId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Set<String> findPresentationsLocales(@PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
@@ -200,7 +202,7 @@ public class Products {
     @GET
     @Path("/{productId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Discount> findDiscounts(@PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);

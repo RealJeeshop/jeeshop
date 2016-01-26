@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 import static org.rembx.jeeshop.role.JeeshopRoles.USER;
 import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
@@ -236,7 +237,7 @@ public class Users {
     @HEAD
     @Path("/administrators")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Boolean authenticateAdminUser() {
         return true;
     }
@@ -245,7 +246,7 @@ public class Users {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<User> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
@@ -257,7 +258,7 @@ public class Users {
     @GET
     @Path("/{customerId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public User find(@PathParam("customerId") @NotNull Long customerId) {
         User user = entityManager.find(User.class, customerId);
         if (user == null) {
@@ -269,7 +270,7 @@ public class Users {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return userFinder.countBySearchCriteria(search);
@@ -280,7 +281,7 @@ public class Users {
     @GET
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({USER, ADMIN})
+    @RolesAllowed({ADMIN,ADMIN_READONLY,USER})
     public User findCurrentUser() {
 
         User user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());

@@ -5,7 +5,6 @@ import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Presentation;
-import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -27,7 +26,7 @@ import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 /**
  * @author remi
@@ -60,7 +59,7 @@ public class Catalogs {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
@@ -72,7 +71,7 @@ public class Catalogs {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return catalogItemFinder.countBySearchCriteria(catalog, search);
@@ -145,7 +144,7 @@ public class Catalogs {
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);

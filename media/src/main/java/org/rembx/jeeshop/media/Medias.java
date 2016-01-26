@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+
 /**
  * Medias resource
  */
@@ -38,7 +41,7 @@ public class Medias {
     @POST
     @Consumes("multipart/form-data")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{type}/{id}/{locale}/upload")
     public void upload(@Context HttpServletRequest request, @NotNull @PathParam("type") String itemType, @NotNull @PathParam("id") Long itemId, @NotNull @PathParam("locale") String locale) {
 
@@ -66,7 +69,7 @@ public class Medias {
 
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     @Path("/{type}/{id}/{locale}/{filename}")
     public File get(@NotNull @PathParam("type") String itemType, @NotNull @PathParam("id") Long itemId,
                     @NotNull @PathParam("locale") String locale, @NotNull @PathParam("filename") String fileName) {

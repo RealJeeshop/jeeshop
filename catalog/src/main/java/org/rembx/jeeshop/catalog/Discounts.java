@@ -22,6 +22,8 @@ import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 /**
  * @author remi
@@ -58,7 +60,7 @@ public class
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Discount create(Discount discount) {
         entityManager.persist(discount);
         return discount;
@@ -67,7 +69,7 @@ public class
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{discountId}")
     public void delete(@PathParam("discountId") Long discountId) {
         Discount discount = entityManager.find(Discount.class, discountId);
@@ -90,7 +92,7 @@ public class
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Discount modify(Discount discount) {
         Discount originalDiscount = entityManager.find(Discount.class, discount.getId());
         checkNotNull(originalDiscount);
@@ -103,7 +105,7 @@ public class
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Discount> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
@@ -125,7 +127,7 @@ public class
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
         if (search != null)
             return catalogItemFinder.countBySearchCriteria(discount, search);
@@ -136,7 +138,7 @@ public class
     @GET
     @Path("/{discountId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Discount find(@PathParam("discountId") @NotNull Long discountId, @QueryParam("locale") String locale) {
         Discount discount = entityManager.find(Discount.class, discountId);
         if (isAdminUser(sessionContext))
@@ -148,7 +150,7 @@ public class
     @GET
     @Path("/{discountId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Set<String> findPresentationsLocales(@PathParam("discountId") @NotNull Long discountId) {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);

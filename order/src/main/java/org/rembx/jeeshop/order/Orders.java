@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 import static org.rembx.jeeshop.role.JeeshopRoles.USER;
 
 /**
@@ -83,7 +84,7 @@ public class Orders {
     @GET
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN,USER})
+    @RolesAllowed({ADMIN,ADMIN_READONLY,USER})
     public Order find(@PathParam("orderId") @NotNull Long orderId,@QueryParam("enhanced") Boolean enhanced) {
         Order order = entityManager.find(Order.class, orderId);
 
@@ -105,7 +106,7 @@ public class Orders {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
+    @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
     public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
                                @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status,
                                @QueryParam("skuId") Long skuId, @QueryParam("enhanced") Boolean enhanced) {
@@ -122,7 +123,7 @@ public class Orders {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({JeeshopRoles.USER, JeeshopRoles.ADMIN})
+    @RolesAllowed({USER, ADMIN})
     public Order create(Order order, @QueryParam("userLogin")String userLogin) {
 
         checkOrder(order);
@@ -146,7 +147,7 @@ public class Orders {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public Order modify(@NotNull Order order) {
         Order existingOrder = entityManager.find(Order.class, order.getId());
         checkNotNull(existingOrder);
@@ -162,7 +163,7 @@ public class Orders {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{orderId}")
     public void delete(@PathParam("orderId") Long orderId) {
         Order order = entityManager.find(Order.class, orderId);
@@ -173,7 +174,7 @@ public class Orders {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search, @QueryParam("status") OrderStatus status, @QueryParam("skuId") Long skuId) {
         return orderFinder.countAll(search,status, skuId);
     }
@@ -181,7 +182,7 @@ public class Orders {
     @GET
     @Path("/fixeddeliveryfee")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Double getFixedDeliveryFee() {
         if (orderConfiguration!=null){
             return orderConfiguration.getFixedDeliveryFee();
@@ -193,12 +194,12 @@ public class Orders {
 
     private void assignOrderToUser(Order order, String userLogin) {
         User user;
-        if (sessionContext.isCallerInRole(JeeshopRoles.USER)){
+        if (sessionContext.isCallerInRole(USER)){
             user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
             order.setUser(user);
         }
 
-        if (sessionContext.isCallerInRole(JeeshopRoles.ADMIN)){
+        if (sessionContext.isCallerInRole(ADMIN)){
             user = userFinder.findByLogin(userLogin);
             order.setUser(user);
         }

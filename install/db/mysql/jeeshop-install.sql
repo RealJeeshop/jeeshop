@@ -392,6 +392,7 @@ VALUES ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'M.' , 'Gerald', 'Min',
 
 INSERT INTO Role (id, name) VALUES (1, 'user');
 INSERT INTO Role (id, name) VALUES (2, 'admin');
+INSERT INTO Role (id, name) VALUES (3, 'adminRO');
 
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '1');
 INSERT INTO User_Role (userId ,roleId) VALUES ('1', '2');

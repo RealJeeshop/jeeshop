@@ -23,6 +23,9 @@ import javax.ws.rs.core.Response;
 import java.io.StringWriter;
 import java.util.List;
 
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
+import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+
 /**
  * Mail template resource
  */
@@ -54,7 +57,7 @@ public class MailTemplates {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public MailTemplate create(MailTemplate mailTemplate) {
         MailTemplate existingTpl = mailTemplateFinder.findByNameAndLocale(mailTemplate.getName(), mailTemplate.getLocale());
         if (existingTpl != null) {
@@ -68,7 +71,7 @@ public class MailTemplates {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("test/{recipient}")
     public void sendTestEmail(Object properties, @NotNull @QueryParam("templateName") String templateName, @NotNull @QueryParam("locale") String locale, @NotNull @PathParam("recipient") String recipient) {
         MailTemplate existingTpl = mailTemplateFinder.findByNameAndLocale(templateName, locale);
@@ -87,7 +90,7 @@ public class MailTemplates {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     @Path("/{id}")
     public void delete(@PathParam("id") Long id) {
         MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
@@ -99,7 +102,7 @@ public class MailTemplates {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed(ADMIN)
     public MailTemplate modify(MailTemplate mailTemplate) {
 
         MailTemplate existingMailTemplate = entityManager.find(MailTemplate.class, mailTemplate.getId());
@@ -117,7 +120,7 @@ public class MailTemplates {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size
             ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (name != null) {
@@ -130,7 +133,7 @@ public class MailTemplates {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public MailTemplate find(@PathParam("id") @NotNull Long id) {
         MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
         if (mailTemplate == null) {
@@ -142,7 +145,7 @@ public class MailTemplates {
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(JeeshopRoles.ADMIN)
+    @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count() {
         return mailTemplateFinder.countAll();
     }
