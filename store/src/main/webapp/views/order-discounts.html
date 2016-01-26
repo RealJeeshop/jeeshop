@@ -3,7 +3,7 @@
 
         <div class="col-xs-12 col-sm-4 col-sm-push-2 discount text-center discount" ng-if="$index < 2" ng-repeat="discount in discountsCtrl.discounts">
             <img
-                    ng-src="/jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.thumbnail.uri}}"/>
+                    ng-src="/jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"/>
             <p>{{discount.localizedPresentation.displayName}}</p>
         </div>
 
