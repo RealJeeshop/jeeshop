@@ -16,23 +16,6 @@ SET time_zone = "+00:00";
 --
 
 INSERT INTO `Media` (`id`, `uri`) VALUES
-(1, 'remi.png'),
-(2, 'remi.png'),
-(3, 'remi.png'),
-(5, 'vero.png'),
-(6, 'remi.png'),
-(7, 'vero.png'),
-(8, 'vtt_small.jpg'),
-(9, 'vtt_large.jpg'),
-(10, 'vtt_small.jpg'),
-(11, 'vtt_thumbnail.jpg'),
-(12, 'vtt_large.jpg'),
-(13, 'vtt_small.jpg'),
-(14, 'vtt_thumbnail.jpg'),
-(16, 'IMGP2376.JPG'),
-(19, 'vtt_large.jpg'),
-(20, 'vtt_small.jpg'),
-(21, 'vtt_small.jpg'),
 (25, 'bikes_root_cat.jpg'),
 (26, 'bikes_root_cat.jpg'),
 (27, 'bikes_root_cat.jpg'),
@@ -46,7 +29,11 @@ INSERT INTO `Media` (`id`, `uri`) VALUES
 (36, 'energy_x1.jpg'),
 (37, 'energy_x1.jpg'),
 (38, 'energy_x2.jpg'),
-(39, 'energy_x2.jpg');
+(39, 'energy_x2.jpg'),
+(44, 'pastille-10-pourcent.png'),
+(45, 'pastille-10-pourcent.png'),
+(46, 'pastille-livraison.png'),
+(47, 'pastille-livraison.png');
 
 --
 -- data for table `Catalog`
@@ -74,7 +61,11 @@ INSERT INTO `Presentation` (`id`, `displayName`, `promotion`, `features`, `local
 (24, 'Energy X2', 'Energy X2', NULL, 'en', 'The first genuine touring mountain bike: comfortable thanks to a more upright seating position and front suspension, efficient thanks to a lightweight aluminium frame and 21 speeds.', NULL, NULL, 38, NULL, NULL, NULL),
 (25, 'Energy X2', 'Energy X2', NULL, 'fr', 'Le 1er vrai VTT de rando : confortable par sa position relevée et sa suspension avant, et efficace grâce à son cadre aluminium léger et ses 21 vitesses.', NULL, NULL, 39, NULL, NULL, NULL),
 (26, 'XL', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(27, 'L', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(27, 'L', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(28, 'Frais de livraison gratuit pour votre première commande !', NULL, NULL, 'fr', NULL, NULL, NULL, NULL, 47, NULL, NULL),
+(29, 'Free delivery fee for first order!', NULL, NULL, 'en', NULL, NULL, NULL, NULL, 46, NULL, NULL),
+(30, '10 pourcent de remise dès 100€ d''achats !', NULL, NULL, 'fr', NULL, NULL, NULL, NULL, 45, NULL, NULL),
+(31, '10 percent off from 100€ of purchase!', NULL, NULL, 'en', NULL, NULL, NULL, NULL, 44, NULL, NULL);
 
 --
 -- data for table `Product`
@@ -122,12 +113,22 @@ INSERT INTO `Catalog_Category` (`catalogId`, `categoryId`, `orderIdx`) VALUES
 (1, 2, 1);
 
 --
--- data for table `Discount`
+-- Contenu de la table `Discount`
 --
 
 INSERT INTO `Discount` (`id`, `description`, `disabled`, `endDate`, `name`, `startDate`, `discountValue`, `triggerValue`, `triggerRule`, `type`, `applicableTo`, `uniqueUse`, `usesPerCustomer`, `voucherCode`) VALUES
-(1, 'a discount', b'0', '2014-06-19 00:52:52', 'discount1', '2014-06-18 00:52:52', 0.1, NULL, 'AMOUNT', 'DISCOUNT_RATE', '', b'1', 1, NULL);
+  (2, 'Free delivery fee for first order', b'0', NULL, 'Order - Free delivery - first order', NULL, 12, 1, 'ORDER_NUMBER', 'SHIPPING_FEE_DISCOUNT_AMOUNT', 'ORDER', b'1', NULL, NULL),
+  (5, '10 percent off for order amount of 100', b'0', NULL, '10 percent off', NULL, 10, 100, 'AMOUNT', 'DISCOUNT_RATE', 'ORDER', NULL, NULL, NULL);
 
+--
+-- Contenu de la table `Discount_Presentation`
+--
+
+INSERT INTO `Discount_Presentation` (`catalogItemId`, `presentationId`) VALUES
+  (2, 28),
+  (2, 29),
+  (5, 30),
+  (5, 31);
 
 --
 -- data for table `Product_Presentation`
@@ -208,13 +209,6 @@ INSERT INTO `Product_SKU` (`productId`, `skuId`, `orderIdx`) VALUES
 (2, 3, 0),
 (5, 4, 0),
 (4, 6, 0);
-
---
--- data for table `SKU_Discount`
---
-
-INSERT INTO `SKU_Discount` (`skuId`, `discountId`, `orderIdx`) VALUES
-(5, 1, 0);
 
 --
 -- data for table `SKU_Presentation`
