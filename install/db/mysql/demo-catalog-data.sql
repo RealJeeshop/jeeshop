@@ -29,11 +29,7 @@ INSERT INTO `Media` (`id`, `uri`) VALUES
 (36, 'energy_x1.jpg'),
 (37, 'energy_x1.jpg'),
 (38, 'energy_x2.jpg'),
-(39, 'energy_x2.jpg'),
-(44, 'pastille-10-pourcent.png'),
-(45, 'pastille-10-pourcent.png'),
-(46, 'pastille-livraison.png'),
-(47, 'pastille-livraison.png');
+(39, 'energy_x2.jpg');
 
 --
 -- data for table `Catalog`
@@ -62,10 +58,10 @@ INSERT INTO `Presentation` (`id`, `displayName`, `promotion`, `features`, `local
 (25, 'Energy X2', 'Energy X2', NULL, 'fr', 'Le 1er vrai VTT de rando : confortable par sa position relevée et sa suspension avant, et efficace grâce à son cadre aluminium léger et ses 21 vitesses.', NULL, NULL, 39, NULL, NULL, NULL),
 (26, 'XL', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (27, 'L', '', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(28, 'Frais de livraison gratuit pour votre première commande !', NULL, NULL, 'fr', NULL, NULL, NULL, NULL, 47, NULL, NULL),
-(29, 'Free delivery fee for first order!', NULL, NULL, 'en', NULL, NULL, NULL, NULL, 46, NULL, NULL),
-(30, '10 pourcent de remise dès 100€ d''achats !', NULL, NULL, 'fr', NULL, NULL, NULL, NULL, 45, NULL, NULL),
-(31, '10 percent off from 100€ of purchase!', NULL, NULL, 'en', NULL, NULL, NULL, NULL, 44, NULL, NULL);
+(28, 'Frais de livraison gratuit pour votre première commande !', 'fa-truck', NULL, 'fr', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(29, 'Free delivery fee for first order!', 'fa-truck', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(30, '10 pourcent de remise dès 100€ d''achats !', 'fa-gift', NULL, 'fr', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(31, '10 percent off from 100€ of purchase!', 'fa-gift', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- data for table `Product`
