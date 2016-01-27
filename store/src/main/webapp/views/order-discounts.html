@@ -1,9 +1,9 @@
 <div ng-controller="DiscountsController as discountsCtrl">
-    <div class="row no-marding">
+    <div class="row no-marding discount">
 
-        <div class="col-xs-12 col-sm-4 col-sm-push-2 discount text-center discount" ng-if="$index < 2" ng-repeat="discount in discountsCtrl.discounts">
-            <img
-                    ng-src="/jeeshop-media/discounts/{{discount.id}}/{{discount.localizedPresentation.locale}}/{{discount.localizedPresentation.smallImage.uri}}"/>
+        <div class="col-xs-12 col-sm-6 text-center discount" ng-if="$index < 2"
+             ng-repeat="discount in discountsCtrl.discounts">
+            <i class="fa fa-4x {{discount.localizedPresentation.promotion}}"></i>
             <p>{{discount.localizedPresentation.displayName}}</p>
         </div>
 

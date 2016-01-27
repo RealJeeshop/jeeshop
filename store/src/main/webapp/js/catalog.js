@@ -1,13 +1,6 @@
 (function () {
     var app = angular.module('store-catalog', ['ngSanitize', 'ui.router']);
 
-    app.directive("rootCategories", function () {
-        return {
-            restrict: "E",
-            templateUrl: "views/root-categories.html"
-        };
-    });
-
     app.directive("orderDiscounts", function(){
         return {
             restrict: "E",
@@ -31,7 +24,7 @@
     app.controller('RootCategoriesCtrl', function ($scope, $http, $translate, $state) {
 
         var ctrl = this;
-        ctrl.rootCategories = [];
+        $scope.rootCategories = [];
 
         var locale = $translate.use();
 
@@ -39,7 +32,7 @@
 
             $http.get('rs/catalogs/1/categories?locale=' + locale)
                 .success(function (data) {
-                    ctrl.rootCategories = data;
+                    $scope.rootCategories = data;
 
                 })
                 .error(function (data, status) {
@@ -49,6 +42,10 @@
 
         ctrl.openCategory = function (categoryId) {
             $state.go('category', {'categoryId': categoryId});
+        };
+
+        $scope.hasRootCategories = function () {
+            return ($scope.rootCategories.length > 0);
         };
 
         findRootCategories();

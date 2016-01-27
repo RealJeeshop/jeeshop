@@ -23,7 +23,7 @@
   "delivery.mode.truck" : "Livraison par transporteur",
   "delivery.dates" : "DELAI DE LIVRAISON",
   "delivery.date" : "DELAI DE LIVRAISON",
-  "delivery.fee" : "Delivery fee",
+  "delivery.fee" : "FRAIS DE LIVRAISON",
   "button.continue": "Continuer",
   "address.billing.showlink" : "Fournir une adresse de facturation différente",
   "address.billing.hide" : "Masquer",

@@ -1,45 +1,5 @@
-<div class="container-fluid">
-    <div class="row no-marding home-bg visible-md visible-lg">
-        <div class="col-md-12 no-marding">
-            <div class="row no-marding">
-                <div class="col-md-12 presentation text-center">
-                    <p>{{'home.presentation.title' | translate}}</p>
-                </div>
-            </div>
-
-        </div>
-        <div class="row no-marding">
-            <div class="col-md-12 presentation presentation2 text-center" style="padding-bottom: 0">
-                <p ng-bind-html="'home.presentation' | translate"></p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="row no-marding home-bg home-bg-sm visible-sm">
-    <div class="col-sm-12 no-marding">
-        <div class="row no-marding">
-            <div class="col-sm-12 presentation text-center">
-                <p>{{'home.presentation.title' | translate}}</p>
-            </div>
-        </div>
-        <div class="row no-marding">
-            <div class="col-sm-12 presentation presentation2 text-center" style="padding-bottom: 0">
-                <p ng-bind-html="'home.presentation' | translate"></p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row no-marding home-bg home-bg-xs visible-xs">
-    <div class="col-xs-12 presentation text-center">
-        <p>{{'home.presentation.title' | translate}}</p>
-    </div>
+<div ng-controller="RootCategoriesCtrl as rootCatCtrl" >
+    <category-childs items="rootCategories" itemtype="'categories'"></category-childs>
 </div>
 
 <order-discounts></order-discounts>
-
-<root-categories></root-categories>
-
-
