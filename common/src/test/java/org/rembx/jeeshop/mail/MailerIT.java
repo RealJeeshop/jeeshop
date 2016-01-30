@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.mail;
 
-import com.dumbster.smtp.SimpleSmtpServer;
-import com.dumbster.smtp.SmtpMessage;
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.*;
@@ -16,7 +16,7 @@ public class MailerIT {
     protected static Weld weld;
     protected static WeldContainer container;
 
-    private SimpleSmtpServer server;
+    private GreenMail server;
 
     @BeforeClass
     public static void init() {
@@ -30,17 +30,18 @@ public class MailerIT {
     }
 
     @Before
-    public void setup() {
-        server = SimpleSmtpServer.start(2525);
+    public void setUp() {
+        server = new GreenMail(ServerSetupTest.SMTP);
+        server.start();
     }
 
     @After
-    public void after(){
+    public void tearDown() {
         server.stop();
     }
 
     @Test
-    public void sendMail() {
+    public void sendMail() throws Exception{
         Mailer mailer = container.instance().select(Mailer.class).get();
         try {
             mailer.sendMail("Test Subject", "test@test.com", "<h1>Hello</h1>");
@@ -49,9 +50,8 @@ public class MailerIT {
             fail();
         }
 
-        assertThat(server.getReceivedEmailSize()).isEqualTo(1);
-        assertThat(((SmtpMessage) server.getReceivedEmail().next()).getBody()).contains("<h1>Hello</h1>");
-        assertThat(((SmtpMessage) server.getReceivedEmail().next()).getHeaderValue("Subject")).isEqualTo("Test Subject");
+        assertThat(server.getReceivedMessages().length).isEqualTo(1);
+        assertThat(server.getReceivedMessages()[0].getSubject()).isEqualTo("Test Subject");
     }
 
     @Test
