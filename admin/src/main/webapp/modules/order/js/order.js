@@ -264,8 +264,11 @@
                     ctrl.isCreationModeActive = false;
                     ctrl.isEditionModeActive = true;
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data, status) {
+                    if (status == 403)
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                    else
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                 });
         };
 
@@ -276,8 +279,11 @@
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'})
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data, status) {
+                    if (status == 403)
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                    else
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                 });
         };
 

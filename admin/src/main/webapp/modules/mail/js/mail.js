@@ -143,7 +143,9 @@
                             type: 'danger',
                             msg: 'An e-mail template with same locale and name already exists'
                         })
-                    } else {
+                    } else if (status == 403) {
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'})
+                    }else {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
                     }
                 });
@@ -161,7 +163,9 @@
                         ctrl.alerts.push({
                             type: 'danger',
                             msg: 'An e-mail template with same locale and name already exists'
-                        })
+                        });
+                    } else if (status == 403) {
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                     } else {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
                     }
@@ -302,7 +306,9 @@
                         type: 'warning',
                         msg: 'No mail template found matching mail template and locale'
                     });
-                } else {
+                } if (status == 403) {
+                    ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                }else {
                     ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                 }
             });

@@ -195,8 +195,11 @@
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data, status) {
+                    if (status == 403)
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                    else
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                 });
         };
 
@@ -207,8 +210,11 @@
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'})
                 })
-                .error(function (data) {
-                    ctrl.alerts.push({type: 'danger', msg: 'Technical error'})
+                .error(function (data, status) {
+                    if (status == 403)
+                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                    else
+                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                 });
         };
 
@@ -574,8 +580,11 @@
                         $scope.presentation = data;
                         $modalInstance.close(errors);
                     })
-                    .error(function (data) {
-                        errors.push({type: 'danger', msg: 'Technical error'});
+                    .error(function (data, status) {
+                        if (status == 403)
+                            errors.push({type: 'warning', msg: 'Operation not allowed'});
+                        else
+                            errors.push({type: 'danger', msg: 'Technical error'});
                         $modalInstance.close(errors);
                     });
             };
@@ -588,8 +597,12 @@
                         getAvailableLocales();
                         $modalInstance.close();
                     })
-                    .error(function (data) {
-                        $modalInstance.close({type: 'danger', msg: 'Technical error'});
+                    .error(function (data, status) {
+                            if (status == 403)
+                                $modalInstance.close({type: 'warning', msg: 'Technical error'});
+                            else
+                                $modalInstance.close({type: 'danger', msg: 'Technical error'});
+
                     });
             };
 
