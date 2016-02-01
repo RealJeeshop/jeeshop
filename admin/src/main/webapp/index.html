@@ -21,10 +21,12 @@
 <body>
 
 <!-- libraries -->
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/stringview-min.js"></script>
 <script type="text/javascript" src="js/angular-file-upload-html5-shim.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-ui-router.min.js"></script>
 <script type="text/javascript" src="js/angular-file-upload.min.js"></script>
 <script type="text/javascript" src="js/ui-bootstrap-tpls-0.12.0.min.js"></script>
 <!-- jeeshop scripts -->
@@ -35,11 +37,11 @@
 <script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 
-<div ng-controller="SideMenuController as sideMenuCtrl">
+<div>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" ng-click="sideMenuCtrl.navCollapsed = !sideMenuCtrl.navCollapsed">
+                <button type="button" class="navbar-toggle">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -47,16 +49,16 @@
                 </button>
                 <span class="navbar-brand"><em>Jeeshop Admin</em></span>
             </div>
-            <div ng-controller="LoginController as loginCtrl" class="navbar-collapse collapse" collapse="!sideMenuCtrl.navCollapsed">
+            <div ng-controller="LoginController as loginCtrl" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-left">
                     <li><a href="#">Settings</a></li>
                     <li class="hidden-xs"><a href="#">Help</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('overview')">Overview</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')">Catalog</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('order')">Orders</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')">Stats</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('user')">Customers</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ><a href="#" ng-click="sideMenuCtrl.selectEntry('mail')">Emails, Newsletters</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a ui-sref="home">Overview</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="catalog.catalogs">Catalog</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="order">Orders</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="statistic">Stats</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="user">Customers</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="mail">Emails, Newsletters</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
@@ -81,35 +83,34 @@
         <div class="row">
             <div class="col-sm-3 col-md-2 sidebar">
                 <ul class="nav nav-sidebar">
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('overview') }">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('overview')"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
+                    <li ui-sref-active="active">
+                        <a  ui-sref="home"><span class="glyphicon glyphicon-home"></span><span class="side_menu_item_title">Overview</span></a>
                     </li>
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('catalog') }" title="Manage store catalog items">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('catalog')"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
+                    <li ui-sref-active="active" title="Manage store catalog items">
+                        <a  ui-sref="catalog.catalogs"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
                     </li>
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('order') }" title="Track and manage orders">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('order')"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
+                    <li ui-sref-active="active" title="Track and manage orders">
+                        <a  ui-sref="order"><span class="glyphicon glyphicon-shopping-cart"></span><span class="side_menu_item_title">Orders</span></a>
                     </li>
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('statistics') }" title="Access statistics">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('statistics')"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
+                    <li ui-sref-active="active" title="Access statistics">
+                        <a  ui-sref="statistic"><span class="glyphicon glyphicon-stats"></span><span class="side_menu_item_title">Stats</span></a>
                     </li>
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage customers">
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('user') }">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('user')"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Customers</span></a>
+                    <li ui-sref-active="active">
+                        <a  ui-sref="user"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Customers</span></a>
                     </li>
-                    <li ng-class="{ active:sideMenuCtrl.isSelected('mail') }" title="Create and configure newsletters, mail templates">
-                        <a href="#" ng-click="sideMenuCtrl.selectEntry('mail')"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>
+                    <li ui-sref-active="active" title="Create and configure newsletters, mail templates">
+                        <a  ui-sref="mail"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>
                     </li>
                 </ul>
             </div>
 
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-                 ng-include="'modules/'+(loginCtrl.isAuthenticated()?sideMenuCtrl.entryId:'overview')+'/index.html'"></div>
+            <div ui-view class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"></div>
         </div>
     </div>
 </div>

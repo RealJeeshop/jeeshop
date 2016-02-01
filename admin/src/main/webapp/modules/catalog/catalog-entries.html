@@ -1,12 +1,12 @@
-<div class="text-center" ng-controller="CatalogEntryController as catalogEntryCtrl">
+<div class="text-center" ng-controller="CatalogEntriesController as catalogEntriesCtrl">
     <div id="loaderDiv" ng-show="catalogEntriesCtrl.isProcessing">
         <img src="images/loading.gif" class="ajax-loader"/>
     </div>
-    <div ng-hide="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive || catalogEntriesCtrl.isProcessing">
-        <div class ="row" style="margin-top:1em">
+    <div ng-hide="catalogEntriesCtrl.isProcessing || ('**.detail' | includedByState)">
+        <div class="row" style="margin-top:1em">
             <div class="col-md-6 text-left">
                 Show
-                <select ng-model="catalogEntriesCtrl.pageSize" ng-change="findEntries()">
+                <select ng-model="catalogEntriesCtrl.pageSize" ng-change="catalogEntriesCtrl.findEntries()">
                     <option value="10">10</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
@@ -15,49 +15,57 @@
             </div>
             <div class="col-md-6 text-left">
                 <p class="input-group">
-                    <input type="text" class="form-control" placeholder="Search by item id, name or description" ng-model="catalogEntriesCtrl.searchValue"/>
+                    <input type="text" class="form-control" placeholder="Search by item id, name or description"
+                           ng-model="catalogEntriesCtrl.searchValue"/>
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="findEntries()"><i class="glyphicon glyphicon-search"></i></button>
-                    <button type="button" class="btn btn-default" ng-click="catalogEntryCtrl.activateCreationMode()"><i
-                            class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="findEntries()"><i
+                            class="glyphicon glyphicon-search"></i></button>
+                    <button type="button" class="btn btn-default" ui-sref=".detail"><i class="glyphicon glyphicon-plus"
+                                                                                       title="Create new item"></i>
+                    </button>
                 </span>
                 </p>
             </div>
         </div>
         <table class="table table-striped table-hover table-condensed text-left">
             <thead>
-                <tr>
-                    <th><a href="" ng-click="findEntries('id')">ID</a></th>
-                    <th><a href="" ng-click="findEntries('name')">Name</a></th>
-                    <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('description')">Description</a></th>
-                    <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('startDate')">StartDate</a></th>
-                    <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('endDate')">EndDate</a></th>
-                    <th>Visible</th>
-                    <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('disabled')">Disabled</a></th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th><a href="" ng-click="findEntries('id')">ID</a></th>
+                <th><a href="" ng-click="findEntries('name')">Name</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('description')">Description</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('startDate')">StartDate</a></th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('endDate')">EndDate</a></th>
+                <th>Visible</th>
+                <th class="hidden-xs hidden-sm"><a href="" ng-click="findEntries('disabled')">Disabled</a></th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in catalogEntriesCtrl.entries" style="cursor:pointer" >
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.id}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.name}}</td>
-                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.description}}</td>
-                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.startDate|date : 'medium'}}</td>
-                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.endDate|date : 'medium'}}</td>
-                    <td ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.visible ===true?'Yes':'No'}}</td>
-                    <td class="hidden-xs hidden-sm" ng-click="catalogEntryCtrl.selectEntry(entry.id)" >{{entry.disabled === true?'Yes':'No'}}</td>
-                    <td>
-                        <a ng-click="catalogEntriesCtrl.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
-                    </td>
-                </tr>
+            <tr ng-repeat="entry in catalogEntriesCtrl.entries" style="cursor:pointer">
+                <td ui-sref=".detail({itemId: entry.id})">{{entry.id}}</td>
+                <td ui-sref=".detail({itemId: entry.id})">{{entry.name}}</td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({itemId: entry.id})">{{entry.description}}</td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({itemId: entry.id})">{{entry.startDate|date :
+                    'medium'}}
+                </td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({itemId: entry.id})">{{entry.endDate|date : 'medium'}}
+                </td>
+                <td ui-sref=".detail({itemId: entry.id})">{{entry.visible ===true?'Yes':'No'}}</td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({itemId: entry.id})">{{entry.disabled ===
+                    true?'Yes':'No'}}
+                </td>
+                <td>
+                    <a ng-click="catalogEntriesCtrl.delete($index,'This will delete item #'+entry.id)" href="#"
+                       class="glyphicon glyphicon-trash"/>
+                </td>
+            </tr>
             </tbody>
         </table>
-        <pagination total-items="catalogEntriesCtrl.totalCount" ng-model="catalogEntriesCtrl.currentPage" ng-change="catalogEntriesCtrl.pageChanged()"
-            items-per-page="catalogEntriesCtrl.pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
+        <pagination total-items="catalogEntriesCtrl.totalCount" ng-model="catalogEntriesCtrl.currentPage"
+                    ng-change="catalogEntriesCtrl.pageChanged()"
+                    items-per-page="catalogEntriesCtrl.pageSize" class="pagination-sm" boundary-links="true"
+                    rotate="false"></pagination>
     </div>
 
-    <div ng-show="catalogEntryCtrl.isEditionModeActive || catalogEntryCtrl.isCreationModeActive"
-         ng-include="'modules/catalog/'+catalogEntriesCtrl.resourceType+'-form.html'">
-    </div>
-
+    <div ui-view></div>
 </div>

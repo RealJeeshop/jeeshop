@@ -1,28 +1,23 @@
-<div>
-    <section ng-controller="TabController as tab">
+<div ng-controller="RestrictedAccessController as restrictAccessCtrl" ng-show="restrictAccessCtrl.hasAccess()">
+<section>
         <ul class="nav nav-pills">
-            <li ng-class="{ active:tab.isSelected(1) }">
-                <a href ng-click="tab.selectTab(1)">Catalogs</a>
+            <li ui-sref-active="active">
+                <a ui-sref="catalog.catalogs">Catalogs</a>
             </li>
-            <li ng-class="{ active:tab.isSelected(2) }">
-                <a href ng-click="tab.selectTab(2)">Categories</a>
+            <li ui-sref-active="active">
+                <a ui-sref="catalog.categories">Categories</a>
             </li>
-            <li ng-class="{ active:tab.isSelected(3) }">
-                <a href ng-click="tab.selectTab(3)">Products</a>
+            <li ui-sref-active="active">
+                <a ui-sref="catalog.products">Products</a>
             </li>
-            <li ng-class="{ active:tab.isSelected(4) }">
-                <a href ng-click="tab.selectTab(4)">SKUs</a>
+            <li ui-sref-active="active">
+                <a ui-sref="catalog.skus">SKUs</a>
             </li>
-            <li ng-class="{ active:tab.isSelected(5) }">
-                <a href ng-click="tab.selectTab(5)">Discounts</a>
+            <li ui-sref-active="active">
+                <a ui-sref="catalog.discounts">Discounts</a>
             </li>
         </ul>
-        <div get-catalog-entries ng-show="tab.isSelected(1)" resource-type="catalogs"></div>
-        <div get-catalog-entries ng-show="tab.isSelected(2)" resource-type="categories"></div>
-        <div get-catalog-entries ng-show="tab.isSelected(3)" resource-type="products"></div>
-        <div get-catalog-entries ng-show="tab.isSelected(4)" resource-type="skus"></div>
-        <div get-catalog-entries ng-show="tab.isSelected(5)" resource-type="discounts"></div>
+        <div ui-view></div>
 
     </section>
-
 </div>

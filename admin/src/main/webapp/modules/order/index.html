@@ -1,5 +1,5 @@
-<div>
-    <section ng-controller="OrderTabController as tab">
+<div ng-controller="RestrictedAccessController as restrictAccessCtrl" ng-show="restrictAccessCtrl.hasAccess()">
+<section ng-controller="OrderTabController as tab">
         <ul class="nav nav-pills">
             <li ng-class="{ active:tab.isSelected(1) }">
                 <a href ng-click="tab.selectTab(1)">Orders</a>
