@@ -3,9 +3,9 @@
 
         <script type="text/ng-template" id="addOrEditPresentation.html">
             <div class="modal-header">
-                <h3 class="modal-title" ng-show="isEditionMode()">Edit presentation for locale: <i>{{locale}}</i></h3>
+                <h3 class="modal-title" ng-show="isEditionMode">Edit presentation for locale: <i>{{locale}}</i></h3>
 
-                <h3 class="modal-title" ng-show="!isEditionMode()">Add new presentation</h3>
+                <h3 class="modal-title" ng-show="!isEditionMode">Add new presentation</h3>
             </div>
 
             <div class="modal-body">
@@ -160,15 +160,15 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="save()" ng-show="isEditionMode()">Save</button>
-                <button class="btn btn-primary" ng-click="add()" ng-show="!isEditionMode() && isLocaleSelected()">Add
+                <button class="btn btn-primary" ng-click="save()" ng-show="isEditionMode && !isNewLocaleSelected()">Save</button>
+                <button class="btn btn-primary" ng-click="add()" ng-show="!isEditionMode || isNewLocaleSelected()">Add
                 </button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </script>
 
         <label>Texts and medias</label>
-        <accordion close-others="oneAtATime"  ng-show="catalogEntryCtrl.isEditionModeActive">
+        <accordion close-others="oneAtATime" ng-show="isEditionMode">
             <accordion-group is-open="accordion.open">
                 <accordion-heading>
                     <span style="cursor:pointer">Presentations per locale</span> <i style="cursor:pointer"
@@ -196,7 +196,7 @@
                         </td>
                         <td class="text-right">
                             <a ng-click="removeItem($index, 'This will delete presentation for locale '+locale)"
-                               href="#" class="glyphicon glyphicon-trash"/>
+                               href="" class="glyphicon glyphicon-trash"/>
                         </td>
                     </tr>
                     </tbody>

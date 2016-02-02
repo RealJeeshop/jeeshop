@@ -56,7 +56,7 @@
             </div>
             <div class="form-group col-md-6" ng-class="{'has-error': userForm.password.$invalid && userForm.password.$dirty}">
                 <label for="password">Password</label>
-              <a ng-click="usersController.resetPassword(usersController.entry.login)" href="#" ng-show="usersController.isEditionModeActive">Reset password</a>
+              <a ng-click="usersController.resetPassword(usersController.entry.login)" href="" ng-show="usersController.isEditionModeActive">Reset password</a>
                 <input type="text" class="form-control" id="password" name="password" ng-model="usersController.entry.password"
                        placeholder="Password..." maxlength="100" required="true"
                        ng-disabled="usersController.isEditionModeActive"/>

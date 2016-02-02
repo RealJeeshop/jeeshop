@@ -52,45 +52,15 @@
                 url: "/catalog",
                 templateUrl: 'modules/catalog/index.html'
             })
-            .state('catalog.catalogs', {
-                url: "/catalogs",
+            .state('catalog.items', {
+                url: "/:resource",
                 templateUrl: 'modules/catalog/catalog-entries.html'
             })
-            .state('catalog.catalogs.detail', {
+            .state('catalog.items.detail', {
                 url: "/:itemId",
-                templateUrl: 'modules/catalog/catalog.html'
-            })
-            .state('catalog.categories', {
-                url: "/categories",
-                templateUrl: 'modules/catalog/catalog-entries.html'
-            })
-            .state('catalog.categories.detail', {
-                url: "/:itemId",
-                templateUrl: 'modules/catalog/category.html'
-            })
-            .state('catalog.products', {
-                url: "/products",
-                templateUrl: 'modules/catalog/catalog-entries.html'
-            })
-            .state('catalog.products.detail', {
-                url: "/:itemId",
-                templateUrl: 'modules/catalog/product.html'
-            })
-            .state('catalog.skus', {
-                url: "/skus",
-                templateUrl: 'modules/catalog/catalog-entries.html'
-            })
-            .state('catalog.skus.detail', {
-                url: "/:itemId",
-                templateUrl: 'modules/catalog/sku.html'
-            })
-            .state('catalog.discounts', {
-                url: "/discounts",
-                templateUrl: 'modules/catalog/catalog-entries.html'
-            })
-            .state('catalog.discounts.detail', {
-                url: "/:itemId",
-                templateUrl: 'modules/catalog/discount.html'
+                templateUrl: function ($stateParams){
+                    return 'modules/catalog/' + $stateParams.resource + '-form.html';
+                }
             })
             .state('user', {
                 url: "/user",

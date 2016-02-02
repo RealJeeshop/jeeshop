@@ -2,19 +2,19 @@
 <section>
         <ul class="nav nav-pills">
             <li ui-sref-active="active">
-                <a ui-sref="catalog.catalogs">Catalogs</a>
+                <a ui-sref="catalog.items({resource : 'catalogs'})">Catalogs</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="catalog.categories">Categories</a>
+                <a ui-sref="catalog.items({resource : 'categories'})">Categories</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="catalog.products">Products</a>
+                <a ui-sref="catalog.items({resource : 'products'})">Products</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="catalog.skus">SKUs</a>
+                <a ui-sref="catalog.items({resource : 'skus'})">SKUs</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="catalog.discounts">Discounts</a>
+                <a ui-sref="catalog.items({resource : 'discounts'})">Discounts</a>
             </li>
         </ul>
         <div ui-view></div>

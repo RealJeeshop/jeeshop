@@ -54,7 +54,7 @@
                     <li><a href="#">Settings</a></li>
                     <li class="hidden-xs"><a href="#">Help</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a ui-sref="home">Overview</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="catalog.catalogs">Catalog</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="catalog.items({resource : 'catalogs'})">Catalog</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="order">Orders</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="statistic">Stats</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="user">Customers</a></li>
@@ -89,7 +89,7 @@
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
                     <li ui-sref-active="active" title="Manage store catalog items">
-                        <a  ui-sref="catalog.catalogs"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
+                        <a  ui-sref="catalog.items({resource : 'catalogs'})"><span class="glyphicon glyphicon-book"></span><span class="side_menu_item_title">Catalog</span></a>
                     </li>
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()">
