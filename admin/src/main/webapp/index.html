@@ -57,14 +57,14 @@
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="catalog.items({resource : 'catalogs'})">Catalog</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="order">Orders</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="statistic">Stats</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="user">Customers</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="user.users">Users</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="mail">Emails, Newsletters</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
                       ng-hide="loginCtrl.isAuthenticated()">
                     <span class="alert alert-danger" ng-show="loginCtrl.hasAuthenticationFailed()">Authentication has Failed!</span>
-                    <input type="text" class="form-control" name="login" placeholder="User name..."
+                    <input type="text" class="form-control" name="login" placeholder="E-mail..."
                            ng-model="loginCtrl.credentials.login" ng-required="true" maxlength="50"/>
                     <input type="password" class="form-control" name="password" placeholder="Password..."
                            ng-model="loginCtrl.credentials.password" ng-required="true" maxlength="50"/>
@@ -102,7 +102,7 @@
                 </ul>
                 <ul class="nav nav-sidebar" ng-show="loginCtrl.isAuthenticated()" title="Manage customers">
                     <li ui-sref-active="active">
-                        <a  ui-sref="user"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Customers</span></a>
+                        <a  ui-sref="user.users"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
                     </li>
                     <li ui-sref-active="active" title="Create and configure newsletters, mail templates">
                         <a  ui-sref="mail"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>

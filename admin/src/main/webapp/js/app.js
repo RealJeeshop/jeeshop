@@ -66,9 +66,29 @@
                 url: "/user",
                 templateUrl: 'modules/user/index.html'
             })
+            .state('user.users', {
+                url: "/users",
+                templateUrl: 'modules/user/user-entries.html'
+            })
+            .state('user.detail', {
+                url: "/:userId",
+                templateUrl: 'modules/user/user-form.html'
+            })
             .state('order', {
                 url: "/order",
                 templateUrl: 'modules/order/index.html'
+            })
+            .state('order.orders', {
+                url: "/orders",
+                templateUrl: 'modules/order/order-entries.html'
+            })
+            .state('order.operations', {
+                url: "/operations",
+                templateUrl: 'modules/order/order-operations.html'
+            })
+            .state('order.detail', {
+                url: "/:orderId",
+                templateUrl: 'modules/order/order-operations.html'
             })
             .state('statistic', {
                 url: "/statistic",
