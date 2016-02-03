@@ -1,121 +1,121 @@
 <?xml version="1.0"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.rembx.jeeshop</groupId>
-    <artifactId>jeeshop</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>jeeshop</name>
-    <description>jeeshop parent</description>
+	<groupId>org.rembx.jeeshop</groupId>
+	<artifactId>jeeshop</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>jeeshop</name>
+	<description>jeeshop parent</description>
 
-    <modules>
-        <module>catalog</module>
-        <module>user</module>
-        <module>store</module>
-        <module>admin</module>
-        <module>common</module>
-        <module>media</module>
-        <module>order</module>
-    </modules>
+	<modules>
+		<module>catalog</module>
+		<module>user</module>
+		<module>store</module>
+		<module>admin</module>
+		<module>common</module>
+		<module>media</module>
+		<module>order</module>
+	</modules>
 
-    <properties>
+	<properties>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.javaee>7.0</version.javaee>
+		<version.javaee>7.0</version.javaee>
 
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 
 
-        <!-- other libs  versions -->
-        <version.junit>4.12</version.junit>
-        <version.querydsl>4.0.6</version.querydsl>
-        <version.resteasy>3.0.10.Final</version.resteasy>
-        <version.hibernate>4.3.7.Final</version.hibernate>
-        <version.hsqldb>2.3.3</version.hsqldb>
-        <version.slf4j>1.7.7</version.slf4j>
-        <version.assertj>3.2.0</version.assertj>
-        <version.mockito>1.10.19</version.mockito>
-        <version.commons-lang>2.6</version.commons-lang>
+		<!-- other libs  versions -->
+		<version.junit>4.12</version.junit>
+		<version.querydsl>4.0.6</version.querydsl>
+		<version.resteasy>3.0.10.Final</version.resteasy>
+		<version.hibernate>4.3.7.Final</version.hibernate>
+		<version.hsqldb>2.3.3</version.hsqldb>
+		<version.slf4j>1.7.7</version.slf4j>
+		<version.assertj>3.2.0</version.assertj>
+		<version.mockito>1.10.19</version.mockito>
+		<version.commons-lang>2.6</version.commons-lang>
 		<version.commons-collections>3.2.1</version.commons-collections>
-        <version.commons-fileupload>1.3.1</version.commons-fileupload>
-        <version.commons-codec>1.6</version.commons-codec>
+		<version.commons-fileupload>1.3.1</version.commons-fileupload>
+		<version.commons-codec>1.6</version.commons-codec>
 
-        <version.maven.war.plugin>2.4</version.maven.war.plugin>
-        <version.failsafe.plugin>2.17</version.failsafe.plugin>
-        <version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
-        <version.freemarker>2.3.23</version.freemarker>
+		<version.maven.war.plugin>2.4</version.maven.war.plugin>
+		<version.failsafe.plugin>2.17</version.failsafe.plugin>
+		<version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
+		<version.freemarker>2.3.23</version.freemarker>
 		<version.asciidoctor>1.5.2.1</version.asciidoctor>
+		<version.flyway>3.2.1</version.flyway>
+		<version.weld-se>2.1.2.Final</version.weld-se>
+	</properties>
 
-        <version.weld-se>2.1.2.Final</version.weld-se>
-    </properties>
+	<dependencies>
 
-    <dependencies>
+		<!-- JEE spec -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>${version.javaee}</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <!-- JEE spec -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${version.javaee}</version>
-            <scope>provided</scope>
-        </dependency>
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${version.mockito}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${version.mockito}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${version.assertj}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${version.assertj}</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${version.slf4j}</version>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${version.slf4j}</version>
-            <scope>provided</scope>
-        </dependency>
+	</dependencies>
 
-    </dependencies>
+	<dependencyManagement>
+		<dependencies>
 
-    <dependencyManagement>
-        <dependencies>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${version.commons-fileupload}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${version.commons-fileupload}</version>
-            </dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${version.commons-codec}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${version.commons-codec}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${version.commons-lang}</version>
-            </dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${version.commons-lang}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>commons-collections</groupId>
@@ -123,124 +123,132 @@
 				<version>${version.commons-collections}</version>
 			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxrs</artifactId>
-                <version>${version.resteasy}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jaxrs</artifactId>
+				<version>${version.resteasy}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-apt</artifactId>
-                <version>${version.querydsl}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-apt</artifactId>
+				<version>${version.querydsl}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-jpa</artifactId>
-                <version>${version.querydsl}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-jpa</artifactId>
+				<version>${version.querydsl}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${version.hsqldb}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${version.hsqldb}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${version.hibernate}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${version.hibernate}</version>
-                <scope>provided</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${version.hibernate}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${version.hibernate}</version>
+				<scope>provided</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${version.freemarker}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>${version.freemarker}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.jboss.weld.se</groupId>
-                <artifactId>weld-se</artifactId>
-                <version>${version.weld-se}</version>
-                <scope>test</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss.weld.se</groupId>
+				<artifactId>weld-se</artifactId>
+				<version>${version.weld-se}</version>
+				<scope>test</scope>
+			</dependency>
 
-        </dependencies>
-    </dependencyManagement>
+		</dependencies>
+	</dependencyManagement>
 
-    <build>
+	<build>
 
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
 
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.maven.war.plugin}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${version.failsafe.plugin}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includes>
-                        <include>**/*CT.java</include>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${version.maven.war.plugin}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${version.failsafe.plugin}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>**/*CT.java</include>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 
-        </plugins>
+		</plugins>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.wildfly.plugins</groupId>
-                    <artifactId>wildfly-maven-plugin</artifactId>
-                    <version>${version.wildfly.plugin}</version>
-                </plugin>
-					<plugin>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctor-maven-plugin</artifactId>
-						<version>${version.asciidoctor}</version>
-					</plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <!--
-    <profiles>
-        <profile>
-            <id>openshift</id>
-            <properties>
-                <maven.compiler.executable>${env.OPENSHIFT_WILDFLY_DIR}usr/lib/jvm/jdk1.8.0_05/bin/javac</maven.compiler.executable>
-                <maven.compiler.fork>true</maven.compiler.fork>
-            </properties>
-        </profile>
-    </profiles>-->
-
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.wildfly.plugins</groupId>
+					<artifactId>wildfly-maven-plugin</artifactId>
+					<version>${version.wildfly.plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.asciidoctor</groupId>
+					<artifactId>asciidoctor-maven-plugin</artifactId>
+					<version>${version.asciidoctor}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<version>${version.flyway}</version>
+					<configuration>
+						<placeholderPrefix>#[</placeholderPrefix>
+						<locations>
+							<location>filesystem:src/main/resources/db/mysql</location>
+						</locations>
+					</configuration>
+					<executions>
+						<execution>
+							<id>flyway</id>
+							<phase>install</phase>
+							<goals>
+								<goal>migrate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 </project>
 

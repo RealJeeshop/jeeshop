@@ -10,45 +10,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>install</artifactId>
-
-    <dependencies>
-
-
-    </dependencies>
-
+	
     <profiles>
         <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>flyway-mysql</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.flywaydb</groupId>
                         <artifactId>flyway-maven-plugin</artifactId>
-                        <version>3.2.1</version>
                         <configuration>
                             <driver>com.mysql.jdbc.Driver</driver>
                             <url>jdbc:mysql://localhost/jeeshop</url>
-                            <user>jeeshop</user>
-                            <password>1234</password>
-                            <placeholderPrefix>#[</placeholderPrefix>
-                            <locations>
-                                <location>filesystem:src/main/resources/db/mysql</location>
-                            </locations>
+                            <user>jeeshop</user><!-- Specify your jeeshop db username -->
+                            <password>1234</password><!-- Specify your jeeshop db password -->
                         </configuration>
-                        <executions>
-                            <execution>
-                                <id>flyway</id>
-                            </execution>
-                        </executions>
                         <dependencies>
-                            <!--dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>9.4-1200-jdbc41</version>
-                            </dependency-->
                             <dependency>
                                 <groupId>mysql</groupId>
                                 <artifactId>mysql-connector-java</artifactId>
@@ -59,5 +36,29 @@
                 </plugins>
             </build>
         </profile>
+		<profile>
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.flywaydb</groupId>
+						<artifactId>flyway-maven-plugin</artifactId>
+						<configuration>
+							<driver>com.mysql.jdbc.Driver</driver>
+							<url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/jeeshop</url>
+							<user>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user>
+							<password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.36</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
     </profiles>
 </project>

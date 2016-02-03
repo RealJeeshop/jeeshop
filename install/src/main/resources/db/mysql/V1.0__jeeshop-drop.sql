@@ -36,4 +36,5 @@ DROP TABLE IF EXISTS OrderDiscount;
 DROP TABLE IF EXISTS Orders;
 DROP TABLE IF EXISTS User;
 DROP TABLE IF EXISTS User_Role;
+DROP TABLE IF EXISTS Newsletter;
 SET foreign_key_checks = 1;
