@@ -100,7 +100,7 @@ A security domain named "jeeshop" has to be created to allow BASIC authenticatio
 #### Configure SSL to secure channels
 
 SSL has to be configured in order to secure credentials sent in requests performed by store customers or Jeeshop-admin users (ie store administrators).
-This action is not required under a PaaS such as Openshift. (See [Wildfly Openshift cartridge](#openshift))
+This action is not required under a PaaS such as Openshift. (See [Openshift deployment](#openshift))
 
 * Create server certificate
 
@@ -171,21 +171,36 @@ Add the following in undertow subsystem
   ```
 
 ## Database setup
-Database setup scripts are provided in ./install/db directory
+### Scripts
+Database setup scripts are provided in ./install/src/main/db directory for each supported databases
 
-* jeeshop-install.sql contains ddl and jeeshop reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
-* jeeshop-drop.sql empties database
-* demo-catalog-data contains jeeshop demonstration catalog data
+* Vx.x_1__jeeshop-install.sql creates jeeshop ddl and reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
+* Vx.x__jeeshop-drop.sql empties database
+* Vx.x_2__demo-catalog-data configures jeeshop demonstration catalog data
+
+### Applying with maven
+
+To setup or update your Jeeshop db with latest SQL scripts version, you can check a "flyway" maven profile, such as flyway-mysql, and execute "install" maven goal like this:
+```
+    mvn install
+```
+
+This command applies Jeeshop SQL scripts using [*FLYWAY*](https://flywaydb.org) database migration tool.
+So you always get your Jeeshop database up-to date applying SQL scripts this way.
 
 Notes:
-Current database scripts works with a single database referenced in server datasources configuration. See [Datasources](#wildfly-datasources) section above.
-However, it is possible to use several database for each Jeeshop domains. For sample one database for Catalog and another for User and Order domains.
-TODO add section and scripts to document use of databases per domain
+Current database scripts are made for a single database declared in server datasources configuration. See [Datasources](#wildfly-datasources) section above.
+But you can also use multiple databases such as one for catalog, another for users.
+TODO document of databases per Jeeshop domain
 
-## Apache TomEE 2.x
+### Applying on Openshift
+Jeeshop db update / setup is performed automatically on  Openshift cartridges [See Openshift deployment](#openshift).
+
+## Apache TomEE 7.x
 This section describes deployment of Jeeshop components to Apache TomEE 2.x.
 TODO
 
-## <a name="openshift">Wildfly Openshift cartridge</a>
+## <a name="openshift">Openshift cartridges</a>
+### Wildfly cartridge
 This section describes deployment of Jeeshop components to Openshift PaaS.
 TODO
