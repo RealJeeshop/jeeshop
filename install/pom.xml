@@ -38,6 +38,11 @@
                                 <location>filesystem:src/main/resources/db/mysql</location>
                             </locations>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <id>flyway</id>
+                            </execution>
+                        </executions>
                         <dependencies>
                             <!--dependency>
                                 <groupId>org.postgresql</groupId>

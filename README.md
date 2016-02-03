@@ -171,7 +171,7 @@ Add the following in undertow subsystem
   ```
 
 ## Database setup
-Database setup scripts are provided in ./install/db directory
+Database setup scripts are provided in ./install/src/main/db directory
 
 * jeeshop-install.sql contains ddl and jeeshop reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
 * jeeshop-drop.sql empties database
@@ -181,6 +181,14 @@ Notes:
 Current database scripts works with a single database referenced in server datasources configuration. See [Datasources](#wildfly-datasources) section above.
 However, it is possible to use several database for each Jeeshop domains. For sample one database for Catalog and another for User and Order domains.
 TODO add section and scripts to document use of databases per domain
+
+You can use *FLYWAY* (see https://flywaydb.org/) to execute automatically these script.
+Just run maven
+
+```
+    mvn flyway:clean
+    mvn flyway:migrate
+```
 
 ## Apache TomEE 2.x
 This section describes deployment of Jeeshop components to Apache TomEE 2.x.
