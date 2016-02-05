@@ -190,7 +190,7 @@
             };
 
             ctrl.exitDetailView = function () {
-                $state.go('^');
+                $state.go('^', {}, {reload: true});
             };
 
             if ($scope.isEditionMode) {

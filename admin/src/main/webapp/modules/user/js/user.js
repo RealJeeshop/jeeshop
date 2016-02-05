@@ -1,13 +1,6 @@
 (function () {
     var app = angular.module('admin-user', []);
 
-    app.directive("userForm", function () {
-        return {
-            restrict: "A",
-            templateUrl: "modules/user/user-form.html"
-        };
-    });
-
     app.controller('UsersController', ['$http', '$modal', function ($http, $modal) {
 
         var ctrl = this;
@@ -87,17 +80,16 @@
         };
     }]);
 
-    app.controller('UserController', ['$http', '$stateParams', function ($http, $stateParams) {
+    app.controller('UserController', ['$http', '$stateParams', '$state', function ($http, $stateParams, $state) {
 
         var ctrl = this;
 
         ctrl.alerts = [];
         ctrl.entry = {};
-
         ctrl.isEditionMode = ($stateParams.userId != "");
 
         ctrl.findUser = function () {
-            if ($stateParams.userId == "")
+            if (!ctrl.isEditionMode)
                 return;
             $http.get('rs/users/' + $stateParams.userId)
                 .success(function (data) {
@@ -107,6 +99,7 @@
         };
 
         ctrl.createOrEdit = function () {
+            ctrl.alerts = [];
             if (ctrl.isEditionMode) {
                 ctrl.edit();
             } else {
@@ -178,6 +171,10 @@
             $scope.cancelForm = function () {
                 $scope.modalInstance.dismiss('close');
             };
+        };
+
+        ctrl.exitDetailView = function () {
+            $state.go('^', {}, {reload: true});
         };
 
         ctrl.convertEntryDates = function () {

@@ -1,5 +1,5 @@
 <div ng-controller="RestrictedAccessController as restrictAccessCtrl" ng-show="restrictAccessCtrl.hasAccess()">
-<section>
+    <section>
         <ul class="nav nav-pills">
             <li ui-sref-active="active">
                 <a ui-sref="catalog.items({resource : 'catalogs'})">Catalogs</a>
@@ -17,7 +17,6 @@
                 <a ui-sref="catalog.items({resource : 'discounts'})">Discounts</a>
             </li>
         </ul>
-        <div ui-view></div>
-
     </section>
+    <div ui-view></div>
 </div>

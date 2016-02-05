@@ -1,17 +1,13 @@
 <div ng-controller="RestrictedAccessController as restrictAccessCtrl" ng-show="restrictAccessCtrl.hasAccess()">
-<section ng-controller="MailTabController as tab">
+    <section>
         <ul class="nav nav-pills">
-            <li ng-class="{ active:tab.isSelected(1) }">
-                <a href ng-click="tab.selectTab(1)">Mail templates</a>
+            <li ui-sref-active="active">
+                <a ui-sref="mail.templates">Mail templates</a>
             </li>
-            <li ng-class="{ active:tab.isSelected(2) }">
-                <a href ng-click="tab.selectTab(2)">Operations</a>
+            <li ui-sref-active="active">
+                <a href ui-sref="mail.operations">Operations</a>
             </li>
         </ul>
-
-        <div mail-entries ng-show="tab.isSelected(1)"></div>
-        <div mail-operations ng-show="tab.isSelected(2)"></div>
-
     </section>
-
+    <div ui-view></div>
 </div>

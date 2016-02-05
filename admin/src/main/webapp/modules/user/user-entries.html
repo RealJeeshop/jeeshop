@@ -2,7 +2,7 @@
     <div id="loaderDiv" ng-show="usersController.isProcessing">
         <img src="images/loading.gif" class="ajax-loader"/>
     </div>
-    <div ng-hide="usersController.isProcessing">
+    <div ng-hide="usersController.isProcessing || ('**.detail' | includedByState)">
         <div class="row" style="margin-top:1em">
             <div class="col-md-6 text-left">
                 Show
@@ -20,7 +20,7 @@
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="usersController.findEntries()"><i
                             class="glyphicon glyphicon-search"></i></button>
-                    <button type="button" class="btn btn-default" ui-sref="user.detail"><i
+                    <button type="button" class="btn btn-default" ui-sref=".detail"><i
                             class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>
                 </span>
                 </p>
@@ -50,21 +50,21 @@
             </thead>
             <tbody>
             <tr ng-repeat="entry in usersController.entries" style="cursor:pointer">
-                <td ui-sref="user.detail({userId: entry.id})">{{entry.id}}</td>
-                <td ui-sref="user.detail({userId: entry.id})">{{entry.login}}</td>
-                <td class="hidden-xs hidden-sm" ui-sref="user.detail({userId: entry.id})">
+                <td ui-sref=".detail({userId: entry.id})">{{entry.id}}</td>
+                <td ui-sref=".detail({userId: entry.id})">{{entry.login}}</td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({userId: entry.id})">
                     {{entry.firstname}}
                 </td>
-                <td class="hidden-xs" ui-sref="user.detail({userId: entry.id})">{{entry.lastname}}</td>
-                <td ui-sref="user.detail({userId: entry.id})">{{entry.activated ===true?'Yes':'No'}}</td>
-                <td ui-sref="user.detail({userId: entry.id})">{{entry.disabled ===true?'Yes':'No'}}</td>
-                <td class="hidden-xs hidden-sm hidden-md" ui-sref="user.detail({userId: entry.id})">
+                <td class="hidden-xs" ui-sref=".detail({userId: entry.id})">{{entry.lastname}}</td>
+                <td ui-sref=".detail({userId: entry.id})">{{entry.activated ===true?'Yes':'No'}}</td>
+                <td ui-sref=".detail({userId: entry.id})">{{entry.disabled ===true?'Yes':'No'}}</td>
+                <td class="hidden-xs hidden-sm hidden-md" ui-sref=".detail({userId: entry.id})">
                     {{entry.newslettersSubscribed ===true?'Yes':'No'}}
                 </td>
-                <td class="hidden-xs hidden-sm" ui-sref="user.detail({userId: entry.id})">
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({userId: entry.id})">
                     {{entry.creationDate|date : 'medium'}}
                 </td>
-                <td class="hidden-xs hidden-sm hidden-md" ui-sref="user.detail({userId: entry.id})">
+                <td class="hidden-xs hidden-sm hidden-md" ui-sref=".detail({userId: entry.id})">
                     {{entry.updateDate|date : 'medium'}}
                 </td>
                 <td>
@@ -80,7 +80,6 @@
                     rotate="false"></pagination>
     </div>
 
-    <div user-form ng-show="usersController.isEditionModeActive || usersController.isCreationModeActive">
-    </div>
+    <div ui-view></div>
 
 </div>

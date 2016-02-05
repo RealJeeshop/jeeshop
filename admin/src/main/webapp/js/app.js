@@ -33,7 +33,7 @@
         };
     });
 
-    app.config(function ($stateProvider, $urlRouterProvider,$locationProvider) {
+    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // For any unmatched url, redirect to /home
         $urlRouterProvider.otherwise("home");
 
@@ -58,7 +58,7 @@
             })
             .state('catalog.items.detail', {
                 url: "/:itemId",
-                templateUrl: function ($stateParams){
+                templateUrl: function ($stateParams) {
                     return 'modules/catalog/' + $stateParams.resource + '-form.html';
                 }
             })
@@ -70,7 +70,7 @@
                 url: "/users",
                 templateUrl: 'modules/user/user-entries.html'
             })
-            .state('user.detail', {
+            .state('user.users.detail', {
                 url: "/:userId",
                 templateUrl: 'modules/user/user-form.html'
             })
@@ -86,20 +86,34 @@
                 url: "/operations",
                 templateUrl: 'modules/order/order-operations.html'
             })
-            .state('order.detail', {
+            .state('order.orders.detail', {
                 url: "/:orderId",
-                templateUrl: 'modules/order/order-operations.html'
-            })
-            .state('statistic', {
-                url: "/statistic",
-                templateUrl: 'modules/statistic/index.html'
+                templateUrl: 'modules/order/order-form.html'
             })
             .state('mail', {
                 url: "/mail",
                 templateUrl: "modules/mail/index.html"
+            })
+            .state('mail.templates', {
+                url: "/mail",
+                templateUrl: "modules/mail/mailtemplate-entries.html"
+            })
+            .state('mail.operations', {
+                url: "/mail",
+                templateUrl: "modules/mail/mail-operations.html"
+            })
+            .state('mail.templates.detail', {
+                url: "/:mailId",
+                templateUrl: "modules/mail/mailtemplate-form.html"
+            })
+            .state('statistic', {
+                url: "/statistic",
+                templateUrl: 'modules/statistic/index.html'
             });
+
     });
 })();
+
 
 function allLocales() {
 
