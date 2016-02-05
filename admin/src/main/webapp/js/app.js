@@ -1,44 +1,121 @@
-(function (){
+(function () {
 
-    var app = angular.module('admin',['ui.bootstrap','angularFileUpload','admin-catalog','admin-login', 'admin-user','admin-mail', 'admin-order']);
+    var app = angular.module('admin', ['ui.bootstrap', 'ui.router', 'angularFileUpload', 'admin-catalog', 'admin-login', 'admin-user', 'admin-mail', 'admin-order']);
 
-    app.controller('SideMenuController', function(){
-        this.entryId = 'overview';
+    app.controller('RestrictedAccessController', function ($state, AuthService) {
+        var ctrl = this;
 
-        this.navCollapsed=false;
-
-        this.selectEntry = function(setId){
-            this.entryId = setId;
-            this.navCollapsed = false;
+        ctrl.hasAccess = function () {
+            if (!AuthService.isAuthenticated()) {
+                $state.go('home');
+                return false;
+            }
+            return true;
         };
-
-        this.isSelected = function(checkId){
-            return this.entryId === checkId;
-        };
-
     });
 
-    app.controller('DatepickerDemoCtrl',function ($scope) {
+    app.controller('DatepickerDemoCtrl', function ($scope) {
 
-        $scope.today = function() {
+        $scope.today = function () {
             $scope.dt = new Date();
         };
         $scope.today();
 
-        $scope.open = function($event) {
-         $event.preventDefault();
-         $event.stopPropagation();
+        $scope.open = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
 
-         $scope.opened = true;
+            $scope.opened = true;
         };
 
         $scope.dateOptions = {
-         startingDay: 1
+            startingDay: 1
         };
+    });
+
+    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+        // For any unmatched url, redirect to /home
+        $urlRouterProvider.otherwise("home");
+
+        $locationProvider.hashPrefix("!");
+
+        $stateProvider
+            .state('home', {
+                url: "/home",
+                templateUrl: "modules/home/index.html"
+            })
+            .state('index', {
+                url: "",
+                templateUrl: "modules/home/index.html"
+            })
+            .state('catalog', {
+                url: "/catalog",
+                templateUrl: 'modules/catalog/index.html'
+            })
+            .state('catalog.items', {
+                url: "/:resource",
+                templateUrl: 'modules/catalog/catalog-entries.html'
+            })
+            .state('catalog.items.detail', {
+                url: "/:itemId",
+                templateUrl: function ($stateParams) {
+                    return 'modules/catalog/' + $stateParams.resource + '-form.html';
+                }
+            })
+            .state('user', {
+                url: "/user",
+                templateUrl: 'modules/user/index.html'
+            })
+            .state('user.users', {
+                url: "/users",
+                templateUrl: 'modules/user/user-entries.html'
+            })
+            .state('user.users.detail', {
+                url: "/:userId",
+                templateUrl: 'modules/user/user-form.html'
+            })
+            .state('order', {
+                url: "/order",
+                templateUrl: 'modules/order/index.html'
+            })
+            .state('order.orders', {
+                url: "/orders",
+                templateUrl: 'modules/order/order-entries.html'
+            })
+            .state('order.operations', {
+                url: "/operations",
+                templateUrl: 'modules/order/order-operations.html'
+            })
+            .state('order.orders.detail', {
+                url: "/:orderId",
+                templateUrl: 'modules/order/order-form.html'
+            })
+            .state('mail', {
+                url: "/mail",
+                templateUrl: "modules/mail/index.html"
+            })
+            .state('mail.templates', {
+                url: "/mail",
+                templateUrl: "modules/mail/mailtemplate-entries.html"
+            })
+            .state('mail.operations', {
+                url: "/mail",
+                templateUrl: "modules/mail/mail-operations.html"
+            })
+            .state('mail.templates.detail', {
+                url: "/:mailId",
+                templateUrl: "modules/mail/mailtemplate-form.html"
+            })
+            .state('statistic', {
+                url: "/statistic",
+                templateUrl: 'modules/statistic/index.html'
+            });
+
     });
 })();
 
-function allLocales(){
+
+function allLocales() {
 
     return [
         {displayName: "Albanian (Albania)", name: "sq_AL"},

@@ -3,7 +3,6 @@ package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
-import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -32,7 +31,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 @Path("/discounts")
 @Stateless
 public class
-        Discounts {
+Discounts {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -107,7 +106,7 @@ public class
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Discount> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(discount, search, start, size, orderBy, isDesc);
         else

@@ -2,8 +2,6 @@
 
     var app = angular.module('admin-catalog', []);
 
-    /*----- Directives -----*/
-
     app.directive("commonCatalogFormFields", function () {
         return {
             restrict: "A",
@@ -27,22 +25,17 @@
 
     app.directive("catalogRelationshipsForm", function () {
         function link(scope, element, attrs) {
-            attrs.$observe('relationshipsTitle', function (value) {    // xxx est le nom de l'attribut
+            attrs.$observe('relationshipsTitle', function (value) {
                 scope.relationshipsTitle = value;
             });
 
-            attrs.$observe('resource', function (value) {    // xxx est le nom de l'attribut
+            attrs.$observe('resource', function (value) {
                 scope.relationshipsResource = value;
             });
 
-            attrs.$observe('relationshipsProperty', function (value) {    // xxx est le nom de l'attribut
+            attrs.$observe('relationshipsProperty', function (value) {
                 scope.relationshipsProperty = value;
             });
-
-
-            /*scope.$watch(attrs.relationshipsProperty, function(value) {
-             scope.relationshipsProperty = value;
-             });*/
 
         }
 
@@ -54,192 +47,169 @@
         };
     });
 
-    app.directive("getCatalogEntries", ['$http', '$modal', function ($http, $dialog, $scope) {
-        return {
-            restrict: "A",
-            scope: {
-                resource: "@resourceType"
-            },
-            controller: function ($http, $scope, $modal) {
-                var ctrl = this;
+    app.controller("CatalogEntriesController", ['$http', '$modal', '$scope', '$state', '$stateParams',
+        function ($http, $dialog, $scope, $state, $stateParams) {
+
+            var ctrl = this;
+            ctrl.alerts = [];
+            ctrl.entries = [];
+            ctrl.currentPage = 1;
+            ctrl.totalCount = null;
+            ctrl.pageSize = 10;
+            ctrl.searchValue = null;
+            ctrl.isProcessing = false;
+            ctrl.orderBy = null;
+            ctrl.orderDesc = false;
+
+            ctrl.isDetailState = function () {
+                return $state.includes('detail');
+            };
+
+            ctrl.findEntries = function (orderBy) {
+                ctrl.isProcessing = true;
                 ctrl.alerts = [];
-                ctrl.entries = [];
-                ctrl.resourceType = $scope.resource;
-                ctrl.currentPage = 1;
-                ctrl.totalCount = null;
-                ctrl.pageSize = 10;
-                ctrl.searchValue = null;
-                ctrl.isProcessing = false;
-                ctrl.orderBy = null;
-                ctrl.orderDesc = false;
+                var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
-                $scope.findEntries = function (orderBy) {
-                    ctrl.isProcessing = true;
+                var uri = 'rs/' + $stateParams.resource + "?start=" + offset + "&size=" + ctrl.pageSize;
+
+                if (orderBy != null) {
+                    ctrl.orderBy = orderBy;
+                    ctrl.orderDesc = !ctrl.orderDesc;
+                    uri += '&orderBy=' + orderBy + '&isDesc=' + ctrl.orderDesc;
+                }
+
+                var countURI = 'rs/' + $stateParams.resource + '/count';
+                if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
+                    var searchArg = 'search=' + ctrl.searchValue;
+                    uri = uri + '&' + searchArg;
+                    countURI = countURI + '?' + searchArg;
+                }
+
+                $http.get(uri).success(function (data) {
+                    ctrl.entries = data;
+                    ctrl.isProcessing = false;
+                });
+
+                $http.get(countURI).success(function (data) {
+                    ctrl.totalCount = data;
+                    ctrl.isProcessing = false;
+                });
+
+            };
+
+            ctrl.findEntries();
+
+            ctrl.pageChanged = function () {
+                ctrl.findEntries();
+            };
+
+            ctrl.delete = function (index, message) {
+                var modalInstance = $modal.open({
+                    templateUrl: 'util/confirm-dialog.html',
+                    controller: function ($modalInstance, $scope) {
+                        $scope.modalInstance = $modalInstance;
+                        $scope.confirmMessage = message;
+                    },
+                    size: 'sm'
+                });
+                modalInstance.result.then(function () {
                     ctrl.alerts = [];
-                    var offset = ctrl.pageSize * (ctrl.currentPage - 1);
+                    $http.delete('rs/' + $stateParams.resource + "/" + ctrl.entries[index].id)
+                        .success(function (data) {
+                            ctrl.entries.splice(index, 1);
+                            $scope.findEntries();
+                        })
+                        .error(function (data) {
+                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                        });
 
-                    var uri = 'rs/' + $scope.resource + "?start=" + offset + "&size=" + ctrl.pageSize;
+                }, function () {
 
-                    if (orderBy != null){
-                        ctrl.orderBy = orderBy;
-                        ctrl.orderDesc = ! ctrl.orderDesc;
-                        uri += '&orderBy='+orderBy+'&isDesc='+ctrl.orderDesc;
-                    }
-
-                    var countURI = 'rs/' + $scope.resource + '/count';
-                    if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
-                        var searchArg = 'search=' + ctrl.searchValue;
-                        uri = uri + '&' + searchArg;
-                        countURI = countURI + '?' + searchArg;
-                    }
-
-                    $http.get(uri).success(function (data) {
-                        ctrl.entries = data;
-                        ctrl.isProcessing = false;
-                    });
-
-                    $http.get(countURI).success(function (data) {
-                        ctrl.totalCount = data;
-                        ctrl.isProcessing = false;
-                    });
-
-                };
-
-                $scope.findEntries();
-
-                this.pageChanged = function () {
-                    $scope.findEntries();
-                };
-
-                this.delete = function (index, message) {
-                    var modalInstance = $modal.open({
-                        templateUrl: 'util/confirm-dialog.html',
-                        controller: function ($modalInstance, $scope) {
-                            $scope.modalInstance = $modalInstance;
-                            $scope.confirmMessage = message;
-                        },
-                        size: 'sm'});
-                    modalInstance.result.then(function () {
-                        ctrl.alerts = [];
-                        $http.delete('rs/' + $scope.resource + "/" + ctrl.entries[index].id)
-                            .success(function (data) {
-                                ctrl.entries.splice(index, 1);
-                                $scope.findEntries();
-                            })
-                            .error(function (data) {
-                                ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
-                            });
-
-                    }, function () {
-
-                    });
-                };
-            },
-            controllerAs: 'catalogEntriesCtrl',
-            templateUrl: "modules/catalog/catalog-entries.html"
-        };
-    }]);
-
-
-    /*----- Controllers -----*/
-
-    app.controller('TabController', ['$scope', function ($scope) {
-        this.tabId = 1;
-
-        this.selectTab = function (setId) {
-            this.tabId = setId;
-        };
-
-        this.isSelected = function (checkId) {
-            return this.tabId === checkId;
-        };
-    }]);
-
-    app.controller('CatalogEntryController', ['$http', '$scope', function ($http, $scope) {
-        var ctrl = this;
-
-        ctrl.alerts = [];
-        ctrl.isEditionModeActive = false;
-        ctrl.isCreationModeActive = false;
-        ctrl.entry = {};
-        ctrl.entryChilds = {};
-
-        this.closeAlert = function (index) {
-            ctrl.alerts.splice(index, 1);
-        };
-
-        this.selectEntry = function (id) {
-            $http.get('rs/' + $scope.resource + '/' + id)
-                .success(function (data) {
-                    ctrl.isEditionModeActive = true;
-                    ctrl.entry = data;
-                    ctrl.convertEntryDates();
                 });
+            };
+        }]);
 
-        };
+    app.controller('CatalogEntryController', ['$http', '$scope', '$stateParams', '$state',
+        function ($http, $scope, $stateParams, $state) {
+            var ctrl = this;
 
-        this.createOrEdit = function () {
-
-            if (ctrl.isCreationModeActive) {
-                ctrl.create();
-            } else if (ctrl.isEditionModeActive) {
-                ctrl.edit();
-            }
-        };
-
-
-        this.create = function () {
-            $http.post('rs/' + $scope.resource, ctrl.entry)
-                .success(function (data) {
-                    ctrl.entry = data;
-                    ctrl.convertEntryDates();
-                    ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
-                })
-                .error(function (data, status) {
-                    if (status == 403)
-                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
-                    else
-                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
-                });
-        };
-
-        this.edit = function () {
-            $http.put('rs/' + $scope.resource, ctrl.entry)
-                .success(function (data) {
-                    ctrl.entry = data;
-                    ctrl.convertEntryDates();
-                    ctrl.alerts.push({type: 'success', msg: 'Update complete'})
-                })
-                .error(function (data, status) {
-                    if (status == 403)
-                        ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
-                    else
-                        ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
-                });
-        };
-
-        this.convertEntryDates = function () {
-            // hack for dates returned as timestamp by service
-            ctrl.entry.startDate = ctrl.entry.startDate != null ? new Date(ctrl.entry.startDate) : null;
-            ctrl.entry.endDate = ctrl.entry.endDate != null ? new Date(ctrl.entry.endDate) : null;
-        };
-
-        this.activateCreationMode = function () {
-            ctrl.alerts.push({type: 'info', msg: 'Save this item to access localized content (texts, images, ...) configuration'});
-            ctrl.isCreationModeActive = true;
-        }
-
-        this.leaveEditView = function () {
-            $scope.findEntries();
-            ctrl.isEditionModeActive = false;
-            ctrl.isCreationModeActive = false;
+            ctrl.alerts = [];
             ctrl.entry = {};
             ctrl.entryChilds = {};
-            ctrl.alerts = [];
-        };
-    }]);
 
-    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$modal', '$log', function ($http, $scope, $modal, $log) {
+            $scope.isEditionMode = ($stateParams.itemId != "");
+
+            ctrl.closeAlert = function (index) {
+                ctrl.alerts.splice(index, 1);
+            };
+
+            ctrl.createOrEdit = function () {
+
+                if ($scope.isEditionMode) {
+                    ctrl.edit();
+                } else {
+                    ctrl.create();
+                }
+            };
+
+
+            ctrl.create = function () {
+                $http.post('rs/' + $stateParams.resource, ctrl.entry)
+                    .success(function (data) {
+                        ctrl.entry = data;
+                        ctrl.convertEntryDates();
+                        ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
+                    })
+                    .error(function (data, status) {
+                        if (status == 403)
+                            ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                        else
+                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                    });
+            };
+
+            ctrl.edit = function () {
+                $http.put('rs/' + $stateParams.resource, ctrl.entry)
+                    .success(function (data) {
+                        ctrl.entry = data;
+                        ctrl.convertEntryDates();
+                        ctrl.alerts.push({type: 'success', msg: 'Update complete'})
+                    })
+                    .error(function (data, status) {
+                        if (status == 403)
+                            ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                        else
+                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                    });
+            };
+
+            ctrl.convertEntryDates = function () {
+                // hack for dates returned as timestamp by service
+                ctrl.entry.startDate = ctrl.entry.startDate != null ? new Date(ctrl.entry.startDate) : null;
+                ctrl.entry.endDate = ctrl.entry.endDate != null ? new Date(ctrl.entry.endDate) : null;
+            };
+
+            ctrl.exitDetailView = function () {
+                $state.go('^', {}, {reload: true});
+            };
+
+            if ($scope.isEditionMode) {
+                $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId)
+                    .success(function (data) {
+                        ctrl.entry = data;
+                        ctrl.convertEntryDates();
+                    });
+            } else {
+                ctrl.alerts.push({
+                    type: 'info',
+                    msg: 'Save this item to access localized content (texts, images, ...) configuration'
+                });
+            }
+
+
+        }]);
+
+    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$modal', '$log', '$stateParams', function ($http, $scope, $modal, $log, $stateParams) {
         var ctrl = this;
         $scope.itemsIds = [];
         $scope.items = [];
@@ -270,7 +240,7 @@
                 if ($scope.catalogEntryCtrl.entry.id == null) {
                     return;
                 }
-                $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/' + $scope.relationshipsResource)
+                $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId + '/' + $scope.relationshipsResource)
                     .success(function (data) {
                         $scope.items = data;
                         $scope.initRelationshipsIdsProperty();
@@ -307,7 +277,7 @@
             });
         };
 
-        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, items, relationshipsResource) {
+        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, $stateParams, items, relationshipsResource) {
 
             ctrl = this;
             $scope.items = items;
@@ -351,10 +321,10 @@
                     }
                 }
                 return isLinked;
-            }
+            };
 
             $scope.ok = function () {
-                var selectedItems = new Array();
+                var selectedItems = [];
                 for (i in $scope.results) {
                     if ($scope.selected[$scope.results[i].id] != null && $scope.selected[$scope.results[i].id] === true) {
                         selectedItems.push($scope.results[i]);
@@ -370,19 +340,23 @@
 
     }]);
 
-    app.controller('PresentationsController', ['$http', '$scope', '$modal', '$log', function ($http, $scope, $modal, $log) {
+    app.controller('PresentationsController', ['$http', '$scope', '$modal', '$log', '$stateParams', function ($http, $scope, $modal, $log, $stateParams) {
 
         var ctrl = this;
 
         var getAvailableLocales = function () {
-            $http.get('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentationslocales')
+            $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId + '/presentationslocales')
                 .success(function (data) {
                     $scope.locales = data;
                 });
         };
 
+        $scope.isEditionMode = ($stateParams.itemId != "");
+        $scope.itemId = $stateParams.itemId;
+        $scope.resource = $stateParams.resource;
+
         $scope.locales = [];
-        $scope.locale = null; // set when edition mode
+        $scope.locale = null; // edition mode
 
         $scope.accordion = {
             open: false
@@ -396,12 +370,14 @@
                     $scope.modalInstance = $modalInstance;
                     $scope.confirmMessage = message;
                 },
-                size: 'sm'});
+                size: 'sm'
+            });
             modalInstance.result.then(function () {
                 $scope.catalogEntryCtrl.alerts = [];
-                $http.delete('rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations/' + $scope.locales[index])
+                $http.delete('rs/' + $scope.resource + '/' + $scope.itemId + '/presentations/' + $scope.locales[index])
                     .success(function (data) {
                         $scope.locales.splice(index, 1);
+                        $scope.catalogEntryCtrl.alerts.push({type: 'success', msg: 'Presentations update complete'});
                     })
                     .error(function (data) {
                         $scope.catalogEntryCtrl.alerts.push({type: 'danger', msg: 'Technical error'});
@@ -410,10 +386,6 @@
 
             });
 
-        };
-
-        $scope.isEditionMode = function () {
-            return $scope.locale != null;
         };
 
         $scope.$watch('catalogEntryCtrl.entry', function () {
@@ -443,10 +415,7 @@
                         return $scope.locale;
                     },
                     presentationsResourceURI: function () {
-                        return 'rs/' + $scope.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';
-                    },
-                    resource: function () {
-                        return $scope.resource;
+                        return 'rs/' + $stateParams.resource + '/' + $scope.catalogEntryCtrl.entry.id + '/presentations';
                     },
                     entryId: function () {
                         return $scope.catalogEntryCtrl.entry.id;
@@ -464,31 +433,35 @@
             });
         };
 
-        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, locales, locale, presentationsResourceURI, $upload, entryId, resource) {
+        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, $stateParams, locales, locale, presentationsResourceURI, $upload, entryId) {
 
             ctrl = this;
 
             $scope.locales = locales;
             $scope.locale = locale; // set when edition mode
+            $scope.isEditionMode = ($scope.locale != null);
             $scope.selectedLocale = null;
             $scope.presentation = {};
             $scope.entryId = entryId;
-            $scope.resource = resource;
             $scope.isProcessing = {
-                thumbnail:false,
-                largeImage:false,
-                smallImage:false
+                thumbnail: false,
+                largeImage: false,
+                smallImage: false
             };
 
 
-            $scope.feature={};
+            $scope.feature = {};
 
-            $scope.addFeature = function(feature){
+            $scope.isNewLocaleSelected = function(){
+                return $scope.presentation.id == null
+            };
+
+            $scope.addFeature = function (feature) {
                 $scope.presentation.features[feature.name] = feature.value;
-                $scope.feature={};
+                $scope.feature = {};
             };
 
-            $scope.removeFeature = function(name){
+            $scope.removeFeature = function (name) {
                 delete $scope.presentation.features[name];
             };
 
@@ -505,11 +478,6 @@
                     });
             };
 
-
-            $scope.isEditionMode = function () {
-                return $scope.locale != null;
-            };
-
             if (locale != null) {
                 getPresentationByLocale(locale);
             }
@@ -522,20 +490,19 @@
                 getPresentationByLocale($scope.selectedLocale);
             };
 
-            $scope.removePresentationMedia = function (presentationPropertyName){
+            $scope.removePresentationMedia = function (presentationPropertyName) {
                 $scope.presentation[presentationPropertyName] = null;
             };
 
-            $scope.getPresentationMediaURI = function (presentationPropertyName){
-                if ($scope.presentation[presentationPropertyName] != null){
-                    return 'rs/medias/'+$scope.resource+'/'+$scope.entryId+'/'+$scope.selectedLocale+'/'
-                        +$scope.presentation[presentationPropertyName].uri+'?refresh='+$scope.isProcessing;
+            $scope.getPresentationMediaURI = function (presentationPropertyName) {
+                if ($scope.presentation[presentationPropertyName] != null) {
+                    return 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/'
+                        + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing;
                 }
             };
 
             $scope.onFileSelect = function ($files, presentationPropertyName) {
-                //$files: an array of files selected, each file has name, size, and type.
-                //for (var i = 0; i < $files.length; i++) {
+
                 $scope.isProcessing[presentationPropertyName] = true;
                 var file = $files[0];
 
@@ -545,63 +512,56 @@
                 $scope.presentation[presentationPropertyName] = presentationMedia;
 
                 $scope.upload = $upload.upload({
-                    url: 'rs/medias/' + resource + '/' + entryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
+                    url: 'rs/medias/' + $stateParams.resource + '/' + entryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
                     method: 'POST',
                     //headers: {'header-key': 'header-value'},
                     withCredentials: true,
-                    file: file // or list of files ($files) for html5 only
-                    //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-                    // customize file formData name ('Content-Disposition'), server side file variable name.
-                    //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file'
-                    // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-                    //formDataAppender: function(formData, key, val){}
+                    file: file
                 }).progress(function (evt) {
 
                 }).success(function (data, status, headers, config) {
-                    $scope.isProcessing[presentationPropertyName] = false;
-                })
-                .error(function (data, status, headers, config){
-                    $scope.isProcessing[presentationPropertyName] = false;
-                });
-                //.then(success, error, progress);
-                // access or attach event listeners to the underlying XMLHttpRequest.
-                //.xhr(function(xhr){xhr.upload.addEventListener(...)})
-                //}
-                /* alternative way of uploading, send the file binary with the file's content-type.
-                 Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
-                 It could also be used to monitor the progress of a normal http post/put request with large data*/
-                //$scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
+                        $scope.isProcessing[presentationPropertyName] = false;
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.isProcessing[presentationPropertyName] = false;
+                    });
             };
 
             $scope.save = function () {
-                var errors = new Array();
+                var messages = [];
                 $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
                     .success(function (data) {
                         $scope.presentation = data;
-                        $modalInstance.close(errors);
+                        messages.push({type: 'success', msg: 'Presentations update complete'});
+                        $modalInstance.close(messages);
                     })
                     .error(function (data, status) {
                         if (status == 403)
-                            errors.push({type: 'warning', msg: 'Operation not allowed'});
+                            messages.push({type: 'warning', msg: 'Operation not allowed'});
                         else
-                            errors.push({type: 'danger', msg: 'Technical error'});
-                        $modalInstance.close(errors);
+                            messages.push({type: 'danger', msg: 'Technical error'});
+                        $modalInstance.close(messages);
                     });
             };
 
             $scope.add = function () {
+                var messages = [];
                 $scope.presentation.locale = $scope.selectedLocale;
-               $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
+                $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
                     .success(function (data) {
                         $scope.presentation = data;
                         getAvailableLocales();
-                        $modalInstance.close();
+                        messages.push({type: 'success', msg: 'Presentation creation complete'});
+                        $modalInstance.close(messages);
+
                     })
                     .error(function (data, status) {
-                            if (status == 403)
-                                $modalInstance.close({type: 'warning', msg: 'Technical error'});
-                            else
-                                $modalInstance.close({type: 'danger', msg: 'Technical error'});
+                        if (status == 403)
+                            messages.push({type: 'warning', msg: 'Operation now allowed'});
+                        else
+                            messages.push({type: 'danger', msg: 'Technical error'});
+
+                        $modalInstance.close(messages);
 
                     });
             };

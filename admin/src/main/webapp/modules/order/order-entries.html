@@ -3,7 +3,7 @@
         <img src="images/loading.gif" class="ajax-loader"/>
     </div>
 
-    <div ng-hide="ordersController.isEditionModeActive || ordersController.isCreationModeActive || ordersController.isProcessing">
+    <div ng-hide="ordersController.isProcessing || ('**.detail' | includedByState)">
         <div class="row" style="margin-top:1em">
             <div class="col-md-6 text-left">
                 Show
@@ -21,8 +21,6 @@
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="ordersController.findEntries()"><i
                             class="glyphicon glyphicon-search"></i></button>
-                    <!--<button type="button" class="btn btn-default" ng-click="ordersController.activateCreationMode()"><i
-                            class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>-->
                 </span>
                 </p>
                 <div class="checkbox">
@@ -46,23 +44,23 @@
             </thead>
             <tbody>
             <tr ng-repeat="entry in ordersController.entries" style="cursor:pointer">
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.id}}</td>
+                <td ui-sref=".detail({orderId : entry.id})">{{entry.id}}</td>
                 <td style="cursor:default">{{entry.reference}}</td>
-                <td class="hidden-xs" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
+                <td class="hidden-xs" ui-sref=".detail({orderId : entry.id})">{{entry.user.gender}} {{entry.user.firstname}}
                     {{entry.user.lastname}}
                 </td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({orderId : entry.id})">{{entry.user.login}}
                 </td>
-                <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
-                <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
+                <td ui-sref=".detail({orderId : entry.id})">{{entry.status}}</td>
+                <td class="hidden-xs hidden-sm" ui-sref=".detail({orderId : entry.id})">
                     {{entry.creationDate|date : 'medium'}}
                 </td>
-                <td class="hidden-xs hidden-sm hidden-md" ng-click="ordersController.selectEntry(entry.id)">
+                <td class="hidden-xs hidden-sm hidden-md" ui-sref=".detail({orderId : entry.id})">
                     {{entry.updateDate|date
                     : 'medium'}}
                 </td>
                 <td>
-                    <a ng-click="ordersController.delete($index,'You are about to remove order #'+entry.id +' from system')" href="#"
+                    <a ng-click="ordersController.delete($index,'You are about to remove order #'+entry.id +' from system')" href=""
                        class="glyphicon glyphicon-trash" style="color:darkred"/>
                 </td>
             </tr>
@@ -74,7 +72,6 @@
                     rotate="false"></pagination>
     </div>
 
-    <div order-form ng-show="ordersController.isEditionModeActive || ordersController.isCreationModeActive">
-    </div>
+   <div ui-view></div>
 
 </div>

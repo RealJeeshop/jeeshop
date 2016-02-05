@@ -12,7 +12,7 @@
 
         <form name="loginFormMobile" ng-submit="loginCtrl.login()">
             <div class="text-center" ng-show="loginCtrl.hasAuthenticationFailed()"><span class="alert alert-danger"
-                  >Authentication has Failed!</span>
+            >Authentication has Failed!</span>
             </div>
 
             <div class="form-group">
@@ -32,30 +32,38 @@
     </div>
     <div class="row placeholders">
         <div class="col-xs-6 col-sm-3 placeholder">
-            <button type="button" class="btn btn-default btn-lg" ng-click="loginCtrl.isAuthenticated() && sideMenuCtrl.selectEntry('catalog')">
-                <span class="glyphicon glyphicon-book"></span>
-            </button>
+            <a ui-sref="catalog.items({resource : 'catalogs'})">
+                <button type="button" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-book"></span>
+                </button>
+            </a>
             <h4>Catalog</h4>
             <span class="text-muted">Manage store items</span>
         </div>
         <div class="col-xs-6 col-sm-3 placeholder">
-            <button type="button" class="btn btn-default btn-lg" ng-click="loginCtrl.isAuthenticated() && sideMenuCtrl.selectEntry('order')">
-                <span class="glyphicon glyphicon-shopping-cart"></span>
-            </button>
+            <a ui-sref="order">
+                <button type="button" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                </button>
+            </a>
             <h4>Orders</h4>
             <span class="text-muted">Track customers orders</span>
         </div>
         <div class="col-xs-6 col-sm-3 placeholder">
-            <button type="button" class="btn btn-default btn-lg" ng-click="loginCtrl.isAuthenticated() && sideMenuCtrl.selectEntry('user')">
-                <span class="glyphicon glyphicon-user"></span>
-            </button>
-            <h4>Customers</h4>
-            <span class="text-muted">Manage customers</span>
+            <a ui-sref="user">
+                <button type="button" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-user"></span>
+                </button>
+            </a>
+            <h4>Users</h4>
+            <span class="text-muted">Manage users</span>
         </div>
         <div class="col-xs-6 col-sm-3 placeholder">
-            <button type="button" class="btn btn-default btn-lg" ng-click="loginCtrl.isAuthenticated() && sideMenuCtrl.selectEntry('statistics')">
-                <span class="glyphicon glyphicon-stats"></span>
-            </button>
+            <a ui-sref="statistic">
+                <button type="button" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-stats"></span>
+                </button>
+            </a>
             <h4>Statistics</h4>
             <span class="text-muted">Show statistics</span>
         </div>
@@ -64,20 +72,24 @@
 
         <div class="row" ng-controller="OrdersController as ordersController">
             <div class="col-xs-8">
-                <h4 ng-show="!ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)">
+                <h4 ng-show="!ordersController.showLastOrders" style="cursor: pointer"
+                    ng-click="(ordersController.showLastOrders = true) &&  ordersController.findEntries('updateDate',true)">
                     Show last orders
                     <button type="button" class="btn btn-default">
                         <i class="glyphicon glyphicon-cog"></i></button>
                 </h4>
-                <h4 ng-show="ordersController.showLastOrders" style="cursor: pointer" ng-click="(ordersController.showLastOrders = false)">
+                <h4 ng-show="ordersController.showLastOrders" style="cursor: pointer"
+                    ng-click="(ordersController.showLastOrders = false)">
                     Last updated orders
                 </h4>
             </div>
             <div class="col-xs-4 text-right">
-                <button type="button" class="btn btn-default" ng-click="ordersController.findEntries('updateDate',true)" ng-show="ordersController.showLastOrders"><i
+                <button type="button" class="btn btn-default" ng-click="ordersController.findEntries('updateDate',true)"
+                        ng-show="ordersController.showLastOrders"><i
                         class="glyphicon glyphicon-refresh"></i></button>
             </div>
-            <table class="table table-striped table-hover table-condensed text-left" ng-show="ordersController.showLastOrders">
+            <table class="table table-striped table-hover table-condensed text-left"
+                   ng-show="ordersController.showLastOrders">
                 <thead>
                 <tr>
                     <th>Id</th>
@@ -94,7 +106,8 @@
                     <td ng-click="ordersController.selectEntry(entry.id)">{{entry.user.gender}} {{entry.user.firstname}}
                         {{entry.user.lastname}}
                     </td>
-                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">{{entry.user.login}}
+                    <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">
+                        {{entry.user.login}}
                     </td>
                     <td ng-click="ordersController.selectEntry(entry.id)">{{entry.status}}</td>
                     <td class="hidden-xs hidden-sm" ng-click="ordersController.selectEntry(entry.id)">

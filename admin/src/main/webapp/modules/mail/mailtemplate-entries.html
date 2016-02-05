@@ -2,7 +2,7 @@
     <div id="loaderDiv" ng-show="mailTemplatesCtrl.isProcessing">
         <img src="images/loading.gif" class="ajax-loader"/>
     </div>
-    <div ng-hide="mailTemplatesCtrl.isEditionModeActive || mailTemplatesCtrl.isCreationModeActive || mailTemplatesCtrl.isProcessing">
+    <div ng-hide="mailTemplatesCtrl.isProcessing || ('**.detail' | includedByState)">
         <div class ="row" style="margin-top:1em">
             <div class="col-md-6 text-left">
                 Show
@@ -18,7 +18,7 @@
                     <input type="text" class="form-control" placeholder="Enter e-mail template name ..." ng-model="mailTemplatesCtrl.searchValue"/>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="mailTemplatesCtrl.findEntries()"><i class="glyphicon glyphicon-search"></i></button>
-                    <button type="button" class="btn btn-default" ng-click="mailTemplatesCtrl.activateCreationMode()"><i
+                    <button type="button" class="btn btn-default" ui-sref=".detail"><i
                             class="glyphicon glyphicon-plus" title="Go back to items list"></i></button>
                 </span>
                 </p>
@@ -37,13 +37,13 @@
             </thead>
             <tbody>
             <tr ng-repeat="entry in mailTemplatesCtrl.entries" style="cursor:pointer" >
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.id}}</td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.name}}</td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.locale}}</td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.creationDate|date : 'medium'}}</td>
-                <td ng-click="mailTemplatesCtrl.selectEntry(entry.id)">{{entry.updateDate|date : 'medium'}}</td>
+                <td ui-sref=".detail({mailId : entry.id})">{{entry.id}}</td>
+                <td ui-sref=".detail({mailId : entry.id})">{{entry.name}}</td>
+                <td ui-sref=".detail({mailId : entry.id})">{{entry.locale}}</td>
+                <td ui-sref=".detail({mailId : entry.id})">{{entry.creationDate|date : 'medium'}}</td>
+                <td ui-sref=".detail({mailId : entry.id})">{{entry.updateDate|date : 'medium'}}</td>
                 <td>
-                    <a ng-click="mailTemplatesCtrl.delete($index,'This will delete item #'+entry.id)" href="#" class="glyphicon glyphicon-trash"/>
+                    <a ng-click="mailTemplatesCtrl.delete($index,'This will delete item #'+entry.id)" href="" class="glyphicon glyphicon-trash"/>
                 </td>
             </tr>
             </tbody>
@@ -52,7 +52,6 @@
                     items-per-page="mailTemplatesCtrl.pageSize" class="pagination-sm" boundary-links="true" rotate="false"></pagination>
     </div>
 
-    <div mailtemplate-form ng-show="mailTemplatesCtrl.isEditionModeActive || mailTemplatesCtrl.isCreationModeActive">
-    </div>
+    <div ui-view></div>
 
 </div>
