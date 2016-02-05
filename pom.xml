@@ -12,6 +12,7 @@
 	<description>jeeshop parent</description>
 
 	<modules>
+		<module>install</module>
 		<module>catalog</module>
 		<module>user</module>
 		<module>store</module>

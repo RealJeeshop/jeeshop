@@ -45,10 +45,19 @@
 						<artifactId>flyway-maven-plugin</artifactId>
 						<configuration>
 							<driver>com.mysql.jdbc.Driver</driver>
-							<url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/jeeshop</url>
+							<url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/apps</url>
 							<user>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user>
 							<password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
 						</configuration>
+                        <executions>
+                            <execution>
+                                <id>flyway</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>migrate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
 						<dependencies>
 							<dependency>
 								<groupId>mysql</groupId>
