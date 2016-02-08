@@ -4,14 +4,19 @@ Jeeshop (Work In Progress)
 # Description
 Jeeshop is a e-commerce solution allowing you to setup quickly your online store.
 
-It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST apis designed for your store front-end application (typically a javascript rich client application)
+It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST APIs designed for your store front-end application (typically a javascript rich client application):
 * Products catalog
 * Discounts
 * Shopping cart
 * Users management
 
+Compared to other e-commerce solutions / frameworks Jeeshop aims at being
+* simple - you don't need a master degree in rocket science to use and understand Jeeshop concepts
+* light - thanks to Java EE platform and design choices
+* interoperable - thanks again to Java EE platform
+
 Jeeshop relies on following technologies :
-* Java EE 7 and Java 8 for e-commerce back-end
+* Java EE 7 and Java 8 for REST APIs
 * AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
 # Links
@@ -20,38 +25,35 @@ Project website: http://jeeshop.org
 # Components
 
 ## <a name="Jeeshop-Admin">Jeeshop-Admin</a>
-Jeeshop-Admin is a responsive AngularJS client application designed to manage efficiently your store.
-It consumes Jeeshop [REST api backend](#backend) to perform store management operations.
+Jeeshop-Admin is a responsive AngularJS client application designed to manage efficiently an e-commerce store.
+It consumes Jeeshop [REST api backend](#backend) to perform common store management operations.
 
-## <a name="backend">REST back-end</a>
-Jeeshop back-end provides a set of REST apis designed to enable e-commerce and user management in your store front-end application.
-They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin) management operations.
+## <a name="backend">REST APIs</a>
+Jeeshop REST APIs are designed to enable e-commerce and user management easily for a store front-end application.
+They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin).
 
-These resources are organized per functional domain :
-* Catalog - provides product catalogs related resources
-* User - provides user management related resources
-* Order - provides orders management related resources
+Jeeshop REST APIs are organized per business domain:
+* [Product catalogs]((http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html))
+* [Users](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
+* [Orders](http://jeeshop.org/docs/1.0/rest/order/generated-docs/rest-api.html)
 
-Related documentation:
-* [Catalog REST api](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
-* [Order REST api](http://jeeshop.org/docs/1.0/rest/order/generated-docs/rest-api.html)
-* [User REST api](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
-
-## <a name="backend">Jeestore</a> TODO
-Jeestore is a AngularJS front-end demo application application which consumes Jeeshop [REST api backend](#backend)
-You can just suit it to your needs when you plan to use AngularJS for your store front-end.
+## <a name="backend">Jeestore</a>
+Jeestore is a front-end demonstration application application which uses Jeeshop [REST APIs](#backend)
+You can take a look at it or start with it to build your e-commerce store
 
 # Installation
-Jeeshop components can be deployed to any Java EE 7 application server. (Web and full profile)
+Jeeshop can be deployed to any Java EE 7 application server. (Web and full profile)
+As of today, it has only be tested on [Wildfy](http://wildfly.org/)
 
-## Wildfly (8 and 9 versions)
+## Wildfly
 This section describes deployment of Jeeshop components to a Wildfly server.
 
 ### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
-* JeeshopDS
+* JeeshopDS, for user and order data
+* JeeshopCatalogDS for product catalog data
 
-Sample of configuration for a standalone server with datasources referencing a single jeeshop database:
+Below is an example of Jeeshop datasources configuration for a standalone server:
 
   ``` xml
   <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
@@ -71,6 +73,23 @@ Sample of configuration for a standalone server with datasources referencing a s
           <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
       </validation>
   </xa-datasource>
+  <xa-datasource jndi-name="java:/JeeshopCatalogDS" pool-name="JeeshopCatalogDS" enabled="true">
+  <xa-datasource-property name="ServerName">
+        localhost
+    </xa-datasource-property>
+    <xa-datasource-property name="DatabaseName">
+        jeeshop
+    </xa-datasource-property>
+    <driver>mysql</driver>
+    <security>
+        <user-name>jeeshop</user-name>
+        <password>test</password>
+    </security>
+    <validation>
+        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
+        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
+    </validation>
+</xa-datasource>
   <driver name="mysql" module="com.mysql">
       <driver-class>com.mysql.jdbc.Driver</driver-class>
       <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
@@ -189,12 +208,8 @@ This command applies Jeeshop SQL scripts using [*FLYWAY*](https://flywaydb.org) 
 So you always get your Jeeshop database up-to date applying SQL scripts this way.
 
 Notes:
-Current database scripts are made for a single database declared in server datasources configuration. See [Datasources](#wildfly-datasources) section above.
-But you can also use multiple databases such as one for catalog, another for users.
-TODO document of databases per Jeeshop domain
-
-### Applying on Openshift
-Jeeshop db update / setup is performed automatically on  Openshift cartridges [See Openshift deployment](#openshift).
+Current database scripts are made for a single database.
+But you can also use one database for product catalog data and another for user and order data. (See [Datasources](#wildfly-datasources) section above)
 
 ## Apache TomEE 7.x
 This section describes deployment of Jeeshop components to Apache TomEE 2.x.
@@ -204,3 +219,5 @@ TODO
 ### Wildfly cartridge
 This section describes deployment of Jeeshop components to Openshift PaaS.
 TODO
+#### Database configuration
+Jeeshop db update / setup is performed automatically on  Openshift cartridges with maven openshift profile.
