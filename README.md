@@ -10,14 +10,14 @@ It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and
 * Shopping cart
 * Users management
 
+Jeeshop relies on following technologies :
+* Java EE 7 and Java 8 for REST APIs
+* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
+* 
 Compared to other e-commerce solutions / frameworks Jeeshop aims at being
 * simple - you don't need a master degree in rocket science to use and understand Jeeshop concepts
 * light - thanks to Java EE platform and design choices
 * interoperable - thanks again to Java EE platform
-
-Jeeshop relies on following technologies :
-* Java EE 7 and Java 8 for REST APIs
-* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
 # Links
 Project website: http://jeeshop.org
