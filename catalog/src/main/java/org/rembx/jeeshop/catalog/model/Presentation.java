@@ -20,6 +20,7 @@ import java.util.Map;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class Presentation {
 
     @Id

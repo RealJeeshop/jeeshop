@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Cacheable
 public class Discount extends CatalogItem {
 
     public static enum Type {

@@ -5,7 +5,7 @@
              version="2.1">
 
     <persistence-unit name="Catalog">
-        <jta-data-source>JeeshopDS</jta-data-source>
+        <jta-data-source>JeeshopCatalogDS</jta-data-source>
         <class>org.rembx.jeeshop.catalog.model.Catalog</class>
         <class>org.rembx.jeeshop.catalog.model.Category</class>
         <class>org.rembx.jeeshop.catalog.model.Product</class>
@@ -13,6 +13,7 @@
         <class>org.rembx.jeeshop.media.model.Media</class>
         <class>org.rembx.jeeshop.catalog.model.Presentation</class>
         <class>org.rembx.jeeshop.catalog.model.Discount</class>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <!--<property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>-->
