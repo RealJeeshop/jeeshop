@@ -4,13 +4,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -25,9 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
-import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * Orders resource.
@@ -35,8 +31,6 @@ import static org.rembx.jeeshop.role.JeeshopRoles.USER;
 @Path("orders")
 @Stateless
 public class Orders {
-
-    private final static Logger LOG = LoggerFactory.getLogger(Orders.class);
 
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
@@ -84,18 +78,18 @@ public class Orders {
     @GET
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN,ADMIN_READONLY,USER})
-    public Order find(@PathParam("orderId") @NotNull Long orderId,@QueryParam("enhanced") Boolean enhanced) {
+    @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
+    public Order find(@PathParam("orderId") @NotNull Long orderId, @QueryParam("enhanced") Boolean enhanced) {
         Order order = entityManager.find(Order.class, orderId);
 
         if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
             User authenticatedUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
-            if (!order.getUser().equals(authenticatedUser)){
+            if (!order.getUser().equals(authenticatedUser)) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
         }
 
-        if (enhanced!=null && enhanced){
+        if (enhanced != null && enhanced) {
             orderFinder.enhanceOrder(order);
         }
         checkNotNull(order);
@@ -108,14 +102,14 @@ public class Orders {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
     public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
-                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc,@QueryParam("status") OrderStatus status,
+                               @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("status") OrderStatus status,
                                @QueryParam("skuId") Long skuId, @QueryParam("enhanced") Boolean enhanced) {
 
         if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
             User authenticatedUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
             return orderFinder.findByUser(authenticatedUser, start, size, orderBy, isDesc, status);
-        }else{
-            return orderFinder.findAll(start, size, orderBy, isDesc, search,status, skuId, enhanced != null? enhanced : false);
+        } else {
+            return orderFinder.findAll(start, size, orderBy, isDesc, search, status, skuId, enhanced != null ? enhanced : false);
         }
 
     }
@@ -124,7 +118,7 @@ public class Orders {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({USER, ADMIN})
-    public Order create(Order order, @QueryParam("userLogin")String userLogin) {
+    public Order create(Order order, @QueryParam("userLogin") String userLogin) {
 
         checkOrder(order);
 
@@ -176,7 +170,7 @@ public class Orders {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search, @QueryParam("status") OrderStatus status, @QueryParam("skuId") Long skuId) {
-        return orderFinder.countAll(search,status, skuId);
+        return orderFinder.countAll(search, status, skuId);
     }
 
     @GET
@@ -184,22 +178,21 @@ public class Orders {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Double getFixedDeliveryFee() {
-        if (orderConfiguration!=null){
+        if (orderConfiguration != null) {
             return orderConfiguration.getFixedDeliveryFee();
         }
         return null;
     }
 
 
-
     private void assignOrderToUser(Order order, String userLogin) {
         User user;
-        if (sessionContext.isCallerInRole(USER)){
+        if (sessionContext.isCallerInRole(USER)) {
             user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
             order.setUser(user);
         }
 
-        if (sessionContext.isCallerInRole(ADMIN)){
+        if (sessionContext.isCallerInRole(ADMIN)) {
             user = userFinder.findByLogin(userLogin);
             order.setUser(user);
         }
@@ -215,7 +208,7 @@ public class Orders {
         if (CollectionUtils.isEmpty(order.getItems()))
             return;
         order.getItems().forEach(orderItem -> {
-            if (orderItem.getId()!=null)
+            if (orderItem.getId() != null)
                 throw new WebApplicationException(Response.Status.BAD_REQUEST);
             orderItem.setOrder(order);
         });
@@ -223,8 +216,8 @@ public class Orders {
 
     private void checkOrder(Order order) { // TODO Complete checks on OrderItems, checks skuId and discountId visibility. Check that user does not add too much discount.
 
-        if (order .getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
-                || (order.getBillingAddress()!=null && order.getBillingAddress().getId() !=null)){
+        if (order.getId() != null || (order.getDeliveryAddress() != null && order.getDeliveryAddress().getId() != null)
+                || (order.getBillingAddress() != null && order.getBillingAddress().getId() != null)) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 

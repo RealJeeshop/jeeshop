@@ -5,6 +5,7 @@ import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Presentation;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -39,7 +40,8 @@ public class Catalogs {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    @Inject PresentationResource presentationResource;
+    @Inject
+    PresentationResource presentationResource;
 
     @Inject
     private CatalogItemFinder catalogItemFinder;
@@ -61,7 +63,7 @@ public class Catalogs {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
         else

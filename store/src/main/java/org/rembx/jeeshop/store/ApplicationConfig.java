@@ -4,6 +4,7 @@ import org.rembx.jeeshop.catalog.*;
 import org.rembx.jeeshop.order.EligibleDiscounts;
 import org.rembx.jeeshop.order.Fees;
 import org.rembx.jeeshop.order.Orders;
+import org.rembx.jeeshop.rest.WebApplicationExceptionMapper;
 import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
@@ -31,6 +32,7 @@ public class ApplicationConfig extends Application {
         classes.add(Orders.class);
         classes.add(Fees.class);
         //classes.add(SIPSAutoResponse.class);
+        classes.add(WebApplicationExceptionMapper.class);
         return classes;
     }
 }

@@ -2,7 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.rembx.jeeshop.catalog.model.*;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -37,7 +37,8 @@ public class SKUs {
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    @Inject PresentationResource presentationResource;
+    @Inject
+    PresentationResource presentationResource;
 
     @Inject
     private CatalogItemFinder catalogItemFinder;
@@ -77,12 +78,12 @@ public class SKUs {
         checkNotNull(sku);
 
         List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.childSKUs, sku);
-        for (Product product : productHolders){
+        for (Product product : productHolders) {
             product.getChildSKUs().remove(sku);
         }
 
         List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.skus, sku);
-        for (Discount discount : discountHolders){
+        for (Discount discount : discountHolders) {
             sku.getDiscounts().remove(discount);
             discount.getSkus().remove(sku);
         }
@@ -117,7 +118,7 @@ public class SKUs {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(sKU, search, start, size, orderBy, isDesc);
         else

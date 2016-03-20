@@ -10,6 +10,7 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.order.test.TestOrder;
+import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
@@ -22,7 +23,6 @@ import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,7 +32,6 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
-import static org.rembx.jeeshop.order.model.OrderStatus.CREATED;
 import static org.rembx.jeeshop.order.model.OrderStatus.PAYMENT_VALIDATED;
 
 public class OrdersCT {
@@ -351,9 +350,6 @@ public class OrdersCT {
         assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
         assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
-
-        OrderItem expectedOrderItem1 = new OrderItem(1L, 1L, 2);
-        OrderItem expectedOrderItem2 = new OrderItem(2L, 2L, 3);
 
         assertThat(persistedOrder.getItems()).hasSize(2);
 

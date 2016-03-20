@@ -2,7 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.rembx.jeeshop.catalog.model.*;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -83,12 +83,12 @@ public class Categories {
         checkNotNull(category);
 
         List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childCategories, category);
-        for (Category categoryHolder : categoryHolders){
+        for (Category categoryHolder : categoryHolders) {
             categoryHolder.getChildCategories().remove(category);
         }
 
         List<Catalog> catalogHolders = catalogItemFinder.findForeignHolder(QCatalog.catalog, QCatalog.catalog.rootCategories, category);
-        for (Catalog catalogHolder : catalogHolders){
+        for (Catalog catalogHolder : catalogHolders) {
             catalogHolder.getRootCategories().remove(category);
         }
 
@@ -130,7 +130,7 @@ public class Categories {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(category, search, start, size, orderBy, isDesc);
         else

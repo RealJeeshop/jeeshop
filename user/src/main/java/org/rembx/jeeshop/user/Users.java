@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.rembx.jeeshop.mail.Mailer;
+import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.*;
 import org.slf4j.Logger;
@@ -25,9 +26,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
-import static org.rembx.jeeshop.role.JeeshopRoles.USER;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 /**
@@ -281,7 +280,7 @@ public class Users {
     @GET
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN,ADMIN_READONLY,USER})
+    @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
     public User findCurrentUser() {
 
         User user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
