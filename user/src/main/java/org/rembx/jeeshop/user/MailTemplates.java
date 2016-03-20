@@ -3,13 +3,9 @@ package org.rembx.jeeshop.user;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.rembx.jeeshop.mail.Mailer;
-import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.user.mail.Mails;
+import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.model.MailTemplate;
-import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -33,8 +29,6 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 @Path("/mailtemplates")
 @Stateless
 public class MailTemplates {
-
-    private final static Logger LOG = LoggerFactory.getLogger(MailTemplates.class);
 
     @Inject
     private Mailer mailer;
@@ -82,7 +76,7 @@ public class MailTemplates {
 
         try {
             sendMail(existingTpl, recipient, properties);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -122,7 +116,7 @@ public class MailTemplates {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<MailTemplate> findAll(@QueryParam("name") String name, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (name != null) {
             return mailTemplateFinder.findByName(name);
         }

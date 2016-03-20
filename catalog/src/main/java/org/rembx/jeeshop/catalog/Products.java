@@ -2,7 +2,7 @@ package org.rembx.jeeshop.catalog;
 
 
 import org.rembx.jeeshop.catalog.model.*;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -16,7 +16,9 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
@@ -83,14 +85,14 @@ public class Products {
         checkNotNull(product);
 
         List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childProducts, product);
-        for (Category category : categoryHolders){
+        for (Category category : categoryHolders) {
             category.getChildProducts().remove(product);
         }
 
         List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.products, product);
-        for (Discount discount : discountHolders){
+        for (Discount discount : discountHolders) {
             product.getDiscounts().remove(discount);
-            discount.getSkus().remove(product);
+            discount.getProducts().remove(product);
         }
 
         entityManager.remove(product);
@@ -131,7 +133,7 @@ public class Products {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            ,@QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc);
         else

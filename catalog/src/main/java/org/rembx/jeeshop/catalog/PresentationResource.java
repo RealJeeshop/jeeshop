@@ -3,7 +3,7 @@ package org.rembx.jeeshop.catalog;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -17,9 +17,9 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 
 /**
  * Sub-resource of CatalogItem resources (Catalogs, Categories,...) dedicated to a Presentation instance.
- * @Author remi
+ *
+ * @author remi
  */
-
 public class PresentationResource {
 
     private Presentation presentation;
@@ -56,8 +56,6 @@ public class PresentationResource {
         entityManager.merge(parentCatalogItem);
         entityManager.remove(entityManager.merge(presentation));
     }
-
-    ;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

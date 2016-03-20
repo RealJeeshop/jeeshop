@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;

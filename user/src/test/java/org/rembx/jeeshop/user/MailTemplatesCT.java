@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.rembx.jeeshop.mail.Mailer;
+import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.User;
@@ -13,7 +14,6 @@ import org.rembx.jeeshop.user.test.TestMailTemplate;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.List;
 

@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
+import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
