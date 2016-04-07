@@ -1,5 +1,7 @@
-Jeeshop (Work In Progress)
+Jeeshop (Work In Progress) 
 =======
+
+[![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
 
 # Description
 Jeeshop is a e-commerce solution allowing you to setup quickly your online store.
