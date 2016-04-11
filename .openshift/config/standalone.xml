@@ -144,6 +144,31 @@
                     </security>
                 </datasource>
 
+                <xa-datasource jndi-name="java:/JeeshopCatalogDS" pool-name="JeeshopCatalogDS" enabled="true">
+                    <xa-datasource-property name="ServerName">
+                        ${env.OPENSHIFT_MYSQL_DB_HOST}
+                    </xa-datasource-property>
+                    <xa-datasource-property name="PortNumber">
+                        ${env.OPENSHIFT_MYSQL_DB_PORT}
+                    </xa-datasource-property>
+                    <xa-datasource-property name="DatabaseName">
+                        apps
+                    </xa-datasource-property>
+                    <driver>mysql</driver>
+                    <security>
+                        <user-name>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user-name>
+                        <password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
+                    </security>
+                    <validation>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                        <background-validation>true</background-validation>
+                        <background-validation-millis>60000</background-validation-millis>
+                    </validation>
+                    <xa-pool>
+                        <flush-strategy>IdleConnections</flush-strategy>
+                    </xa-pool>
+                </xa-datasource>
+
                 <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
                     <xa-datasource-property name="ServerName">
                         ${env.OPENSHIFT_MYSQL_DB_HOST}
