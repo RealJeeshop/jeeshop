@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS MailTemplate_Media (
 CREATE TABLE IF NOT EXISTS Newsletter (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   name varchar(100) NOT NULL,
-  mailTemplateName varchar(100) NOT NULL,
+  mailTemplate_id bigint(20) NOT NULL,
   creationDate datetime NOT NULL,
   updateDate datetime NULL,
   dueDate datetime NULL,
@@ -382,6 +382,9 @@ ALTER TABLE MailTemplate_Media
 ALTER TABLE User_Role
   ADD CONSTRAINT FK_User_Role_User FOREIGN KEY (userId) REFERENCES User (id),
   ADD CONSTRAINT FK_User_Role_Role FOREIGN KEY (roleId) REFERENCES Role (id);
+
+ALTER TABLE Newsletter
+  ADD CONSTRAINT FK_Newsletter_MailTemplate FOREIGN KEY (mailTemplate_id) REFERENCES MailTemplate (id);
 
 --
 -- Default Users / Roles

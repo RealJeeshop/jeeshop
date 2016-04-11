@@ -6,6 +6,7 @@ import org.rembx.jeeshop.order.Orders;
 import org.rembx.jeeshop.rest.WebApplicationExceptionMapper;
 import org.rembx.jeeshop.user.MailTemplates;
 import org.rembx.jeeshop.user.Users;
+import org.rembx.jeeshop.user.mail.Newsletters;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -31,6 +32,7 @@ public class
         classes.add(Users.class);
         classes.add(Medias.class);
         classes.add(MailTemplates.class);
+        classes.add(Newsletters.class);
         classes.add(Orders.class);
         classes.add(WebApplicationExceptionMapper.class);
         return classes;

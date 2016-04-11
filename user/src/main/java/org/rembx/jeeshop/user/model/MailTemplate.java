@@ -18,6 +18,7 @@ import java.util.Set;
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Table(uniqueConstraints = @UniqueConstraint(name = "UK_MailTemplate_name", columnNames = {"name","locale"}))
 public class MailTemplate {
 
     @Id

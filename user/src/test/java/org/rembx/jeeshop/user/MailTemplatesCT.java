@@ -9,7 +9,7 @@ import org.rembx.jeeshop.user.mail.Mails;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.rembx.jeeshop.user.test.TestMailTemplate;
+import org.rembx.jeeshop.user.test.TestMails;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,7 +26,7 @@ public class MailTemplatesCT {
 
     private MailTemplates service;
 
-    private TestMailTemplate testMailTemplate;
+    private TestMails testMails;
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private Mailer mailerMock;
@@ -38,7 +38,7 @@ public class MailTemplatesCT {
 
     @Before
     public void setup() {
-        testMailTemplate = TestMailTemplate.getInstance();
+        testMails = TestMails.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         mailerMock = mock(Mailer.class);
         service = new MailTemplates(entityManager, new MailTemplateFinder(entityManager), mailerMock);
@@ -53,13 +53,13 @@ public class MailTemplatesCT {
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
         List<MailTemplate> mailTemplates = service.findAll(null, 0, 1, null, null);
         assertThat(mailTemplates).isNotEmpty();
-        assertThat(mailTemplates).containsExactly(testMailTemplate.firstMailTemplate());
+        assertThat(mailTemplates).containsExactly(testMails.firstMailTemplate());
     }
 
     @Test
     public void findByName_shouldReturnMatchingMailTemplate() {
-        List<MailTemplate> newsletters = service.findAll(testMailTemplate.firstMailTemplate().getName(), null, null, null, null);
-        assertThat(newsletters).containsExactly(testMailTemplate.firstMailTemplate());
+        List<MailTemplate> newsletters = service.findAll(testMails.firstMailTemplate().getName(), null, null, null, null);
+        assertThat(newsletters).containsExactly(testMails.firstMailTemplate());
     }
 
 
@@ -100,7 +100,7 @@ public class MailTemplatesCT {
     @Test
     public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndName() {
 
-        MailTemplate mailTemplate = new MailTemplate("Newsletter1", "fr_FR", "test content", "Test Subject");
+        MailTemplate mailTemplate = new MailTemplate("MailTemplate1", "fr_FR", "test content", "Test Subject");
 
         try {
             service.create(mailTemplate);
@@ -114,7 +114,7 @@ public class MailTemplatesCT {
     @Test
     public void modify_ShouldModify() {
         MailTemplate detachedMailTemplateToModify = new MailTemplate("TestNewsletter2", "fr_FR", "test2 content", "Test2 Subject");
-        detachedMailTemplateToModify.setId(testMailTemplate.firstMailTemplate().getId());
+        detachedMailTemplateToModify.setId(testMails.firstMailTemplate().getId());
 
         service.modify(detachedMailTemplateToModify);
 
@@ -125,7 +125,7 @@ public class MailTemplatesCT {
     public void create_shouldThrowConflictException_WhenThereIsAlreadyAMailTemplateWithSameLocaleAndNameAndDifferentID() {
 
         MailTemplate mailTemplate = new MailTemplate(Mails.userRegistration.name(), "fr_FR", "test content", "Test Subject");
-        mailTemplate.setId(testMailTemplate.firstMailTemplate().getId());
+        mailTemplate.setId(testMails.firstMailTemplate().getId());
 
         try {
             service.modify(mailTemplate);
@@ -139,10 +139,10 @@ public class MailTemplatesCT {
     @Test
     public void modifyUnknown_ShouldThrowNotFoundException() {
 
-        MailTemplate detachedMailTemplate = new MailTemplate();
-        detachedMailTemplate.setId(9999L);
+        MailTemplate unknown = new MailTemplate();
+        unknown.setId(9999L);
         try {
-            service.modify(detachedMailTemplate);
+            service.modify(unknown);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -185,7 +185,7 @@ public class MailTemplatesCT {
         user.setLastname("Doe");
         service.sendTestEmail(user, Mails.userRegistration.name(), "fr_FR", recipient);
 
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), recipient, "<html><body>Welcome Miss Jane Doe</body></html>");
+        verify(mailerMock).sendMail(testMails.userRegistrationMailTemplate().getSubject(), recipient, "<html><body>Welcome Miss Jane Doe</body></html>");
     }
 
     @Test

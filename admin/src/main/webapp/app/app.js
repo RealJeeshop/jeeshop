@@ -112,17 +112,21 @@ require ('./catalog/js/catalog.js');
                 url: "/mail",
                 templateUrl: "app/mail/index.html"
             })
-            .state('mail.templates', {
-                url: "/mail",
-                templateUrl: "app/mail/mailtemplate-entries.html"
+            .state('mail.entries', {
+                url: "/rs/:resource",
+                templateUrl: function ($stateParams) {
+                    return 'app/mail/mail-entries.html';
+                }
             })
             .state('mail.operations', {
-                url: "/mail",
+                url: "/mail/operations",
                 templateUrl: "app/mail/mail-operations.html"
             })
-            .state('mail.templates.detail', {
-                url: "/:mailId",
-                templateUrl: "app/mail/mailtemplate-form.html"
+            .state('mail.entries.detail', {
+                url: "/:itemId",
+                templateUrl: function ($stateParams) {
+                    return 'app/mail/' + $stateParams.resource + '-form.html';
+                }
             })
             .state('statistic', {
                 url: "/statistic",

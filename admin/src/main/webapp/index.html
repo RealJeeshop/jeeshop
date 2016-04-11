@@ -44,7 +44,7 @@
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="order.orders">Orders</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="statistic">Stats</a></li>
                     <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="user.users">Users</a></li>
-                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="mail.templates">Emails, Newsletters</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" class="visible-xs" ui-sref-active="active"><a  ui-sref="mail.entries({resource : 'mailtemplates'})">Emails, Newsletters</a></li>
                 </ul>
 
                 <form class="navbar-form navbar-right visible-md visible-lg" name="loginForm" ng-submit="loginCtrl.login()"
@@ -91,7 +91,7 @@
                         <a  ui-sref="user.users"><span class="glyphicon glyphicon-user"></span><span class="side_menu_item_title">Users</span></a>
                     </li>
                     <li ui-sref-active="active" title="Create and configure newsletters, mail templates">
-                        <a  ui-sref="mail.templates"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>
+                        <a  ui-sref="mail.entries({resource : 'mailtemplates'})"><span class="glyphicon glyphicon-envelope"></span><span class="side_menu_item_title">Emails, Newsletters</span></a>
                     </li>
                 </ul>
             </div>

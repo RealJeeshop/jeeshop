@@ -2,10 +2,13 @@
     <section>
         <ul class="nav nav-pills">
             <li ui-sref-active="active">
-                <a ui-sref="mail.templates">Mail templates</a>
+                <a ui-sref="mail.entries({resource : 'mailtemplates'})">Mail templates</a>
             </li>
             <li ui-sref-active="active">
-                <a href ui-sref="mail.operations">Operations</a>
+                <a ui-sref="mail.operations">Operations</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="mail.entries({resource : 'newsletters'})">Newsletters</a>
             </li>
         </ul>
     </section>

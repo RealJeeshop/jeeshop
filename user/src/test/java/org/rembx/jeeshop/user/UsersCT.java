@@ -9,7 +9,7 @@ import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.rembx.jeeshop.user.test.TestMailTemplate;
+import org.rembx.jeeshop.user.test.TestMails;
 import org.rembx.jeeshop.user.test.TestUser;
 import sun.security.acl.PrincipalImpl;
 
@@ -33,7 +33,7 @@ public class UsersCT {
     private Users service;
 
     private TestUser testUser;
-    private TestMailTemplate testMailTemplate;
+    private TestMails testMails;
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private Mailer mailerMock;
@@ -47,7 +47,7 @@ public class UsersCT {
     @Before
     public void setup() {
         testUser = TestUser.getInstance();
-        testMailTemplate = TestMailTemplate.getInstance();
+        testMails = TestMails.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         mailerMock = mock(Mailer.class);
         sessionContextMock = mock(SessionContext.class);
@@ -208,7 +208,7 @@ public class UsersCT {
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
+        verify(mailerMock).sendMail(testMails.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
         assertThat(user.getActivated()).isFalse();
@@ -233,10 +233,10 @@ public class UsersCT {
         service.create(user);
         entityManager.getTransaction().commit();
 
-        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMailTemplate.userRegistrationMailTemplate().getContent());
+        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMails.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMails.userRegistrationMailTemplate().getContent());
 
         verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
+        verify(mailerMock).sendMail(testMails.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         final User persistedUser = entityManager.find(User.class, user.getId());
         assertThat(persistedUser).isNotNull();
@@ -289,7 +289,7 @@ public class UsersCT {
         service.sendResetPasswordMail(testUser.firstUser().getLogin());
         entityManager.getTransaction().commit();
 
-        verify(mailerMock).sendMail(testMailTemplate.resetPasswordMailTemplate().getSubject(), testUser.firstUser().getLogin(), "<html><body>Here is the link to reset your password</body></html>");
+        verify(mailerMock).sendMail(testMails.resetPasswordMailTemplate().getSubject(), testUser.firstUser().getLogin(), "<html><body>Here is the link to reset your password</body></html>");
 
         User persistedUser = entityManager.find(User.class, testUser.firstUser().getId());
         assertThat(persistedUser).isNotNull();
@@ -324,7 +324,7 @@ public class UsersCT {
         assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
         assertThat(updatedUser.getActionToken()).isNull();
 
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+        verify(mailerMock).sendMail(testMails.changePasswordMailTpl().getSubject(), user.getLogin(), testMails.changePasswordMailTpl().getContent());
 
         removeTestUser(user);
 
@@ -343,7 +343,7 @@ public class UsersCT {
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
 
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+        verify(mailerMock).sendMail(testMails.changePasswordMailTpl().getSubject(), user.getLogin(), testMails.changePasswordMailTpl().getContent());
 
         removeTestUser(user);
     }
@@ -360,7 +360,7 @@ public class UsersCT {
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
 
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
+        verify(mailerMock).sendMail(testMails.changePasswordMailTpl().getSubject(), user.getLogin(), testMails.changePasswordMailTpl().getContent());
 
         removeTestUser(user);
     }

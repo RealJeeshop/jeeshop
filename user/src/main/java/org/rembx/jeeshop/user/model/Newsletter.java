@@ -24,9 +24,9 @@ public class Newsletter {
     @NotNull
     private String name;
 
-    @Column(nullable = false, length = 100)
     @NotNull
-    String mailTemplateName;
+    @ManyToOne
+    MailTemplate mailTemplate;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -40,8 +40,9 @@ public class Newsletter {
     public Newsletter() {
     }
 
-    public Newsletter(String name, Date dueDate) {
+    public Newsletter(String name, MailTemplate mailTemplate, Date dueDate) {
         this.name = name;
+        this.mailTemplate = mailTemplate;
         this.dueDate = dueDate;
     }
 
@@ -87,20 +88,20 @@ public class Newsletter {
         this.updateDate = updateDate;
     }
 
-    public String getMailTemplateName() {
-        return mailTemplateName;
-    }
-
-    public void setMailTemplateName(String mailTemplateName) {
-        this.mailTemplateName = mailTemplateName;
-    }
-
     public Date getDueDate() {
         return dueDate;
     }
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public MailTemplate getMailTemplate() {
+        return mailTemplate;
+    }
+
+    public void setMailTemplate(MailTemplate mailTemplate) {
+        this.mailTemplate = mailTemplate;
     }
 
     @Override
@@ -112,11 +113,7 @@ public class Newsletter {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (mailTemplateName != null ? !mailTemplateName.equals(that.mailTemplateName) : that.mailTemplateName != null)
-            return false;
-        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        if (updateDate != null ? !updateDate.equals(that.updateDate) : that.updateDate != null) return false;
-        return !(dueDate != null ? !dueDate.equals(that.dueDate) : that.dueDate != null);
+        return dueDate != null ? dueDate.equals(that.dueDate) : that.dueDate == null;
 
     }
 
@@ -124,10 +121,18 @@ public class Newsletter {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (mailTemplateName != null ? mailTemplateName.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (updateDate != null ? updateDate.hashCode() : 0);
         result = 31 * result + (dueDate != null ? dueDate.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Newsletter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", creationDate=" + creationDate +
+                ", updateDate=" + updateDate +
+                ", dueDate=" + dueDate +
+                '}';
     }
 }

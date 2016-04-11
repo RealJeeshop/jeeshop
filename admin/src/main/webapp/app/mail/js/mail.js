@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('admin-mail', []);
 
-    app.controller('MailTemplatesController', ['$http', '$uibModal', function ($http, $uibModal) {
+    app.controller('MailTemplatesController', ['$http', '$uibModal', '$stateParams', function ($http, $uibModal, $stateParams) {
         var ctrl = this;
 
         ctrl.entries = [];
@@ -19,9 +19,9 @@
             ctrl.alerts = [];
             var offset = ctrl.pageSize * (ctrl.currentPage - 1);
 
-            var uri = 'rs/mailtemplates';
+            var uri = 'rs/'+$stateParams.resource;
 
-            var countURI = 'rs/mailtemplates/count';
+            var countURI = uri +'/count';
 
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 uri = uri + '?name=' + ctrl.searchValue;
@@ -60,9 +60,9 @@
                 }],
                 size: 'sm'
             });
-            modalInstance.result.then(function () {
+            modalInstance.result.then(function ($stateParams) {
                 ctrl.alerts = [];
-                $http.delete('rs/mailtemplates/' + ctrl.entries[index].id)
+                $http.delete('rs/'+$stateParams.resource+'/' + ctrl.entries[index].id)
                     .success(function (data) {
                         ctrl.entries.splice(index, 1);
                         ctrl.findEntries();
@@ -89,13 +89,13 @@
         ctrl.availableLocales = LocalesService.allLocales();
         ctrl.entry = {};
         ctrl.entryChilds = {};
-        ctrl.isEditionMode = ($stateParams.mailId != "");
+        ctrl.isEditionMode = ($stateParams.itemId != "");
         ctrl.alerts = [];
 
         ctrl.findMailTemplate = function () {
             if (!ctrl.isEditionMode)
                 return;
-            $http.get('rs/mailtemplates/' + $stateParams.mailId)
+            $http.get('rs/mailtemplates/' + $stateParams.itemId)
                 .success(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();

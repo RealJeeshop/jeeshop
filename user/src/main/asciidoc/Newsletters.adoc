@@ -1,0 +1,228 @@
+=== Mail template resource
+
+Manages newsletters.
+
+==== Get all mail newsletters
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! name
+! No
+! Mail template name to search
+
+! start
+! No
+! results start offset
+
+! size
+! No
+! results size
+
+! orderBy
+! No
+! sort criteria. Defaults to _id_. +
+Possible values are :
+_id_ \| _name_ \| _locale_ \| _creationDate_ \| _updateDate_ \| _dueDate_
+
+! isDesc
+! No
+! sort direction. Defaults to _false_. +
+Possible values are :
+_true_ \| _false_
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
+!====
+
+| Response Body
+| include::snippets/newsletter.list.json.adoc[]
+|====
+
+
+==== Get newsletters count
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters/count
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+!====
+
+| Response Body
+| include::snippets/newsletter_count.json.adoc[]
+|====
+
+
+==== Get specific newsletter
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters/[id]
+
+| Method
+| GET
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Newsletter id
+! Yes
+! id of the newsletter to retrieve
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+! 404
+! No result found matching given parameters
+!====
+
+| Response Body
+| include::snippets/newsletter.json.adoc[]
+|====
+
+==== Create a newsletter
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters
+
+| Method
+| POST
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Newsletter
+! Yes
+! The newsletter to create. +
+Mandatory properties are : _name_, _mailTemplate_
+!====
+
+| Request Body
+| include::snippets/newsletter.in.json.adoc[]
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
+| Response Body
+| include::snippets/newsletter.json.adoc[]
+|====
+
+==== Modify a newsletter
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters
+
+| Method
+| PUT
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Newsletter item
+! Yes
+! The newsletter to modify. +
+Mandatory properties are : _name_, _mailTemplate_
+!====
+
+| Request Body
+| include::snippets/newsletter.json.adoc[]
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
+| Response Body
+| include::snippets/newsletter.json.adoc[]
+|====
+
+==== Delete a newsletter
+
+[cols="h,5a"]
+|====
+| URL
+| /rs/newsletters/[id]
+
+| Method
+| DELETE
+
+| Roles allowed
+| _admin_
+
+| Parameters
+|
+!====
+! Name ! Mandatory ! Description
+
+! Newsletter id
+! Yes
+! id of the mail template to delete
+
+| Response HTTP statuses
+|
+!====
+! Code ! Meaning
+! 200
+! Success
+
+|====
