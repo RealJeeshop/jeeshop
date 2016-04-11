@@ -21,9 +21,9 @@
                         <artifactId>flyway-maven-plugin</artifactId>
                         <configuration>
                             <driver>com.mysql.jdbc.Driver</driver>
-                            <url>jdbc:mysql://localhost/jeeshop</url>
+                            <url>jdbc:mysql://localhost/jeeshop?useUnicode=true&amp;characterEncoding=UTF-8</url>
                             <user>jeeshop</user><!-- Specify your jeeshop db username -->
-                            <password>1234</password><!-- Specify your jeeshop db password -->
+                            <password>test</password><!-- Specify your jeeshop db password -->
                         </configuration>
                         <dependencies>
                             <dependency>
@@ -45,7 +45,7 @@
 						<artifactId>flyway-maven-plugin</artifactId>
 						<configuration>
 							<driver>com.mysql.jdbc.Driver</driver>
-							<url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/apps</url>
+							<url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/apps?useUnicode=true&amp;characterEncoding=UTF-8</url>
 							<user>${env.OPENSHIFT_MYSQL_DB_USERNAME}</user>
 							<password>${env.OPENSHIFT_MYSQL_DB_PASSWORD}</password>
 						</configuration>
