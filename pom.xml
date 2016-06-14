@@ -6,7 +6,7 @@
 
 	<groupId>org.rembx.jeeshop</groupId>
 	<artifactId>jeeshop</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>jeeshop</name>
 	<description>jeeshop parent</description>
