@@ -42,73 +42,73 @@
         $stateProvider
             .state('home', {
                 url: "/home",
-                templateUrl: "modules/home/index.html"
+                templateUrl: "app/home/index.html"
             })
             .state('index', {
                 url: "",
-                templateUrl: "modules/home/index.html"
+                templateUrl: "app/home/index.html"
             })
             .state('catalog', {
                 url: "/catalog",
-                templateUrl: 'modules/catalog/index.html'
+                templateUrl: 'app/catalog/index.html'
             })
             .state('catalog.items', {
                 url: "/:resource",
-                templateUrl: 'modules/catalog/catalog-entries.html'
+                templateUrl: 'app/catalog/catalog-entries.html'
             })
             .state('catalog.items.detail', {
                 url: "/:itemId",
                 templateUrl: function ($stateParams) {
-                    return 'modules/catalog/' + $stateParams.resource + '-form.html';
+                    return 'app/catalog/' + $stateParams.resource + '-form.html';
                 }
             })
             .state('user', {
                 url: "/user",
-                templateUrl: 'modules/user/index.html'
+                templateUrl: 'app/user/index.html'
             })
             .state('user.users', {
                 url: "/users",
-                templateUrl: 'modules/user/user-entries.html'
+                templateUrl: 'app/user/user-entries.html'
             })
             .state('user.users.detail', {
                 url: "/:userId",
-                templateUrl: 'modules/user/user-form.html'
+                templateUrl: 'app/user/user-form.html'
             })
             .state('order', {
                 url: "/order",
-                templateUrl: 'modules/order/index.html'
+                templateUrl: 'app/order/index.html'
             })
             .state('order.orders', {
                 url: "/orders",
-                templateUrl: 'modules/order/order-entries.html'
+                templateUrl: 'app/order/order-entries.html'
             })
             .state('order.operations', {
                 url: "/operations",
-                templateUrl: 'modules/order/order-operations.html'
+                templateUrl: 'app/order/order-operations.html'
             })
             .state('order.orders.detail', {
                 url: "/:orderId",
-                templateUrl: 'modules/order/order-form.html'
+                templateUrl: 'app/order/order-form.html'
             })
             .state('mail', {
                 url: "/mail",
-                templateUrl: "modules/mail/index.html"
+                templateUrl: "app/mail/index.html"
             })
             .state('mail.templates', {
                 url: "/mail",
-                templateUrl: "modules/mail/mailtemplate-entries.html"
+                templateUrl: "app/mail/mailtemplate-entries.html"
             })
             .state('mail.operations', {
                 url: "/mail",
-                templateUrl: "modules/mail/mail-operations.html"
+                templateUrl: "app/mail/mail-operations.html"
             })
             .state('mail.templates.detail', {
                 url: "/:mailId",
-                templateUrl: "modules/mail/mailtemplate-form.html"
+                templateUrl: "app/mail/mailtemplate-form.html"
             })
             .state('statistic', {
                 url: "/statistic",
-                templateUrl: 'modules/statistic/index.html'
+                templateUrl: 'app/statistic/index.html'
             });
 
     });

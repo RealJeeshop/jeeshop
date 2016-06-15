@@ -5,21 +5,21 @@
     app.directive("commonCatalogFormFields", function () {
         return {
             restrict: "A",
-            templateUrl: "modules/catalog/common-catalog-form-fields.html"
+            templateUrl: "app/catalog/common-catalog-form-fields.html"
         };
     });
 
     app.directive("presentationsAccordion", function () {
         return {
             restrict: "E",
-            templateUrl: "modules/catalog/presentations-accordion.html"
+            templateUrl: "app/catalog/presentations-accordion.html"
         };
     });
 
     app.directive("featuresAccordion", function () {
         return {
             restrict: "E",
-            templateUrl: "modules/catalog/pres-features-accordion.html"
+            templateUrl: "app/catalog/pres-features-accordion.html"
         };
     });
 
@@ -42,7 +42,7 @@
         return {
             restrict: "A",
             scope: true,
-            templateUrl: "modules/catalog/relationships-accordion.html",
+            templateUrl: "app/catalog/relationships-accordion.html",
             link: link
         };
     });
