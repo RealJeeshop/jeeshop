@@ -1,3 +1,9 @@
+require ('./user/js/login.js');
+require ('./user/js/user.js');
+require ('./order/js/order.js');
+require ('./mail/js/mail.js');
+require ('./catalog/js/catalog.js');
+
 (function () {
 
     var app = angular.module('admin', ['ui.bootstrap', 'ui.router', 'angularFileUpload', 'admin-catalog', 'admin-login', 'admin-user', 'admin-mail', 'admin-order']);
