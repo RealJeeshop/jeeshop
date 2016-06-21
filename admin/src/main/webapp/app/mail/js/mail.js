@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('admin-mail', []);
 
-    app.controller('MailTemplatesController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('MailTemplatesController', ['$http', '$uibModal', function ($http, $uibModal) {
         var ctrl = this;
 
         ctrl.entries = [];
@@ -52,10 +52,10 @@
         };
 
         ctrl.delete = function (index, message) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'util/confirm-dialog.html',
-                controller: function ($modalInstance, $scope) {
-                    $scope.modalInstance = $modalInstance;
+                controller: function ($uibModalInstance, $scope) {
+                    $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 },
                 size: 'sm'
@@ -171,7 +171,7 @@
 
     }]);
 
-    app.controller('MailOperationController', ['$http', '$modal', function ($http) {
+    app.controller('MailOperationController', ['$http', '$uibModal', function ($http) {
 
         var ctrl = this;
         ctrl.alerts = [];

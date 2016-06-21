@@ -1,6 +1,6 @@
 <div class="text-center" ng-controller="OrdersController as ordersController">
     <div id="loaderDiv" ng-show="ordersController.isProcessing">
-        <img src="images/loading.gif" class="ajax-loader"/>
+        <img src="app/images/loading.gif" class="ajax-loader"/>
     </div>
 
     <div ng-hide="ordersController.isProcessing || ('**.detail' | includedByState)">

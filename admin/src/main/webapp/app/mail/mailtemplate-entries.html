@@ -1,6 +1,6 @@
 <div class="text-center" ng-controller="MailTemplatesController as mailTemplatesCtrl">
     <div id="loaderDiv" ng-show="mailTemplatesCtrl.isProcessing">
-        <img src="images/loading.gif" class="ajax-loader"/>
+        <img src="app/images/loading.gif" class="ajax-loader"/>
     </div>
     <div ng-hide="mailTemplatesCtrl.isProcessing || ('**.detail' | includedByState)">
         <div class ="row" style="margin-top:1em">

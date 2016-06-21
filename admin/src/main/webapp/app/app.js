@@ -1,3 +1,11 @@
+require('../node_modules/jquery/dist/jquery.min.js');
+require('../node_modules/angular-file-upload-shim/dist/angular-file-upload-html5-shim.js');
+require('../node_modules/angular/angular.js');
+require('../node_modules/angular-sanitize/angular-sanitize.js');
+require('../node_modules/angular-ui-router/release/angular-ui-router.js');
+require('../node_modules/angular-file-upload-shim/dist/angular-file-upload.js');
+require('../node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js');
+
 require ('./user/js/login.js');
 require ('./user/js/user.js');
 require ('./order/js/order.js');
@@ -6,9 +14,10 @@ require ('./catalog/js/catalog.js');
 
 (function () {
 
+
     var app = angular.module('admin', ['ui.bootstrap', 'ui.router', 'angularFileUpload', 'admin-catalog', 'admin-login', 'admin-user', 'admin-mail', 'admin-order']);
 
-    app.controller('RestrictedAccessController', function ($state, AuthService) {
+    app.controller('RestrictedAccessController', ['$state', 'AuthService', function ($state, AuthService) {
         var ctrl = this;
 
         ctrl.hasAccess = function () {
@@ -18,9 +27,9 @@ require ('./catalog/js/catalog.js');
             }
             return true;
         };
-    });
+    }]);
 
-    app.controller('DatepickerDemoCtrl', function ($scope) {
+    app.controller('DatepickerDemoCtrl', ['$scope', function ($scope) {
 
         $scope.today = function () {
             $scope.dt = new Date();
@@ -37,9 +46,11 @@ require ('./catalog/js/catalog.js');
         $scope.dateOptions = {
             startingDay: 1
         };
-    });
+    }]);
 
-    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+
+
+    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
         // For any unmatched url, redirect to /home
         $urlRouterProvider.otherwise("home");
 
@@ -117,7 +128,9 @@ require ('./catalog/js/catalog.js');
                 templateUrl: 'app/statistic/index.html'
             });
 
-    });
+    }]);
+
+
 })();
 
 

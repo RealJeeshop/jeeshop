@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('admin-user', []);
 
-    app.controller('UsersController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('UsersController', ['$http', '$uibModal', function ($http, $uibModal) {
 
         var ctrl = this;
         ctrl.alerts = [];
@@ -51,10 +51,10 @@
         };
 
         ctrl.delete = function (index, message) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'util/confirm-delete-danger.html',
-                controller: function ($modalInstance, $scope) {
-                    $scope.modalInstance = $modalInstance;
+                controller: function ($uibModalInstance, $scope) {
+                    $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 },
                 size: 'sm'
@@ -137,9 +137,9 @@
                 });
         };
 
-        var modalInstanceCtrl = function ($modalInstance, $scope, login) {
+        var modalInstanceCtrl = function ($uibModalInstance, $scope, login) {
 
-            $scope.modalInstance = $modalInstance;
+            $scope.modalInstance = $uibModalInstance;
 
             $scope.submitForm = function () {
 

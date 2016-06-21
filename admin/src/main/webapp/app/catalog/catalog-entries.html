@@ -1,6 +1,6 @@
 <div class="text-center" ng-controller="CatalogEntriesController as catalogEntriesCtrl">
     <div id="loaderDiv" ng-show="catalogEntriesCtrl.isProcessing">
-        <img src="images/loading.gif" class="ajax-loader"/>
+        <img src="app/images/loading.gif" class="ajax-loader"/>
     </div>
     <div ng-hide="catalogEntriesCtrl.isProcessing || ('**.detail' | includedByState)">
         <div class="row" style="margin-top:1em">

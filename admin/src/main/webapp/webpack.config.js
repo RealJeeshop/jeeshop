@@ -1,6 +1,5 @@
 module.exports = {
     entry: {
-        libs : './app/lib/index.js',
         app : './app/app.js'
     },
     output: {

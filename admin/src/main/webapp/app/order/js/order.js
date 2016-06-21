@@ -78,7 +78,7 @@
         };
     }]);
 
-    app.controller('OrdersController', ['$http', '$modal', function ($http, $modal) {
+    app.controller('OrdersController', ['$http', '$uibModal', function ($http, $uibModal) {
         var ctrl = this;
         ctrl.alerts = [];
         ctrl.entries = [];
@@ -138,10 +138,10 @@
         };
 
         ctrl.delete = function (index, message) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'util/confirm-delete-danger.html',
-                controller: function ($modalInstance, $scope) {
-                    $scope.modalInstance = $modalInstance;
+                controller: function ($uibModalInstance, $scope) {
+                    $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 },
                 size: 'sm'

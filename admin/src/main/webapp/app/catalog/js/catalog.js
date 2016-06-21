@@ -47,7 +47,7 @@
         };
     });
 
-    app.controller("CatalogEntriesController", ['$http', '$modal', '$scope', '$state', '$stateParams',
+    app.controller("CatalogEntriesController", ['$http', '$uibModal', '$scope', '$state', '$stateParams',
         function ($http, $dialog, $scope, $state, $stateParams) {
 
             var ctrl = this;
@@ -104,10 +104,10 @@
             };
 
             ctrl.delete = function (index, message) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'util/confirm-dialog.html',
-                    controller: function ($modalInstance, $scope) {
-                        $scope.modalInstance = $modalInstance;
+                    controller: function ($uibModalInstance, $scope) {
+                        $scope.modalInstance = $uibModalInstance;
                         $scope.confirmMessage = message;
                     },
                     size: 'sm'
@@ -209,7 +209,7 @@
 
         }]);
 
-    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$modal', '$log', '$stateParams', function ($http, $scope, $modal, $log, $stateParams) {
+    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', function ($http, $scope, $uibModal, $log, $stateParams) {
         var ctrl = this;
         $scope.itemsIds = [];
         $scope.items = [];
@@ -249,7 +249,7 @@
         });
 
         $scope.open = function (size) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'relationshipsSelector.html',
                 controller: ModalInstanceCtrl,
                 size: size,
@@ -277,7 +277,7 @@
             });
         };
 
-        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, $stateParams, items, relationshipsResource) {
+        var ModalInstanceCtrl = function ($http, $scope, $uibModalInstance, $stateParams, items, relationshipsResource) {
 
             ctrl = this;
             $scope.items = items;
@@ -330,17 +330,17 @@
                         selectedItems.push($scope.results[i]);
                     }
                 }
-                $modalInstance.close(selectedItems);
+                $uibModalInstance.close(selectedItems);
             };
 
             $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
             };
         };
 
     }]);
 
-    app.controller('PresentationsController', ['$http', '$scope', '$modal', '$log', '$stateParams', function ($http, $scope, $modal, $log, $stateParams) {
+    app.controller('PresentationsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', function ($http, $scope, $uibModal, $log, $stateParams) {
 
         var ctrl = this;
 
@@ -364,10 +364,10 @@
 
         $scope.removeItem = function (index, message) {
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'util/confirm-dialog.html',
-                controller: function ($modalInstance, $scope) {
-                    $scope.modalInstance = $modalInstance;
+                controller: function ($uibModalInstance, $scope) {
+                    $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 },
                 size: 'sm'
@@ -403,7 +403,7 @@
 
         $scope.addOrEditPresentation = function (size, locale) {
             $scope.locale = locale;
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'addOrEditPresentation.html',
                 controller: ModalInstanceCtrl,
                 size: size,
@@ -433,7 +433,7 @@
             });
         };
 
-        var ModalInstanceCtrl = function ($http, $scope, $modalInstance, $stateParams, locales, locale, presentationsResourceURI, $upload, entryId) {
+        var ModalInstanceCtrl = function ($http, $scope, $uibModalInstance, $stateParams, locales, locale, presentationsResourceURI, $upload, entryId) {
 
             ctrl = this;
 
@@ -533,14 +533,14 @@
                     .success(function (data) {
                         $scope.presentation = data;
                         messages.push({type: 'success', msg: 'Presentations update complete'});
-                        $modalInstance.close(messages);
+                        $uibModalInstance.close(messages);
                     })
                     .error(function (data, status) {
                         if (status == 403)
                             messages.push({type: 'warning', msg: 'Operation not allowed'});
                         else
                             messages.push({type: 'danger', msg: 'Technical error'});
-                        $modalInstance.close(messages);
+                        $uibModalInstance.close(messages);
                     });
             };
 
@@ -552,7 +552,7 @@
                         $scope.presentation = data;
                         getAvailableLocales();
                         messages.push({type: 'success', msg: 'Presentation creation complete'});
-                        $modalInstance.close(messages);
+                        $uibModalInstance.close(messages);
 
                     })
                     .error(function (data, status) {
@@ -561,13 +561,13 @@
                         else
                             messages.push({type: 'danger', msg: 'Technical error'});
 
-                        $modalInstance.close(messages);
+                        $uibModalInstance.close(messages);
 
                     });
             };
 
             $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
             };
 
             $scope.availableLocales = allLocales();
