@@ -4,9 +4,9 @@
             <form name="subscriptionForm" ng-submit="subscriptionForm.$valid && signUpCtrl.register()" novalidate>
 
                 <span>
-                    <alert ng-repeat="alert in signUpCtrl.alerts" type="{{alert.type}}"
+                    <uib-alert ng-repeat="alert in signUpCtrl.alerts" type="{{alert.type}}"
                            close="signUpCtrl.closeAlert($index)">{{'error.'+alert.msg | translate}}
-                    </alert>
+                    </uib-alert>
                 </span>
 
                 <div class="form-group"

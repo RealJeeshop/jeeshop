@@ -2,9 +2,9 @@
     <div class="row">
         <div class="col-md-12 text-center">
             <span>
-                <alert ng-repeat="alert in operationsController.alerts" type="{{alert.type}}"
+                <uib-alert ng-repeat="alert in operationsController.alerts" type="{{alert.type}}"
                        close="operationsController.closeAlert($index)">{{alert.msg}}
-                </alert>
+                </uib-alert>
             </span>
         </div>
     </div>

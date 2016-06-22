@@ -4,7 +4,7 @@ require('../node_modules/angular/angular.js');
 require('../node_modules/angular-sanitize/angular-sanitize.js');
 require('../node_modules/angular-ui-router/release/angular-ui-router.js');
 require('../node_modules/angular-file-upload-shim/dist/angular-file-upload.js');
-require('../node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js');
+require('../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js');
 
 require ('./user/js/login.js');
 require ('./user/js/user.js');
