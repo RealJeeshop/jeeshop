@@ -95,7 +95,7 @@ Below is an example of Jeeshop datasources configuration for a standalone server
       <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
   </driver>
   ```
-  
+
 ### <a name="wildfly-authentication">Security domain configuration</a>
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
@@ -193,7 +193,7 @@ Add the following in undertow subsystem
 ### Scripts
 Database setup scripts are provided in ./install/src/main/db directory for each supported databases
 
-* Vx.x_1__jeeshop-install.sql creates jeeshop ddl and reference data. It creates also a single user with login/password admin/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
+* Vx.x_1__jeeshop-install.sql creates jeeshop ddl and reference data. It creates also a single user with login/password admin@jeeshop.org/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
 * Vx.x__jeeshop-drop.sql empties database
 * Vx.x_2__demo-catalog-data configures jeeshop demonstration catalog data
 
