@@ -52,11 +52,11 @@
 
         ctrl.delete = function (index, message) {
             var modalInstance = $uibModal.open({
-                templateUrl: 'util/confirm-delete-danger.html',
-                controller: function ($uibModalInstance, $scope) {
+                templateUrl: 'app/util/confirm-delete-danger.html',
+                controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
                     $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
-                },
+                }],
                 size: 'sm'
             });
             modalInstance.result.then(function () {
@@ -80,7 +80,7 @@
         };
     }]);
 
-    app.controller('UserController', ['$http', '$stateParams', '$state', function ($http, $stateParams, $state) {
+    app.controller('UserController', ['$http', '$stateParams', '$state', '$uibModal', function ($http, $stateParams, $state, $uibModal) {
 
         var ctrl = this;
 
@@ -171,6 +171,25 @@
             $scope.cancelForm = function () {
                 $scope.modalInstance.dismiss('close');
             };
+        };
+
+
+        ctrl.resetPassword = function (login) {
+
+            var resetPasswordDialog = $uibModal.open({
+                templateUrl: 'app/user/reset-password-dialog.html',
+                size: 'lg',
+                controller: ['$uibModalInstance', '$scope', modalInstanceCtrl],
+                resolve: {
+                    login: function () {
+                        return login;
+                    }
+                }
+            });
+
+            resetPasswordDialog.result.then(function success() {
+            }, function error() {
+            });
         };
 
         ctrl.exitDetailView = function () {

@@ -53,11 +53,11 @@
 
         ctrl.delete = function (index, message) {
             var modalInstance = $uibModal.open({
-                templateUrl: 'util/confirm-dialog.html',
-                controller: function ($uibModalInstance, $scope) {
+                templateUrl: 'app/util/confirm-dialog.html',
+                controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
                     $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
-                },
+                }],
                 size: 'sm'
             });
             modalInstance.result.then(function () {
@@ -82,11 +82,11 @@
 
     }]);
 
-    app.controller('MailTemplateController', ['$http', '$stateParams', '$state', function ($http, $stateParams, $state) {
+    app.controller('MailTemplateController', ['$http', '$stateParams', '$state', 'LocalesService', function ($http, $stateParams, $state, LocalesService) {
 
         var ctrl = this;
 
-        ctrl.availableLocales = allLocales();
+        ctrl.availableLocales = LocalesService.allLocales();
         ctrl.entry = {};
         ctrl.entryChilds = {};
         ctrl.isEditionMode = ($stateParams.mailId != "");
@@ -171,7 +171,7 @@
 
     }]);
 
-    app.controller('MailOperationController', ['$http', '$uibModal', function ($http) {
+    app.controller('MailOperationController', ['$http', 'LocalesService', function ($http, LocalesService) {
 
         var ctrl = this;
         ctrl.alerts = [];
@@ -180,7 +180,7 @@
         ctrl.mailTemplateName = null;
         ctrl.locale = null;
         ctrl.mailTemplateProperties = {};
-        ctrl.availableLocales = allLocales();
+        ctrl.availableLocales = LocalesService.allLocales();
 
         var testUser = {
             "id": 5,

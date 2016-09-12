@@ -139,11 +139,11 @@
 
         ctrl.delete = function (index, message) {
             var modalInstance = $uibModal.open({
-                templateUrl: 'util/confirm-delete-danger.html',
-                controller: function ($uibModalInstance, $scope) {
+                templateUrl: 'app/util/confirm-delete-danger.html',
+                controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
                     $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
-                },
+                }],
                 size: 'sm'
             });
             modalInstance.result.then(function () {
