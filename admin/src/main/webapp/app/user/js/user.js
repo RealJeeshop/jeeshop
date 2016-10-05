@@ -53,7 +53,7 @@
         ctrl.delete = function (index, message) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'app/util/confirm-delete-danger.html',
-                controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
+                controller: ['$uibModalInstance', '$scope', function ($uibModalInstance, $scope) {
                     $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 }],
@@ -137,49 +137,13 @@
                 });
         };
 
-        var modalInstanceCtrl = function ($uibModalInstance, $scope, login) {
-
-            $scope.modalInstance = $uibModalInstance;
-
-            $scope.submitForm = function () {
-
-                var newPassword = $scope.newPassword;
-                var confirmNewPassword = $scope.confirmNewPassword;
-
-                if (newPassword === confirmNewPassword) {
-
-                    var uri = 'rs/users/' + login + '/password';
-                    $http.put(uri, newPassword)
-                        .success(function () {
-                            ctrl.isProcessing = false;
-                            ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});
-                        })
-                        .error(function (data, status) {
-                            if (status == 403)
-                                ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
-                            else
-                                ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
-                        });
-
-                    $scope.modalInstance.dismiss('close');
-
-                } else {
-                    $scope.nomatch = true;
-                }
-            };
-
-            $scope.cancelForm = function () {
-                $scope.modalInstance.dismiss('close');
-            };
-        };
-
 
         ctrl.resetPassword = function (login) {
 
             var resetPasswordDialog = $uibModal.open({
                 templateUrl: 'app/user/reset-password-dialog.html',
                 size: 'lg',
-                controller: ['$uibModalInstance', '$scope', modalInstanceCtrl],
+                controller: 'ResetPasswordModalController',
                 resolve: {
                     login: function () {
                         return login;
@@ -211,5 +175,41 @@
 
     }]);
 
+
+    app.controller('ResetPasswordModalController', ['$uibModalInstance', '$scope', 'login', function ($uibModalInstance, $scope, login) {
+
+        $scope.modalInstance = $uibModalInstance;
+
+        $scope.submitForm = function () {
+
+            var newPassword = $scope.newPassword;
+            var confirmNewPassword = $scope.confirmNewPassword;
+
+            if (newPassword === confirmNewPassword) {
+
+                var uri = 'rs/users/' + login + '/password';
+                $http.put(uri, newPassword)
+                    .success(function () {
+                        ctrl.isProcessing = false;
+                        ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});
+                    })
+                    .error(function (data, status) {
+                        if (status == 403)
+                            ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
+                        else
+                            ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
+                    });
+
+                $scope.modalInstance.dismiss('close');
+
+            } else {
+                $scope.nomatch = true;
+            }
+        };
+
+        $scope.cancelForm = function () {
+            $scope.modalInstance.dismiss('close');
+        };
+    }]);
 
 })();

@@ -106,7 +106,7 @@
             ctrl.delete = function (index, message) {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'app/util/confirm-dialog.html',
-                    controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
+                    controller: ['$uibModalInstance', '$scope', function ($uibModalInstance, $scope) {
                         $scope.modalInstance = $uibModalInstance;
                         $scope.confirmMessage = message;
                     }],
@@ -251,7 +251,7 @@
         $scope.open = function (size) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'relationshipsSelector.html',
-                controller: ['$http', '$scope', '$uibModalInstance', '$stateParams', modalInstanceCtrl],
+                controller: 'CatalogRelationshipsModalController',
                 size: size,
                 resolve: {
                     items: function () {
@@ -277,69 +277,72 @@
             });
         };
 
-        var modalInstanceCtrl = function ($http, $scope, $uibModalInstance, $stateParams, items, relationshipsResource) {
-
-            ctrl = this;
-            $scope.items = items;
-            $scope.relationshipsResource = relationshipsResource;
-            $scope.results = [];
-            $scope.selected = [];
-            $scope.currentPage = 1;
-            $scope.totalCount = 0;
-            $scope.pageSize = 10;
-
-            $scope.search = function () { // TODO merge with catalogEntriesCtrl listing and add search to it
-                var offset = $scope.pageSize * ($scope.currentPage - 1);
-                var uri = 'rs/' + $scope.relationshipsResource + "?start=" + offset + "&size=" + $scope.pageSize;
-                var countURI = 'rs/' + $scope.relationshipsResource + '/count';
-                if ($scope.searchValue != null && !($scope.searchValue === "")) {
-                    var searchArg = 'search=' + $scope.searchValue;
-                    uri = uri + '&' + searchArg;
-                    countURI = countURI + '?' + searchArg;
-                }
-
-                $http.get(uri).success(function (data) {
-                    $scope.results = data;
-                });
-
-                $http.get(countURI).success(function (data) {
-                    $scope.totalCount = data;
-                });
-
-            };
-
-            $scope.pageChanged = function () {
-                $scope.search();
-            };
-
-            $scope.isAlreadyLinked = function (itemId) {
-                var isLinked = false;
-                for (i in $scope.items) {
-                    if ($scope.items[i].id === itemId) {
-                        isLinked = true;
-                        break;
-                    }
-                }
-                return isLinked;
-            };
-
-            $scope.ok = function () {
-                var selectedItems = [];
-                for (i in $scope.results) {
-                    if ($scope.selected[$scope.results[i].id] != null && $scope.selected[$scope.results[i].id] === true) {
-                        selectedItems.push($scope.results[i]);
-                    }
-                }
-                $uibModalInstance.close(selectedItems);
-            };
-
-            $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
-            };
-        };
-        
     }]);
-    
+
+    app.controller('CatalogRelationshipsModalController',
+
+        ['$http', '$scope', '$uibModalInstance', '$stateParams', 'items', 'relationshipsResource',
+            function ($http, $scope, $uibModalInstance, $stateParams, items, relationshipsResource) {
+
+                ctrl = this;
+                $scope.items = items;
+                $scope.relationshipsResource = relationshipsResource;
+                $scope.results = [];
+                $scope.selected = [];
+                $scope.currentPage = 1;
+                $scope.totalCount = 0;
+                $scope.pageSize = 10;
+
+                $scope.search = function () { // TODO merge with catalogEntriesCtrl listing and add search to it
+                    var offset = $scope.pageSize * ($scope.currentPage - 1);
+                    var uri = 'rs/' + $scope.relationshipsResource + "?start=" + offset + "&size=" + $scope.pageSize;
+                    var countURI = 'rs/' + $scope.relationshipsResource + '/count';
+                    if ($scope.searchValue != null && !($scope.searchValue === "")) {
+                        var searchArg = 'search=' + $scope.searchValue;
+                        uri = uri + '&' + searchArg;
+                        countURI = countURI + '?' + searchArg;
+                    }
+
+                    $http.get(uri).success(function (data) {
+                        $scope.results = data;
+                    });
+
+                    $http.get(countURI).success(function (data) {
+                        $scope.totalCount = data;
+                    });
+
+                };
+
+                $scope.pageChanged = function () {
+                    $scope.search();
+                };
+
+                $scope.isAlreadyLinked = function (itemId) {
+                    var isLinked = false;
+                    for (i in $scope.items) {
+                        if ($scope.items[i].id === itemId) {
+                            isLinked = true;
+                            break;
+                        }
+                    }
+                    return isLinked;
+                };
+
+                $scope.ok = function () {
+                    var selectedItems = [];
+                    for (i in $scope.results) {
+                        if ($scope.selected[$scope.results[i].id] != null && $scope.selected[$scope.results[i].id] === true) {
+                            selectedItems.push($scope.results[i]);
+                        }
+                    }
+                    $uibModalInstance.close(selectedItems);
+                };
+
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+
+            }]);
 
     app.controller('PresentationsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', 'LocalesService', function ($http, $scope, $uibModal, $log, $stateParams, LocalesService) {
 
@@ -367,7 +370,7 @@
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'app/util/confirm-dialog.html',
-                controller: ['$uibModalInstance','$scope', function ($uibModalInstance, $scope) {
+                controller: ['$uibModalInstance', '$scope', function ($uibModalInstance, $scope) {
                     $scope.modalInstance = $uibModalInstance;
                     $scope.confirmMessage = message;
                 }],
@@ -406,7 +409,7 @@
             $scope.locale = locale;
             var modalInstance = $uibModal.open({
                 templateUrl: 'addOrEditPresentation.html',
-                controller: ['$http', '$scope', '$uibModalInstance', '$stateParams', modalInstanceCtrl],
+                controller: 'PresentationsModalController',
                 size: size,
                 resolve: {
                     locales: function () {
@@ -434,146 +437,151 @@
             });
         };
 
-        var modalInstanceCtrl = function ($http, $scope, $uibModalInstance, $stateParams, locales, locale, presentationsResourceURI, $upload, entryId) {
-
-            ctrl = this;
-
-            $scope.locales = locales;
-            $scope.locale = locale; // set when edition mode
-            $scope.isEditionMode = ($scope.locale != null);
-            $scope.selectedLocale = null;
-            $scope.presentation = {};
-            $scope.entryId = entryId;
-            $scope.isProcessing = {
-                thumbnail: false,
-                largeImage: false,
-                smallImage: false
-            };
-
-
-            $scope.feature = {};
-
-            $scope.isNewLocaleSelected = function(){
-                return $scope.presentation.id == null
-            };
-
-            $scope.addFeature = function (feature) {
-                $scope.presentation.features[feature.name] = feature.value;
-                $scope.feature = {};
-            };
-
-            $scope.removeFeature = function (name) {
-                delete $scope.presentation.features[name];
-            };
-
-            var getPresentationByLocale = function (locale) {
-                $scope.selectedLocale = locale;
-                $http.get(presentationsResourceURI + "/" + locale)
-                    .success(function (data) {
-                        $scope.presentation = data;
-                        $scope.locale = locale;
-                    })
-                    .error(function (data) {
-                        $scope.presentation = {};
-                        $scope.locale = null;
-                    });
-            };
-
-            if (locale != null) {
-                getPresentationByLocale(locale);
-            }
-
-            $scope.isLocaleSelected = function () {
-                return $scope.selectedLocale != null;
-            };
-
-            $scope.selectLocale = function () {
-                getPresentationByLocale($scope.selectedLocale);
-            };
-
-            $scope.removePresentationMedia = function (presentationPropertyName) {
-                $scope.presentation[presentationPropertyName] = null;
-            };
-
-            $scope.getPresentationMediaURI = function (presentationPropertyName) {
-                if ($scope.presentation[presentationPropertyName] != null) {
-                    return 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/'
-                        + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing;
-                }
-            };
-
-            $scope.onFileSelect = function ($files, presentationPropertyName) {
-
-                $scope.isProcessing[presentationPropertyName] = true;
-                var file = $files[0];
-
-                var presentationMedia = {
-                    uri: file.name
-                };
-                $scope.presentation[presentationPropertyName] = presentationMedia;
-
-                $scope.upload = $upload.upload({
-                    url: 'rs/medias/' + $stateParams.resource + '/' + entryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
-                    method: 'POST',
-                    //headers: {'header-key': 'header-value'},
-                    withCredentials: true,
-                    file: file
-                }).progress(function (evt) {
-
-                }).success(function (data, status, headers, config) {
-                        $scope.isProcessing[presentationPropertyName] = false;
-                    })
-                    .error(function (data, status, headers, config) {
-                        $scope.isProcessing[presentationPropertyName] = false;
-                    });
-            };
-
-            $scope.save = function () {
-                var messages = [];
-                $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
-                    .success(function (data) {
-                        $scope.presentation = data;
-                        messages.push({type: 'success', msg: 'Presentations update complete'});
-                        $uibModalInstance.close(messages);
-                    })
-                    .error(function (data, status) {
-                        if (status == 403)
-                            messages.push({type: 'warning', msg: 'Operation not allowed'});
-                        else
-                            messages.push({type: 'danger', msg: 'Technical error'});
-                        $uibModalInstance.close(messages);
-                    });
-            };
-
-            $scope.add = function () {
-                var messages = [];
-                $scope.presentation.locale = $scope.selectedLocale;
-                $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
-                    .success(function (data) {
-                        $scope.presentation = data;
-                        getAvailableLocales();
-                        messages.push({type: 'success', msg: 'Presentation creation complete'});
-                        $uibModalInstance.close(messages);
-
-                    })
-                    .error(function (data, status) {
-                        if (status == 403)
-                            messages.push({type: 'warning', msg: 'Operation now allowed'});
-                        else
-                            messages.push({type: 'danger', msg: 'Technical error'});
-
-                        $uibModalInstance.close(messages);
-
-                    });
-            };
-
-            $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
-            };
-
-            $scope.availableLocales = LocalesService.allLocales();
-        };
 
     }]);
+
+    app.controller('PresentationsModalController',
+
+        ['$http', '$scope', '$uibModalInstance', '$stateParams', '$upload', 'LocalesService', 'locales', 'locale', 'presentationsResourceURI', 'entryId',
+            function ($http, $scope, $uibModalInstance, $stateParams, $upload, LocalesService, locales, locale, presentationsResourceURI, entryId) {
+
+                ctrl = this;
+
+                $scope.locales = locales;
+                $scope.locale = locale; // set when edition mode
+                $scope.isEditionMode = ($scope.locale != null);
+                $scope.selectedLocale = null;
+                $scope.presentation = {};
+                $scope.entryId = entryId;
+                $scope.isProcessing = {
+                    thumbnail: false,
+                    largeImage: false,
+                    smallImage: false
+                };
+
+
+                $scope.feature = {};
+
+                $scope.isNewLocaleSelected = function () {
+                    return $scope.presentation.id == null
+                };
+
+                $scope.addFeature = function (feature) {
+                    $scope.presentation.features[feature.name] = feature.value;
+                    $scope.feature = {};
+                };
+
+                $scope.removeFeature = function (name) {
+                    delete $scope.presentation.features[name];
+                };
+
+                var getPresentationByLocale = function (locale) {
+                    $scope.selectedLocale = locale;
+                    $http.get(presentationsResourceURI + "/" + locale)
+                        .success(function (data) {
+                            $scope.presentation = data;
+                            $scope.locale = locale;
+                        })
+                        .error(function (data) {
+                            $scope.presentation = {};
+                            $scope.locale = null;
+                        });
+                };
+
+                if (locale != null) {
+                    getPresentationByLocale(locale);
+                }
+
+                $scope.isLocaleSelected = function () {
+                    return $scope.selectedLocale != null;
+                };
+
+                $scope.selectLocale = function () {
+                    getPresentationByLocale($scope.selectedLocale);
+                };
+
+                $scope.removePresentationMedia = function (presentationPropertyName) {
+                    $scope.presentation[presentationPropertyName] = null;
+                };
+
+                $scope.getPresentationMediaURI = function (presentationPropertyName) {
+                    if ($scope.presentation[presentationPropertyName] != null) {
+                        return 'rs/medias/' + $stateParams.resource + '/' + $scope.EntryId + '/' + $scope.selectedLocale + '/'
+                            + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing;
+                    }
+                };
+
+                $scope.onFileSelect = function ($files, presentationPropertyName) {
+
+                    $scope.isProcessing[presentationPropertyName] = true;
+                    var file = $files[0];
+
+                    var presentationMedia = {
+                        uri: file.name
+                    };
+                    $scope.presentation[presentationPropertyName] = presentationMedia;
+
+                    $scope.upload = $upload.upload({
+                        url: 'rs/medias/' + $stateParams.resource + '/' + EntryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
+                        method: 'POST',
+                        //headers: {'header-key': 'header-value'},
+                        withCredentials: true,
+                        file: file
+                    }).progress(function (evt) {
+
+                    }).success(function (data, status, headers, config) {
+                        $scope.isProcessing[presentationPropertyName] = false;
+                    })
+                        .error(function (data, status, headers, config) {
+                            $scope.isProcessing[presentationPropertyName] = false;
+                        });
+                };
+
+                $scope.save = function () {
+                    var messages = [];
+                    $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
+                        .success(function (data) {
+                            $scope.presentation = data;
+                            messages.push({type: 'success', msg: 'Presentations update complete'});
+                            $uibModalInstance.close(messages);
+                        })
+                        .error(function (data, status) {
+                            if (status == 403)
+                                messages.push({type: 'warning', msg: 'Operation not allowed'});
+                            else
+                                messages.push({type: 'danger', msg: 'Technical error'});
+                            $uibModalInstance.close(messages);
+                        });
+                };
+
+                $scope.add = function () {
+                    var messages = [];
+                    $scope.presentation.locale = $scope.selectedLocale;
+                    $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
+                        .success(function (data) {
+                            $scope.presentation = data;
+                            getAvailableLocales();
+                            messages.push({type: 'success', msg: 'Presentation creation complete'});
+                            $uibModalInstance.close(messages);
+
+                        })
+                        .error(function (data, status) {
+                            if (status == 403)
+                                messages.push({type: 'warning', msg: 'Operation now allowed'});
+                            else
+                                messages.push({type: 'danger', msg: 'Technical error'});
+
+                            $uibModalInstance.close(messages);
+
+                        });
+                };
+
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+
+                $scope.availableLocales = LocalesService.allLocales();
+
+            }]);
 
 })();
