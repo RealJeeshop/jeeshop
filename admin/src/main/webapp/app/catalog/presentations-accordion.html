@@ -1,0 +1,207 @@
+<div class="row">
+    <div class="col-md-6" ng-controller="PresentationsController as presCtrl">
+
+        <script type="text/ng-template" id="addOrEditPresentation.html">
+            <div class="modal-header">
+                <h3 class="modal-title" ng-show="isEditionMode">Edit presentation for locale: <i>{{locale}}</i></h3>
+
+                <h3 class="modal-title" ng-show="!isEditionMode">Add new presentation</h3>
+            </div>
+
+            <div class="modal-body">
+                <form name="presentationForm"
+                      ng-submit="presentationForm.$valid && addOrEditPresentation()" novalidate>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Select a locale</label>
+                            <select class="form-control" ng-model="selectedLocale" ng-change="selectLocale()"
+                                    name="selectedLocale"
+                                    ng-options="a.name as a.displayName for a in availableLocales">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="presDisplayName">Name</label>
+                            <input type="text" class="form-control" id="presDisplayName"
+                                   ng-model="presentation.displayName"
+                                   placeholder="Name..." maxlength="255"/>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="promotion">Promotion text</label>
+                            <input type="text" class="form-control" id="promotion"
+                                   ng-model="presentation.promotion"
+                                   placeholder="Promotion text..." maxlength="255"/>
+                        </div>
+
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="presShortDescription">Short description</label>
+                            <textarea class="form-control" id="presShortDescription"
+                                      ng-model="presentation.shortDescription"
+                                      placeholder="Short description..." rows="2" maxlength="1000"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="presMedDescription">Medium description</label>
+                            <textarea class="form-control" id="presMedDescription" ng-model="presentation.mediumDescription"
+                                      placeholder="Medium description ..." rows="4" maxlength="2000"></textarea>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <label for="presLongDescription">Long description</label>
+                            <textarea class="form-control" id="presLongDescription" ng-model="presentation.longDescription"
+                                      placeholder="Long description ..." rows="4" maxlength="5000"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Features</label>
+                            <features-accordion></features-accordion>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6 ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Thumbnail</label>
+                                </div>
+                                <div class="col-md-6" ng-show="presentation.thumbnail!=null">
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-default"
+                                                ng-click="removePresentationMedia('thumbnail')"><i
+                                                class="glyphicon glyphicon-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div ng-show="isProcessing['thumbnail']">
+                                    <img src="app/images/loading.gif" class="ajax-loader"/>
+                                </div>
+                                <img class="img-responsive" ng-src="{{getPresentationMediaURI('thumbnail')}}"
+                                     alt="Image not found!" ng-show="!isProcessing['thumbnail'] && presentation.thumbnail!=null"/>
+                                <input type="file" ng-file-select="onFileSelect($files,'thumbnail')"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Small image</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-right" ng-show="presentation.smallImage!=null">
+                                        <button type="button" class="btn btn-default"
+                                                ng-click="removePresentationMedia('smallImage')"><i
+                                                class="glyphicon glyphicon-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" >
+                                <div ng-show="isProcessing['smallImage']">
+                                    <img src="app/images/loading.gif" class="ajax-loader"/>
+                                </div>
+                                <img class="img-responsive" ng-src="{{getPresentationMediaURI('smallImage')}}"
+                                     alt="Image not found!" ng-show="!isProcessing['smallImage'] && presentation.smallImage!=null"/>
+                                <input type="file" ng-file-select="onFileSelect($files,'smallImage')"/>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="isLocaleSelected()">
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Large image</label>
+                                </div>
+                                <div class="col-md-6" ng-show="presentation.largeImage!=null">
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-default"
+                                                ng-click="removePresentationMedia('largeImage')"><i
+                                                class="glyphicon glyphicon-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div ng-show="isProcessing['largeImage']">
+                                    <img src="app/images/loading.gif" class="ajax-loader"/>
+                                </div>
+                                <img class="img-responsive" ng-src="{{getPresentationMediaURI('largeImage')}}"
+                                     alt="Image not found!" ng-show="!isProcessing['largeImage'] && presentation.largeImage!=null"/>
+                                <input type="file" ng-file-select="onFileSelect($files,'largeImage')"/>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Video</label>
+                                </div>
+                                <div class="col-md-6" ng-show="presentation.video!=null">
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-default"
+                                                ng-click="removePresentationMedia('video')"><i
+                                                class="glyphicon glyphicon-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div ng-show="isProcessing['video']">
+                                    <img src="app/images/loading.gif" class="ajax-loader"/>
+                                </div>
+                                <span id="video" ng-show="!isProcessing['video'] && presentation.video!=null"><i>{{presentation.video.uri}}</i></span>
+                                <input type="file" ng-file-select="onFileSelect($files,'video')"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="save()" ng-show="isEditionMode && !isNewLocaleSelected()">Save</button>
+                <button class="btn btn-primary" ng-click="add()" ng-show="!isEditionMode || isNewLocaleSelected()">Add
+                </button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+        <label>Texts and medias</label>
+        <uib-accordion close-others="oneAtATime" ng-show="isEditionMode">
+            <uib-accordion-group is-open="accordion.open">
+                <uib-accordion-heading>
+                    <span style="cursor:pointer">Presentations per locale</span> <i style="cursor:pointer"
+                                                                                    class="pull-right glyphicon"
+                                                                                    ng-class="{'glyphicon-chevron-down': accordion.open, 'glyphicon-chevron-right': !accordion.open}"></i>
+                </uib-accordion-heading>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-default" ng-click="addOrEditPresentation('lg')"><i
+                            class="glyphicon glyphicon-plus"></i>
+                    </button>
+                </div>
+
+                <table class="table table-striped table-hover table-condensed text-left">
+                    <thead>
+                    <tr>
+                        <th>Locale</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="locale in locales">
+                        <td style="width:90%;cursor:pointer" ng-click="addOrEditPresentation('lg', locale)"
+                            style="cursor:pointer">{{locale}}
+                        </td>
+                        <td class="text-right">
+                            <a ng-click="removeItem($index, 'This will delete presentation for locale '+locale)"
+                               href="" class="glyphicon glyphicon-trash"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </uib-accordion-group>
+        </uib-accordion>
+    </div>
+</div>

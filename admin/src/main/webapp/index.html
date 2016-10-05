@@ -1,41 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="admin">
+<html lang="en" ng-app="admin" ng-strict-di>
 <head>
     <title>Jeeshop - Administer your store</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="ico/favicon.ico">
 
     <title>Jeeshop Admin</title>
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="app/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="css/dashboard.css" rel="stylesheet">
+    <link href="app/css/dashboard.css" rel="stylesheet">
     <!-- app CSS -->
-    <link href="css/app.css" rel="stylesheet">
+    <link href="app/css/app.css" rel="stylesheet">
 
 </head>
 
 <body>
 
 <!-- libraries -->
-<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/stringview-min.js"></script>
-<script type="text/javascript" src="js/angular-file-upload-html5-shim.min.js"></script>
-<script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/angular-ui-router.min.js"></script>
-<script type="text/javascript" src="js/angular-file-upload.min.js"></script>
-<script type="text/javascript" src="js/ui-bootstrap-tpls-0.12.0.min.js"></script>
-<!-- jeeshop scripts -->
-<script type="text/javascript" src="modules/user/js/login.js"></script>
-<script type="text/javascript" src="modules/user/js/user.js"></script>
-<script type="text/javascript" src="modules/order/js/order.js"></script>
-<script type="text/javascript" src="modules/mail/js/mail.js"></script>
-<script type="text/javascript" src="modules/catalog/js/catalog.js"></script>
-<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="app/built/app_bundle.js"></script>
+<script type="text/javascript" src="app/lib/stringview.min.js"></script>
 
 <div>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">

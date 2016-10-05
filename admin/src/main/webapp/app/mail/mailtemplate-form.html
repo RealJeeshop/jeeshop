@@ -1,0 +1,102 @@
+<div class="text-left" ng-controller="MailTemplateController as mailTemplateCtrl">
+    <form name="mailTemplateForm"
+          ng-submit="mailTemplateForm.$valid && mailTemplateCtrl.createOrEdit()" novalidate>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10 text-center">
+                <span>
+                    <uib-alert ng-repeat="alert in mailTemplateCtrl.alerts" type="{{alert.type}}"
+                           close="mailTemplateCtrl.closeAlert($index)">{{alert.msg}}
+                    </uib-alert>
+                </span>
+            </div>
+            <div class="col-md-1">
+                <div class="col-md-6 text-right">
+                    <button type="button" class="btn btn-default" ng-click="mailTemplateCtrl.exitDetailView()"><i
+                            class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.name.$invalid && mailTemplateForm.name.$dirty}">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" ng-model="mailTemplateCtrl.entry.name"
+                       placeholder="Name ..." maxlength="100" required="true"/>
+
+                <p class="help-block" ng-show="mailTemplateForm.name.$error.required && mailTemplateForm.name.$dirty">
+                    Name is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
+                <label>Predefined name</label>
+                <select class="form-control" ng-model="mailTemplateCtrl.entry.name"
+                        name="predefinedName"
+                        ng-required="false">
+
+                    <optgroup label="Users">
+                        <option value="userRegistration">User registration</option>
+                        <option value="userActivation">User activation</option>
+                        <option value="userResetPassword">User password reset</option>
+                    </optgroup>
+                    <optgroup label="Orders">
+                        <option value="orderAccepted">Order accepted</option>
+                        <option value="orderValidated">Order validated</option>
+                        <option value="orderShipped">Order shipped</option>
+                    </optgroup>
+                </select>
+                <p class="help-block">
+                    Select a predefined name to register a template matching a Jeeshop backend operation
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.locale.$invalid && mailTemplateForm.locale.$dirty}">
+                <label>Select a locale</label>
+                <select class="form-control" ng-model="mailTemplateCtrl.entry.locale" ng-change="selectLocale()"
+                        name="locale"
+                        ng-options="a.name as a.displayName for a in mailTemplateCtrl.availableLocales"
+                        ng-required="true">
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': mailTemplateForm.subject.$invalid && mailTemplateForm.subject.$dirty}">
+                <label for="name">Subject</label>
+                <input type="text" class="form-control" id="subject" name="subject"
+                       ng-model="mailTemplateCtrl.entry.subject"
+                       placeholder="Subject ..." maxlength="100" required="true"/>
+
+                <p class="help-block"
+                   ng-show="mailTemplateForm.subject.$error.required && mailTemplateForm.subject.$dirty">Subject is
+                    required</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-12"
+                 ng-class="{'has-error': mailTemplateForm.content.$invalid && mailTemplateForm.content.$dirty}">
+                <label for="content">Content</label>
+
+                <textarea class="form-control" id="content"
+                          ng-model="mailTemplateCtrl.entry.content"
+                          placeholder="Enter a valid Freemarker mail template..." rows="10" ng-required="true"></textarea>
+
+
+                <p class="help-block"
+                   ng-show="mailTemplateForm.content.$error.required && mailTemplateForm.content.$dirty">Content is
+                    required</p>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="mailTemplateForm.$invalid"/>
+    </form>
+
+</div>

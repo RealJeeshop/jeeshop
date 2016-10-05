@@ -1,0 +1,146 @@
+<div class="text-left"  ng-controller="UserController as userController">
+    <form name="userForm"
+          ng-submit="userForm.$valid && userController.createOrEdit()" novalidate>
+
+        <div class="row">
+            <div class="col-md-1 text-right col-md-push-11">
+                <button type="button" class="btn btn-default" ng-click="userController.exitDetailView()"><i
+                        class="glyphicon glyphicon-remove" title="Go back to items list"></i></button>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="userController.isEditionMode">
+                <h4>Edition of user #{{userController.entry.id}}</h4>
+            </div>
+            <div class="col-md-11 col-md-pull-1 text-center" ng-show="! userController.isEditionMode">
+                <h4>Create a new user</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <span>
+                    <uib-alert ng-repeat="alert in userController.alerts" type="{{alert.type}}"
+                           close="userController.closeAlert($index)">{{alert.msg}}
+                    </uib-alert>
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Activated</label><br/>
+                <input type="radio" name="activated" ng-model="userController.entry.activated" ng-value="true"> Yes
+                <input type="radio" name="activated" ng-model="userController.entry.activated" ng-value="false"> No
+            </div>
+            <div class="form-group col-md-6">
+                <label>Disabled</label><br/>
+                <input type="radio" name="disabled" ng-model="userController.entry.disabled" ng-value="true"> Yes
+                <input type="radio" name="disabled" ng-model="userController.entry.disabled" ng-value="false"> No
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Newsletters Subscribed</label><br/>
+                <input type="radio" name="newslettersSubscribed" ng-model="userController.entry.newslettersSubscribed" ng-value="true"> Yes
+                <input type="radio" name="newslettersSubscribed" ng-model="userController.entry.newslettersSubscribed" ng-value="false"> No
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6" ng-class="{'has-error': userForm.login.$invalid && userForm.login.$dirty}">
+              <label for="login">E-mail</label>
+
+              <p class=""></p>
+                <input type="email" class="form-control" id="login" name="login" ng-model="userController.entry.login"
+                       placeholder="E-mail..." maxlength="100" required="true"/>
+                <p class="help-block" ng-show="userForm.login.$invalid && userForm.login.$dirty">Please enter a valid e-mail</p>
+            </div>
+            <div class="form-group col-md-6" ng-class="{'has-error': userForm.password.$invalid && userForm.password.$dirty}">
+                <label for="password">Password</label>
+              <a ng-click="userController.resetPassword(userController.entry.login)" href="" ng-show="userController.isEditionMode">Reset password</a>
+                <input type="text" class="form-control" id="password" name="password" ng-model="userController.entry.password"
+                       placeholder="Password..." maxlength="100" required="true"
+                       ng-disabled="userController.isEditionMode"/>
+                <p class="help-block" ng-show="userForm.password.$error.required && userForm.password.$dirty">Password is required</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.firstname.$invalid && userForm.firstname.$dirty}">
+                <label for="firstname">First name</label>
+                <input type="text" class="form-control" id="firstname" name="firstname"
+                       ng-model="userController.entry.firstname"
+                       placeholder="First name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="userForm.firstname.$error.required && userForm.firstname.$dirty">First name is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.lastname.$invalid && userForm.lastname.$dirty}">
+                <label for="lastname">Last name</label>
+                <input type="text" class="form-control" id="lastname" name="lastname"
+                       ng-model="userController.entry.lastname"
+                       placeholder="Last name..." maxlength="50" required="true"/>
+                <p class="help-block" ng-show="userForm.lastname.$error.required && userForm.lastname.$dirty">Last name is required</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.lastname.$invalid && userForm.lastname.$dirty}">
+                <label for="gender">Gender</label>
+                <input type="text" class="form-control" id="gender" name="gender"
+                       ng-model="userController.entry.gender"
+                       placeholder="Gender ..." maxlength="30" required="true"/>
+                <p class="help-block" ng-show="userForm.gender.$error.required && userForm.gender.$dirty">Gender is required</p>
+            </div>
+
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': (userForm.phoneNumber.$invalid || userForm.phoneNumber.$error.pattern) && userForm.phoneNumber.$dirty}">
+                <label for="phoneNumber">Phone number</label>
+                <input type="text" name="phoneNumber" class="form-control" id="phoneNumber" name="phoneNumber"
+                       ng-pattern="/^\+?\d+$/" ng-model="userController.entry.phoneNumber"
+                       placeholder="Phone number..." maxlength="15"/>
+                <p class="help-block" ng-show="userForm.phoneNumber.$error.pattern">Format is: optional "+" followed by digits</p>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6" ng-controller="DatepickerDemoCtrl"
+                 ng-class="{'has-error': userForm.birthDate.$invalid && userForm.birthDate.$dirty}">
+                <label for="birthDate">Birth date</label>
+
+                <p class="input-group">
+                    <input type="text" id="birthDate" class="form-control" datepicker-popup
+                           ng-model="userController.entry.birthDate" is-open="opened"
+                           datepicker-options="dateOptions"
+                           close-text="Close" name="birthDate"/>
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="open($event)"><i
+                            class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.updateDate.$invalid && userForm.updateDate.$dirty}">
+                <label for="updateDate">Last modification</label>
+                <input type="datetime-local" id="updateDate" class="form-control"
+                       ng-model="userController.entry.updateDate" name="updateDate" disabled/>
+            </div>
+            <div class="form-group col-md-6"
+                 ng-class="{'has-error': userForm.creationDate.$invalid && userForm.creationDate.$dirty}">
+                <label for="creationDate">Creation date</label>
+                <input type="datetime-local" id="creationDate" class="form-control"
+                       ng-model="userController.entry.creationDate" name="creationDate" disabled/>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Save" ng-disabled="userForm.$invalid"/>
+    </form>
+
+</div>

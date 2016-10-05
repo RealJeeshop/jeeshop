@@ -2,9 +2,9 @@
     <div class="visible-sm visible-md visible-lg col-sm-1 col-md-2 col-lg-3"></div>
     <div class="col-sm-10 col-md-8 col-lg-6" style="padding-top: 1em">
         <span>
-            <alert ng-repeat="alert in accMgtCtrl.alerts" type="{{alert.type}}"
+            <uib-alert ng-repeat="alert in accMgtCtrl.alerts" type="{{alert.type}}"
                    close="accMgtCtrl.closeAlert($index)">{{alert.msg | translate}}
-            </alert>
+            </uib-alert>
         </span>
         <form name="updatePersDataForm" ng-submit="updatePersDataForm.$valid && accMgtCtrl.updateUserData()" novalidate>
             <h5>{{'account.personaldata.modify'|translate}}</h5>
@@ -143,5 +143,5 @@
 </div>
 <div class="visible-sm visible-md visible-lg col-sm-1 col-md-2 col-lg-3"></div>
 <div id="loaderDiv" ng-show="isProcessing">
-    <img src="images/loading.gif" class="ajax-loader"/>
+    <img src="app/images/loading.gif" class="ajax-loader"/>
 </div>
