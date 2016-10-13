@@ -9,21 +9,18 @@ It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and
 * Discounts
 * Shopping cart
 * Users management
+* E-mailing
 
 Jeeshop relies on following technologies :
 * Java EE 7 and Java 8 for REST APIs
 * AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
-Compared to other e-commerce solutions / frameworks Jeeshop aims at being
-* simple - you don't need a master degree in rocket science to use and understand Jeeshop concepts
-* light - thanks to Java EE platform and design choices
-* interoperable - thanks again to Java EE platform
+[Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project defines a set of GraphQL APIs built on top of Jeeshop REST APIs
 
 # Links
 Project website: http://jeeshop.org
 
 # Components
-
 ## <a name="Jeeshop-Admin">Jeeshop-Admin</a>
 Jeeshop-Admin is a responsive AngularJS client application designed to manage efficiently an e-commerce store.
 It consumes Jeeshop [REST api backend](#backend) to perform common store management operations.
@@ -33,12 +30,15 @@ Jeeshop REST APIs are designed to enable e-commerce and user management easily f
 They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin).
 
 Jeeshop REST APIs are organized per business domain:
-* [Product catalogs]((http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html))
+* [Product catalogs](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
 * [Users](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
 * [Orders](http://jeeshop.org/docs/1.0/rest/order/generated-docs/rest-api.html)
 
+## <a name="graphql">GraphQL APIs</a>
+See [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project
+
 ## <a name="backend">Jeestore</a>
-Jeestore is a front-end demonstration application application which uses Jeeshop [REST APIs](#backend)
+Jeestore is a front-end demonstration application application which consumes Jeeshop [REST APIs](#backend)
 You can take a look at it or start with it to build your e-commerce store
 
 # Installation
