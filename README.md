@@ -19,6 +19,7 @@ Jeeshop relies on following technologies :
 
 # Links
 Project website: http://jeeshop.org
+
 Jeeshop GraphQL: https://github.com/muskacirca/jeeshop-graphql
 
 # Components
