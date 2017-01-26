@@ -18,8 +18,6 @@ Jeeshop relies on following technologies :
 [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project defines a set of GraphQL APIs built on top of Jeeshop REST APIs
 
 # Links
-Project website: http://jeeshop.org
-
 Jeeshop GraphQL: https://github.com/muskacirca/jeeshop-graphql
 
 # Components
