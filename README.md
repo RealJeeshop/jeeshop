@@ -30,9 +30,9 @@ Jeeshop REST APIs are designed to enable e-commerce and user management easily f
 They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin).
 
 Jeeshop REST APIs are organized per business domain:
-* [Product catalogs](http://jeeshop.org/docs/1.0/rest/catalog/generated-docs/rest-api.html)
-* [Users](http://jeeshop.org/docs/1.0/rest/user/generated-docs/rest-api.html)
-* [Orders](http://jeeshop.org/docs/1.0/rest/order/generated-docs/rest-api.html)
+* [Product catalogs](http://jeeshop.github.io/docs/1.0/rest/catalog/generated-docs/rest-api.html)
+* [Users](http://jeeshop.github.io/docs/1.0/rest/user/generated-docs/rest-api.html)
+* [Orders](http://jeeshop.github.io/docs/1.0/rest/order/generated-docs/rest-api.html)
 
 ## <a name="graphql">GraphQL APIs</a>
 See [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project
