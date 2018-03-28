@@ -1,18 +1,17 @@
-Jeeshop (Work In Progress) [![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
+Jeeshop (On Hold) [![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
 =======
 
 # Description
-Jeeshop is a e-commerce solution allowing you to setup quickly your online store.
 
-It provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST APIs designed for your store front-end application (typically a javascript rich client application):
+Jeeshop e-commerce solution provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST APIs to be used by a store front-end application (typically a javascript rich client):
 * Products catalog
 * Discounts
 * Shopping cart
 * Users management
 * E-mailing
 
-Jeeshop relies on following technologies :
-* Java EE 7 and Java 8 for REST APIs
+Jeeshop relies Java EE for backend
+* Java EE for backend
 * AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
 
 [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project defines a set of GraphQL APIs built on top of Jeeshop REST APIs
