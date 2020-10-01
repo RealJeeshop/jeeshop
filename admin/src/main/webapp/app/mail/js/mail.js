@@ -25,7 +25,7 @@
 
             if (ctrl.searchValue != null && !(ctrl.searchValue === "")) {
                 uri = uri + '?name=' + ctrl.searchValue;
-                $http.get(countURI).then(function (data) {
+                $http.get(countURI).success(function (data) {
                     ctrl.totalCount = data;
                     ctrl.isProcessing = false;
                 });
@@ -39,7 +39,7 @@
                 uri += '&orderBy=' + orderBy + '&isDesc=' + ctrl.orderDesc;
             }
 
-            $http.get(uri).then(function (data) {
+            $http.get(uri).success(function (data) {
                 ctrl.entries = data;
                 ctrl.isProcessing = false;
             });
@@ -63,11 +63,11 @@
             modalInstance.result.then(function () {
                 ctrl.alerts = [];
                 $http.delete('rs/mailtemplates/' + ctrl.entries[index].id)
-                    .then(function (data) {
+                    .success(function (data) {
                         ctrl.entries.splice(index, 1);
                         ctrl.findEntries();
                     })
-                    .catch(function (data) {
+                    .error(function (data) {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                     });
 
@@ -96,7 +96,7 @@
             if (!ctrl.isEditionMode)
                 return;
             $http.get('rs/mailtemplates/' + $stateParams.mailId)
-                .then(function (data) {
+                .success(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                 });
@@ -113,12 +113,12 @@
 
         ctrl.create = function () {
             $http.post('rs/mailtemplates', ctrl.entry)
-                .then(function (data) {
+                .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'});
                     ctrl.convertEntryDates();
                 })
-                .catch(function (data, status) {
+                .error(function (data, status) {
                     if (status == 409) {
                         ctrl.alerts.push({
                             type: 'danger',
@@ -134,12 +134,12 @@
 
         ctrl.edit = function () {
             $http.put('rs/mailtemplates', ctrl.entry)
-                .then(function (data) {
+                .success(function (data) {
                     ctrl.entry = data;
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'});
                     ctrl.convertEntryDates();
                 })
-                .catch(function (data, status) {
+                .error(function (data, status) {
                     if (status == 409) {
                         ctrl.alerts.push({
                             type: 'danger',
@@ -262,10 +262,10 @@
 
             var uri = 'rs/mailtemplates/test/' + ctrl.recipient + '?templateName=' + ctrl.mailTemplateName + '&locale=' + ctrl.locale;
 
-            $http.post(uri, ctrl.mailTemplateProperties).then(function (orders) {
+            $http.post(uri, ctrl.mailTemplateProperties).success(function (orders) {
                 ctrl.isProcessing = false;
                 ctrl.alerts.push({type: 'success', msg: 'Mail has been sent successfully'});
-            }).catch(function (data, status) {
+            }).error(function (data, status) {
                 ctrl.isProcessing = false;
                 if (status == 404) {
                     ctrl.alerts.push({

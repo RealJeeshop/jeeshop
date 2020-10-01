@@ -44,11 +44,12 @@
                 $http.defaults.headers.common.Authorization = 'Basic ' + encoded;
                 var success = false;
                 $http.head('rs/users/administrators').
-                    then(function(data){
+                    success(function(data){
                         auth.wrapper.logged = true;
                         auth.wrapper.login = credentials.login;
                         auth.wrapper.hasAuthenticationFailed = false;
-                    }).catch(function(data){
+                    }).
+                    error(function(data){
                         auth.wrapper.hasAuthenticationFailed = true;
                     });
             },
