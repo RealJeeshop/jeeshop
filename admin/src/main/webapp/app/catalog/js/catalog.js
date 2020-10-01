@@ -85,12 +85,12 @@
                     countURI = countURI + '?' + searchArg;
                 }
 
-                $http.get(uri).success(function (data) {
+                $http.get(uri).then(function (data) {
                     ctrl.entries = data;
                     ctrl.isProcessing = false;
                 });
 
-                $http.get(countURI).success(function (data) {
+                $http.get(countURI).then(function (data) {
                     ctrl.totalCount = data;
                     ctrl.isProcessing = false;
                 });
@@ -115,11 +115,11 @@
                 modalInstance.result.then(function () {
                     ctrl.alerts = [];
                     $http.delete('rs/' + $stateParams.resource + "/" + ctrl.entries[index].id)
-                        .success(function (data) {
+                        .then(function (data) {
                             ctrl.entries.splice(index, 1);
                             $scope.findEntries();
                         })
-                        .error(function (data) {
+                        .catch(function (data) {
                             ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                         });
 
@@ -155,12 +155,12 @@
 
             ctrl.create = function () {
                 $http.post('rs/' + $stateParams.resource, ctrl.entry)
-                    .success(function (data) {
+                    .then(function (data) {
                         ctrl.entry = data;
                         ctrl.convertEntryDates();
                         ctrl.alerts.push({type: 'success', msg: 'Creation complete'})
                     })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         if (status == 403)
                             ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                         else
@@ -170,12 +170,12 @@
 
             ctrl.edit = function () {
                 $http.put('rs/' + $stateParams.resource, ctrl.entry)
-                    .success(function (data) {
+                    .then(function (data) {
                         ctrl.entry = data;
                         ctrl.convertEntryDates();
                         ctrl.alerts.push({type: 'success', msg: 'Update complete'})
                     })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         if (status == 403)
                             ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                         else
@@ -195,7 +195,7 @@
 
             if ($scope.isEditionMode) {
                 $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId)
-                    .success(function (data) {
+                    .then(function (data) {
                         ctrl.entry = data;
                         ctrl.convertEntryDates();
                     });
@@ -241,7 +241,7 @@
                     return;
                 }
                 $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId + '/' + $scope.relationshipsResource)
-                    .success(function (data) {
+                    .then(function (data) {
                         $scope.items = data;
                         $scope.initRelationshipsIdsProperty();
                     });
@@ -303,11 +303,11 @@
                         countURI = countURI + '?' + searchArg;
                     }
 
-                    $http.get(uri).success(function (data) {
+                    $http.get(uri).then(function (data) {
                         $scope.results = data;
                     });
 
-                    $http.get(countURI).success(function (data) {
+                    $http.get(countURI).then(function (data) {
                         $scope.totalCount = data;
                     });
 
@@ -350,7 +350,7 @@
 
         var getAvailableLocales = function () {
             $http.get('rs/' + $stateParams.resource + '/' + $stateParams.itemId + '/presentationslocales')
-                .success(function (data) {
+                .then(function (data) {
                     $scope.locales = data;
                 });
         };
@@ -379,11 +379,11 @@
             modalInstance.result.then(function () {
                 $scope.catalogEntryCtrl.alerts = [];
                 $http.delete('rs/' + $scope.resource + '/' + $scope.itemId + '/presentations/' + $scope.locales[index])
-                    .success(function (data) {
+                    .then(function (data) {
                         $scope.locales.splice(index, 1);
                         $scope.catalogEntryCtrl.alerts.push({type: 'success', msg: 'Presentations update complete'});
                     })
-                    .error(function (data) {
+                    .catch(function (data) {
                         $scope.catalogEntryCtrl.alerts.push({type: 'danger', msg: 'Technical error'});
                     });
             }, function () {
@@ -478,11 +478,11 @@
                 var getPresentationByLocale = function (locale) {
                     $scope.selectedLocale = locale;
                     $http.get(presentationsResourceURI + "/" + locale)
-                        .success(function (data) {
+                        .then(function (data) {
                             $scope.presentation = data;
                             $scope.locale = locale;
                         })
-                        .error(function (data) {
+                        .catch(function (data) {
                             $scope.presentation = {};
                             $scope.locale = null;
                         });
@@ -529,10 +529,10 @@
                         file: file
                     }).progress(function (evt) {
 
-                    }).success(function (data, status, headers, config) {
+                    }).then(function (data, status, headers, config) {
                         $scope.isProcessing[presentationPropertyName] = false;
                     })
-                        .error(function (data, status, headers, config) {
+                        .catch(function (data, status, headers, config) {
                             $scope.isProcessing[presentationPropertyName] = false;
                         });
                 };
@@ -540,12 +540,12 @@
                 $scope.save = function () {
                     var messages = [];
                     $http.put(presentationsResourceURI + "/" + locale, $scope.presentation)
-                        .success(function (data) {
+                        .then(function (data) {
                             $scope.presentation = data;
                             messages.push({type: 'success', msg: 'Presentations update complete'});
                             $uibModalInstance.close(messages);
                         })
-                        .error(function (data, status) {
+                        .catch(function (data, status) {
                             if (status == 403)
                                 messages.push({type: 'warning', msg: 'Operation not allowed'});
                             else
@@ -558,14 +558,14 @@
                     var messages = [];
                     $scope.presentation.locale = $scope.selectedLocale;
                     $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
-                        .success(function (data) {
+                        .then(function (data) {
                             $scope.presentation = data;
                             getAvailableLocales();
                             messages.push({type: 'success', msg: 'Presentation creation complete'});
                             $uibModalInstance.close(messages);
 
                         })
-                        .error(function (data, status) {
+                        .catch(function (data, status) {
                             if (status == 403)
                                 messages.push({type: 'warning', msg: 'Operation now allowed'});
                             else

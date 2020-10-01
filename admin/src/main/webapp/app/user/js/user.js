@@ -32,12 +32,12 @@
                 countURI = countURI + '?' + searchArg;
             }
 
-            $http.get(uri).success(function (data) {
+            $http.get(uri).then(function (data) {
                 ctrl.entries = data;
                 ctrl.isProcessing = false;
             });
 
-            $http.get(countURI).success(function (data) {
+            $http.get(countURI).then(function (data) {
                 ctrl.totalCount = data;
                 ctrl.isProcessing = false;
             });
@@ -62,11 +62,11 @@
             modalInstance.result.then(function () {
                 ctrl.alerts = [];
                 $http.delete('rs/users/' + ctrl.entries[index].id)
-                    .success(function (data) {
+                    .then(function (data) {
                         ctrl.entries.splice(index, 1);
                         ctrl.findEntries();
                     })
-                    .error(function (data) {
+                    .catch(function (data) {
                         ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
                     });
 
@@ -92,7 +92,7 @@
             if (!ctrl.isEditionMode)
                 return;
             $http.get('rs/users/' + $stateParams.userId)
-                .success(function (data) {
+                .then(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                 });
@@ -109,12 +109,12 @@
 
         ctrl.create = function () {
             $http.post('rs/users', ctrl.entry)
-                .success(function (data) {
+                .then(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Creation complete'});
                 })
-                .error(function (data, status) {
+                .catch(function (data, status) {
                     if (status == 403)
                         ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                     else
@@ -124,12 +124,12 @@
 
         ctrl.edit = function () {
             $http.put('rs/users', ctrl.entry)
-                .success(function (data) {
+                .then(function (data) {
                     ctrl.entry = data;
                     ctrl.convertEntryDates();
                     ctrl.alerts.push({type: 'success', msg: 'Update complete'})
                 })
-                .error(function (data, status) {
+                .catch(function (data, status) {
                     if (status == 403)
                         ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                     else
@@ -189,11 +189,11 @@
 
                 var uri = 'rs/users/' + login + '/password';
                 $http.put(uri, newPassword)
-                    .success(function () {
+                    .then(function () {
                         ctrl.isProcessing = false;
                         ctrl.alerts.push({type: 'success', msg: 'Password successfully updated'});
                     })
-                    .error(function (data, status) {
+                    .catch(function (data, status) {
                         if (status == 403)
                             ctrl.alerts.push({type: 'warning', msg: 'Operation not allowed'});
                         else
