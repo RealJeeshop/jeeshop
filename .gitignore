@@ -1,2 +1,7 @@
 .idea/**
 *.iml
+
+node_modules
+node
+target/
+built
