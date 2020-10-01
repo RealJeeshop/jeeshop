@@ -52,7 +52,7 @@
 		<version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
 		<version.freemarker>2.3.23</version.freemarker>
 		<version.asciidoctor>1.5.2.1</version.asciidoctor>
-		<version.flyway>3.2.1</version.flyway>
+		<version.flyway>7.0.0</version.flyway>
 		<version.weld-se>2.1.2.Final</version.weld-se>
 	</properties>
 
