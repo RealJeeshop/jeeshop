@@ -20,7 +20,9 @@ const actions = {
     },
 
     logOut({commit}) {
-        commit('setLoggedIn', false)
+        UserService.logout(() => {
+            commit('setLoggedIn', false)
+        })
     }
 }
 
