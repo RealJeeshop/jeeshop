@@ -9,8 +9,6 @@ const state = () => ({
 const actions = {
 
     login({commit}, data) {
-        console.log('email : ' + JSON.stringify(data.email))
-        console.log('pass : ' + JSON.stringify(data.password))
         commit('setError', null)
         commit('setLoading', true)
         UserService.login(data.email, data.password, loggedIn => {
@@ -19,6 +17,10 @@ const actions = {
             if (loggedIn) commit('setLoggedIn', true)
             else commit('setError', "Mauvais login / mot de passe")
         })
+    },
+
+    logOut({commit}) {
+        commit('setLoggedIn', false)
     }
 }
 

@@ -1,6 +1,7 @@
 <template>
     <div v-if="loggedIn" class="welcome">
         <span>Welcome to Jeeshop !</span>
+        <button class="btn red" @click="logOut()">log out</button>
     </div>
     <div v-else class="form-container">
         <label><input v-model="email" placeholder="email"></label>
@@ -24,12 +25,21 @@
             loggedIn: state => state.session.loggedIn
         }),
         methods: mapActions('session', [
-            'login'
+            'login', 'logOut'
         ]),
     }
 </script>
 
 <style lang="scss" scoped>
+
+    .welcome {
+        display: flex;
+        align-items: center;
+
+        span {
+            padding-right: 1em;
+        }
+    }
 
     .form-container {
         display: flex;

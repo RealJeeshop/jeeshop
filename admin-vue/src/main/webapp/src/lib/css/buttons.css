@@ -16,6 +16,7 @@
 
     transition: background-color .3s;
 
+    height: 32px;
     min-width: 70px;
 
     cursor: pointer;
