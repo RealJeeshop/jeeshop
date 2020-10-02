@@ -49,6 +49,11 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<warName>${project.parent.artifactId}-${project.artifactId}</warName>
+					<packagingExcludes>
+						node/, node_modules/,
+						package.json, package-lock.json,
+						webpack.config.js
+					</packagingExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
