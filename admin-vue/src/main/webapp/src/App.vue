@@ -1,11 +1,17 @@
 <template>
   <div id="app">
     <header>
-      <div class="app-name"><em>Jeeshop Admin</em></div>
-      <div class="app-nav">
-        <router-link to="/settings">Settings</router-link>
-        <router-link to="/help">Help</router-link>
+      <div class="header-left">
+        <div class="app-name"><em>Jeeshop Admin</em></div>
+        <div class="app-nav">
+          <router-link to="/settings">Settings</router-link>
+          <router-link to="/help">Help</router-link>
+        </div>
       </div>
+      <div class="header-right">
+        <Login />
+      </div>
+
     </header>
     <div class="page-content">
       <div class="side-nav">
@@ -26,10 +32,25 @@
 <script>
 
 import SideNavItem from "./components/SideNavItem";
+import Login from "./components/Login";
 import './App.scss'
 
 export default {
   name: 'App',
-  components: {SideNavItem}
+  components: {
+    SideNavItem,
+    Login
+  }
 }
 </script>
+
+<style scoped>
+
+  .header-left {
+    display: flex;
+  }
+
+  .header-right {
+    display: flex;
+  }
+</style>
