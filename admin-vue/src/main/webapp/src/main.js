@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from './store'
 import './main.css'
+import './lib/css/inputs.css'
+import './lib/css/buttons.css'
 
 Vue.use(VueRouter)
 

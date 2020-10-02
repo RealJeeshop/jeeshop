@@ -1,16 +1,12 @@
 <template>
-    <div class="login-container">
-
-        <div v-if="loggedIn" class="welcome">
-            <span>Welcome to Jeeshop !</span>
-        </div>
-        <div v-else class="form-container">
-            <label><input v-model="email" placeholder="email"></label>
-            <label><input v-model="password" placeholder="password" type="password"></label>
-            <button @click="login({email: email, password: password})">login</button>
-            <!--<p v-if="error" class="error">Bad login information</p>-->
-        </div>
-
+    <div v-if="loggedIn" class="welcome">
+        <span>Welcome to Jeeshop !</span>
+    </div>
+    <div v-else class="form-container">
+        <label><input v-model="email" placeholder="email"></label>
+        <label><input v-model="password" placeholder="password" type="password"></label>
+        <button class="btn" @click="login({email: email, password: password})">login</button>
+        <!--<p v-if="error" class="error">Bad login information</p>-->
     </div>
 </template>
 
@@ -32,3 +28,14 @@
         ]),
     }
 </script>
+
+<style lang="scss" scoped>
+
+    .form-container {
+        display: flex;
+        label {
+            padding-right: 1em;
+        }
+    }
+
+</style>
