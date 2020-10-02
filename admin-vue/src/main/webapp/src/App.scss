@@ -1,0 +1,57 @@
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  background-color: #222;
+  border-color: #080808;
+  color: #9d9d9d;
+  height: 70px;
+
+  padding-right: 1em;
+  padding-left: 1em;
+
+  a {
+    color: #9d9d9d;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: white;
+  }
+}
+
+.app-nav a {
+  padding: 1em;
+}
+
+.app-name {
+  margin-left: -15px;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+.side-nav {
+  background-color: #F5F5F5;
+  height: 100%;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  flex: 2;
+}
+
+.page-content {
+  display: flex;
+  height: 100%;
+}
+
+.content {
+  flex: 7;
+  padding-left: 3em;
+  padding-right: 3em;
+}
