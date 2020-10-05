@@ -1,23 +1,14 @@
-Jeeshop (On Hold) [![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
+Jeeshop [![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
 =======
 
 # Description
 
-Jeeshop e-commerce solution provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of REST APIs to be used by a store front-end application (typically a javascript rich client):
+Jeeshop e-commerce solution provides you with a store management GUI, [Jeeshop-Admin](#Jeeshop-Admin) and an complete set of RESTFul and [GraphQL](https://github.com/muskacirca/jeeshop-graph) APIs to be used by a store front-end application (typically a single page application):
 * Products catalog
 * Discounts
 * Shopping cart
 * Users management
 * E-mailing
-
-Jeeshop relies Java EE for backend
-* Java EE for backend
-* AngularJS for [Jeeshop-Admin](#Jeeshop-Admin)
-
-[Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project defines a set of GraphQL APIs built on top of Jeeshop REST APIs
-
-# Links
-Jeeshop GraphQL: https://github.com/muskacirca/jeeshop-graphql
 
 # Components
 ## <a name="Jeeshop-Admin">Jeeshop-Admin</a>
@@ -28,7 +19,7 @@ It consumes Jeeshop [REST api backend](#backend) to perform common store managem
 Jeeshop REST APIs are designed to enable e-commerce and user management easily for a store front-end application.
 They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin).
 
-Jeeshop REST APIs are organized per business domain:
+Jeeshop REST APIs are organized per domain:
 * [Product catalogs](http://jeeshop.github.io/docs/1.0/rest/catalog/generated-docs/rest-api.html)
 * [Users](http://jeeshop.github.io/docs/1.0/rest/user/generated-docs/rest-api.html)
 * [Orders](http://jeeshop.github.io/docs/1.0/rest/order/generated-docs/rest-api.html)
@@ -44,8 +35,10 @@ You can take a look at it or start with it to build your e-commerce store
 Jeeshop can be deployed to any Java EE 7 application server. (Web and full profile)
 As of today, it has only be tested on [Wildfy](http://wildfly.org/)
 
+## Docker
+Todo
+
 ## Wildfly
-This section describes deployment of Jeeshop components to a Wildfly server.
 
 ### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
@@ -209,14 +202,3 @@ So you always get your Jeeshop database up-to date applying SQL scripts this way
 Notes:
 Current database scripts are made for a single database.
 But you can also use one database for product catalog data and another for user and order data. (See [Datasources](#wildfly-datasources) section above)
-
-## Apache TomEE 7.x
-This section describes deployment of Jeeshop components to Apache TomEE 2.x.
-TODO
-
-## <a name="openshift">Openshift cartridges</a>
-### Wildfly cartridge
-This section describes deployment of Jeeshop components to Openshift PaaS.
-TODO
-#### Database configuration
-Jeeshop db update / setup is performed automatically on  Openshift cartridges with maven openshift profile.
