@@ -12,12 +12,12 @@ Jeeshop e-commerce solution provides you with a store management GUI, [Jeeshop-A
 
 # Components
 ## <a name="Jeeshop-Admin">Jeeshop-Admin</a>
-Jeeshop-Admin is a responsive AngularJS client application designed to manage efficiently an e-commerce store.
-It consumes Jeeshop [REST api backend](#backend) to perform common store management operations.
+Jeeshop-Admin is a responsive single page application application designed to manage jeeshop stores.
+It uses Jeeshop [RESTFul APIs](#backend) to perform common store management operations.
 
-## <a name="backend">REST APIs</a>
-Jeeshop REST APIs are designed to enable e-commerce and user management easily for a store front-end application.
-They are also used internally by [Jeeshop-Admin](#Jeeshop-Admin).
+## <a name="backend">RESTFul APIs</a>
+Jeeshop RESTFul APIs are designed to enable e-commerce and user management on a jeeshop store front-end application.
+(They are also used heavily by [Jeeshop-Admin](#Jeeshop-Admin))
 
 Jeeshop REST APIs are organized per domain:
 * [Product catalogs](http://jeeshop.github.io/docs/1.0/rest/catalog/generated-docs/rest-api.html)
@@ -35,10 +35,10 @@ You can take a look at it or start with it to build your e-commerce store
 Jeeshop can be deployed to any Java EE 7 application server. (Web and full profile)
 As of today, it has only be tested on [Wildfy](http://wildfly.org/)
 
-## Docker
+## With Docker
 Todo
 
-## Wildfly
+## On Wildfly
 
 ### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
