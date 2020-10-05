@@ -16,11 +16,11 @@
     <div class="page-content">
       <div class="side-nav">
         <SideNavItem icon="fas fa-home" text="Overview" to="/" />
-        <SideNavItem icon="fas fa-home" text="Catalogs" to="/catalogs" />
-        <SideNavItem icon="fas fa-home" text="Orders" to="/orders" />
-        <SideNavItem icon="fas fa-home" text="Stats" to="/stats" />
-        <SideNavItem icon="fas fa-home" text="Users" to="/users" />
-        <SideNavItem icon="fas fa-home" text="Emails, Newsletters" to="/emails" />
+        <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Catalogs" to="/catalogs" />
+        <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Orders" to="/orders" />
+        <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Stats" to="/stats" />
+        <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Users" to="/users" />
+        <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Emails, Newsletters" to="/emails" />
       </div>
       <div class="content">
         <router-view></router-view>
@@ -32,15 +32,21 @@
 <script>
 
 import SideNavItem from "./components/SideNavItem";
+import { mapState } from 'vuex'
 import Login from "./components/Login";
 import './App.scss'
 
 export default {
+
+
   name: 'App',
   components: {
     SideNavItem,
     Login
-  }
+  },
+  computed: mapState({
+    loggedIn: state => state.session.loggedIn
+  }),
 }
 </script>
 

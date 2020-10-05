@@ -12,7 +12,6 @@ const actions = {
         commit('setError', null)
         commit('setLoading', true)
         UserService.login(data.email, data.password, loggedIn => {
-            console.log('loggedIn : ' + JSON.stringify(loggedIn))
             commit('setLoading', false)
             if (loggedIn) commit('setLoggedIn', true)
             else commit('setError', "Mauvais login / mot de passe")
