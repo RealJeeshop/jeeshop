@@ -1,0 +1,89 @@
+[{
+  "id": 1,
+  "name": "Bikes",
+  "description": "Bikes main category",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 2,
+  "name": "Accessories",
+  "description": "Accessories main category",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 3,
+  "name": "Tires",
+  "description": "Tires rubric",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 4,
+  "name": "Brackets",
+  "description": "Brackets rubric",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 5,
+  "name": "Handlebar",
+  "description": "Handlebar rubric",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 6,
+  "name": "Wheels",
+  "description": "Wheels rubric",
+  "disabled": false,
+  "startDate": 1403052772000,
+  "endDate": 1403139172000,
+  "visible": false,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 7,
+  "name": "Mountain Bikes",
+  "description": "Mountain Bikes category",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}, {
+  "id": 12,
+  "name": "Racing Bikes",
+  "description": "Racing Bikes category",
+  "disabled": false,
+  "startDate": null,
+  "endDate": null,
+  "visible": true,
+  "localizedPresentation": null,
+  "childCategoriesIds": null,
+  "childProductsIds": null
+}]
