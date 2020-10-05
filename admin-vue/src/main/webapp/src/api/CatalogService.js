@@ -1,7 +1,4 @@
-const catalogs = [{
-    id: "1",
-    name: "Super catalogue"
-}];
+import catalogs from "./data/catalogs.json"
 
 export default {
 

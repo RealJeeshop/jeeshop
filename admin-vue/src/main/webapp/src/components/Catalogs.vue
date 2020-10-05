@@ -1,27 +1,21 @@
 <template>
     <div class="content">
         <h1>Catalogs</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin posuere erat dolor.
-            Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus commodo vel diam sed porta. Proin ut porta tortor, sit amet sollicitudin leo. Quisque placerat quam ante. Vivamus commodo, tellus a sodales facilisis, nibh augue rhoncus ex, eget ultricies odio metus sit amet nunc. Suspendisse tincidunt malesuada maximus. Sed et placerat nisl. Mauris venenatis, velit sed aliquam rhoncus, erat enim hendrerit massa, sed placerat ante risus dignissim risus.
-        </p>
-        <ul>
-            <li v-for="catalog in catalogs" :key="catalog.id">
-                {{ catalog.name }}
-            </li>
-        </ul>
+        <Table of="catalogs" :items="catalogs" />
     </div>
 </template>
 
 <script>
     import { mapState } from 'vuex'
+    import Table from './Table'
 
     export default {
+        name: 'Catalogs',
+        components: {
+            Table
+        },
         computed: mapState({
-            catalogs: state => {
-                console.log('state : ' + JSON.stringify(state))
-                return state.catalogs.catalogs
-            }
+            catalogs: state => state.catalogs.catalogs
         }),
 /*        methods: mapActions('cart', [
             'addProductToCart'
@@ -31,3 +25,4 @@
         }
     }
 </script>
+
