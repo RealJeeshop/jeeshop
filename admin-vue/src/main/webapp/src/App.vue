@@ -23,7 +23,7 @@
         <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Emails, Newsletters" to="/emails" />
       </div>
       <div class="content">
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
       </div>
     </div>
   </div>

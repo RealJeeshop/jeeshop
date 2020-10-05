@@ -1,7 +1,12 @@
 import CatalogService from '../../api/CatalogService'
 
 const state = () => ({
+    itemType: "catalogs",
     catalogs: [],
+    products: [],
+    categories: [],
+    skus: [],
+    discounts: [],
     addCatalogStatus: null
 })
 
@@ -14,22 +19,29 @@ const getters = {
 }
 
 const actions = {
-    getCatalogs ({ commit }) {
-        CatalogService.getAll(catalogs => {
-            console.log('catalogs : ' + JSON.stringify(catalogs))
-            commit('setCatalogs', catalogs)
+
+    getItems ({ commit }, itemType) {
+        CatalogService.getAll(itemType,items => {
+            commit('setItems', {itemType, items})
         })
     },
-    add ({ commit, state }, catalog) {
-        const existingCatalogs = [...state.catalogs]
+
+    setItemType({ commit }, itemType) {
+        commit('setItemType', itemType)
+    },
+
+    add ({ commit, state }, itemType, item) {
+
+        const existingItems = [...state[itemType]]
         commit('setAddCatalogStatus', null)
-        commit('addCatalog', catalog)
+        commit('addItem', {itemType, item})
         CatalogService.add(
-            catalog,
+            itemType,
+            item,
             () => commit('setAddCatalogStatus', 'successful'),
             () => {
                 commit('setAddCatalogStatus', 'failed')
-                commit('setCatalogs', existingCatalogs)
+                commit('setItems', {itemType, items: existingItems})
             }
         )
     }
@@ -37,12 +49,16 @@ const actions = {
 
 const mutations = {
 
-    setCatalogs(state, catalogs) {
-        state.catalogs = catalogs
+    setItems(state, payload) {
+        state[payload.itemType] = payload.items
     },
 
-    addCatalog (state, catalog) {
-        state.catalogs.push(catalog)
+    setItemType(state, itemType) {
+        state.itemType = itemType
+    },
+
+    addItem (state, payload) {
+        state[payload.itemType].push(payload.item)
     },
 
     setAddCatalogStatus (state, status) {

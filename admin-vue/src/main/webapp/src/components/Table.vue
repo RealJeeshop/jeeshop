@@ -41,6 +41,11 @@
             items: Array[Object],
             of: String
         },
+        data: () => {
+            return {
+                searchText: ""
+            }
+        },
         methods: {
             onRowClick(id) {
                 console.log('`${this.of}/${id}` : ' + JSON.stringify(`${this.of}/${id}`))
@@ -78,5 +83,21 @@
 
     tr:hover {
         background-color: #f9f9f9;
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em;
+
+        div:nth-child(2) {
+            display: flex;
+            align-items: center;
+
+            input {
+                margin-right: 1em;
+            }
+        }
     }
 </style>
