@@ -233,9 +233,6 @@
 					<version>${version.flyway}</version>
 					<configuration>
 						<placeholderPrefix>#[</placeholderPrefix>
-						<locations>
-							<location>filesystem:src/main/resources/db/mysql</location>
-						</locations>
 					</configuration>
 					<executions>
 						<execution>

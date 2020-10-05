@@ -1,250 +1,216 @@
 --
--- db: jeeshop - mysql5
+-- db: jeeshop - postgres
 --
 
 create table if not exists catalog (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   description varchar(255) null,
-  disabled bit(1) null,
-  enddate datetime null,
+  disabled boolean null,
+  enddate date null,
   name varchar(50) not null,
-  startdate datetime null,
-  primary key (id)
-);
+  startdate date null);
 
 
 create table if not exists catalog_category (
-  catalogid bigint(20) not null,
-  categoryid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (catalogid,orderidx)
-);
+  catalogid bigint not null,
+  categoryid bigint not null,
+  orderidx int not null,
+  primary key (catalogid,orderidx));
 
 
 create table if not exists catalog_presentation (
-  catalogitemid bigint(20) not null,
-  presentationid bigint(20) not null,
-  primary key (catalogitemid,presentationid)
-);
+  catalogitemid bigint not null,
+  presentationid bigint not null,
+  primary key (catalogitemid,presentationid));
 
 
-create table if not exists category (
-  id bigint(20) not null auto_increment,
+create table if not exists "category" (
+  id serial not null primary key,
   description varchar(255) null,
-  disabled bit(1) null,
-  enddate datetime null,
+  disabled boolean null,
+  enddate date null,
   name varchar(50) not null,
-  startdate datetime null,
-  primary key (id)
-);
+  startdate date null);
 
 
 create table if not exists category_category (
-  parentcategoryid bigint(20) not null,
-  childcategoryid bigint(20) not null,
-  orderidx int(11) not null,
+  parentcategoryid bigint not null,
+  childcategoryid bigint not null,
+  orderidx int not null,
   primary key (parentcategoryid,orderidx)
 );
 
 
 create table if not exists category_presentation (
-  catalogitemid bigint(20) not null,
-  presentationid bigint(20) not null,
-  primary key (catalogitemid,presentationid)
-);
+  catalogitemid bigint not null,
+  presentationid bigint not null,
+  primary key (catalogitemid,presentationid));
 
 
 create table if not exists category_product (
-  categoryid bigint(20) not null,
-  productid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (categoryid,orderidx)
-);
+  categoryid bigint not null,
+  productid bigint not null,
+  orderidx int not null,
+  primary key (categoryid,orderidx));
 
 create table if not exists product (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   description varchar(255) null,
-  disabled bit(1) null,
-  enddate datetime null,
+  disabled boolean null,
+  enddate date null,
   name varchar(50) not null,
-  startdate datetime null,
-  primary key (id)
-);
+  startdate date null);
 
 
 create table if not exists product_discount (
-  productid bigint(20) not null,
-  discountid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (productid,orderidx)
-);
+  productid bigint not null,
+  discountid bigint not null,
+  orderidx int not null,
+  primary key (productid,orderidx));
 
 
 create table if not exists product_presentation (
-  catalogitemid bigint(20) not null,
-  presentationid bigint(20) not null,
-  primary key (catalogitemid,presentationid)
-);
+  catalogitemid bigint not null,
+  presentationid bigint not null,
+  primary key (catalogitemid,presentationid));
 
 
 create table if not exists product_sku (
-  productid bigint(20) not null,
-  skuid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (productid,orderidx)
-);
+  productid bigint not null,
+  skuid bigint not null,
+  orderidx int not null,
+  primary key (productid,orderidx));
 
 
 create table if not exists sku (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   description varchar(255) null,
-  disabled bit(1) null,
-  enddate datetime null,
+  disabled boolean null,
+  enddate date null,
   name varchar(50) not null,
-  startdate datetime null,
+  startdate date null,
   currency varchar(3) null,
-  price double null,
-  quantity int(11) null,
+  price double precision null,
+  quantity int null,
   reference varchar(50) null,
-  threshold int(11) null,
-  primary key (id)
-);
+  threshold int null);
 
 
 create table if not exists sku_discount (
-  skuid bigint(20) not null,
-  discountid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (skuid,orderidx)
-);
+  skuid bigint not null,
+  discountid bigint not null,
+  orderidx int not null,
+  primary key (skuid,orderidx));
 
 
 create table if not exists sku_presentation (
-  catalogitemid bigint(20) not null,
-  presentationid bigint(20) not null,
-  primary key (catalogitemid,presentationid)
-);
+  catalogitemid bigint not null,
+  presentationid bigint not null,
+  primary key (catalogitemid,presentationid));
 
 create table if not exists discount (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   description varchar(255) null,
-  disabled bit(1) null,
-  enddate datetime null,
+  disabled boolean null,
+  enddate date null,
   name varchar(50) not null,
-  startdate datetime null,
-  discountvalue double null,
-  triggervalue double null,
+  startdate date null,
+  discountvalue double precision null,
+  triggervalue double precision null,
   triggerrule varchar(50) null,
   type varchar(50) null,
   applicableto varchar(10) not null ,
-  uniqueuse bit(1) null,
-  usespercustomer int(11) null,
-  vouchercode varchar(100) null,
-  primary key (id)
-);
+  uniqueuse boolean null,
+  usespercustomer int null,
+  vouchercode varchar(100) null);
 
 
 create table if not exists discount_presentation (
-  catalogitemid bigint(20) not null,
-  presentationid bigint(20) not null,
-  primary key (catalogitemid,presentationid)
-);
+  catalogitemid bigint not null,
+  presentationid bigint not null,
+  primary key (catalogitemid,presentationid));
 
 
 create table if not exists media (
-  id bigint(20) not null auto_increment,
-  uri varchar(255) not null,
-  primary key (id)
-);
+  id serial not null primary key,
+  uri varchar(255) not null);
 
 create table if not exists presentation (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   displayname varchar(255) null,
   promotion varchar(255) null,
-  features tinyblob,
+  features bytea,
   locale varchar(25) not null,
   shortdescription varchar(1000) null,
   mediumdescription varchar(2000) null,
   longdescription varchar(5000) null,
-  largeimage_id bigint(20) null,
-  smallimage_id bigint(20) null,
-  thumbnail_id bigint(20) null,
-  video_id bigint(20) null,
-  primary key (id)
-);
+  largeimage_id bigint null,
+  smallimage_id bigint null,
+  thumbnail_id bigint null,
+  video_id bigint null);
 
 create table if not exists presentation_feature (
-  presentationid bigint(20) not null,
+  presentationid bigint not null,
   name varchar(255) not null,
   value varchar(255) null,
-  primary key (presentationid,name)
-);
+  primary key (presentationid,name));
 
 create table if not exists presentation_media (
-  presentationid bigint(20) not null,
-  mediaid bigint(20) not null,
-  orderidx int(11) not null,
-  primary key (presentationid,orderidx)
-);
+  presentationid bigint not null,
+  mediaid bigint not null,
+  orderidx int not null,
+  primary key (presentationid,orderidx));
 
 
-create table if not exists user (
-  id bigint(20) not null auto_increment,
-  birthdate datetime null,
-  creationdate datetime not null,
-  updatedate datetime null,
-  disabled bit(1) null,
-  activated bit(1) null,
-  newsletterssubscribed bit(1) null,
-  actiontoken binary (16) null,
+create table if not exists "user" (
+  id serial not null primary key,
+  birthdate date null,
+  creationdate date not null,
+  updatedate date null,
+  disabled boolean null,
+  activated boolean null,
+  newsletterssubscribed boolean null,
+  actiontoken bytea null,
   firstname varchar(50) not null,
   lastname varchar(50) not null,
   gender varchar(30) not null,
-  login varchar(255) not null,
+  login varchar(255) not null unique,
   password varchar(100) not null,
   phonenumber varchar(30) null,
-  address_id bigint(20) null,
-  deliveryaddress_id bigint(20) null,
-  preferredlocale varchar(25) null,
-  primary key (id),
-  unique key uk_login (login)
-);
+  address_id bigint null,
+  deliveryaddress_id bigint null,
+  preferredlocale varchar(25) null);
 
 create table if not exists orders (
-  id bigint(20) not null auto_increment,
-  user_id bigint(20) not null,
+  id serial not null primary key ,
+  user_id bigint not null,
   transactionid varchar(255) null,
-  deliveryaddress_id bigint(20) null,
-  billingaddress_id bigint(20) null,
+  deliveryaddress_id bigint null,
+  billingaddress_id bigint null,
   status varchar(30) not null,
-  creationdate datetime not null,
-  updatedate datetime null,
-  paymentdate datetime null,
-  deliverydate datetime null,
+  creationdate date not null,
+  updatedate date null,
+  paymentdate date null,
+  deliverydate date null,
   parceltrackingkey varchar(50) null,
-  price double null,
-  primary key (id)
-);
+  price double precision null);
 
 create table if not exists orderitem (
-  id bigint(20) not null auto_increment,
-  order_id bigint(20) not null,
-  sku_id bigint (20) null,
-  product_id bigint (20) null,
-  quantity int (11) null,
-  price double null,
-  primary key (id)
-);
+  id serial not null primary key ,
+  order_id bigint not null,
+  sku_id bigint null,
+  product_id bigint null,
+  quantity int null,
+  price double precision null);
 
 create table if not exists orderdiscount(
-  order_id bigint(20) not null,
-  discount_id bigint(20) not null,
-  discountvalue double null,
-  unique key uk_order_discountids (order_id,discount_id)
-);
+  order_id bigint not null,
+  discount_id bigint not null,
+  discountvalue double precision null,
+  unique (order_id,discount_id));
 
 create table if not exists address (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   city varchar(255) not null,
   street varchar(255)not null,
   zipcode varchar (10) not null,
@@ -252,50 +218,39 @@ create table if not exists address (
   gender varchar(30)  not null,
   firstname varchar(50)  not null,
   lastname varchar(50)  not null,
-  company varchar(100) null,
-  primary key (id)
-);
+  company varchar(100) null);
 
-create table if not exists role (
-  id bigint(20) not null auto_increment,
-  name varchar(255) not null,
-  primary key (id),
-  unique key uk_role_name (name)
-);
+create table if not exists "role" (
+  id serial not null primary key,
+  name varchar(255) not null unique);
 
 create table if not exists user_role (
-  userid bigint(20) not null,
-  roleid bigint(20) not null,
-  primary key (userid,roleid)
-);
+  userid bigint not null,
+  roleid bigint not null,
+  primary key (userid,roleid));
 
 create table if not exists mailtemplate (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   name varchar(100) not null,
   locale varchar(25) null,
   content text not null,
   subject varchar (255) not null,
-  creationdate datetime not null,
-  updatedate datetime null,
-  primary key (id),
-  unique key uk_mailtemplate_name (name,locale)
-);
+  creationdate date not null,
+  updatedate date null,
+  unique (name,locale));
 
 create table if not exists mailtemplate_media (
-  mailtemplateid bigint(20) not null,
-  mediaid bigint(20) not null,
-  primary key (mailtemplateid,mediaid)
-);
+  mailtemplateid bigint not null,
+  mediaid bigint not null,
+  primary key (mailtemplateid,mediaid));
 
 create table if not exists newsletter (
-  id bigint(20) not null auto_increment,
+  id serial not null primary key,
   name varchar(100) not null,
   mailtemplatename varchar(100) not null,
-  creationdate datetime not null,
-  updatedate datetime null,
-  duedate datetime null,
-  primary key (id)
-);
+  creationdate date not null,
+  updatedate date null,
+  duedate date null);
 
 --
 -- constraints
@@ -303,22 +258,22 @@ create table if not exists newsletter (
 
 alter table catalog_category
   add constraint fk_catalog_category_catalog foreign key (catalogid) references catalog (id),
-  add constraint fk_catalog_category_category foreign key (categoryid) references category (id);
+  add constraint fk_catalog_category_category foreign key (categoryid) references "category" (id);
 
 alter table catalog_presentation
   add constraint fk_catalog_presentation_catalog foreign key (catalogitemid) references catalog (id),
   add constraint fk_catalog_presentation_presentation foreign key (presentationid) references presentation (id);
 
 alter table category_category
-  add constraint fk_category_category_category1 foreign key (parentcategoryid) references category (id),
-  add constraint fk_category_category_category2 foreign key (childcategoryid) references category (id);
+  add constraint fk_category_category_category1 foreign key (parentcategoryid) references "category" (id),
+  add constraint fk_category_category_category2 foreign key (childcategoryid) references "category" (id);
 
 alter table category_presentation
-  add constraint fk_category_presentation_category foreign key (catalogitemid) references category (id),
+  add constraint fk_category_presentation_category foreign key (catalogitemid) references "category" (id),
   add constraint fk_category_presentation_presentation foreign key (presentationid) references presentation (id);
 
 alter table category_product
-  add constraint fk_category_product_category foreign key (categoryid) references category (id),
+  add constraint fk_category_product_category foreign key (categoryid) references "category" (id),
   add constraint fk_category_product_product foreign key (productid) references product (id);
 
 alter table discount_presentation
@@ -359,14 +314,14 @@ alter table sku_presentation
   add constraint fk_sku_presentation_sku foreign key (catalogitemid) references sku (id),
   add constraint fk_sku_presentation_presentation foreign key (presentationid) references presentation (id);
 
-alter table user
+alter table "user"
   add constraint fk_user_address1 foreign key (deliveryaddress_id) references address (id),
   add constraint fk_user_address2 foreign key (address_id) references address (id);
 
 alter table orders
   add constraint fk_orders_address1 foreign key (deliveryaddress_id) references address (id),
   add constraint fk_orders_address2 foreign key (billingaddress_id) references address (id),
-  add constraint fk_orders_user foreign key (user_id) references user (id);
+  add constraint fk_orders_user foreign key (user_id) references "user" (id);
 
 alter table orderitem
   add constraint fk_orderitem_order foreign key (order_id) references orders (id);
@@ -380,19 +335,19 @@ alter table mailtemplate_media
   add constraint fk_mailtemplate_media_media foreign key (mediaid) references media (id);
 
 alter table user_role
-  add constraint fk_user_role_user foreign key (userid) references user (id),
-  add constraint fk_user_role_role foreign key (roleid) references role (id);
+  add constraint fk_user_role_user foreign key (userid) references "user" (id),
+  add constraint fk_user_role_role foreign key (roleid) references "role" (id);
 
 --
 -- default users / roles
 --
 
-insert into user (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
-values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'm.' , 'gerald', 'min', 'admin@jeeshop.org', 'djyu7nlnfk6bdxo+lwxzj3mbafxgwytts2cvrbmnio8=', '', null, null);
+insert into "user" (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
+values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', true, 'm.' , 'gerald', 'min', 'admin@jeeshop.org', 'djyu7nlnfk6bdxo+lwxzj3mbafxgwytts2cvrbmnio8=', '', null, null);
 
-insert into role (id, name) values (1, 'user');
-insert into role (id, name) values (2, 'admin');
-insert into role (id, name) values (3, 'adminro');
+insert into "role" (id, name) values (1, 'user');
+insert into "role" (id, name) values (2, 'admin');
+insert into "role" (id, name) values (3, 'adminro');
 
 insert into user_role (userid ,roleid) values ('1', '1');
 insert into user_role (userid ,roleid) values ('1', '2');
