@@ -16,6 +16,14 @@ const getters = {
             return rootState.catalogs
         })
     },
+
+    getById: (state) => (id) => {
+         return state.catalogs.find(catalog => {
+            console.log('id : ' + JSON.stringify(id))
+            console.log('catalog : ' + JSON.stringify(catalog))
+            return catalog.id === parseInt(id)
+        })
+    }
 }
 
 const actions = {

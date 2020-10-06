@@ -48,7 +48,6 @@
         },
         methods: {
             onRowClick(id) {
-                console.log('`${this.of}/${id}` : ' + JSON.stringify(`${this.of}/${id}`))
                 this.$router.replace(`${this.of}/${id}`)
             }
         },

@@ -7,3 +7,29 @@ input {
     height: 32px;
     padding-left: 1em;
 }
+
+.field-container {
+
+    margin-bottom: 1rem;
+}
+
+.field-container label {
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+.field-container:last-child {
+    border-radius: 4px;
+}
+
+textarea {
+    outline: none;
+    resize: none;
+    background: #FFFFFF;
+    border: 0.5px solid #DDDDDD;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding-left: 1em;
+}

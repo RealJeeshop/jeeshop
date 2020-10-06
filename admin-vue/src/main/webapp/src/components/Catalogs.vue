@@ -3,17 +3,14 @@
         <h1>Catalogs</h1>
         <div class="catalog-items-menu">
             <router-link to="/catalogs">Catalogs</router-link>
-
             <router-link to="/categories">Categories</router-link>
-
             <router-link to="/products">Products</router-link>
-
             <router-link to="/skus">SKUs</router-link>
-
             <router-link to="/discounts">Discounts</router-link>
         </div>
 
         <Table :of="itemType" :items="items" />
+<!--        <router-view label="catalog-item-route"></router-view>-->
     </div>
 </template>
 
@@ -45,7 +42,6 @@
                 } else if (path === 'discounts') {
                     return state.catalogs.discounts
                 }
-
             }
         }),
         created () {

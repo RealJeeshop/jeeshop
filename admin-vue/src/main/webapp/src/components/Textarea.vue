@@ -2,18 +2,19 @@
     <div class="field-container">
         <label>
             {{label}}
-            <input type="text" v-model="value" :placeholder="placeholder">
+            <textarea v-model="value" rows="4" :placeholder="placeholder" />
         </label>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'Input',
+        name: 'Textarea',
         props: {
             label: String,
             value: String,
-            placeholder: String
+            placeholder: String,
+
         }
     }
 </script>

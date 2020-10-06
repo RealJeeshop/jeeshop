@@ -12,6 +12,8 @@ import Settings from './components/Settings.vue'
 import Help from './components/Help.vue'
 import HomePage from "./components/HomePage";
 import Catalogs from "./components/Catalogs";
+import CatalogEdit from "./pages/CatalogEdit";
+
 import Stats from "./components/Stats";
 import Users from "./components/Users";
 import Emails from "./components/Emails";
@@ -27,10 +29,15 @@ const router = new VueRouter({
     { path: '/settings', component: Settings },
     { path: '/help', component: Help },
     { path: '/catalogs', component: Catalogs },
+    { path: '/catalogs/:id', component: CatalogEdit},
     { path: '/products', component: Catalogs },
+    { path: '/products/:id', component: Catalogs },
     { path: '/discounts', component: Catalogs },
+    { path: '/discounts/:id', component: Catalogs },
     { path: '/categories', component: Catalogs },
+    { path: '/categories/:id', component: Catalogs },
     { path: '/skus', component: Catalogs },
+    { path: '/skus/:id', component: Catalogs },
     { path: '/orders', component: Orders },
     { path: '/stats', component: Stats },
     { path: '/users', component: Users },
