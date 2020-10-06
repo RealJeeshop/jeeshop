@@ -388,7 +388,7 @@ alter table user_role
 --
 
 insert into user (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
-values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'm.' , 'gerald', 'min', 'admin@jeeshop.org', 'djyu7nlnfk6bdxo+lwxzj3mbafxgwytts2cvrbmnio8=', '', null, null);
+values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', 1, 'm.' , 'gerald', 'min', 'admin@jeeshop.org', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', null, null);
 
 insert into role (id, name) values (1, 'user');
 insert into role (id, name) values (2, 'admin');

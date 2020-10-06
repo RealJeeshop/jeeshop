@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
  * Created by remi on 03/06/14.
  */
 @Entity
+@Table(name = "`role`")
 public class Role {
 
     @Id

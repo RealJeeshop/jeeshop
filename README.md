@@ -28,24 +28,23 @@ Jeeshop REST APIs are organized per domain:
 See [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project
 
 ## <a name="backend">Jeestore</a>
-Jeestore is a front-end demonstration application application which consumes Jeeshop [REST APIs](#backend)
-You can take a look at it or start with it to build your e-commerce store
+Jeestore is a front-end demonstration application application which consumes Jeeshop [REST APIs](#backend).
+You can take a look at it or start with it to build your e-commerce store.
 
 # Installation
-Jeeshop can be deployed to any Java EE 7 application server. (Web and full profile)
-As of today, it has only be tested on [Wildfy](http://wildfly.org/)
 
 ## With Docker
 Todo
 
-## On Wildfly
+## On [Wildfy](http://wildfly.org/)
+Jeeshop can be deployed to any Java EE 7 application server. (Web profile)
 
 ### <a name="wildfly-datasources">Datasources</a>
 The following XA datasources are currently used by jeeshop modules and have to be created in server configuration
 * JeeshopDS, for user and order data
 * JeeshopCatalogDS for product catalog data
 
-Below is an example of Jeeshop datasources configuration for a standalone server:
+Below is an example of Jeeshop datasources configuration for a standalone server for Postgresql:
 
   ``` xml
   <xa-datasource jndi-name="java:/JeeshopDS" pool-name="JeeshopDS" enabled="true">
@@ -55,51 +54,45 @@ Below is an example of Jeeshop datasources configuration for a standalone server
       <xa-datasource-property name="DatabaseName">
           jeeshop
       </xa-datasource-property>
-      <driver>mysql</driver>
+      <driver>postgresql</driver>
       <security>
           <user-name>jeeshop</user-name>
           <password>test</password>
       </security>
-      <validation>
-          <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-          <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-      </validation>
   </xa-datasource>
   <xa-datasource jndi-name="java:/JeeshopCatalogDS" pool-name="JeeshopCatalogDS" enabled="true">
-  <xa-datasource-property name="ServerName">
-        localhost
-    </xa-datasource-property>
-    <xa-datasource-property name="DatabaseName">
-        jeeshop
-    </xa-datasource-property>
-    <driver>mysql</driver>
-    <security>
-        <user-name>jeeshop</user-name>
-        <password>test</password>
-    </security>
-    <validation>
-        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-    </validation>
-</xa-datasource>
-  <driver name="mysql" module="com.mysql">
-      <driver-class>com.mysql.jdbc.Driver</driver-class>
-      <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
-  </driver>
+      <xa-datasource-property name="ServerName">
+          localhost
+      </xa-datasource-property>
+      <xa-datasource-property name="DatabaseName">
+          jeeshop
+      </xa-datasource-property>
+      <driver>postgresql</driver>
+      <security>
+          <user-name>jeeshop</user-name>
+          <password>test</password>
+      </security>
+  </xa-datasource>
+  <drivers>
+      <driver name="postgresql" module="org.postgresql">
+          <driver-class>org.postgresql.Driver</driver-class>
+          <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+      </driver>
+  </drivers>
   ```
 
 ### <a name="wildfly-authentication">Security domain configuration</a>
 A security domain named "jeeshop" has to be created to allow BASIC authentication and Role based access to protected REST Resources, using JaaS.
 
-* Sample of configuration for a standalone server:
+* Sample of configuration for a standalone server (tested with Postgresql):
 
 ``` xml
   <security-domain name="jeeshop" cache-type="default">
       <authentication>
           <login-module code="Database" flag="required">
               <module-option name="dsJndiName" value="java:/JeeshopDS"/>
-              <module-option name="principalsQuery" value="select password from User where login = ? and (disabled is null or disabled = 0) and activated = 1"/>
-              <module-option name="rolesQuery" value="select name,'Roles' from Role r, User_Role ur, User u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
+              <module-option name="principalsQuery" value="select password from &quot;user&quot; where login = ? and (disabled is null or disabled = false) and activated = true"/>
+              <module-option name="rolesQuery" value="select name,'Roles' from &quot;role&quot; r, user_role ur, &quot;user&quot; u where u.login=? and u.id = ur.userId and r.id = ur.roleId"/>
               <module-option name="hashAlgorithm" value="SHA-256"/>
               <module-option name="hashEncoding" value="base64"/>
               <module-option name="unauthenticatedIdentity" value="guest"/>
@@ -161,7 +154,7 @@ To serve Jeeshop catalog media files uploaded through Jeeshop-Admin, the followi
 Add the following in undertow subsystem
 
 ``` xml
-<subsystem xmlns="urn:jboss:domain:undertow:1.2">
+<subsystem xmlns="urn:jboss:domain:undertow...">
             ...
             <server name="default-server">
                ...
@@ -183,7 +176,7 @@ Add the following in undertow subsystem
 
 ## Database setup
 ### Scripts
-Database setup scripts are provided in ./install/src/main/db directory for each supported databases
+Database setup scripts are provided in ./install/src/main/db directory for Mysql and Postgresql databases.
 
 * Vx.x_1__jeeshop-install.sql creates jeeshop ddl and reference data. It creates also a single user with login/password admin@jeeshop.org/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
 * Vx.x__jeeshop-drop.sql empties database
