@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from './store'
-import './main.css'
-import './lib/css/inputs.css'
-import './lib/css/buttons.css'
+import 'vue-datetime/dist/vue-datetime.css'
+import vuetify from './plugins/vuetify'
 
 Vue.use(VueRouter)
 
@@ -18,6 +17,10 @@ import Stats from "./components/Stats";
 import Users from "./components/Users";
 import Emails from "./components/Emails";
 import Orders from "./components/Orders";
+
+import './main.css'
+import './styles/inputs.css'
+import './styles/buttons.css'
 
 Vue.config.productionTip = false
 
@@ -49,5 +52,6 @@ new Vue({
   el: '#app',
   router,
   store,
+  vuetify,
   render: h => h(App)
 })
