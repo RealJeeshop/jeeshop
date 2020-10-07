@@ -6,7 +6,7 @@ script: mvn verify
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  api_key: $GITHUB_OAUTH_TOKEN
   file: admin/target/jeeshop-admin.war
   skip_cleanup: true
   draft: true
