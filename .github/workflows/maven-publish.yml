@@ -23,7 +23,7 @@ jobs:
       run: mvn -B verify --file pom.xml
 
     - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: jeeshop-admin.war
-          path: admin/target/jeeshop-admin.war
+      uses: actions/upload-artifact@v2
+      with:
+        name: jeeshop-admin.war
+        path: admin/target/jeeshop-admin.war
