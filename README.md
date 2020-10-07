@@ -34,7 +34,37 @@ You can take a look at it or start with it to build your e-commerce store.
 # Installation
 
 ## With Docker
-Todo
+
+### Prerequisite
+1. Create a specific jeeshop database and a jeeshop database applicative user (See section bellow for default database settings)
+2. Download Jeeshop database migration scripts available [here](https://github.com/remibantos/jeeshop/tree/master/install/src/main/resources/db/postgresql).
+
+### <a name="docker-steps">Steps</a>
+  ```shell script
+    docker run --rm -v <Scripts Path>/postgresql:/flyway/sql flyway/flyway -url=jdbc:postgresql://host.docker.internal:5432/jeeshop -user=jeeshop -password=test migrate
+    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop -e jeeshop/jeeshop
+  ```
+
+The first command runs Jeeshop database migration scripts, which create Jeeshop tables and data.
+The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul APIs exposed. It can be customised with the following environment variables:
+
+| Environment variable  | Default | Description |
+| -------------| ------------- | ------------- |
+| JEESHOP_DATABASENAME | jeeshop  | |
+| JEESHOP_DATABASE_HOSTNAME | host.docker.internal | host running this docker image |
+| JEESHOP_DATABASE_USERNAME | jeeshop | ------------- |
+| JEESHOP_DATABASE_PASSWORD | test  |------------- |
+| JEESHOP_JDBC_DRIVER | postgresql  | postgresql, mysql |
+| JEESHOP_CATALOG_DATABASENAME | jeeshop  |------------- |
+| JEESHOP_CATALOG_DATABASE_HOSTNAME | host.docker.internal  |------------- |
+| JEESHOP_CATALOG_DATABASE_USERNAME | jeeshop | ------------- |
+| JEESHOP_CATALOG_DATABASE_PASSWORD | test  |------------- |
+| JEESHOP_CATALOG_JDBC_DRIVER | postgresql  | postgresql, mysql |
+| JEESHOP_SSL_KEYSTORE_PATH | /opt/jboss/wildfly/standalone/configuration/server.keystore  | default keystore used to provide ssl |
+| JEESHOP_SSL_KEYSTORE_PASSWORD | test123 | default keystore password |
+| JEESHOP_MEDIADIR | /tmp | where jeeshop assets, such as catalog items images, should be uploaded |
+
+
 
 ## On [Wildfy](http://wildfly.org/)
 Jeeshop can be deployed to any Java EE 7 application server. (Web profile)
