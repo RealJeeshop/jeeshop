@@ -56,6 +56,15 @@
 		<version.flyway>7.0.0</version.flyway>
 		<version.weld-se>2.1.2.Final</version.weld-se>
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub OWNER Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/remibantos/jeeshop</url>
+		</repository>
+	</distributionManagement>
+
 
 	<dependencies>
 
@@ -234,9 +243,6 @@
 					<version>${version.flyway}</version>
 					<configuration>
 						<placeholderPrefix>#[</placeholderPrefix>
-						<locations>
-							<location>filesystem:src/main/resources/db/mysql</location>
-						</locations>
 					</configuration>
 					<executions>
 						<execution>

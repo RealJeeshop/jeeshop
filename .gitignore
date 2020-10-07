@@ -1,7 +1,12 @@
 .idea/**
 *.iml
+.idea
+
+npm-debug.log
 
 node_modules
 node
+
 target/
 built
+dist
