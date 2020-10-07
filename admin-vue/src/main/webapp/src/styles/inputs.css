@@ -11,13 +11,17 @@ input {
 .field-container {
 
     margin-bottom: 1rem;
+    flex: 1;
 }
 
 .field-container label {
-    font-weight: 600;
     display: flex;
     flex-direction: column;
     margin-bottom: 0.5rem;
+}
+
+.field-container label span {
+    font-weight: 600;
 }
 
 .field-container:last-child {

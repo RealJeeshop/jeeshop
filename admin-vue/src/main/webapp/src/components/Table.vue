@@ -48,7 +48,7 @@
         },
         methods: {
             onRowClick(id) {
-                this.$router.replace(`${this.of}/${id}`)
+                this.$router.push(`${this.of}/${id}`)
             }
         },
     }

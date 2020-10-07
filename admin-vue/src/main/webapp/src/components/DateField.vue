@@ -1,7 +1,7 @@
 <template>
     <div class="field-container">
         <label>
-            {{label}}
+            <span>{{label}}</span>
 
             <v-dialog ref="dialog" :return-value.sync="date" v-model="show" max-width="500">
                 <template v-slot:activator="{ on, attrs }">
