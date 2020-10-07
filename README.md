@@ -1,4 +1,4 @@
-Jeeshop [![Build Status](https://travis-ci.org/remibantos/jeeshop.svg?branch=master)](https://travis-ci.org/remibantos/jeeshop)
+Jeeshop ![CI/CD](https://github.com/remibantos/jeeshop/workflows/Maven%20Package/badge.svg)
 =======
 
 # Description
