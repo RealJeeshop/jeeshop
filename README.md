@@ -42,7 +42,7 @@ You can take a look at it or start with it to build your e-commerce store.
 ### <a name="docker-steps">Steps</a>
   ```shell script
     docker run --rm -v <Scripts Path>/postgresql:/flyway/sql flyway/flyway -url=jdbc:postgresql://host.docker.internal:5432/jeeshop -user=jeeshop -password=test migrate
-    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop -e jeeshop/jeeshop
+    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop -e jeeshop/admin
   ```
 
 The first command runs Jeeshop database migration scripts, which create Jeeshop tables and data.
