@@ -3,3 +3,10 @@ jdk:
   - openjdk8
 
 script: mvn verify
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: admin/target/jeeshop-admin.war
+  skip_cleanup: true
+  draft: true
