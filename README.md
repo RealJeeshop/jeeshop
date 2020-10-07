@@ -1,4 +1,4 @@
-Jeeshop ![CI/CD](https://github.com/remibantos/jeeshop/workflows/Maven%20Package/badge.svg)
+Jeeshop ![CI/CD](https://github.com/remibantos/jeeshop/workflows/Build/badge.svg)
 =======
 
 # Description
