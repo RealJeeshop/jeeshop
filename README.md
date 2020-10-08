@@ -1,4 +1,4 @@
-Jeeshop ![CI/CD](https://github.com/remibantos/jeeshop/workflows/Maven%20Package/badge.svg)
+Jeeshop ![CI/CD](https://github.com/remibantos/jeeshop/workflows/Build/badge.svg)
 =======
 
 # Description
@@ -204,15 +204,15 @@ Add the following in undertow subsystem
         </subsystem>
   ```
 
-## Database setup
-### Scripts
+### Manual Database setup
+#### Scripts
 Database setup scripts are provided in ./install/src/main/db directory for Mysql and Postgresql databases.
 
 * Vx.x_1__jeeshop-install.sql creates jeeshop ddl and reference data. It creates also a single user with login/password admin@jeeshop.org/jeeshop (password is hashed using SHA-256 in this script, which must match security domain configuration, see [Security domain configuration](#wildfly-authentication)). This user should be deleted in production environment for security reason.
 * Vx.x__jeeshop-drop.sql empties database
 * Vx.x_2__demo-catalog-data configures jeeshop demonstration catalog data
 
-### Applying with maven
+#### Applying with maven
 
 To setup or update your Jeeshop db with latest SQL scripts version, you can check a "flyway" maven profile, such as flyway-mysql, and execute "install" maven goal like this:
 ```
