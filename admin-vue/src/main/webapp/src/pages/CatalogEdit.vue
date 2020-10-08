@@ -172,7 +172,8 @@
         },
         methods: {
           close() {
-              this.$router.go(-1)
+
+              this.$emit('on-close')
           }
         }
 

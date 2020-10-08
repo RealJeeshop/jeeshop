@@ -10,8 +10,8 @@
         </div>
 
         <Table :of="itemType" :items="items" @item-selected="handleItemSelection" />
-        <v-navigation-drawer v-if="itemId" absolute right width="60%" >
-            <CatalogEdit :item-type="itemType" :item-id="itemId" />
+        <v-navigation-drawer v-if="showEditPanel" absolute right width="60%" >
+            <CatalogEdit :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
         </v-navigation-drawer>
         <router-view label="catalog-item-route"></router-view>
     </div>
@@ -31,6 +31,7 @@
         data: () => {
             return {
                 itemType: 'catalogs',
+                showEditPanel: false,
                 itemId: null
             }
         },
@@ -53,6 +54,10 @@
         methods: {
             handleItemSelection(id) {
                 this.$router.push(`${this.itemType}/${id}`)
+            },
+            handleEditPanelClose() {
+                this.showEditPanel = false
+                this.$router.back()
             }
         },
         created () {
@@ -65,6 +70,7 @@
             if (match) {
                 this.itemType = match[1]
                 this.itemId = match[2]
+                this.showEditPanel = match[2] !== undefined
                 this.$store.dispatch('catalogs/setItemType', this.itemType)
                 this.$store.dispatch('catalogs/getItems', this.itemType)
             }
