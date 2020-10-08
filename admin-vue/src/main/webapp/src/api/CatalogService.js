@@ -18,7 +18,6 @@ export default {
 
     getAll(itemType, success, error) {
 
-        console.log('itemType : ' + JSON.stringify(itemType))
         let items = getItems(itemType)
         if (items !== null) success(items)
         else error(`${itemType} is not a valid item type`)

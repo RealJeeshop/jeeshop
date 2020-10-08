@@ -1,11 +1,14 @@
 <template>
     <div class="field-container">
         <label>
-            <span>{{label}}</span>
-
             <v-dialog ref="dialog" :return-value.sync="date" v-model="show" max-width="500">
                 <template v-slot:activator="{ on, attrs }">
-                    <input @click="togglePicker()" :value="date" :placeholder="label" v-bind="attrs" v-on="on"/>
+                    <v-text-field
+                            @click="togglePicker()"
+                            :label="label"
+                            :value="date"
+                            :placeholder="label"
+                            v-bind="attrs" v-on="on"/>
                 </template>
                 <v-date-picker v-if="show"
                                :full-width="true"

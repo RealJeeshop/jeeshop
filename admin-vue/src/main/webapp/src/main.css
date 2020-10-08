@@ -5,3 +5,7 @@ body {
 html, body, #app {
     height: 100%;
 }
+
+html {
+    overflow-y: auto;
+}

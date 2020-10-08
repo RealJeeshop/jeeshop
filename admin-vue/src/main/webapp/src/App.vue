@@ -15,14 +15,14 @@
         </header>
         <v-main>
             <div class="page-content">
-                <div class="side-nav">
+                <v-navigation-drawer permanent expand-on-hover>
                     <SideNavItem icon="fas fa-home" text="Overview" to="/" />
                     <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Catalogs" to="/catalogs" />
                     <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Orders" to="/orders" />
                     <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Stats" to="/stats" />
                     <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Users" to="/users" />
                     <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Emails, Newsletters" to="/emails" />
-                </div>
+                </v-navigation-drawer>
                 <div class="content">
                     <router-view :key="$route.fullPath"></router-view>
                 </div>

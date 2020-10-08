@@ -1,4 +1,4 @@
-input {
+/*input {
     outline: none;
     background: #FFFFFF;
     border: 0.5px solid #DDDDDD;
@@ -6,7 +6,7 @@ input {
     border-radius: 5px;
     height: 32px;
     padding-left: 1em;
-}
+}*/
 
 .field-container {
 
@@ -28,6 +28,7 @@ input {
     border-radius: 4px;
 }
 
+/*
 textarea {
     outline: none;
     resize: none;
@@ -36,4 +37,4 @@ textarea {
     box-sizing: border-box;
     border-radius: 5px;
     padding-left: 1em;
-}
+}*/

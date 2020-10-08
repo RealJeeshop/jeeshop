@@ -9,23 +9,29 @@
             <router-link to="/discounts">Discounts</router-link>
         </div>
 
-        <Table :of="itemType" :items="items" />
-<!--        <router-view label="catalog-item-route"></router-view>-->
+        <Table :of="itemType" :items="items" @item-selected="handleItemSelection" />
+        <v-navigation-drawer v-if="itemId" absolute right width="60%" >
+            <CatalogEdit :item-type="itemType" :item-id="itemId" />
+        </v-navigation-drawer>
+        <router-view label="catalog-item-route"></router-view>
     </div>
 </template>
 
 <script>
     import { mapState } from 'vuex'
     import Table from './Table'
+    import CatalogEdit from "../pages/CatalogEdit";
 
     export default {
         name: 'Catalogs',
         components: {
+            CatalogEdit,
             Table
         },
         data: () => {
             return {
-                itemType: 'catalogs'
+                itemType: 'catalogs',
+                itemId: null
             }
         },
         computed: mapState({
@@ -44,20 +50,38 @@
                 }
             }
         }),
+        methods: {
+            handleItemSelection(id) {
+                this.$router.push(`${this.itemType}/${id}`)
+            }
+        },
         created () {
 
             console.log("CREATED")
-            this.itemType = this.$route.path.substring(1)
-            this.$store.dispatch('catalogs/setItemType', this.itemType)
-            this.$store.dispatch('catalogs/getItems', this.itemType)
 
+            let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
+                || new RegExp(/\/(.*)/).exec(this.$route.path)
+
+            if (match) {
+                this.itemType = match[1]
+                this.itemId = match[2]
+                this.$store.dispatch('catalogs/setItemType', this.itemType)
+                this.$store.dispatch('catalogs/getItems', this.itemType)
+            }
         },
 
         updated() {
 
             console.log("UPDATED")
-            this.itemType = this.$route.path.substring(1)
-            this.$store.dispatch('catalogs/setItemType', this.itemType)
+
+            let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
+                || new RegExp(/\/(.*)/).exec(this.$route.path)
+
+            if (match) {
+                this.itemType = match[1]
+                this.itemId = match[2]
+                this.$store.dispatch('catalogs/setItemType', this.itemType)
+            }
         }
     }
 </script>

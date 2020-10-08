@@ -1,8 +1,11 @@
 <template>
     <div class="field-container">
         <label>
-            <span>{{label}}</span>
-            <input type="text" v-model="value" :placeholder="placeholder">
+            <v-text-field
+                    :label="label"
+                    v-model="value"
+                    :placeholder="placeholder"
+                    :hint="hint" outlined/>
         </label>
     </div>
 </template>
@@ -13,7 +16,8 @@
         props: {
             label: String,
             value: String,
-            placeholder: String
+            placeholder: String,
+            hint: String
         }
     }
 </script>

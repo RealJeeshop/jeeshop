@@ -1,9 +1,7 @@
 <template>
     <div class="field-container">
-        <label>
-            <span>{{label}}</span>
-            <textarea v-model="value" rows="4" :placeholder="placeholder" />
-        </label>
+
+            <v-textarea v-model="value" :label="label" rows="4" :hint="placeholder" outlined/>
     </div>
 </template>
 

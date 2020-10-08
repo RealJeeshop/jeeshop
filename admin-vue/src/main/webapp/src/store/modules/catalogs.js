@@ -11,17 +11,27 @@ const state = () => ({
 })
 
 const getters = {
+
     catalogs: (state, getters, rootState) => {
         return state.items.map(() => {
             return rootState.catalogs
         })
     },
 
-    getById: (state) => (id) => {
-         return state.catalogs.find(catalog => {
-            console.log('id : ' + JSON.stringify(id))
-            console.log('catalog : ' + JSON.stringify(catalog))
-            return catalog.id === parseInt(id)
+    getById: (state) => (id, itemType) => {
+        let items = state.catalogs
+        if (itemType === 'categories') {
+            items = state.categories
+        } else if (itemType === 'products') {
+            items = state.products
+        } else if (itemType === 'skus') {
+            items = state.skus
+        } else if (itemType === 'discounts') {
+            items = state.discounts
+        }
+
+         return items.find(item => {
+             return item.id === parseInt(id)
         })
     }
 }
@@ -43,9 +53,7 @@ const actions = {
         const existingItems = [...state[itemType]]
         commit('setAddCatalogStatus', null)
         commit('addItem', {itemType, item})
-        CatalogService.add(
-            itemType,
-            item,
+        CatalogService.add(itemType, item,
             () => commit('setAddCatalogStatus', 'successful'),
             () => {
                 commit('setAddCatalogStatus', 'failed')
