@@ -32,6 +32,7 @@ export default {
     },
 
     loggedIn () {
+        console.log('localStorage.token : ' + JSON.stringify(localStorage.token))
         return !!localStorage.token
     },
 

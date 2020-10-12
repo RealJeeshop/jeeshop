@@ -28,11 +28,9 @@
         },
         methods: {
             agree() {
-                this.dialog = false
                 this.$emit('agreed', true)
             },
             disagree() {
-                this.dialog = false
                 this.$emit('agreed', false)
             }
         }

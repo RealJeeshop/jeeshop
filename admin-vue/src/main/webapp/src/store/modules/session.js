@@ -1,13 +1,13 @@
 import UserService from "../../api/UserService";
 
 const state = () => ({
-    loggedIn: false,
+    loggedIn: UserService.loggedIn(),
     loading: false,
     error: null
 })
 
 const getters = {
-    isLoggedIn: (state) => state.loggedIn,
+    isLoggedIn: () => UserService.loggedIn(),
 }
 
 const actions = {

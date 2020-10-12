@@ -4,14 +4,22 @@ import products from "./data/products.json"
 import skus from "./data/skus.json"
 import discounts from "./data/discounts.json"
 
+function getNextId(items)  {
+    return Math.max.apply(Math, items.map((o) => { return o.id }))
+}
+
 export default {
 
     add(itemType, item, success, error) {
-        console.log('itemType of add: ' + JSON.stringify(itemType))
         let items = getItems(itemType)
         if (item && items !== null) {
+
+            if (!item.id) {
+                item.id = getNextId(items)
+            }
+
             items.push(item)
-            success()
+            success(item)
 
         } else error()
     },
@@ -27,7 +35,6 @@ export default {
 function getItems(itemType) {
 
     if (itemType === 'catalogs') {
-        console.log('catalogs : ' + JSON.stringify(catalogs))
         return catalogs
 
     } else if (itemType === 'products') {

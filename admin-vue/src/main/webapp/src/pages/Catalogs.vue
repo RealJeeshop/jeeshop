@@ -11,7 +11,7 @@
                 <v-tab to="/discounts">Discounts</v-tab>
             </v-tabs>
 
-            <v-btn color="primary" dark>New Item</v-btn>
+            <v-btn color="primary" dark @click="showEditPanel = true">New Item</v-btn>
         </v-toolbar>
         <div class="content">
             <Dialog :dialog="showWarningDialog"
@@ -20,7 +20,7 @@
                     @agreed="handleChoice"/>
 
             <Table :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
-            <CatalogEdit v-if="itemId" :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
+            <CatalogEdit v-if="showEditPanel" :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
         </div>
     </div>
 </template>
@@ -30,6 +30,7 @@
     import Table from '../components/Table'
     import CatalogEdit from "../components/CatalogEdit";
     import Dialog from "../components/Dialog";
+    import _ from  'lodash'
 
     export default {
         name: 'Catalogs',
@@ -48,18 +49,19 @@
         },
         computed: {
             ...mapState({
-                items: state => {
-                    let path = state.catalogs.itemType
+                items(state) {
+                    let path = this.itemType
+                    let tmp = _.cloneDeep(state)
                     if (path === 'catalogs') {
-                        return state.catalogs.catalogs
+                        return tmp.catalogs.catalogs
                     } else if (path === 'products') {
-                        return state.catalogs.products
+                        return tmp.catalogs.products
                     } else if(path === 'categories') {
-                        return state.catalogs.categories
+                        return tmp.catalogs.categories
                     } else if (path === 'skus') {
-                        return state.catalogs.skus
+                        return tmp.catalogs.skus
                     } else if (path === 'discounts') {
-                        return state.catalogs.discounts
+                        return tmp.catalogs.discounts
                     }
                 },
             }),
@@ -114,7 +116,6 @@
                 this.itemType = match[1]
                 this.itemId = match[2] ? parseInt(match[2]) : undefined
                 this.showEditPanel = match[2] !== undefined
-                this.$store.dispatch('catalogs/setItemType', this.itemType)
                 this.$store.dispatch('catalogs/getItems', this.itemType)
             }
         },
@@ -128,7 +129,6 @@
             if (match) {
                 this.itemType = match[1]
                 this.itemId = match[2] ? parseInt(match[2]) : undefined
-                this.$store.dispatch('catalogs/setItemType', this.itemType)
             }
         }
     }

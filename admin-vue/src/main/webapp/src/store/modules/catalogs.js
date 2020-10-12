@@ -1,7 +1,6 @@
 import CatalogService from '../../api/CatalogService'
 
 const state = () => ({
-    itemType: "catalogs",
     catalogs: [],
     products: [],
     categories: [],
@@ -19,6 +18,7 @@ const getters = {
     },
 
     getById: (state) => (id, itemType) => {
+        console.log("Loading item ...")
         let items = state.catalogs
         if (itemType === 'categories') {
             items = state.categories
@@ -44,17 +44,18 @@ const actions = {
         })
     },
 
-    setItemType({ commit }, itemType) {
-        commit('setItemType', itemType)
-    },
+    upsert ({ commit, state }, { itemType, item }) {
 
-    add ({ commit, state }, itemType, item) {
+        console.log('itemType : ' + JSON.stringify(itemType))
+        console.log('item : ' + JSON.stringify(item))
 
         const existingItems = [...state[itemType]]
         commit('setAddCatalogStatus', null)
-        commit('addItem', {itemType, item})
         CatalogService.add(itemType, item,
-            () => commit('setAddCatalogStatus', 'successful'),
+            (upsertedItem) => {
+                commit('addItem', {itemType, item: upsertedItem})
+                commit('setAddCatalogStatus', 'successful')
+            },
             () => {
                 commit('setAddCatalogStatus', 'failed')
                 commit('setItems', {itemType, items: existingItems})
@@ -67,10 +68,6 @@ const mutations = {
 
     setItems(state, payload) {
         state[payload.itemType] = payload.items
-    },
-
-    setItemType(state, itemType) {
-        state.itemType = itemType
     },
 
     addItem (state, payload) {

@@ -18,7 +18,7 @@
 
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="togglePicker()">Cancel</v-btn>
-                    <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                    <v-btn text color="primary" @click="update">OK</v-btn>
                 </v-date-picker>
 
             </v-dialog>
@@ -30,19 +30,26 @@
 
     export default {
         name: 'DateField',
-        data: () =>{
+        data() {
           return {
               show: false,
               date: new Date().toISOString().substr(0, 10),
+              insideValue: this.value
           }
+        },
+        props: {
+            label: String,
+            name: String,
+            value: Number
         },
         methods: {
             togglePicker() {
                 this.show = !this.show
+            },
+            update() {
+                this.$refs.dialog.save(this.date)
+                this.$emit('on-update', {key: this.name, value: this.date})
             }
-        },
-        props: {
-            label: String
         }
     }
 </script>

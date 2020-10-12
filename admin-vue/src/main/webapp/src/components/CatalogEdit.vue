@@ -1,19 +1,20 @@
 <template>
         <div class="catalog-edit-container">
             <div class="header">
-                <h2>Product details</h2>
+                <h2 v-if="itemId">Product details</h2>
+                <h2 v-else>Add new {{ itemType }}</h2>
                 <span @click="close()" class="close-icon"></span>
             </div>
 
             <div class="form-container">
                 <div class="default-field-container">
-                        <Input label="Name" :value="item.name" placeholder="name"/>
-                        <Textarea label="Description" :value="item.description" placeholder="description"  />
-                        <div class="flex one-half">
-                            <DateField label="Start Date" />
-                            <DateField label="End Date" />
-                        </div>
-                        <PresentationTable />
+                    <Input label="Name" name="name" :value="item.name" @on-update="update" />
+                    <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
+                    <div class="flex one-half">
+                        <DateField :value="item.startDate" name="startDate" label="Start Date" @on-update="update" />
+                        <DateField :value="item.endDate" name="endDate" label="End Date" @on-update="update" />
+                    </div>
+                    <PresentationTable />
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
@@ -52,7 +53,7 @@
                     <Input label="Cumulative" :value="item.name" placeholder=""/>
                 </div>
 
-                <v-btn color="primary" elevation="2">Save</v-btn>
+                <v-btn color="primary" elevation="2" @click="saveItem()">Save</v-btn>
             </div>
 
         </div>
@@ -88,14 +89,19 @@
         },
         computed: {
             item() {
-                return this.$store.getters['catalogs/getById'](this.itemId, this.itemType)
+                return this.itemId ? this.$store.getters['catalogs/getById'](this.itemId, this.itemType) : {}
             },
         },
         methods: {
-          close() {
-
+            close() {
               this.$emit('on-close')
-          }
+            },
+            saveItem() {
+                this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
+            },
+            update(field) {
+                this.item[field.key] = field.value
+            },
         }
 
     }
@@ -159,7 +165,6 @@
 
     .default-field-container, .field-containers {
         display: flex;
-        flex-direction: row;
         flex-wrap: wrap;
         flex-direction: column;
     }
@@ -180,7 +185,4 @@
     button {
         margin-top: 2em;
     }
-
-
-
 </style>
