@@ -6,6 +6,10 @@ const state = () => ({
     error: null
 })
 
+const getters = {
+    isLoggedIn: (state) => state.loggedIn,
+}
+
 const actions = {
 
     login({commit}, data) {
@@ -44,5 +48,6 @@ export default {
     namespaced: true,
     state,
     actions,
+    getters,
     mutations
 }

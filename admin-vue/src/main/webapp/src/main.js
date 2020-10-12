@@ -22,28 +22,41 @@ import './styles/buttons.css'
 
 Vue.config.productionTip = false
 
+
 const router = new VueRouter({
   mode: 'history',
   base: __dirname,
   routes: [
     { path: '/', component: HomePage },
-    { path: '/settings', component: Settings },
-    { path: '/help', component: Help },
-    { path: '/catalogs', component: Catalogs},
-    { path: '/catalogs/:id', component: Catalogs},
-    { path: '/products', component: Catalogs },
-    { path: '/products/:id', component: Catalogs },
-    { path: '/discounts', component: Catalogs },
-    { path: '/discounts/:id', component: Catalogs },
-    { path: '/categories', component: Catalogs },
-    { path: '/categories/:id', component: Catalogs },
-    { path: '/skus', component: Catalogs },
-    { path: '/skus/:id', component: Catalogs },
-    { path: '/orders', component: Orders },
-    { path: '/stats', component: Stats },
-    { path: '/users', component: Users },
-    { path: '/emails', component: Emails },
+    { path: '/settings', component: Settings, meta: { protected: true} },
+    { path: '/help', component: Help},
+    { path: '/catalogs', component: Catalogs, meta: { protected: true} },
+    { path: '/catalogs/:id', component: Catalogs, meta: { protected: true}},
+    { path: '/products', component: Catalogs, meta: { protected: true}},
+    { path: '/products/:id', component: Catalogs, meta: { protected: true}},
+    { path: '/discounts', component: Catalogs, meta: { protected: true}},
+    { path: '/discounts/:id', component: Catalogs, meta: { protected: true}},
+    { path: '/categories', component: Catalogs, meta: { protected: true}},
+    { path: '/categories/:id', component: Catalogs, meta: { protected: true}},
+    { path: '/skus', component: Catalogs, meta: { protected: true}},
+    { path: '/skus/:id', component: Catalogs, meta: { protected: true}},
+    { path: '/orders', component: Orders, meta: { protected: true}},
+    { path: '/stats', component: Stats, meta: { protected: true}},
+    { path: '/users', component: Users, meta: { protected: true}},
+    { path: '/emails', component: Emails, meta: { protected: true}},
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.protected)) {
+    if (store.getters["session/isLoggedIn"]) {
+      next()
+      return
+    }
+    next('/')
+  } else {
+    next()
+  }
 })
 
 new Vue({
