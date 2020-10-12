@@ -6,15 +6,15 @@ import vuetify from './plugins/vuetify'
 Vue.use(VueRouter)
 
 import App from './App.vue'
-import Settings from './components/Settings.vue'
-import Help from './components/Help.vue'
-import HomePage from "./components/HomePage";
-import Catalogs from "./components/Catalogs";
+import Settings from './pages/Settings.vue'
+import Help from './pages/Help.vue'
+import HomePage from "./pages/HomePage";
+import Catalogs from "./pages/Catalogs";
 
-import Stats from "./components/Stats";
-import Users from "./components/Users";
-import Emails from "./components/Emails";
-import Orders from "./components/Orders";
+import Stats from "./pages/Stats";
+import Users from "./pages/Users";
+import Emails from "./pages/Emails";
+import Orders from "./pages/Orders";
 
 import './main.css'
 import './styles/inputs.css'

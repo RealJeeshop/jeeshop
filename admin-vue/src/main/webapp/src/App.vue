@@ -28,7 +28,7 @@
 
 <script>
 
-    import SideNavItem from "./components/SideNavItem";
+    import SideNavItem from "./components/NavItem";
     import { mapState } from 'vuex'
     import Login from "./components/Login";
     import './App.scss'

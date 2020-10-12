@@ -30,9 +30,9 @@
 
 <script>
     import { mapState } from 'vuex'
-    import Table from './Table'
-    import CatalogEdit from "../pages/CatalogEdit";
-    import Dialog from "./Dialog";
+    import Table from '../components/Table'
+    import CatalogEdit from "./CatalogEdit";
+    import Dialog from "../components/Dialog";
 
     export default {
         name: 'Catalogs',
