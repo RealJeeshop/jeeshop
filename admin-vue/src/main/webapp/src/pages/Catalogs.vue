@@ -1,29 +1,26 @@
 <template>
-    <div class="content">
+    <div class="page-content column">
         <v-toolbar color="#484848" dark flat>
             <v-tabs class="catalog-items-menu" align-with-title>
                 <v-tabs-slider color="yellow"></v-tabs-slider>
 
-                <v-tab to="catalogs">Catalogs</v-tab>
-                <v-tab to="categories">Categories</v-tab>
-                <v-tab to="products">Products</v-tab>
-                <v-tab to="skus">SKUs</v-tab>
-                <v-tab to="discounts">Discounts</v-tab>
+                <v-tab to="/catalogs">Catalogs</v-tab>
+                <v-tab to="/categories">Categories</v-tab>
+                <v-tab to="/products">Products</v-tab>
+                <v-tab to="/skus">SKUs</v-tab>
+                <v-tab to="/discounts">Discounts</v-tab>
             </v-tabs>
 
             <v-btn color="primary" dark>New Item</v-btn>
         </v-toolbar>
-
-        <div>
+        <div class="content">
             <Dialog :dialog="showWarningDialog"
                     title="Changes will not be saved"
                     message="You have pending changes. Are you sure you want to quit ?"
                     @agreed="handleChoice"/>
 
-            <Table :of="itemType" :items="items" @item-selected="handleItemSelection" />
-            <v-navigation-drawer v-if="showEditPanel" absolute right width="60%" >
-                <CatalogEdit :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
-            </v-navigation-drawer>
+            <Table :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
+            <CatalogEdit v-if="itemId" :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
         </div>
     </div>
 </template>
@@ -31,7 +28,7 @@
 <script>
     import { mapState } from 'vuex'
     import Table from '../components/Table'
-    import CatalogEdit from "./CatalogEdit";
+    import CatalogEdit from "../components/CatalogEdit";
     import Dialog from "../components/Dialog";
 
     export default {
@@ -49,22 +46,38 @@
                 itemId: null
             }
         },
-        computed: mapState({
-            items: state => {
-                let path = state.catalogs.itemType
-                if (path === 'catalogs') {
-                    return state.catalogs.catalogs
-                } else if (path === 'products') {
-                    return state.catalogs.products
-                } else if(path === 'categories') {
-                    return state.catalogs.categories
-                } else if (path === 'skus') {
-                    return state.catalogs.skus
-                } else if (path === 'discounts') {
-                    return state.catalogs.discounts
-                }
+        computed: {
+            ...mapState({
+                items: state => {
+                    let path = state.catalogs.itemType
+                    if (path === 'catalogs') {
+                        return state.catalogs.catalogs
+                    } else if (path === 'products') {
+                        return state.catalogs.products
+                    } else if(path === 'categories') {
+                        return state.catalogs.categories
+                    } else if (path === 'skus') {
+                        return state.catalogs.skus
+                    } else if (path === 'discounts') {
+                        return state.catalogs.discounts
+                    }
+                },
+            }),
+            headers() {
+                let headers = [
+                    {text: "Name", value: "name"},
+                    {text: "Description", value: "description"},
+                    {text: "Start Date", value: "startDate"},
+                    {text: "End Date", value: "endDate"},
+                    {text: "Visible", value: "visible"},
+                    {text: "Disabled", value: "disabled"}
+                ]
+
+                if (this.showEditPanel) {
+                    return headers.splice(0, 2)
+                } else return headers
             }
-        }),
+        },
         methods: {
             handleItemSelection(id) {
 
@@ -73,7 +86,6 @@
                     this.showWarningDialog = true
                     this.nextItemid = id
                 } else {
-
                     this.$router.push(`/${this.itemType}/${id}`)
                 }
             },
@@ -93,7 +105,7 @@
         },
         created () {
 
-            console.log("CREATED")
+            console.log("CREATING CATALOGS COMPONENT")
 
             let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
                 || new RegExp(/\/(.*)/).exec(this.$route.path)
@@ -109,11 +121,10 @@
 
         updated() {
 
-            console.log("UPDATED")
+            console.log("UPDATING CATALOGS COMPONENT")
 
             let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
                 || new RegExp(/\/(.*)/).exec(this.$route.path)
-
             if (match) {
                 this.itemType = match[1]
                 this.itemId = match[2] ? parseInt(match[2]) : undefined
@@ -124,6 +135,10 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .table-container {
+        flex: 1;
+    }
 
     .catalog-items-menu {
 

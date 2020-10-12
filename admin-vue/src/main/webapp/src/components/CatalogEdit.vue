@@ -60,12 +60,12 @@
 
 <script>
 
-    import Input from "../components/inputs/Input";
-    import Textarea from "../components/inputs/Textarea";
-    import DateField from "../components/inputs/DateField";
-    import Select from "../components/inputs/Select";
-    import PresentationTable from "../components/PresentationsTable";
-    import RelationshipsTable from "../components/RelationshipsTable";
+    import Input from "./inputs/Input";
+    import Textarea from "./inputs/Textarea";
+    import DateField from "./inputs/DateField";
+    import Select from "./inputs/Select";
+    import PresentationTable from "./PresentationsTable";
+    import RelationshipsTable from "./RelationshipsTable";
 
     export default {
         name: 'CatalogEdit',
@@ -105,6 +105,8 @@
 
     .catalog-edit-container {
         background-color: #efefef;
+        flex: 2;
+        border-left: 1px solid #e0e0e0;
     }
 
     .close-icon {
