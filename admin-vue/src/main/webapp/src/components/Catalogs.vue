@@ -1,19 +1,30 @@
 <template>
     <div class="content">
-        <h1>Catalogs</h1>
-        <div class="catalog-items-menu">
-            <router-link to="/catalogs">Catalogs</router-link>
-            <router-link to="/categories">Categories</router-link>
-            <router-link to="/products">Products</router-link>
-            <router-link to="/skus">SKUs</router-link>
-            <router-link to="/discounts">Discounts</router-link>
-        </div>
+        <v-toolbar color="#484848" dark flat>
+            <v-tabs class="catalog-items-menu" align-with-title>
+                <v-tabs-slider color="yellow"></v-tabs-slider>
 
-        <Table :of="itemType" :items="items" @item-selected="handleItemSelection" />
-        <v-navigation-drawer v-if="showEditPanel" absolute right width="60%" >
-            <CatalogEdit :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
-        </v-navigation-drawer>
-        <router-view label="catalog-item-route"></router-view>
+                <v-tab to="catalogs">Catalogs</v-tab>
+                <v-tab to="categories">Categories</v-tab>
+                <v-tab to="products">Products</v-tab>
+                <v-tab to="skus">SKUs</v-tab>
+                <v-tab to="discounts">Discounts</v-tab>
+            </v-tabs>
+
+            <v-btn color="primary" dark>New Item</v-btn>
+        </v-toolbar>
+
+        <div>
+            <Dialog :dialog="showWarningDialog"
+                    title="Changes will not be saved"
+                    message="You have pending changes. Are you sure you want to quit ?"
+                    @agreed="handleChoice"/>
+
+            <Table :of="itemType" :items="items" @item-selected="handleItemSelection" />
+            <v-navigation-drawer v-if="showEditPanel" absolute right width="60%" >
+                <CatalogEdit :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
+            </v-navigation-drawer>
+        </div>
     </div>
 </template>
 
@@ -21,17 +32,20 @@
     import { mapState } from 'vuex'
     import Table from './Table'
     import CatalogEdit from "../pages/CatalogEdit";
+    import Dialog from "./Dialog";
 
     export default {
         name: 'Catalogs',
         components: {
             CatalogEdit,
-            Table
+            Table,
+            Dialog
         },
         data: () => {
             return {
                 itemType: 'catalogs',
                 showEditPanel: false,
+                showWarningDialog: false,
                 itemId: null
             }
         },
@@ -53,11 +67,28 @@
         }),
         methods: {
             handleItemSelection(id) {
-                this.$router.push(`${this.itemType}/${id}`)
+
+                if (this.showEditPanel) {
+                    console.log("showing warning dialog")
+                    this.showWarningDialog = true
+                    this.nextItemid = id
+                } else {
+
+                    this.$router.push(`/${this.itemType}/${id}`)
+                }
             },
             handleEditPanelClose() {
                 this.showEditPanel = false
                 this.$router.back()
+            },
+            handleChoice(agreed) {
+
+                if (agreed) {
+                    this.showWarningDialog = false
+                    this.$router.replace(`/${this.itemType}/${this.nextItemid}`)
+                } else {
+                    this.showWarningDialog = false
+                }
             }
         },
         created () {
@@ -69,7 +100,7 @@
 
             if (match) {
                 this.itemType = match[1]
-                this.itemId = match[2]
+                this.itemId = match[2] ? parseInt(match[2]) : undefined
                 this.showEditPanel = match[2] !== undefined
                 this.$store.dispatch('catalogs/setItemType', this.itemType)
                 this.$store.dispatch('catalogs/getItems', this.itemType)
@@ -85,7 +116,7 @@
 
             if (match) {
                 this.itemType = match[1]
-                this.itemId = match[2]
+                this.itemId = match[2] ? parseInt(match[2]) : undefined
                 this.$store.dispatch('catalogs/setItemType', this.itemType)
             }
         }
@@ -99,18 +130,18 @@
         display: flex;
 
         a {
-            display: block;
-            padding: 10px 15px;
             text-decoration: none;
-            color: #337ab7;
-            background-color: #fff;
-            border-radius: 4px;
-            margin-right: 1em;
+            color: #fff;
+
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         a.router-link-exact-active {
             color: #fff;
-            background-color: #337ab7;
         }
     }
 </style>

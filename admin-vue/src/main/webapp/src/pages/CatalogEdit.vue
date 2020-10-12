@@ -2,33 +2,22 @@
         <div class="catalog-edit-container">
             <div class="header">
                 <h2>Product details</h2>
-                <span @click="close()" class="close-icon">X</span>
+                <span @click="close()" class="close-icon"></span>
             </div>
 
             <div class="form-container">
                 <div class="default-field-container">
-                    <Input label="Name" :value="item.name" placeholder="name"/>
-                    <Textarea label="Description" :value="item.description" placeholder="description"  />
-                    <DateField label="Start Date" />
-                    <DateField label="End Date" />
-
+                        <Input label="Name" :value="item.name" placeholder="name"/>
+                        <Textarea label="Description" :value="item.description" placeholder="description"  />
+                        <div class="flex one-half">
+                            <DateField label="Start Date" />
+                            <DateField label="End Date" />
+                        </div>
+                        <PresentationTable />
                 </div>
+
                 <div v-if="itemType === 'catalogs'">
-                    <div class="field-container">
-                        <label>
-                            <span>Relationships</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel eleva>
-                                    <v-expansion-panel-header>
-                                        Root Categories
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
+                    <RelationshipsTable label="Root categories"/>
                 </div>
                 <div class="field-containers" v-else-if="itemType === 'skus'">
 
@@ -40,86 +29,16 @@
                     <Input label="Quantity" :value="item.name" placeholder=""/>
                     <Input label="Threshold" :value="item.name" placeholder=""/>
 
-                    <div class="field-container">
-                        <label>
-                            <span>Relationships</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        SKUs discount
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
+                    <RelationshipsTable label="SKU discounts"/>
                 </div>
                 <div v-else-if="itemType === 'products'">
-                    <div class="field-container">
-                        <label>
-                            <span>Relationships</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        Child SKUs
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
-                    <div class="field-container">
-                        <label>
-                            <span>Discounts</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        Products discounts
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
+                    <RelationshipsTable label="Child SKUs"/>
+                    <RelationshipsTable label="Product discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <div class="field-container">
-                        <label>
-                            <span>Relationships</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        Child Categories
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
-                    <div class="field-container">
-                        <label>
-                            <span>Relationships</span>
-                            <v-expansion-panels>
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header>
-                                        Child products
-                                    </v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels>
-                        </label>
-                    </div>
+                    <RelationshipsTable label="Child Categories" />
+                    <RelationshipsTable label="Child products" />
                 </div>
 
                 <div class="field-containers" v-else-if="itemType === 'discounts'">
@@ -145,10 +64,12 @@
     import Textarea from "../components/inputs/Textarea";
     import DateField from "../components/inputs/DateField";
     import Select from "../components/inputs/Select";
+    import PresentationTable from "../components/PresentationsTable";
+    import RelationshipsTable from "../components/RelationshipsTable";
 
     export default {
         name: 'CatalogEdit',
-        components: {Select, Input, Textarea, DateField},
+        components: {RelationshipsTable, PresentationTable, Select, Input, Textarea, DateField},
         props: {
             itemType: String,
             itemId: Number,
@@ -183,13 +104,37 @@
 <style lang="scss" scoped>
 
     .catalog-edit-container {
-        background-color: #F8F8F8;
+        background-color: #efefef;
     }
 
     .close-icon {
 
         cursor: pointer;
-        font-size: x-large;
+        position: relative;
+
+        width: 32px;
+        height: 25px;
+        opacity: 0.3;
+    }
+
+    .close-icon:hover {
+        opacity: 1;
+    }
+
+    .close-icon:before, .close-icon:after {
+        position: absolute;
+        left: 15px;
+        content: ' ';
+        height: 25px;
+        width: 2px;
+        background-color: #333;
+    }
+    .close-icon:before {
+        transform: rotate(45deg);
+    }
+
+    .close-icon:after {
+        transform: rotate(-45deg);
     }
 
     .header {
@@ -214,12 +159,26 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        flex-direction: column;
     }
 
     .field-container {
-        min-width: 40%;
         margin-right: 1em;
 
     }
+
+    .flex {
+        display: flex;
+
+        .one-half {
+            flex: 0.5;
+        }
+    }
+
+    button {
+        margin-top: 2em;
+    }
+
+
 
 </style>

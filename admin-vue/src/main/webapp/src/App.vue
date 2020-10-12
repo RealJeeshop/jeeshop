@@ -1,32 +1,27 @@
 <template>
     <v-app id="app">
-        <header>
-            <div class="header-left">
-                <div class="app-name"><em>Jeeshop Admin</em></div>
-                <div class="app-nav">
-                    <router-link to="/settings">Settings</router-link>
-                    <router-link to="/help">Help</router-link>
-                </div>
-            </div>
-            <div class="header-right">
-                <Login />
-            </div>
+        <v-toolbar color="cyan" dark flat>
 
-        </header>
-        <v-main>
-            <div class="page-content">
-                <v-navigation-drawer permanent expand-on-hover>
+            <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
+            <v-toolbar-title>Jeeshop Admin</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <Login />
+
+            <template v-slot:extension>
+                <v-tabs align-with-title>
+                    <v-tabs-slider color="yellow"></v-tabs-slider>
                     <SideNavItem icon="fas fa-home" text="Overview" to="/" />
-                    <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Catalogs" to="/catalogs" />
-                    <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Orders" to="/orders" />
-                    <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Stats" to="/stats" />
-                    <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Users" to="/users" />
-                    <SideNavItem v-if="loggedIn" icon="fas fa-home" text="Emails, Newsletters" to="/emails" />
-                </v-navigation-drawer>
-                <div class="content">
-                    <router-view :key="$route.fullPath"></router-view>
-                </div>
-            </div>
+                    <SideNavItem v-if="loggedIn" icon="fas fa-book" text="Catalog" to="/catalogs" />
+                    <SideNavItem v-if="loggedIn" icon="fas fa-shopping-cart" text="Orders" to="/orders" />
+                    <SideNavItem v-if="loggedIn" icon="fas fa-chart-bar" text="Stats" to="/stats" />
+                    <SideNavItem v-if="loggedIn" icon="fas fa-user" text="Users" to="/users" />
+                    <SideNavItem v-if="loggedIn" icon="fas fa-envelope" text="Emails, Newsletters" to="/emails" />
+                </v-tabs>
+            </template>
+
+        </v-toolbar>
+        <v-main class="page-content">
+            <router-view :key="$route.fullPath"></router-view>
         </v-main>
     </v-app>
 </template>
@@ -56,10 +51,14 @@
 
     .header-left {
         display: flex;
+        align-items: center;
+        height: 100%;
     }
 
     .header-right {
         display: flex;
+        align-items: center;
+        height: 100%;
     }
 </style>
 

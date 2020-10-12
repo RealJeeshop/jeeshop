@@ -1,7 +1,7 @@
 <template>
     <div class="field-container">
 
-            <v-textarea v-model="value" :label="label" rows="4" :hint="placeholder" outlined/>
+            <v-textarea v-model="value" :label="label" rows="3" />
     </div>
 </template>
 

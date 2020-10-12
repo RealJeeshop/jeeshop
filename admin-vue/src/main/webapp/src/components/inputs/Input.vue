@@ -5,7 +5,7 @@
                     :label="label"
                     v-model="value"
                     :placeholder="placeholder"
-                    :hint="hint" outlined/>
+                    :hint="hint"/>
         </label>
     </div>
 </template>

@@ -1,34 +1,24 @@
 <template>
     <div class="table-container">
-        <div class="table-header">
-            <div>Show 10 elements per page</div>
-            <div>
-                <input v-model="searchText" placeholder="Search by item id, name or description" />
-                <i class="fa fa-2x fa-plus" />
-            </div>
-        </div>
-        <v-simple-table>
-            <thead>
-                <tr>
-                    <th class="text-left">Name</th>
-                    <th class="text-left">Description</th>
-                    <th class="text-left">Start Date</th>
-                    <th class="text-left">End Date</th>
-                    <th class="text-left">Visible</th>
-                    <th class="text-left">Disabled</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="clickable" v-for="item in items" :key="item.id" @click="onRowClick(item.id)">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.startDate }}</td>
-                    <td>{{ item.endDate }}</td>
-                    <td>{{ item.visible ? 'Yes' : 'No' }}</td>
-                    <td>{{ item.disabled ? 'Yes' : 'No'}}</td>
-                </tr>
-            </tbody>
-        </v-simple-table>
+        <v-data-table :search="search" :headers="headers" :items="items.map(item => {
+            item.visible = item.visible ? 'Yes' : 'No'
+            item.disabled = item.disabled ? 'Yes' : 'No'
+            item.startDate = formatDate(item.startDate)
+            item.endDate = formatDate(item.endDate)
+            return item
+        })" @click:row="onRowClick">
+           <template v-slot:top>
+               <v-toolbar flat>
+                   <v-text-field
+                           v-model="search"
+                           append-icon="mdi-magnify"
+                           label="Search"
+                           single-line
+                           hide-details>
+                   </v-text-field>
+               </v-toolbar>
+           </template>
+        </v-data-table>
     </div>
 
 </template>
@@ -44,17 +34,35 @@
         },
         data: () => {
             return {
-                searchText: ""
+                search: "",
+                headers: [
+                    {text: "Name", value: "name"},
+                    {text: "Description", value: "description"},
+                    {text: "Start Date", value: "startDate"},
+                    {text: "End Date", value: "endDate"},
+                    {text: "Visible", value: "visible"},
+                    {text: "Disabled", value: "disabled"}
+                ],
             }
         },
         methods: {
-            onRowClick(id) {
-                console.log('id : ' + JSON.stringify(id))
-               this.$emit('item-selected', id)
+            onRowClick(item) {
+               this.$emit('item-selected', item.id)
+            },
+            formatDate(date) {
+                return isNaN(date)
+                    ? new Date(date).toLocaleDateString('en-gb')
+                    : date
             }
         },
     }
 </script>
+
+<style>
+    tr {
+        cursor: pointer;
+    }
+</style>
 
 <style lang="scss" scoped>
 

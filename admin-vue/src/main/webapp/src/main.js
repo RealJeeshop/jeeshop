@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from './store'
-import 'vue-datetime/dist/vue-datetime.css'
 import vuetify from './plugins/vuetify'
 
 Vue.use(VueRouter)

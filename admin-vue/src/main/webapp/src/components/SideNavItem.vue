@@ -1,8 +1,9 @@
 <template>
-    <router-link class="side-nav-item" :to="to">
+    <!--<router-link class="side-nav-item" :to="to">
         <i :class="icon" />
         <span>{{text}}</span>
-    </router-link>
+    </router-link>-->
+    <v-tab :to="to">{{text}}</v-tab>
 </template>
 
 <script>
