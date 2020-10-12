@@ -43,9 +43,13 @@
             loading: state => state.session.loading,
             loggedIn: state => state.session.loggedIn
         }),
-        methods: mapActions('session', [
-            'login', 'logOut'
-        ]),
+        methods: {
+            ...mapActions('session', ['login']),
+            logOut() {
+                this.$store.dispatch('session/logOut')
+                this.$router.replace('/')
+            }
+        },
     }
 </script>
 
