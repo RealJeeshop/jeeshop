@@ -34,7 +34,7 @@
 
 
 		<!-- other libs  versions -->
-		<version.junit>4.12</version.junit>
+		<version.junit>4.13.1</version.junit>
 		<version.querydsl>4.0.9</version.querydsl>
 		<version.resteasy>3.0.10.Final</version.resteasy>
 		<version.hibernate>4.3.7.Final</version.hibernate>
@@ -55,6 +55,15 @@
 		<version.flyway>7.0.0</version.flyway>
 		<version.weld-se>2.1.2.Final</version.weld-se>
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub OWNER Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/remibantos/jeeshop</url>
+		</repository>
+	</distributionManagement>
+
 
 	<dependencies>
 
@@ -233,9 +242,6 @@
 					<version>${version.flyway}</version>
 					<configuration>
 						<placeholderPrefix>#[</placeholderPrefix>
-						<locations>
-							<location>filesystem:src/main/resources/db/mysql</location>
-						</locations>
 					</configuration>
 					<executions>
 						<execution>
