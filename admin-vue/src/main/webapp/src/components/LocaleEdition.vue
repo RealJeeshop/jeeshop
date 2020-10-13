@@ -2,7 +2,7 @@
     <v-dialog v-model="open" persistent max-width="900">
         <v-card>
             <v-card-title class="headline">Add new presentation</v-card-title>
-            <v-card-text class="form-container">
+            <v-card-text>
                 <div class="fields-container">
                     <Select label="Select a locale" :items="locales"/>
                 </div>
@@ -22,12 +22,8 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="black darken-1" text @click="addLocale()">
-                    Add
-                </v-btn>
-                <v-btn color="red darken-1" text @click="cancel()">
-                    Can
-                </v-btn>
+                <v-btn color="black darken-1" text @click="addLocale()">Add</v-btn>
+                <v-btn color="red darken-1" text @click="cancel()">Cancel</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

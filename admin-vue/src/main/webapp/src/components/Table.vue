@@ -18,6 +18,9 @@
                    </v-text-field>
                </v-toolbar>
            </template>
+            <template v-slot:item.actions="{  }">
+                <slot name="actions"></slot>
+            </template>
         </v-data-table>
     </div>
 

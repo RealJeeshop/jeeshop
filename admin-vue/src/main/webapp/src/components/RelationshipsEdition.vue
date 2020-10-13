@@ -3,7 +3,12 @@
         <v-card>
             <v-card-title class="headline">Select items</v-card-title>
             <v-card-text>
-                <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected" />
+                <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected">
+                    <template v-slot:actions="{ }">
+                        <v-checkbox input-value="false"
+                                           value />
+                    </template>
+                </Table>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -31,7 +36,8 @@
                     {text: "Start Date", value: "startDate"},
                     {text: "End Date", value: "endDate"},
                     {text: "Visible", value: "visible"},
-                    {text: "Disabled", value: "disabled"}
+                    {text: "Disabled", value: "disabled"},
+                    {text: "", value: "actions", sortable: false}
                 ]
             }
         },
