@@ -11,7 +11,7 @@
         name: 'Select',
         props: {
             label: String,
-            items: [String],
+            items: Array[String],
             placeholder: String
         }
     }

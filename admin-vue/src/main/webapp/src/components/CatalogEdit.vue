@@ -17,7 +17,7 @@
                         <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
                                    :value="item.endDate" @on-update="update" />
                     </div>
-                    <PresentationTable />
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
@@ -81,6 +81,7 @@
         },
         data: () => {
             return {
+                showLocaleEdition: false,
                 visible: 'visible',
                 date: new Date(),
                 disabled: false,
