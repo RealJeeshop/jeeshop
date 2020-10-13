@@ -11,7 +11,7 @@
                 <v-tab to="/discounts">Discounts</v-tab>
             </v-tabs>
 
-            <v-btn color="primary" dark @click="showEditPanel = true">New Item</v-btn>
+            <v-btn color="primary" dark @click="createItem()">New Item</v-btn>
         </v-toolbar>
         <div class="content">
             <Dialog :dialog="showWarningDialog"
@@ -103,18 +103,21 @@
                 } else {
                     this.showWarningDialog = false
                 }
+            },
+            createItem() {
+                this.$router.push(`/${this.itemType}/create`)
             }
         },
         created () {
 
             console.log("CREATING CATALOGS COMPONENT")
 
-            let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
+            let match = new RegExp(/\/(.*)\/([0-9]|create)*/).exec(this.$route.path)
                 || new RegExp(/\/(.*)/).exec(this.$route.path)
 
             if (match) {
                 this.itemType = match[1]
-                this.itemId = match[2] ? parseInt(match[2]) : undefined
+                this.itemId = match[2] ? match[2] === 'create' ? undefined : parseInt(match[2]) : undefined
                 this.showEditPanel = match[2] !== undefined
                 this.$store.dispatch('catalogs/getItems', this.itemType)
             }

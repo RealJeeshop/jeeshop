@@ -98,6 +98,7 @@
             },
             saveItem() {
                 this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
+                this.close()
             },
             update(field) {
                 this.item[field.key] = field.value
