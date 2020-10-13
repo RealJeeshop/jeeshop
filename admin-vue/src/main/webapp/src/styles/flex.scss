@@ -1,0 +1,11 @@
+.flex {
+  display: flex;
+
+  .column {
+    flex-direction: column;
+  }
+
+  .one-half {
+    flex: 0.5;
+  }
+}

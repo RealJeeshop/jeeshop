@@ -19,6 +19,8 @@ import Orders from "./pages/Orders";
 import './main.css'
 import './styles/inputs.css'
 import './styles/buttons.css'
+import './styles/forms.scss'
+import './styles/flex.scss'
 
 Vue.config.productionTip = false
 

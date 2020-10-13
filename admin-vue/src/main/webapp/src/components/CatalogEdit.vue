@@ -7,7 +7,7 @@
             </div>
 
             <div class="form-container">
-                <div class="default-field-container">
+                <div class="default-fields-container column">
                     <Input label="Name" name="name" :value="item.name" @on-update="update" />
                     <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
                     <div class="flex one-half">
@@ -17,44 +17,54 @@
                         <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
                                    :value="item.endDate" @on-update="update" />
                     </div>
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                     <RelationshipsTable label="Root categories"/>
                 </div>
-                <div class="field-containers" v-else-if="itemType === 'skus'">
+                <div v-else-if="itemType === 'skus'">
+                    <div class="fields-container">
 
-                    <Input label="Reference" :value="item.name" placeholder=""/>
-                    <Input label="Price" :value="item.name" placeholder=""/>
+                        <Input label="Reference" :value="item.name" placeholder=""/>
+                        <Input label="Quantity" :value="item.name" placeholder=""/>
 
-                    <Select label="Currency" :items="currencies" />
+                        <Input label="Price" :value="item.name" placeholder=""/>
+                        <Select label="Currency" :items="currencies" />
 
-                    <Input label="Quantity" :value="item.name" placeholder=""/>
-                    <Input label="Threshold" :value="item.name" placeholder=""/>
+                        <Input label="Threshold" :value="item.name" placeholder=""/>
 
+                    </div>
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                     <RelationshipsTable label="SKU discounts"/>
                 </div>
+
                 <div v-else-if="itemType === 'products'">
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                     <RelationshipsTable label="Child SKUs"/>
                     <RelationshipsTable label="Product discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                     <RelationshipsTable label="Child Categories" />
                     <RelationshipsTable label="Child products" />
                 </div>
 
-                <div class="field-containers" v-else-if="itemType === 'discounts'">
-                    <Select label="Applicable to..." :items="applyTarget" />
-                    <Input label="Voucher code" :value="item.name" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
-                    <Select label="Type" :items="discountTypes" />
-                    <Input label="Value" :value="item.name" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
-                    <Select label="Trigger threshold rules" :items="thresholdRules" />
-                    <Input label="Threshold" :value="item.name" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
-                    <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
-                    <Input label="Cumulative" :value="item.name" placeholder=""/>
+                <div v-else-if="itemType === 'discounts'">
+                    <div class="fields-container">
+                        <Select label="Applicable to..." :items="applyTarget" />
+                        <Input label="Voucher code" :value="item.name" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
+                        <Select label="Type" :items="discountTypes" />
+                        <Input label="Value" :value="item.name" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
+                        <Select label="Trigger threshold rules" :items="thresholdRules" />
+                        <Input label="Threshold" :value="item.name" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
+                        <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
+                        <Input label="Cumulative" :value="item.name" placeholder=""/>
+                    </div>
+                    <PresentationTable @add-locale="showLocaleEdition = true"/>
                 </div>
+
 
                 <v-btn color="primary" elevation="2" @click="saveItem()">Save</v-btn>
             </div>
@@ -156,36 +166,6 @@
         justify-content: space-between;
         align-items: center;
         padding: 2em;
-    }
-
-    .form-container {
-        display: flex;
-        flex-direction: column;
-        background-color: #FFFFFF;
-        padding: 3em;
-        margin-right: 4em;
-        margin-left: 4em;
-
-        box-shadow: 0 3px 6px rgba(0,0,0,0.06);
-    }
-
-    .default-field-container, .field-containers {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-    }
-
-    .field-container {
-        margin-right: 1em;
-
-    }
-
-    .flex {
-        display: flex;
-
-        .one-half {
-            flex: 0.5;
-        }
     }
 
     button {

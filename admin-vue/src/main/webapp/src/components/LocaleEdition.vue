@@ -3,17 +3,17 @@
         <v-card>
             <v-card-title class="headline">Add new presentation</v-card-title>
             <v-card-text class="form-container">
-                <div class="field-containers">
+                <div class="fields-container">
                     <Select label="Select a locale" :items="locales"/>
                 </div>
-                <div class="field-containers">
+                <div class="fields-container">
                     <Input label="Name" />
                     <Input label="Promotion text" />
                     <Textarea label="Short description" />
                     <Textarea label="Medium description" />
                     <Textarea label="Long description" />
                 </div>
-                <div class="field-containers">
+                <div class="fields-container">
                     <FileInput label="Thumbnail" />
                     <FileInput label="Small Image" />
                     <FileInput label="Large Image" />
@@ -61,21 +61,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .form-container {
-        display: flex;
-        flex-direction: column;
-    }
 
-    .field-containers {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .field-container {
-        margin-bottom: 1rem;
-        flex: 1;
-        min-width: 40%;
-        margin-right: 1em;
-
-    }
 </style>
