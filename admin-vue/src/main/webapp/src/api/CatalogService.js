@@ -3,9 +3,10 @@ import categories from "./data/categories.json"
 import products from "./data/products.json"
 import skus from "./data/skus.json"
 import discounts from "./data/discounts.json"
+import _ from 'lodash'
 
 function getNextId(items)  {
-    return Math.max.apply(Math, items.map((o) => { return o.id }))
+    return Math.max.apply(Math, items.map((o) => { return o.id })) + 1
 }
 
 export default {
@@ -16,9 +17,11 @@ export default {
 
             if (!item.id) {
                 item.id = getNextId(items)
+                items.push(item)
+            } else {
+                let itemIndex = items.findIndex((i) => i.id === item.id)
+                items[itemIndex] = item
             }
-
-            items.push(item)
             success(item)
 
         } else error()
@@ -27,10 +30,11 @@ export default {
     getAll(itemType, success, error) {
 
         let items = getItems(itemType)
-        if (items !== null) success(items)
+        if (items !== null) success(_.cloneDeep(items))
         else error(`${itemType} is not a valid item type`)
     }
 }
+
 
 function getItems(itemType) {
 

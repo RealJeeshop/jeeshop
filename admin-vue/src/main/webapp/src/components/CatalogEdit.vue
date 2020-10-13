@@ -11,8 +11,11 @@
                     <Input label="Name" name="name" :value="item.name" @on-update="update" />
                     <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
                     <div class="flex one-half">
-                        <DateField :value="item.startDate" name="startDate" label="Start Date" @on-update="update" />
-                        <DateField :value="item.endDate" name="endDate" label="End Date" @on-update="update" />
+                        <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
+                                   :value="item.startDate" @on-update="update" />
+
+                        <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
+                                   :value="item.endDate" @on-update="update" />
                     </div>
                     <PresentationTable />
                 </div>
@@ -67,6 +70,7 @@
     import Select from "./inputs/Select";
     import PresentationTable from "./PresentationsTable";
     import RelationshipsTable from "./RelationshipsTable";
+    import _ from 'lodash'
 
     export default {
         name: 'CatalogEdit',
@@ -89,7 +93,7 @@
         },
         computed: {
             item() {
-                return this.itemId ? this.$store.getters['catalogs/getById'](this.itemId, this.itemType) : {}
+                return this.itemId ? _.cloneDeep(this.$store.getters['catalogs/getById'](this.itemId, this.itemType)) : {}
             },
         },
         methods: {

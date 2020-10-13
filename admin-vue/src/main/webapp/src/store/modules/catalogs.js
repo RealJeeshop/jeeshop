@@ -11,12 +11,6 @@ const state = () => ({
 
 const getters = {
 
-    catalogs: (state, getters, rootState) => {
-        return state.items.map(() => {
-            return rootState.catalogs
-        })
-    },
-
     getById: (state) => (id, itemType) => {
         console.log("Loading item ...")
         let items = state.catalogs
@@ -45,10 +39,6 @@ const actions = {
     },
 
     upsert ({ commit, state }, { itemType, item }) {
-
-        console.log('itemType : ' + JSON.stringify(itemType))
-        console.log('item : ' + JSON.stringify(item))
-
         const existingItems = [...state[itemType]]
         commit('setAddCatalogStatus', null)
         CatalogService.add(itemType, item,
@@ -71,7 +61,13 @@ const mutations = {
     },
 
     addItem (state, payload) {
-        state[payload.itemType].push(payload.item)
+        let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
+
+        if (existingId === -1) {
+            state[payload.itemType].push(payload.item)
+        } else {
+            state[payload.itemType][existingId] = payload.item
+        }
     },
 
     setAddCatalogStatus (state, status) {
