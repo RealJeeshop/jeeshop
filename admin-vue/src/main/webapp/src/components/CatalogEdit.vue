@@ -20,8 +20,8 @@
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
-                    <RelationshipsTable label="Root categories"/>
+                    <PresentationTable />
+                    <RelationshipsTable label="Root categories" itemType="categories" />
                 </div>
                 <div v-else-if="itemType === 'skus'">
                     <div class="fields-container">
@@ -35,20 +35,20 @@
                         <Input label="Threshold" :value="item.name" placeholder=""/>
 
                     </div>
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
-                    <RelationshipsTable label="SKU discounts"/>
+                    <PresentationTable />
+                    <RelationshipsTable label="SKU discounts" itemType="discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'products'">
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
-                    <RelationshipsTable label="Child SKUs"/>
-                    <RelationshipsTable label="Product discounts"/>
+                    <PresentationTable />
+                    <RelationshipsTable label="Child SKUs" itemType="skus"/>
+                    <RelationshipsTable label="Product discounts" itemType="discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
-                    <RelationshipsTable label="Child Categories" />
-                    <RelationshipsTable label="Child products" />
+                    <PresentationTable />
+                    <RelationshipsTable label="Child Categories" itemType="categories" />
+                    <RelationshipsTable label="Child products" itemType="products" />
                 </div>
 
                 <div v-else-if="itemType === 'discounts'">
@@ -62,7 +62,7 @@
                         <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
                         <Input label="Cumulative" :value="item.name" placeholder=""/>
                     </div>
-                    <PresentationTable @add-locale="showLocaleEdition = true"/>
+                    <PresentationTable />
                 </div>
 
 
@@ -91,7 +91,6 @@
         },
         data: () => {
             return {
-                showLocaleEdition: false,
                 visible: 'visible',
                 date: new Date(),
                 disabled: false,

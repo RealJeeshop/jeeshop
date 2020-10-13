@@ -6,10 +6,10 @@
         </div>
         <v-simple-table class="presentation-table">
             <tbody>
-            <tr v-for="presentation in presentations" :key="presentation.id" class="clickable">
-                <td class="full-width">{{presentation.locale}}</td>
-                <td><i class="fa fa-trash"/></td>
-            </tr>
+                <tr v-for="presentation in presentations" :key="presentation.id" class="clickable">
+                    <td class="full-width">{{presentation.locale}}</td>
+                    <td><i class="fa fa-trash"/></td>
+                </tr>
             </tbody>
         </v-simple-table>
 
@@ -45,7 +45,7 @@
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 
     td.full-width {

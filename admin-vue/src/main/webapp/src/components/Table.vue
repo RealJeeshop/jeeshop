@@ -1,5 +1,5 @@
 <template>
-    <div id="table" class="table-container">
+    <div class="table-container">
         <v-data-table :search="search" :headers="headers" :items="items.map(item => {
             item.visible = item.visible ? 'Yes' : 'No'
             item.disabled = item.disabled ? 'Yes' : 'No'
@@ -30,7 +30,6 @@
         props: {
             headers: Array[Object],
             items: Array[Object],
-            onItemSelected: Function,
             of: String
         },
         data: () => {
