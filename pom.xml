@@ -34,7 +34,7 @@
 
 
 		<!-- other libs  versions -->
-		<version.junit>4.12</version.junit>
+		<version.junit>4.13.1</version.junit>
 		<version.querydsl>4.0.9</version.querydsl>
 		<version.resteasy>3.0.10.Final</version.resteasy>
 		<version.hibernate>4.3.7.Final</version.hibernate>
