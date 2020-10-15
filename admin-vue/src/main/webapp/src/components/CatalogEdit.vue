@@ -1,7 +1,7 @@
 <template>
         <div class="catalog-edit-container">
             <div class="header">
-                <h2 v-if="itemId">Product details</h2>
+                <h2 v-if="item">Product details</h2>
                 <h2 v-else>Add new {{ itemType }}</h2>
                 <span @click="close()" class="close-icon"></span>
             </div>
@@ -12,17 +12,18 @@
                     <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
                     <div class="flex one-half">
                         <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
-                                   :value="item.startDate" @on-update="update" />
+                                   :value="formatDate(item.startDate)" @on-update="update" />
 
                         <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
-                                   :value="item.endDate" @on-update="update" />
+                                   :value="formatDate(item.endDate)" @on-update="update" />
                     </div>
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
-                    <PresentationTable />
-                    <RelationshipsTable label="Root categories" itemType="categories" />
+                    <PresentationTable :value="item.localizedPresentation" />
+                    <RelationshipsTable label="Root categories" itemType="categories" :values="item.rootCategoriesIds"/>
                 </div>
+
                 <div v-else-if="itemType === 'skus'">
                     <div class="fields-container">
 
@@ -35,19 +36,19 @@
                         <Input label="Threshold" :value="item.name" placeholder=""/>
 
                     </div>
-                    <PresentationTable />
+                    <PresentationTable :value="item.localizedPresentation" />
                     <RelationshipsTable label="SKU discounts" itemType="discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'products'">
-                    <PresentationTable />
+                    <PresentationTable :value="item.localizedPresentation" />
                     <RelationshipsTable label="Child SKUs" itemType="skus"/>
                     <RelationshipsTable label="Product discounts" itemType="discounts"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <PresentationTable />
-                    <RelationshipsTable label="Child Categories" itemType="categories" />
+                    <PresentationTable :value="item.localizedPresentation" />
+                    <RelationshipsTable label="Child Categories" itemType="categories" :values="item.rootCategoriesIds" />
                     <RelationshipsTable label="Child products" itemType="products" />
                 </div>
 
@@ -62,7 +63,7 @@
                         <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
                         <Input label="Cumulative" :value="item.name" placeholder=""/>
                     </div>
-                    <PresentationTable />
+                    <PresentationTable :value="item.localizedPresentation" />
                 </div>
 
 
@@ -80,14 +81,14 @@
     import Select from "./inputs/Select";
     import PresentationTable from "./PresentationsTable";
     import RelationshipsTable from "./RelationshipsTable";
-    import _ from 'lodash'
+    import DateUtils from '../lib/dateUtils'
 
     export default {
         name: 'CatalogEdit',
         components: {RelationshipsTable, PresentationTable, Select, Input, Textarea, DateField},
         props: {
             itemType: String,
-            itemId: Number,
+            item: Object,
         },
         data: () => {
             return {
@@ -101,11 +102,6 @@
                 yesNo: ["Yes", "No"]
             }
         },
-        computed: {
-            item() {
-                return this.itemId ? _.cloneDeep(this.$store.getters['catalogs/getById'](this.itemId, this.itemType)) : {}
-            },
-        },
         methods: {
             close() {
               this.$emit('on-close')
@@ -117,6 +113,16 @@
             update(field) {
                 this.item[field.key] = field.value
             },
+            formatDate(date) {
+                return DateUtils.formatDate(date)
+            }
+        },
+        created() {
+            console.log("CATALOG EDIT CREATION")
+        },
+        updated() {
+            console.log("CATALOG EDIT UPDATE")
+            console.log('this.item.localizedPresentations : ' + JSON.stringify(this.item.localizedPresentation))
         }
 
     }

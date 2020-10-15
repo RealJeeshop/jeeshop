@@ -7,7 +7,7 @@
         <v-simple-table class="presentation-table">
             <tbody>
                 <tr v-for="presentation in presentations" :key="presentation.id" class="clickable">
-                    <td class="full-width">{{presentation.locale}}</td>
+                    <td class="full-width">{{presentation}}</td>
                     <td><i class="fa fa-trash"/></td>
                 </tr>
             </tbody>
@@ -24,7 +24,7 @@
         name: 'PresentationTable',
         components: {LocaleEdition},
         props: {
-          value: Array[Object]
+          value: Array[String]
         },
         data() {
             return {
@@ -40,6 +40,12 @@
                 console.log("saving locale")
                 this.showLocaleEdition = true
             }
+        },
+        created() {
+            console.log("presentation table creation")
+        },
+        updated() {
+            console.log("presentation table update")
         }
     }
 

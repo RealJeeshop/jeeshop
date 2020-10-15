@@ -28,6 +28,8 @@
 
 <script>
 
+    import DateUtils from '../lib/dateUtils'
+
     export default {
         name: "Table",
         props: {
@@ -45,9 +47,7 @@
                this.$emit('item-selected', item.id)
             },
             formatDate(date) {
-                return isNaN(date)
-                    ? new Date(date).toLocaleDateString('en-gb')
-                    : date
+               return DateUtils.formatDate(date)
             }
         },
     }

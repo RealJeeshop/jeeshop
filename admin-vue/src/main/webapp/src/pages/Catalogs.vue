@@ -20,7 +20,7 @@
                     @agreed="handleChoice"/>
 
             <Table :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
-            <CatalogEdit v-if="showEditPanel" :item-type="itemType" :item-id="itemId" @on-close="handleEditPanelClose"/>
+            <CatalogEdit v-if="showEditPanel" :itemType="itemType" :item="item" @on-close="handleEditPanelClose"/>
         </div>
     </div>
 </template>
@@ -64,7 +64,13 @@
                         return tmp.catalogs.discounts
                     }
                 },
+                item(state) {
+                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                    console.log('find : ' + JSON.stringify(find))
+                    return find
+                }
             }),
+
             headers() {
                 let headers = [
                     {text: "Name", value: "name"},
@@ -77,6 +83,7 @@
 
                 if (this.showEditPanel) {
                     return headers.splice(0, 2)
+
                 } else return headers
             }
         },
@@ -106,7 +113,8 @@
             },
             createItem() {
                 this.$router.push(`/${this.itemType}/create`)
-            }
+            },
+
         },
         created () {
 
@@ -119,7 +127,8 @@
                 this.itemType = match[1]
                 this.itemId = match[2] ? match[2] === 'create' ? undefined : parseInt(match[2]) : undefined
                 this.showEditPanel = match[2] !== undefined
-                this.$store.dispatch('catalogs/getItems', this.itemType)
+                if (match[2] === undefined) this.$store.dispatch('catalogs/getItems', this.itemType)
+                if (this.itemId) this.$store.dispatch('catalogs/getItemById', { itemType: this.itemType, itemId: this.itemId })
             }
         },
 

@@ -94,6 +94,7 @@ module.exports = function (app) {
 function getItems(req) {
 
     let itemType = req.params.itemType
+    console.log('itemType : ' + JSON.stringify(itemType))
     if (itemType === 'catalogs') {
         return catalogs
 

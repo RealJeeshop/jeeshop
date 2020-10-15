@@ -75,9 +75,6 @@
             onItemSelected(id) {
                 console.log('id : ' + JSON.stringify(id))
             }
-        },
-        created() {
-            this.$store.dispatch('catalogs/getItems', this.itemType)
         }
     }
 </script>

@@ -1,4 +1,5 @@
-import CatalogService from '../../api/CatalogService'
+import _ from 'lodash'
+import { CatalogAPI } from "../../api";
 
 const state = () => ({
     catalogs: [],
@@ -33,24 +34,44 @@ const getters = {
 const actions = {
 
     getItems ({ commit }, itemType) {
-        CatalogService.getAll(itemType,items => {
-            commit('setItems', {itemType, items})
-        })
+        CatalogAPI.getAll(itemType)
+            .then(response => {
+                commit('setItems', {itemType: itemType, items: response.data})
+            })
+            .catch(error => {
+                console.log('error : ' + JSON.stringify(error))
+            });
     },
+
+    async getItemById({ commit }, {itemType, itemId}) {
+        let item = await CatalogAPI.getById(itemType, itemId)
+        commit('addItem', {itemType, item})
+    },
+
+    getLocales({ commit }, itemType, id) {
+        CatalogAPI.getLocales(itemType, id)
+            .then(response => {
+                console.log('response : ' + JSON.stringify(response))
+                commit('setLocales', {itemType: itemType, locales: response.data})
+            })
+            .catch(error => {
+                console.log('error : ' + JSON.stringify(error))
+            });
+    },
+
 
     upsert ({ commit, state }, { itemType, item }) {
         const existingItems = [...state[itemType]]
         commit('setAddCatalogStatus', null)
-        CatalogService.add(itemType, item,
-            (upsertedItem) => {
-                commit('addItem', {itemType, item: upsertedItem})
+        CatalogAPI.upsert(itemType, item)
+            .then((response) => {
+                commit('addItem', {itemType, item: response.data})
                 commit('setAddCatalogStatus', 'successful')
-            },
-            () => {
+            })
+            .catch(() => {
                 commit('setAddCatalogStatus', 'failed')
                 commit('setItems', {itemType, items: existingItems})
-            }
-        )
+            })
     }
 }
 
@@ -60,14 +81,27 @@ const mutations = {
         state[payload.itemType] = payload.items
     },
 
+    setLocales(state, payload) {
+        let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
+        if (existingId !== -1) {
+
+            let item = _.cloneDeep(state[payload.itemType][existingId])
+            item.availableLocale = payload.locales
+            state[payload.itemType][existingId] = item
+        }
+    },
+
     addItem (state, payload) {
         let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
 
+        let clonedState = _.cloneDeep(state[payload.itemType])
         if (existingId === -1) {
-            state[payload.itemType].push(payload.item)
+            clonedState.push(payload.item)
         } else {
-            state[payload.itemType][existingId] = payload.item
+            clonedState.splice(existingId, 1, payload.item)
         }
+
+        state[payload.itemType] = clonedState
     },
 
     setAddCatalogStatus (state, status) {
