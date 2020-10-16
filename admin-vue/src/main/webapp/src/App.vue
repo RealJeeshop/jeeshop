@@ -44,6 +44,9 @@
         computed: mapState({
             loggedIn: state => state.session.loggedIn
         }),
+        created() {
+            this.$store.dispatch('catalogs/init')
+        }
     }
 </script>
 

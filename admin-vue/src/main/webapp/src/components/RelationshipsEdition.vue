@@ -5,8 +5,7 @@
             <v-card-text>
                 <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected">
                     <template v-slot:actions="{ }">
-                        <v-checkbox input-value="false"
-                                           value />
+                        <v-checkbox input-value="false" value />
                     </template>
                 </Table>
             </v-card-text>
@@ -50,6 +49,7 @@
                 items(state) {
                     //FIXME duplicate with catalogs.vue
                     let path = this.itemType
+                    console.log('path : ' + JSON.stringify(path))
                     let tmp = _.cloneDeep(state)
                     if (path === 'catalogs') {
                         return tmp.catalogs.catalogs

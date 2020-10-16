@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { CatalogAPI } from "../../api";
 
 const state = () => ({
+    initialized: false,
     catalogs: [],
     products: [],
     categories: [],
@@ -33,6 +34,18 @@ const getters = {
 
 const actions = {
 
+    init({ state, commit }) {
+        if (!state.initialized) {
+            CatalogAPI.loadAllCatalog()
+                .then(payload => {
+                    commit('setCatalog', payload)
+
+                }).catch(error => {
+                    console.log('error : ' + JSON.stringify(error))
+                })
+        }
+    },
+
     getItems ({ commit }, itemType) {
         CatalogAPI.getAll(itemType)
             .then(response => {
@@ -51,7 +64,6 @@ const actions = {
     getLocales({ commit }, itemType, id) {
         CatalogAPI.getLocales(itemType, id)
             .then(response => {
-                console.log('response : ' + JSON.stringify(response))
                 commit('setLocales', {itemType: itemType, locales: response.data})
             })
             .catch(error => {
@@ -76,6 +88,15 @@ const actions = {
 }
 
 const mutations = {
+
+    setCatalog(state, payload) {
+        state.catalogs = payload.catalogs
+        state.categories = payload.categories
+        state.products = payload.products
+        state.skus = payload.skus
+        state.discounts = payload.discounts
+        state.initialized = true
+    },
 
     setItems(state, payload) {
         state[payload.itemType] = payload.items

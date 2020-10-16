@@ -116,15 +116,11 @@
         },
         computed: mapState({
             item(state) {
-                console.log('state.catalogs[this.itemType] : ' + JSON.stringify(state.catalogs[this.itemType]))
                 let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                console.log('find : ' + JSON.stringify(find))
                 return find ? find : {};
             }
         }),
         created() {
-
-            console.log('this.$route.params : ' + JSON.stringify(this.$route.params))
             this.itemType = this.$route.params.itemType
             this.itemId = parseInt(this.$route.params.id)
             if (this.itemId) this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})

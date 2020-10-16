@@ -45,7 +45,29 @@ const CatalogAPI = {
         return axios.get(`/rs/${itemType}/${id}/products`)
     },
 
-    async upsert(itemType, item) {
+    loadAllCatalog() {
+        return new Promise((success, die) => {
+            axios.all([
+                this.getAll('catalogs'),
+                this.getAll('categories'),
+                this.getAll('products'),
+                this.getAll('skus'),
+                this.getAll('discounts'),
+            ]).then(axios.spread((...responses) => {
+
+                success(Object.assign({}, {
+                    catalogs: responses[0].data,
+                    categories: responses[1].data,
+                    products: responses[2].data,
+                    skus: responses[3].data,
+                    discounts: responses[4].data,
+                }))
+
+            })).catch(die)
+        })
+    },
+
+    upsert(itemType, item) {
         if (item.id) {
             return axios.put(`/rs/${itemType}`, item)
         } else {
