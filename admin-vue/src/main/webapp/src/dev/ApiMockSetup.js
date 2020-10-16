@@ -71,7 +71,7 @@ module.exports = function (app) {
         res.json(categories)
     })
 
-    app.get('/rs/catagories/:id/products', function (req, res) {
+    app.get('/rs/categories/:id/products', function (req, res) {
         res.json(products)
     })
 

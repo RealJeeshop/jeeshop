@@ -29,6 +29,15 @@ const CatalogAPI = {
         return axios.get(`/rs/${itemType}/${id}/presentationslocales`)
     },
 
+    getPresentation(itemType, id, locale) {
+        return new Promise((success, die) => {
+            console.log('locale : ' + JSON.stringify(locale))
+            axios.get(`/rs/${itemType}/${id}/presentations/${locale}`)
+                .then(response => success(response.data))
+                .catch(die)
+        })
+    },
+
     getCategories(itemType, id) {
         return axios.get(`/rs/${itemType}/${id}/categories`)
     },

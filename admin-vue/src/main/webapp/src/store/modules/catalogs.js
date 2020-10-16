@@ -61,14 +61,15 @@ const actions = {
         commit('addItem', {itemType, item})
     },
 
-    getLocales({ commit }, itemType, id) {
-        CatalogAPI.getLocales(itemType, id)
-            .then(response => {
-                commit('setLocales', {itemType: itemType, locales: response.data})
-            })
-            .catch(error => {
-                console.log('error : ' + JSON.stringify(error))
-            });
+    getPresentation({ commit }, {itemType, itemId, locale}) {
+        CatalogAPI.getPresentation(itemType, itemId, locale)
+            .then(response => commit('setLocale', {
+                itemType: itemType,
+                itemId: itemId,
+                locale: locale,
+                presentation: response
+
+            })).catch(error => console.log('error : ' + JSON.stringify(error)));
     },
 
 
@@ -102,15 +103,20 @@ const mutations = {
         state[payload.itemType] = payload.items
     },
 
-    setLocales(state, payload) {
-        let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
+    setLocale(state, payload) {
+        let existingId = state[payload.itemType].findIndex(item => item.id === payload.itemId)
         if (existingId !== -1) {
 
+            let newLocale = {}
+            newLocale[payload.locale] = payload.presentation
+
             let item = _.cloneDeep(state[payload.itemType][existingId])
-            item.availableLocale = payload.locales
+            item.availableLocales = Object.assign({}, item.availableLocales, newLocale)
+            console.log('newLocale : ' + JSON.stringify(newLocale))
             state[payload.itemType][existingId] = item
         }
     },
+
 
     addItem (state, payload) {
         let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
@@ -122,6 +128,7 @@ const mutations = {
             clonedState.splice(existingId, 1, payload.item)
         }
 
+        console.log('clonedState 2 : ' + JSON.stringify(clonedState))
         state[payload.itemType] = clonedState
     },
 

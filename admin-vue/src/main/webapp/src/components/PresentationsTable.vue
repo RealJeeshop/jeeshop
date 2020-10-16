@@ -13,7 +13,7 @@
             </tbody>
         </v-simple-table>
 
-        <LocaleEdition :open="showLocaleEdition" :locale="locale" @on-cancel="showLocaleEdition = false" @on-save="saveLocale"/>
+        <LocaleEdition v-if="showLocaleEdition" :open="showLocaleEdition" :data="localeData" @on-cancel="showLocaleEdition = false" @on-save="saveLocale"/>
     </div>
 
 </template>
@@ -24,13 +24,20 @@
         name: 'PresentationTable',
         components: {LocaleEdition},
         props: {
-          value: Array[String]
+          value: Object
         },
         data() {
             return {
-                presentations: this.value ? this.value : [],
+                itemId: this.value ? this.value.itemId : undefined,
+                itemType: this.value ? this.value.itemType : undefined,
+                presentations: this.value ? this.value.availableLocales : [],
                 showLocaleEdition: false,
-                locale: undefined
+                localeData: {}
+            }
+        },
+        watch: {
+            value() {
+                this.presentations = this.value ? this.value.availableLocales : []
             }
         },
         methods: {
@@ -42,15 +49,19 @@
                 this.showLocaleEdition = true
             },
             editLocale(locale) {
-                this.locale = locale
+                this.localeData = {
+                    itemType: this.itemType,
+                    itemId: this.itemId,
+                    locale: locale
+                }
                 this.showLocaleEdition = true
             }
         },
         created() {
-            console.log("presentation table creation")
+            console.log("creating presentation table")
         },
         updated() {
-            console.log("presentation table update")
+            console.log("updating presentation table")
         }
     }
 

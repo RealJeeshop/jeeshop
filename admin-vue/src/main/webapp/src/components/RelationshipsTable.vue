@@ -29,6 +29,8 @@
 
 <script>
     import RelationshipsEdition from "./RelationshipsEdition";
+
+
     export default {
         name: 'RelationshipsTable',
         components: {RelationshipsEdition},
@@ -43,6 +45,12 @@
                 showEdition: false
             }
         },
+        watch: {
+            values: function () {
+                console.log("watched")
+                this.relationships = this.values ? this.values : []
+            }
+        },
         methods: {
             addNewRelationship() {
                 this.showEdition = true
@@ -53,6 +61,12 @@
             editRelationships() {
                 this.showEdition = true
             }
+        },
+        created() {
+            console.log("creating rel table")
+        },
+        updated() {
+            console.log("updating rel table")
         }
     }
 

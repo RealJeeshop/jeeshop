@@ -4,7 +4,7 @@
             <v-card-title class="headline">Add new presentation</v-card-title>
             <v-card-text>
                 <div class="fields-container">
-                    <Select label="Select a locale" :items="locales"/>
+                    <Select label="Select a locale" :items="availableLocales"/>
                 </div>
                 <div class="fields-container">
                     <Input label="Name" />
@@ -30,21 +30,38 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     import Input from "./inputs/Input";
     import Select from "./inputs/Select";
     import Textarea from "./inputs/Textarea";
     import FileInput from "./inputs/FileInput";
+    import _ from "lodash";
     export default {
         name: 'LocaleEdition',
         components: {FileInput, Textarea, Select, Input},
         data() {
             return {
-                locales: ["English", "Français", "Chinese"]
+                itemType: this.data.itemType,
+                itemId: this.data.itemId,
+                locale: this.data.locale,
+                availableLocales: ["English", "French", "Chinese"]
             }
         },
         props: {
-            open: Boolean
+            open: Boolean,
+            data: Object
         },
+        computed: mapState({
+           presentation(state) {
+               // FIXME beurk
+               let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+               return find.availableLocales
+                   ? find.availableLocales[this.locale]
+                       ? find.availableLocales[this.locale]
+                       : {}
+                   : {};
+           }
+        }),
         methods: {
             cancel() {
                 this.$emit("on-cancel")
@@ -52,6 +69,18 @@
             addLocale() {
                 this.$emit("on-save")
             }
+        },
+        created() {
+
+            console.log('creating locale edition')
+            this.$store.dispatch('catalogs/getPresentation', {
+                itemType: this.itemType,
+                itemId: this.itemId,
+                locale: this.locale
+            })
+        },
+        updated() {
+            console.log('updating locale edition')
         }
     }
 </script>

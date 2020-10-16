@@ -20,7 +20,7 @@
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
-                    <PresentationTable :value="item.localizedPresentation" />
+                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Root categories" itemType="categories" :values="item.rootCategoriesIds"/>
                 </div>
 
@@ -36,18 +36,18 @@
                         <Input label="Threshold" :value="item.name" placeholder=""/>
 
                     </div>
-                    <PresentationTable :value="item.localizedPresentation" />
+                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="SKU discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'products'">
-                    <PresentationTable :value="item.localizedPresentation" />
+                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Child SKUs" itemType="skus" :values="item.childSKUsIds"/>
                     <RelationshipsTable label="Product discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <PresentationTable :value="item.localizedPresentation" />
+                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Child Categories" itemType="categories" :values="item.childCategoriesIds" />
                     <RelationshipsTable label="Child products" itemType="products" :values="item.childProductsIds"/>
                 </div>
@@ -63,7 +63,7 @@
                         <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
                         <Input label="Cumulative" :value="item.name" placeholder=""/>
                     </div>
-                    <PresentationTable :value="item.localizedPresentation" />
+                    <PresentationTable :value="localizedPresentation" />
                 </div>
 
 
@@ -75,6 +75,7 @@
 
 <script>
 
+    import { mapState } from 'vuex'
     import Input from "./inputs/Input";
     import Textarea from "./inputs/Textarea";
     import DateField from "./inputs/DateField";
@@ -82,7 +83,6 @@
     import PresentationTable from "./PresentationsTable";
     import RelationshipsTable from "./RelationshipsTable";
     import DateUtils from '../lib/dateUtils'
-    import {mapState} from 'vuex'
     import _ from "lodash";
 
     export default {
@@ -114,17 +114,42 @@
                 return DateUtils.formatDate(date)
             }
         },
-        computed: mapState({
-            item(state) {
-                let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                return find ? find : {};
+        computed: {
+            ...mapState({
+                item(state) {
+                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                    console.log('found : ' + JSON.stringify(find.rootCategoriesIds))
+                    return find ? find : {};
+                }
+            }),
+            localizedPresentation() {
+                return {
+                    itemId: this.itemId,
+                    itemType: this.itemType,
+                    availableLocales: this.item.localizedPresentation
+                }
             }
-        }),
+        },
         created() {
+            console.log("creating catalog edit")
             this.itemType = this.$route.params.itemType
             this.itemId = parseInt(this.$route.params.id)
-            if (this.itemId) this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})
-        }
+            if (this.itemId) {
+                // this.$store.subscribeAction((action, state) => {
+                //     if (action.type === 'catalogs/getItemById') {
+                //         let stateElement = state.catalogs[action.payload.itemType];
+                //         this.item = _.find(stateElement, i => i.id === parseInt(action.payload.itemId))
+                //         console.log('item.localizedPresentation : ' + JSON.stringify(this.item.localizedPresentation))
+                //     }
+                // })
+
+                this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})
+            }
+        },
+        updated() {
+            console.log("updating catalog edit")
+        },
+
 
     }
 </script>
