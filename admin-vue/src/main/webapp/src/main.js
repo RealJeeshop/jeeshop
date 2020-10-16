@@ -33,6 +33,10 @@ const router = new VueRouter({
     { path: '/', component: HomePage },
     { path: '/settings', component: Settings, meta: { protected: true} },
     { path: '/help', component: Help},
+    { path: '/orders', component: Orders, meta: { protected: true}},
+    { path: '/stats', component: Stats, meta: { protected: true}},
+    { path: '/users', component: Users, meta: { protected: true}},
+    { path: '/emails', component: Emails, meta: { protected: true}},
     { path: '/:itemType', component: Catalogs, meta: { protected: true},
       children: [
         {
@@ -48,11 +52,7 @@ const router = new VueRouter({
           }
         }
       ]
-    },
-    { path: '/orders', component: Orders, meta: { protected: true}},
-    { path: '/stats', component: Stats, meta: { protected: true}},
-    { path: '/users', component: Users, meta: { protected: true}},
-    { path: '/emails', component: Emails, meta: { protected: true}},
+    }
   ]
 })
 
