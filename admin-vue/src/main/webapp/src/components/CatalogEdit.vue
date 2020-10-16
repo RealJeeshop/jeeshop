@@ -37,19 +37,19 @@
 
                     </div>
                     <PresentationTable :value="item.localizedPresentation" />
-                    <RelationshipsTable label="SKU discounts" itemType="discounts"/>
+                    <RelationshipsTable label="SKU discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'products'">
                     <PresentationTable :value="item.localizedPresentation" />
-                    <RelationshipsTable label="Child SKUs" itemType="skus"/>
-                    <RelationshipsTable label="Product discounts" itemType="discounts"/>
+                    <RelationshipsTable label="Child SKUs" itemType="skus" :values="item.childSKUsIds"/>
+                    <RelationshipsTable label="Product discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
                     <PresentationTable :value="item.localizedPresentation" />
-                    <RelationshipsTable label="Child Categories" itemType="categories" :values="item.rootCategoriesIds" />
-                    <RelationshipsTable label="Child products" itemType="products" />
+                    <RelationshipsTable label="Child Categories" itemType="categories" :values="item.childCategoriesIds" />
+                    <RelationshipsTable label="Child products" itemType="products" :values="item.childProductsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'discounts'">

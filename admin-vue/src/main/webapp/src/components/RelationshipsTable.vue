@@ -15,8 +15,8 @@
             </thead>
             <tbody>
                 <tr v-for="rel in relationships" :key="rel.id" class="clickable">
-                    <td class="full-width">{{rel.id}}</td>
-                    <td class="full-width">{{rel.name}}</td>
+                    <td class="">{{rel.id}}</td>
+                    <td class="half-width">{{rel.name}}</td>
                     <td class="full-width">{{rel.visible ? 'Yes' : 'No'}}</td>
                     <td><i class="fa fa-trash"/></td>
                 </tr>
@@ -57,6 +57,6 @@
 
 <style>
     .half-width {
-        width: 50%;
+        width: 35%;
     }
 </style>
