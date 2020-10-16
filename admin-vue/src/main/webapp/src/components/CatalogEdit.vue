@@ -1,8 +1,8 @@
 <template>
         <div class="catalog-edit-container">
             <div class="header">
-                <h2 v-if="item">Product details</h2>
-                <h2 v-else>Add new {{ itemType }}</h2>
+                <h2 v-if="itemId">Product details</h2>
+                <h2 v-else>Add new {{ itemType.slice(0, -1) }}</h2>
                 <span @click="close()" class="close-icon"></span>
             </div>
 
@@ -82,19 +82,16 @@
     import PresentationTable from "./PresentationsTable";
     import RelationshipsTable from "./RelationshipsTable";
     import DateUtils from '../lib/dateUtils'
+    import {mapState} from 'vuex'
+    import _ from "lodash";
 
     export default {
         name: 'CatalogEdit',
         components: {RelationshipsTable, PresentationTable, Select, Input, Textarea, DateField},
-        props: {
-            itemType: String,
-            item: Object,
-        },
         data: () => {
             return {
-                visible: 'visible',
-                date: new Date(),
-                disabled: false,
+                itemType: undefined,
+                itemId: undefined,
                 currencies: ["EUR", "USD"],
                 applyTarget: ["An order", "An item"],
                 discountTypes: ["Discount rate", "Order amount discount", "Shipping fee amount discount"],
@@ -104,7 +101,7 @@
         },
         methods: {
             close() {
-              this.$emit('on-close')
+              this.$router.back()
             },
             saveItem() {
                 this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
@@ -117,12 +114,20 @@
                 return DateUtils.formatDate(date)
             }
         },
+        computed: mapState({
+            item(state) {
+                console.log('state.catalogs[this.itemType] : ' + JSON.stringify(state.catalogs[this.itemType]))
+                let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                console.log('find : ' + JSON.stringify(find))
+                return find ? find : {};
+            }
+        }),
         created() {
-            console.log("CATALOG EDIT CREATION")
-        },
-        updated() {
-            console.log("CATALOG EDIT UPDATE")
-            console.log('this.item.localizedPresentations : ' + JSON.stringify(this.item.localizedPresentation))
+
+            console.log('this.$route.params : ' + JSON.stringify(this.$route.params))
+            this.itemType = this.$route.params.itemType
+            this.itemId = parseInt(this.$route.params.id)
+            if (this.itemId) this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})
         }
 
     }

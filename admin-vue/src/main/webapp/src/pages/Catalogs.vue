@@ -11,16 +11,15 @@
                 <v-tab to="/discounts">Discounts</v-tab>
             </v-tabs>
 
-            <v-btn color="primary" dark @click="createItem()">New Item</v-btn>
+            <v-btn color="primary" dark @click="createItem()">New {{itemType.slice(0, -1)}}</v-btn>
         </v-toolbar>
         <div class="content">
             <Dialog :dialog="showWarningDialog"
                     title="Changes will not be saved"
                     message="You have pending changes. Are you sure you want to quit ?"
                     @agreed="handleChoice"/>
-
             <Table :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
-            <CatalogEdit v-if="showEditPanel" :itemType="itemType" :item="item" @on-close="handleEditPanelClose"/>
+            <router-view name="edit" />
         </div>
     </div>
 </template>
@@ -28,14 +27,12 @@
 <script>
     import { mapState } from 'vuex'
     import Table from '../components/Table'
-    import CatalogEdit from "../components/CatalogEdit";
     import Dialog from "../components/Dialog";
     import _ from  'lodash'
 
     export default {
         name: 'Catalogs',
         components: {
-            CatalogEdit,
             Table,
             Dialog
         },
@@ -95,12 +92,10 @@
                     this.showWarningDialog = true
                     this.nextItemid = id
                 } else {
+
+                    this.showEditPanel = true
                     this.$router.push(`/${this.itemType}/${id}`)
                 }
-            },
-            handleEditPanelClose() {
-                this.showEditPanel = false
-                this.$router.back()
             },
             handleChoice(agreed) {
 
@@ -113,35 +108,18 @@
             },
             createItem() {
                 this.$router.push(`/${this.itemType}/create`)
-            },
+            }
 
         },
         created () {
-
-            console.log("CREATING CATALOGS COMPONENT")
-
-            let match = new RegExp(/\/(.*)\/([0-9]|create)*/).exec(this.$route.path)
-                || new RegExp(/\/(.*)/).exec(this.$route.path)
-
-            if (match) {
-                this.itemType = match[1]
-                this.itemId = match[2] ? match[2] === 'create' ? undefined : parseInt(match[2]) : undefined
-                this.showEditPanel = match[2] !== undefined
-                if (match[2] === undefined) this.$store.dispatch('catalogs/getItems', this.itemType)
-                if (this.itemId) this.$store.dispatch('catalogs/getItemById', { itemType: this.itemType, itemId: this.itemId })
-            }
+            this.itemType = this.$route.params.itemType
+            this.showEditPanel = !!this.$route.params.id;
+            if (!this.showEditPanel) this.$store.dispatch('catalogs/getItems', this.itemType)
         },
 
         updated() {
-
-            console.log("UPDATING CATALOGS COMPONENT")
-
-            let match = new RegExp(/\/(.*)\/([0-9])*/).exec(this.$route.path)
-                || new RegExp(/\/(.*)/).exec(this.$route.path)
-            if (match) {
-                this.itemType = match[1]
-                this.itemId = match[2] ? parseInt(match[2]) : undefined
-            }
+            this.itemType = this.$route.params.itemType
+            this.showEditPanel = !!this.$route.params.id;
         }
     }
 </script>

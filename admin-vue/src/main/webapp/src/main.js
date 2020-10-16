@@ -21,6 +21,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/forms.scss'
 import './styles/flex.scss'
+import CatalogEdit from "./components/CatalogEdit";
 
 Vue.config.productionTip = false
 
@@ -32,21 +33,22 @@ const router = new VueRouter({
     { path: '/', component: HomePage },
     { path: '/settings', component: Settings, meta: { protected: true} },
     { path: '/help', component: Help},
-    { path: '/catalogs', component: Catalogs, meta: { protected: true} },
-    { path: '/catalogs/:id', component: Catalogs, meta: { protected: true}},
-    { path: '/catalogs/create', component: Catalogs, meta: { protected: true}},
-    { path: '/products', component: Catalogs, meta: { protected: true}},
-    { path: '/products/:id', component: Catalogs, meta: { protected: true}},
-    { path: '/products/create', component: Catalogs, meta: { protected: true}},
-    { path: '/discounts', component: Catalogs, meta: { protected: true}},
-    { path: '/discounts/:id', component: Catalogs, meta: { protected: true}},
-    { path: '/discounts/create', component: Catalogs, meta: { protected: true}},
-    { path: '/categories', component: Catalogs, meta: { protected: true}},
-    { path: '/categories/:id', component: Catalogs, meta: { protected: true}},
-    { path: '/categories/create', component: Catalogs, meta: { protected: true}},
-    { path: '/skus', component: Catalogs, meta: { protected: true}},
-    { path: '/skus/:id', component: Catalogs, meta: { protected: true}},
-    { path: '/skus/create', component: Catalogs, meta: { protected: true}},
+    { path: '/:itemType', component: Catalogs, meta: { protected: true},
+      children: [
+        {
+          path: ':id',
+          components: {
+            edit: CatalogEdit
+          }
+        },
+        {
+          path: 'create',
+          components: {
+            edit: CatalogEdit
+          }
+        }
+      ]
+    },
     { path: '/orders', component: Orders, meta: { protected: true}},
     { path: '/stats', component: Stats, meta: { protected: true}},
     { path: '/users', component: Users, meta: { protected: true}},
