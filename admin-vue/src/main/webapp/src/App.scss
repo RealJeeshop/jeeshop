@@ -69,6 +69,10 @@ header {
   cursor: pointer;
 }
 
+.not-clickable {
+  cursor: auto !important;
+}
+
 .padded-xl {
   padding-top: 3em;
   padding-right: 6em;

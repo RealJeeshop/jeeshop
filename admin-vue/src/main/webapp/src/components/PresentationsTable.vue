@@ -6,14 +6,14 @@
         </div>
         <v-simple-table class="presentation-table">
             <tbody>
-                <tr v-for="presentation in presentations" :key="presentation.id" class="clickable">
+                <tr v-for="presentation in presentations" :key="presentation.id" class="clickable" @click="editLocale(presentation)">
                     <td class="full-width">{{presentation}}</td>
-                    <td><i class="fa fa-trash"/></td>
+                    <td class="clickable"><i class="fa fa-trash"/></td>
                 </tr>
             </tbody>
         </v-simple-table>
 
-        <LocaleEdition :open="showLocaleEdition" @on-cancel="showLocaleEdition = false" @on-save="saveLocale"/>
+        <LocaleEdition :open="showLocaleEdition" :locale="locale" @on-cancel="showLocaleEdition = false" @on-save="saveLocale"/>
     </div>
 
 </template>
@@ -29,7 +29,8 @@
         data() {
             return {
                 presentations: this.value ? this.value : [],
-                showLocaleEdition: false
+                showLocaleEdition: false,
+                locale: undefined
             }
         },
         methods: {
@@ -38,6 +39,10 @@
             },
             saveLocale() {
                 console.log("saving locale")
+                this.showLocaleEdition = true
+            },
+            editLocale(locale) {
+                this.locale = locale
                 this.showLocaleEdition = true
             }
         },

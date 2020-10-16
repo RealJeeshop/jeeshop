@@ -14,11 +14,11 @@
             </tr>
             </thead>
             <tbody>
-                <tr v-for="rel in relationships" :key="rel.id" class="clickable">
+                <tr v-for="rel in relationships" :key="rel.id" class="not-clickable">
                     <td class="">{{rel.id}}</td>
                     <td class="half-width">{{rel.name}}</td>
                     <td class="full-width">{{rel.visible ? 'Yes' : 'No'}}</td>
-                    <td><i class="fa fa-trash"/></td>
+                    <td class="clickable"><i class="fa fa-trash"/></td>
                 </tr>
             </tbody>
         </v-simple-table>
@@ -49,6 +49,9 @@
             },
             save() {
                 this.showEdition = false
+            },
+            editRelationships() {
+                this.showEdition = true
             }
         }
     }
