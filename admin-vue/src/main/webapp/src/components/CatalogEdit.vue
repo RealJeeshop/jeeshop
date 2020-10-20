@@ -17,10 +17,16 @@
                         <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
                                    :value="formatDate(item.endDate)" @on-update="update" />
                     </div>
+                    <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
+
+                    <LocaleEdition v-if="showLocaleEdition"
+                                   :open="showLocaleEdition"
+                                   :data="item.availableLocales[this.locale]"
+                                   @on-cancel="showLocaleEdition = false"
+                                   @on-save="saveLocale" />
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
-                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Root categories" itemType="categories" :values="item.rootCategoriesIds"/>
                 </div>
 
@@ -36,18 +42,15 @@
                         <Input label="Threshold" :value="item.name" placeholder=""/>
 
                     </div>
-                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="SKU discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'products'">
-                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Child SKUs" itemType="skus" :values="item.childSKUsIds"/>
                     <RelationshipsTable label="Product discounts" itemType="discounts" :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <PresentationTable :value="localizedPresentation" />
                     <RelationshipsTable label="Child Categories" itemType="categories" :values="item.childCategoriesIds" />
                     <RelationshipsTable label="Child products" itemType="products" :values="item.childProductsIds"/>
                 </div>
@@ -63,7 +66,6 @@
                         <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
                         <Input label="Cumulative" :value="item.name" placeholder=""/>
                     </div>
-                    <PresentationTable :value="localizedPresentation" />
                 </div>
 
 
@@ -84,19 +86,44 @@
     import RelationshipsTable from "./RelationshipsTable";
     import DateUtils from '../lib/dateUtils'
     import _ from "lodash";
+    import LocaleEdition from "./LocaleEdition";
 
     export default {
         name: 'CatalogEdit',
-        components: {RelationshipsTable, PresentationTable, Select, Input, Textarea, DateField},
+        components: {RelationshipsTable, PresentationTable, LocaleEdition, Select, Input, Textarea, DateField},
         data: () => {
             return {
                 itemType: undefined,
                 itemId: undefined,
+                showLocaleEdition: false,
                 currencies: ["EUR", "USD"],
                 applyTarget: ["An order", "An item"],
                 discountTypes: ["Discount rate", "Order amount discount", "Shipping fee amount discount"],
                 thresholdRules: ["Specific quantity", "Specific price", "Number of orders (1 means first)"],
                 yesNo: ["Yes", "No"]
+            }
+        },
+        computed: {
+            ...mapState({
+                item(state) {
+                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                    return find ? _.cloneDeep(find) : {};
+                },
+                presentation(state) {
+                    console.log("fetching presentation from state")
+                    let item = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                    return item && item.availableLocales && item.availableLocales[this.locale]
+                        ? _.cloneDeep(item.availableLocales[this.locale])
+                        : {}
+
+                }
+            }),
+            localizedPresentation() {
+                return {
+                    itemId: this.itemId,
+                    itemType: this.itemType,
+                    availableLocales: this.item.localizedPresentation
+                }
             }
         },
         methods: {
@@ -112,23 +139,15 @@
             },
             formatDate(date) {
                 return DateUtils.formatDate(date)
-            }
-        },
-        computed: {
-            ...mapState({
-                item(state) {
-                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                    console.log('found : ' + JSON.stringify(find.rootCategoriesIds))
-                    return find ? find : {};
-                }
-            }),
-            localizedPresentation() {
-                return {
-                    itemId: this.itemId,
-                    itemType: this.itemType,
-                    availableLocales: this.item.localizedPresentation
-                }
-            }
+            },
+            onSelectLocale(locale) {
+                this.locale = locale
+                this.showLocaleEdition = true
+            },
+            saveLocale() {
+                console.log("saving locale")
+                this.showLocaleEdition = true
+            },
         },
         created() {
             console.log("creating catalog edit")

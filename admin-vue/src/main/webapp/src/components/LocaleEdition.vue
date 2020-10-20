@@ -32,20 +32,16 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
     import Input from "./inputs/Input";
     import Select from "./inputs/Select";
     import Textarea from "./inputs/Textarea";
     import FileInput from "./inputs/FileInput";
-    import _ from "lodash";
     export default {
         name: 'LocaleEdition',
         components: {FileInput, Textarea, Select, Input},
         data() {
             return {
-                itemType: this.data.itemType,
-                itemId: this.data.itemId,
-                locale: this.data.locale,
+                presentation: this.data ? this.data : {},
                 availableLocales: ["English", "French", "Chinese"]
             }
         },
@@ -53,22 +49,10 @@
             open: Boolean,
             data: Object
         },
-        computed: mapState({
-           presentation(state) {
-               // FIXME beurk
-               let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-               return find && find.availableLocales
-                   ? find.availableLocales[this.locale]
-                       ? find.availableLocales[this.locale]
-                       : {}
-                   : {};
-           }
-        }),
         watch: {
           data() {
-              this.itemType = this.data.itemType
-              this.itemId = this.data.itemId
-              this.locale = this.data.locale
+              console.log('data changed for locale edition : ' + JSON.stringify(this.data))
+              this.presentation = this.data ? this.data : {}
           }
         },
         methods: {
@@ -79,21 +63,12 @@
                 this.$emit("on-save")
             },
             updateLocale() {
-                // TODO dispath the update of the presentation
+                // TODO dispatch the update of the presentation
                 this.$emit("on-save")
             },
             update(field) {
                 this.presentation[field.key] = field.value
             },
-        },
-        created() {
-
-            console.log('creating locale edition')
-            this.$store.dispatch('catalogs/getPresentation', {
-                itemType: this.itemType,
-                itemId: this.itemId,
-                locale: this.locale
-            })
         },
         updated() {
             console.log('updating locale edition')

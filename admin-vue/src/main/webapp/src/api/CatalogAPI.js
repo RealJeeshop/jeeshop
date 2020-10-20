@@ -16,7 +16,23 @@ const CatalogAPI = {
 
                 const item = responses[0].data
                 item.localizedPresentation = responses[1].data
-                success(handleResponseByItemType(itemType, item, responses))
+                handleResponseByItemType(itemType, item, responses)
+
+                let allPresentations = item.localizedPresentation
+                    .map(locale => this.getPresentation(itemType, id, locale));
+
+                axios.all(allPresentations)
+                    .then(axios.spread((...responses) => {
+                        for(let i=0; i < item.localizedPresentation.length; i++) {
+                            let newObject = {}
+                            console.log('responses : ' + JSON.stringify(responses))
+                            newObject[responses[i].locale] = responses[i]
+                            item.availableLocales = Object.assign(item.availableLocales ? item.availableLocales : {}, newObject)
+                        }
+
+                        success(item)
+                    }))
+                    .catch(die)
 
             })).catch(error => {
                 console.log('error : ' + JSON.stringify(error))

@@ -112,8 +112,7 @@ const mutations = {
 
             let item = _.cloneDeep(state[payload.itemType][existingId])
             item.availableLocales = Object.assign({}, item.availableLocales, newLocale)
-            console.log('newLocale : ' + JSON.stringify(newLocale))
-            state[payload.itemType][existingId] = item
+            state[payload.itemType][existingId] = _.cloneDeep(item)
         }
     },
 
@@ -128,7 +127,6 @@ const mutations = {
             clonedState.splice(existingId, 1, payload.item)
         }
 
-        console.log('clonedState 2 : ' + JSON.stringify(clonedState))
         state[payload.itemType] = clonedState
     },
 
