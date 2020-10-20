@@ -13,7 +13,11 @@
             </tbody>
         </v-simple-table>
 
-        <LocaleEdition v-if="showLocaleEdition" :open="showLocaleEdition" :data="localeData" @on-cancel="showLocaleEdition = false" @on-save="saveLocale"/>
+        <LocaleEdition v-if="showLocaleEdition"
+                       :open="showLocaleEdition"
+                       :data="localeData"
+                       @on-cancel="showLocaleEdition = false"
+                       @on-save="saveLocale" />
     </div>
 
 </template>
@@ -42,6 +46,7 @@
         },
         methods: {
             addNewLocale() {
+                this.localeData = {}
                 this.showLocaleEdition = true
             },
             saveLocale() {

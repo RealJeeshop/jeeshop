@@ -11,7 +11,7 @@
         name: 'FileInput',
         props: {
             label: String,
-            value: String,
+            value: Object,
             placeholder: String,
             name: String,
             hint: String
