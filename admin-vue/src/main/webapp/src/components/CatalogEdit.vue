@@ -183,14 +183,11 @@
             saveLocale() {
                 this.showLocaleEdition = false
             },
-            saveRelationship(relationshipType, ids) {
+            saveRelationship() {
                 this.selectedRelationships = []
                 this.showRelationshipEdition = false
-                console.log('relationshipType : ' + JSON.stringify(relationshipType))
-                console.log('ids 1: ' + JSON.stringify(ids))
             },
             openRelationshipEdition({itemType, ids}) {
-                console.log('ids 2: ' + JSON.stringify(ids))
                 this.selectedRelationships = ids
                 this.editedRelationshipType = itemType
                 this.showRelationshipEdition = true

@@ -21,7 +21,7 @@
         },
         props: {
             label: String,
-            value: String,
+            value: [String,Number],
             placeholder: String,
             name: String,
             hint: String

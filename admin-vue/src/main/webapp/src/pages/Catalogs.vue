@@ -62,9 +62,7 @@
                     }
                 },
                 item(state) {
-                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                    console.log('find : ' + JSON.stringify(find))
-                    return find
+                    return _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
                 }
             }),
 

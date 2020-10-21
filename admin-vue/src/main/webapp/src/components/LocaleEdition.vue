@@ -68,9 +68,6 @@
             update(field) {
                 this.presentation[field.key] = field.value
             },
-        },
-        updated() {
-            console.log('updating locale edition')
         }
     }
 </script>
