@@ -30,13 +30,13 @@
                 <div v-else-if="itemType === 'skus'">
                     <div class="fields-container">
 
-                        <Input label="Reference" :value="item.name" placeholder=""/>
-                        <Input label="Quantity" :value="item.name" placeholder=""/>
+                        <Input label="Reference" :value="item.reference" placeholder=""/>
+                        <Input label="Quantity" :value="item.quantity" placeholder=""/>
 
-                        <Input label="Price" :value="item.name" placeholder=""/>
-                        <Select label="Currency" :items="currencies" />
+                        <Input label="Price" :value="item.price" placeholder=""/>
+                        <Select label="Currency" :items="currencies" :value="item.currency"/>
 
-                        <Input label="Threshold" :value="item.name" placeholder=""/>
+                        <Input label="Threshold" :value="item.threshold" placeholder=""/>
 
                     </div>
                     <RelationshipsTable label="SKU discounts" itemType="discounts"
@@ -125,7 +125,7 @@
                 showLocaleEdition: false,
                 showRelationshipEdition: false,
                 selectedRelationships: [],
-                currencies: ["EUR", "USD"],
+                currencies: [{value: "EUR", text: "Euros"}, {value: "USD", text: "Dollars"}],
                 applyTarget: [{value: "ORDER", text: "An order"}, {value: "ITEM", text: "An item"}],
                 discountTypes: [{value: "DISCOUNT_RATE", text: "Discount rate"},
                     {value: "ORDER_DISCOUNT_AMOUNT", text: "Order amount discount"},
