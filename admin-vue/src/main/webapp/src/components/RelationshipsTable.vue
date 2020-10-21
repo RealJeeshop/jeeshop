@@ -22,51 +22,31 @@
                 </tr>
             </tbody>
         </v-simple-table>
-
-        <RelationshipsEdition :open="showEdition" :itemType="itemType" @on-cancel="showEdition = false" @on-save="save"/>
     </div>
 </template>
 
 <script>
-    import RelationshipsEdition from "./RelationshipsEdition";
-
-
     export default {
         name: 'RelationshipsTable',
-        components: {RelationshipsEdition},
         props: {
             label: String,
-            values: Array[Object],
-            itemType: String
+            itemType: String,
+            values: Array[Object]
         },
         data() {
             return {
-                relationships: this.values ? this.values : [],
-                showEdition: false
+                relationships: this.values ? this.values : []
             }
         },
         watch: {
             values: function () {
-
                 this.relationships = this.values ? this.values : []
             }
         },
         methods: {
             addNewRelationship() {
-                this.showEdition = true
-            },
-            save() {
-                this.showEdition = false
-            },
-            editRelationships() {
-                this.showEdition = true
+                this.$emit('open-edition', {itemType: this.itemType, ids: this.relationships.map(v => v.id)})
             }
-        },
-        created() {
-
-        },
-        updated() {
-
         }
     }
 

@@ -72,7 +72,7 @@ module.exports = function (app) {
     })
 
     app.get('/rs/categories/:id/products', function (req, res) {
-        res.json(products)
+        res.json(products.slice(1))
     })
 
     // Products
@@ -81,7 +81,7 @@ module.exports = function (app) {
     })
 
     app.get('/rs/products/:id/discounts', function (req, res) {
-        res.json(discounts)
+        res.json(discounts.slice(1))
     })
 
     // SKUS

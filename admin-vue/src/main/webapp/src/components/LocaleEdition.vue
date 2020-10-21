@@ -51,7 +51,6 @@
         },
         watch: {
           data() {
-              console.log('data changed for locale edition : ' + JSON.stringify(this.data))
               this.presentation = this.data ? this.data : {}
           }
         },

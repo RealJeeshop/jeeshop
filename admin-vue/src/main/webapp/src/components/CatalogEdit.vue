@@ -19,15 +19,12 @@
                     </div>
                     <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
 
-                    <LocaleEdition v-if="showLocaleEdition"
-                                   :open="showLocaleEdition"
-                                   :data="item.availableLocales[this.locale]"
-                                   @on-cancel="showLocaleEdition = false"
-                                   @on-save="saveLocale" />
                 </div>
 
                 <div v-if="itemType === 'catalogs'">
-                    <RelationshipsTable label="Root categories" itemType="categories" :values="item.rootCategoriesIds"/>
+                    <RelationshipsTable label="Root categories" itemType="categories"
+                                        :values="item.rootCategoriesIds"
+                                        @open-edition="openRelationshipEdition" />
                 </div>
 
                 <div v-else-if="itemType === 'skus'">
@@ -42,17 +39,32 @@
                         <Input label="Threshold" :value="item.name" placeholder=""/>
 
                     </div>
-                    <RelationshipsTable label="SKU discounts" itemType="discounts" :values="item.discountsIds"/>
+                    <RelationshipsTable label="SKU discounts" itemType="discounts"
+                                        @open-edition="openRelationshipEdition"
+                                        :values="item.discountsIds"/>
+
                 </div>
 
                 <div v-else-if="itemType === 'products'">
-                    <RelationshipsTable label="Child SKUs" itemType="skus" :values="item.childSKUsIds"/>
-                    <RelationshipsTable label="Product discounts" itemType="discounts" :values="item.discountsIds"/>
+                    <RelationshipsTable label="Child SKUs" itemType="skus"
+                                        @open-edition="openRelationshipEdition"
+                                        :values="item.childSKUsIds"/>
+
+                    <RelationshipsTable label="Product discounts" itemType="discounts"
+                                        @open-edition="openRelationshipEdition"
+                                        :values="item.discountsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'categories'">
-                    <RelationshipsTable label="Child Categories" itemType="categories" :values="item.childCategoriesIds" />
-                    <RelationshipsTable label="Child products" itemType="products" :values="item.childProductsIds"/>
+                    <RelationshipsTable itemType="categories"
+                                        label="Child Categories"
+                                        @open-edition="openRelationshipEdition"
+                                        :values="item.childCategoriesIds" />
+
+                    <RelationshipsTable label="Child products"
+                                        itemType="products"
+                                        @open-edition="openRelationshipEdition"
+                                        :values="item.childProductsIds"/>
                 </div>
 
                 <div v-else-if="itemType === 'discounts'">
@@ -72,6 +84,19 @@
                 <v-btn color="primary" elevation="2" @click="saveItem()">Save</v-btn>
             </div>
 
+            <LocaleEdition v-if="showLocaleEdition"
+                           :open="showLocaleEdition"
+                           :data="item.availableLocales[this.locale]"
+                           @on-cancel="showLocaleEdition = false"
+                           @on-save="saveLocale" />
+
+            <RelationshipsEdition v-if="showRelationshipEdition"
+                                  :open="showRelationshipEdition"
+                                  :itemType="editedRelationshipType"
+                                  :selectedRelationships="selectedRelationships"
+                                  @on-cancel="showRelationshipEdition = false"
+                                  @on-save="saveRelationship"/>
+
         </div>
 </template>
 
@@ -87,15 +112,19 @@
     import DateUtils from '../lib/dateUtils'
     import _ from "lodash";
     import LocaleEdition from "./LocaleEdition";
+    import RelationshipsEdition from './RelationshipsEdition'
 
     export default {
         name: 'CatalogEdit',
-        components: {RelationshipsTable, PresentationTable, LocaleEdition, Select, Input, Textarea, DateField},
+        components: {RelationshipsTable, PresentationTable, LocaleEdition, RelationshipsEdition, Select, Input, Textarea, DateField},
         data: () => {
             return {
                 itemType: undefined,
                 itemId: undefined,
+                editedRelationshipType: undefined,
                 showLocaleEdition: false,
+                showRelationshipEdition: false,
+                selectedRelationships: [],
                 currencies: ["EUR", "USD"],
                 applyTarget: ["An order", "An item"],
                 discountTypes: ["Discount rate", "Order amount discount", "Shipping fee amount discount"],
@@ -145,9 +174,20 @@
                 this.showLocaleEdition = true
             },
             saveLocale() {
-
-                this.showLocaleEdition = true
+                this.showLocaleEdition = false
             },
+            saveRelationship(relationshipType, ids) {
+                this.selectedRelationships = []
+                this.showRelationshipEdition = false
+                console.log('relationshipType : ' + JSON.stringify(relationshipType))
+                console.log('ids 1: ' + JSON.stringify(ids))
+            },
+            openRelationshipEdition({itemType, ids}) {
+                console.log('ids 2: ' + JSON.stringify(ids))
+                this.selectedRelationships = ids
+                this.editedRelationshipType = itemType
+                this.showRelationshipEdition = true
+            }
         },
         created() {
 

@@ -4,8 +4,8 @@
             <v-card-title class="headline">Select items</v-card-title>
             <v-card-text>
                 <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected">
-                    <template v-slot:actions="{ }">
-                        <v-checkbox input-value="false" value />
+                    <template v-slot:actions="{ item }">
+                        <v-checkbox input-value="false" :value="selectedIds.indexOf(item.id) === -1" />
                     </template>
                 </Table>
             </v-card-text>
@@ -29,6 +29,7 @@
         data() {
             return {
                 search: "",
+                selectedIds: this.selectedRelationships ? this.selectedRelationships : [],
                 headers: [
                     {text: "Name", value: "name"},
                     {text: "Description", value: "description"},
@@ -42,14 +43,19 @@
         },
         props: {
             open: Boolean,
-            itemType: String
+            itemType: String,
+            selectedRelationships: Array[Number]
+        },
+        watch: {
+            selectedRelationships() {
+                this.selectedIds = this.selectedRelationships.splice(0, 0)
+            }
         },
         computed: {
             ...mapState({
                 items(state) {
                     //FIXME duplicate with catalogs.vue
                     let path = this.itemType
-                    console.log('path : ' + JSON.stringify(path))
                     let tmp = _.cloneDeep(state)
                     if (path === 'catalogs') {
                         return tmp.catalogs.catalogs
