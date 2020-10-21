@@ -69,14 +69,14 @@
 
                 <div v-else-if="itemType === 'discounts'">
                     <div class="fields-container">
-                        <Select label="Applicable to..." :items="applyTarget" />
-                        <Input label="Voucher code" :value="item.name" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
-                        <Select label="Type" :items="discountTypes" />
-                        <Input label="Value" :value="item.name" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
-                        <Select label="Trigger threshold rules" :items="thresholdRules" />
-                        <Input label="Threshold" :value="item.name" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
-                        <Input label="Number of use per customer" :value="item.name" placeholder="Enter a number ..."/>
-                        <Input label="Cumulative" :value="item.name" placeholder=""/>
+                        <Select label="Applicable to..." :items="applyTarget" :value="item.applicableTo"/>
+                        <Input label="Voucher code" :value="item.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
+                        <Select label="Type" :items="discountTypes" :value="item.type" />
+                        <Input label="Value" :value="item.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
+                        <Select label="Trigger threshold rules" :items="thresholdRules" :value="item.triggerRule"/>
+                        <Input label="Threshold" :value="item.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
+                        <Input label="Number of use per customer" :value="item.usesPerCustomer" placeholder="Enter a number ..."/>
+                        <v-checkbox label="Cumulative" :value="item.uniqueUse" />
                     </div>
                 </div>
 
@@ -126,9 +126,16 @@
                 showRelationshipEdition: false,
                 selectedRelationships: [],
                 currencies: ["EUR", "USD"],
-                applyTarget: ["An order", "An item"],
-                discountTypes: ["Discount rate", "Order amount discount", "Shipping fee amount discount"],
-                thresholdRules: ["Specific quantity", "Specific price", "Number of orders (1 means first)"],
+                applyTarget: [{value: "ORDER", text: "An order"}, {value: "ITEM", text: "An item"}],
+                discountTypes: [{value: "DISCOUNT_RATE", text: "Discount rate"},
+                    {value: "ORDER_DISCOUNT_AMOUNT", text: "Order amount discount"},
+                    {value: "SHIPPING_FEE_DISCOUNT_AMOUNT", text: "Shipping fee amount discount"}
+                ],
+                thresholdRules: [
+                    {value: "QUANTITY", text: "Specific quantity"},
+                    {value: "AMOUNT", text: "Specific price"},
+                    {value: "ORDER_NUMBER", text: "Number of orders (1 means first)"}
+                ],
                 yesNo: ["Yes", "No"]
             }
         },

@@ -9,7 +9,7 @@ module.exports =
             "endDate": null,
             "visible": true,
             "localizedPresentation": null,
-            "voucherCode": null,
+            "voucherCode": "HELLOYOU2020",
             "usesPerCustomer": null,
             "type": "SHIPPING_FEE_DISCOUNT_AMOUNT",
             "triggerRule": "ORDER_NUMBER",
@@ -28,14 +28,14 @@ module.exports =
             "endDate": null,
             "visible": true,
             "localizedPresentation": null,
-            "voucherCode": null,
-            "usesPerCustomer": null,
+            "voucherCode": "10OFF",
+            "usesPerCustomer": 10,
             "type": "DISCOUNT_RATE",
             "triggerRule": "AMOUNT",
             "applicableTo": "ORDER",
             "triggerValue": 100.0,
             "discountValue": 10.0,
             "rateType": true,
-            "uniqueUse": null
+            "uniqueUse": false
         }
     ]
