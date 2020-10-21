@@ -47,7 +47,7 @@
         },
         watch: {
             values: function () {
-                console.log("watched")
+
                 this.relationships = this.values ? this.values : []
             }
         },
@@ -63,10 +63,10 @@
             }
         },
         created() {
-            console.log("creating rel table")
+
         },
         updated() {
-            console.log("updating rel table")
+
         }
     }
 

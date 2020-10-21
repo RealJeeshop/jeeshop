@@ -14,7 +14,7 @@ const state = () => ({
 const getters = {
 
     getById: (state) => (id, itemType) => {
-        console.log("Loading item ...")
+
         let items = state.catalogs
         if (itemType === 'categories') {
             items = state.categories

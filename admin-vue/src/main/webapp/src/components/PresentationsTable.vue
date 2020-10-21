@@ -44,10 +44,10 @@
             }
         },
         created() {
-            console.log("creating presentation table")
+
         },
         updated() {
-            console.log("updating presentation table")
+
         }
     }
 

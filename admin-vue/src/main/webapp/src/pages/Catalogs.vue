@@ -88,7 +88,7 @@
             handleItemSelection(id) {
 
                 if (this.showEditPanel) {
-                    console.log("showing warning dialog")
+
                     this.showWarningDialog = true
                     this.nextItemid = id
                 } else {
@@ -112,14 +112,14 @@
 
         },
         created () {
-            console.log("creating catalogs")
+
             this.itemType = this.$route.params.itemType
             this.showEditPanel = !!this.$route.params.id;
             if (!this.showEditPanel) this.$store.dispatch('catalogs/getItems', this.itemType)
         },
 
         updated() {
-            console.log("updating catalogs")
+
             this.itemType = this.$route.params.itemType
             this.showEditPanel = !!this.$route.params.id;
         }

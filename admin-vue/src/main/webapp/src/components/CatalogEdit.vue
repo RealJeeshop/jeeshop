@@ -110,7 +110,7 @@
                     return find ? _.cloneDeep(find) : {};
                 },
                 presentation(state) {
-                    console.log("fetching presentation from state")
+
                     let item = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
                     return item && item.availableLocales && item.availableLocales[this.locale]
                         ? _.cloneDeep(item.availableLocales[this.locale])
@@ -145,12 +145,12 @@
                 this.showLocaleEdition = true
             },
             saveLocale() {
-                console.log("saving locale")
+
                 this.showLocaleEdition = true
             },
         },
         created() {
-            console.log("creating catalog edit")
+
             this.itemType = this.$route.params.itemType
             this.itemId = parseInt(this.$route.params.id)
             if (this.itemId) {
@@ -166,7 +166,7 @@
             }
         },
         updated() {
-            console.log("updating catalog edit")
+
         },
 
 
