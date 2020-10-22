@@ -8,9 +8,11 @@
             </v-tabs>
         </v-toolbar>
         <div class="content">
+            <OrderTable v-if="$route.path.indexOf('operations') === -1"
+                        :headers="headers" :items="orders"
+                        @item-selected="handleItemSelection" />
+
             <router-view />
-            <OrderTable :headers="headers" :items="orders" @item-selected="handleItemSelection" />
-            <router-view name="edit" />
         </div>
     </div>
 </template>

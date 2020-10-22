@@ -1,5 +1,5 @@
 <template>
-    <div>OrderOperations</div>
+    <div class="page-content column padded-xl">OrderOperations</div>
 </template>
 
 <script>

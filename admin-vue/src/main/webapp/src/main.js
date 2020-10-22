@@ -46,7 +46,7 @@ const router = new VueRouter({
         {
           path: ':id',
           components: {
-            edit: OrderEdit
+            default: OrderEdit
           }
         }
       ]
