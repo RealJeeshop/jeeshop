@@ -112,6 +112,9 @@
                             <url>jdbc:mysql://${env.JEESHOP_MYSQL_DB_HOST}:${env.JEESHOP_MYSQL_DB_PORT}/jeeshop?useUnicode=true&amp;characterEncoding=UTF-8</url>
                             <user>${env.JEESHOP_MYSQL_DB_USERNAME}</user>
                             <password>${env.JEESHOP_MYSQL_DB_PASSWORD}</password>
+                            <locations>
+                                <location>filesystem:src/main/resources/db/mysql</location>
+                            </locations>
                         </configuration>
                         <executions>
                             <execution>
