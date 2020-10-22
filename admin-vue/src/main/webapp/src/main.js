@@ -23,7 +23,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/forms.scss'
 import './styles/flex.scss'
-import CatalogEdit from "./components/CatalogEdit";
+import CatalogEdit from "./pages/CatalogEdit";
 
 Vue.config.productionTip = false
 

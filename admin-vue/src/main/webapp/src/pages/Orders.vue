@@ -28,15 +28,7 @@
         components: { OrderTable },
         data() {
             return {
-                headers: [
-                    {text: "Id", value: "id"},
-                    {text: "Reference", value: "reference"},
-                    {text: "Owner", value: "owner"},
-                    {text: "login", value: "login"},
-                    {text: "Status", value: "status"},
-                    {text: "Creation Date", value: "creationDate"},
-                    {text: "Last Modification", value: "updateDate"}
-                ],
+                showEditPanel: false,
                 orderStatuses: [
                     "CREATED", "VALIDATED", "PAYMENT_VALIDATED", "CANCELLED,READY_FOR_SHIPMENT", "SHIPPED", "DELIVERED", "RETURNED"
                 ]
@@ -50,6 +42,22 @@
                     return cloneDeep
                 }
             }),
+            headers() {
+                let headers = [
+                    {text: "Id", value: "id"},
+                    {text: "Reference", value: "reference"},
+                    {text: "Owner", value: "owner"},
+                    {text: "login", value: "login"},
+                    {text: "Status", value: "status"},
+                    {text: "Creation Date", value: "creationDate"},
+                    {text: "Last Modification", value: "updateDate"}
+                ]
+
+                if (this.showEditPanel) {
+                    return headers.splice(0, 2)
+
+                } else return headers
+            }
         },
         methods: {
             handleItemSelection(id) {
@@ -57,8 +65,15 @@
                 this.$router.push(`/orders/${id}`)
             }
         },
-        created() {
-            this.$store.dispatch('orders/getAll')
+        created () {
+
+            this.showEditPanel = !!this.$route.params.id;
+            if (!this.showEditPanel) this.$store.dispatch('orders/getAll')
+        },
+
+        updated() {
+
+            this.showEditPanel = !!this.$route.params.id;
         }
     }
 </script>

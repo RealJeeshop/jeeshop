@@ -1,20 +1,25 @@
 <template>
     <div class="table-container">
         <v-data-table :search="search" :headers="headers" :items="items.map(item => {
+            item.login = item.user.login
+            item.reference = 'itemref'
             item.creationDate = formatDate(item.creationDate)
-            item.lastModification = formatDate(item.updateDate)
+            item.updateDate = formatDate(item.updateDate)
             return item
         })" @click:row="onRowClick">
             <template v-slot:top>
-                <v-toolbar flat>
+                <div class="table-search-header">
+                    <v-checkbox label="Payment validation orders"
+                                hint="Check to show only orders with payment validated"/>
+
                     <v-text-field
                             v-model="search"
                             append-icon="mdi-magnify"
-                            label="Search"
+                            label="Search by order id, transaction id, user login, first name or last name (todo)"
                             single-line
                             hide-details>
                     </v-text-field>
-                </v-toolbar>
+                </div>
             </template>
         </v-data-table>
     </div>
@@ -54,6 +59,19 @@
 </style>
 
 <style lang="scss" scoped>
+
+    .table-search-header {
+        display: flex;
+        padding: 0 1em 0 1em;
+    }
+    .table-search-header div:first-child {
+        flex: 2;
+    }
+
+    .table-search-header div:last-child {
+        flex: 4;
+        padding-left: 3em;
+    }
 
     .table-header {
         display: flex;
