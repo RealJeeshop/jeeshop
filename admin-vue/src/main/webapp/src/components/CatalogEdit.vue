@@ -142,8 +142,9 @@
         computed: {
             ...mapState({
                 item(state) {
+
                     let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                    return find ? _.cloneDeep(find) : {};
+                    return find ? _.cloneDeep(find) : {}
                 },
                 presentation(state) {
 
@@ -161,6 +162,9 @@
                     availableLocales: this.item.localizedPresentation
                 }
             }
+        },
+        watch: {
+            '$route': 'fetchItem'
         },
         methods: {
             close() {
@@ -191,27 +195,22 @@
                 this.selectedRelationships = ids
                 this.editedRelationshipType = itemType
                 this.showRelationshipEdition = true
+            },
+            fetchItem() {
+                this.itemType = this.$route.params.itemType
+                this.itemId = parseInt(this.$route.params.id)
+                if (this.itemId) {
+                    this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})
+                }
             }
         },
         created() {
-
-            this.itemType = this.$route.params.itemType
-            this.itemId = parseInt(this.$route.params.id)
-            if (this.itemId) {
-                // this.$store.subscribeAction((action, state) => {
-                //     if (action.type === 'catalogs/getItemById') {
-                //         let stateElement = state.catalogs[action.payload.itemType];
-                //         this.item = _.find(stateElement, i => i.id === parseInt(action.payload.itemId))
-                //         console.log('item.localizedPresentation : ' + JSON.stringify(this.item.localizedPresentation))
-                //     }
-                // })
-
-                this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})
-            }
+            console.log("creating catalog edit")
+            this.fetchItem()
         },
         updated() {
-
-        },
+            console.log("updating catalog edit")
+        }
 
 
     }

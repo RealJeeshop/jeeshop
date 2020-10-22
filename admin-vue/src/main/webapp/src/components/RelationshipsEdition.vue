@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import Table from "./Table";
+    import Table from "./CatalogItemTable";
     import {mapState} from "vuex";
     import _ from "lodash";
 

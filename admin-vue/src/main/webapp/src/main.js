@@ -15,6 +15,8 @@ import Stats from "./pages/Stats";
 import Users from "./pages/Users";
 import Emails from "./pages/Emails";
 import Orders from "./pages/Orders";
+import OrderEdit from "./pages/OrderEdit";
+import OrderOperations from "./pages/OrderOperations";
 
 import './main.css'
 import './styles/inputs.css'
@@ -31,9 +33,24 @@ const router = new VueRouter({
   base: __dirname,
   routes: [
     { path: '/', component: HomePage },
-    { path: '/settings', component: Settings, meta: { protected: true} },
+    { path: '/settings', component: Settings, meta: { protected: true } },
     { path: '/help', component: Help},
-    { path: '/orders', component: Orders, meta: { protected: true}},
+    { path: '/orders', component: Orders, meta: { protected: true },
+      children: [
+        {
+          path: 'operations',
+          components: {
+            default: OrderOperations
+          }
+        },
+        {
+          path: ':id',
+          components: {
+            edit: OrderEdit
+          }
+        }
+      ]
+    },
     { path: '/stats', component: Stats, meta: { protected: true}},
     { path: '/users', component: Users, meta: { protected: true}},
     { path: '/emails', component: Emails, meta: { protected: true}},

@@ -31,7 +31,7 @@
     import DateUtils from '../lib/dateUtils'
 
     export default {
-        name: "Table",
+        name: "CatalogItemTable",
         props: {
             headers: Array[Object],
             items: Array[Object],

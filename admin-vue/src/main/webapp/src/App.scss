@@ -43,13 +43,6 @@ header {
   color: white;
 }
 
-.side-nav {
-  background-color: #F5F5F5;
-  height: 100%;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  flex: 2;
-}
 
 .page-content {
   display: flex;
@@ -58,6 +51,25 @@ header {
   .content {
     display: flex;
     height: 100%;
+  }
+
+  .sub-header-menu {
+    display: flex;
+
+    a {
+      text-decoration: none;
+      color: #fff;
+
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    a.router-link-exact-active {
+      color: #fff;
+    }
   }
 }
 

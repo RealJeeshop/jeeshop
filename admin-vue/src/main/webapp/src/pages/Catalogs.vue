@@ -1,7 +1,7 @@
 <template>
     <div class="page-content column">
         <v-toolbar color="#484848" dark flat>
-            <v-tabs class="catalog-items-menu" align-with-title>
+            <v-tabs class="sub-header-menu" align-with-title>
                 <v-tabs-slider color="yellow"></v-tabs-slider>
 
                 <v-tab to="/catalogs">Catalogs</v-tab>
@@ -18,7 +18,7 @@
                     title="Changes will not be saved"
                     message="You have pending changes. Are you sure you want to quit ?"
                     @agreed="handleChoice"/>
-            <Table :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
+            <CatalogItemTable :of="itemType" :headers="headers" :items="items" @item-selected="handleItemSelection" />
             <router-view name="edit" />
         </div>
     </div>
@@ -26,14 +26,14 @@
 
 <script>
     import { mapState } from 'vuex'
-    import Table from '../components/Table'
+    import CatalogItemTable from '../components/CatalogItemTable'
     import Dialog from "../components/Dialog";
     import _ from  'lodash'
 
     export default {
         name: 'Catalogs',
         components: {
-            Table,
+            CatalogItemTable,
             Dialog
         },
         data: () => {
@@ -130,24 +130,5 @@
         flex: 1;
     }
 
-    .catalog-items-menu {
-
-        display: flex;
-
-        a {
-            text-decoration: none;
-            color: #fff;
-
-            height: 100%;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        a.router-link-exact-active {
-            color: #fff;
-        }
-    }
 </style>
 

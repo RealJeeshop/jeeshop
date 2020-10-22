@@ -4,7 +4,9 @@ const categories = require('./data/categories')
 const products = require('./data/products')
 const skus = require('./data/skus')
 const discounts = require('./data/discounts')
+const orders = require('./data/orders')
 const presentations = require('./data/presentations')
+const _ = require('lodash')
 
 module.exports = function (app) {
 
@@ -32,6 +34,46 @@ module.exports = function (app) {
     })
     app.head('/rs/users', function (req, res) {
         res.sendStatus(200);
+    })
+
+    // Orders
+    app.get('/rs/orders', function (req, res) {
+        res.json(orders)
+    })
+
+    app.get('/rs/orders/count', function (req, res) {
+
+        if (req.params.status) {
+            res.json(orders.filter(o => o.status === req.params.status).length)
+        } else if (req.params.skuId) {
+            res.json(orders.length)
+        } else if (req.params.search) {
+            res.json(orders.length)
+        } else {
+            res.json(orders.length)
+        }
+    })
+
+    app.get('/rs/orders/fixeddeliveryfee', function (req, res) {
+        res.send(10.0)
+    })
+
+    app.get('/rs/orders/:id', function (req, res) {
+        res.json(orders.filter(o => o.id === parseInt(req.params.id))[0])
+    })
+
+    app.post('/rs/orders', function (req, res) {
+        console.log('req.body : ' + JSON.stringify(req.body))
+        res.json(orders[0])
+    })
+
+    app.put('/rs/orders', function (req, res) {
+        res.json(orders[0])
+    })
+
+    app.delete('/rs/orders/:id', function (req, res) {
+        _.remove(categories, c => c.id === parseInt(req.params.id))
+        res.status(200)
     })
 
     // Catalogs
@@ -68,7 +110,9 @@ module.exports = function (app) {
 
     // Categories
     app.get('/rs/categories/:id/categories', function (req, res) {
-        res.json(categories)
+        let tmp = _.cloneDeep(categories)
+        _.remove(tmp, c => c.id === parseInt(req.params.id))
+        res.json(tmp)
     })
 
     app.get('/rs/categories/:id/products', function (req, res) {
@@ -88,7 +132,6 @@ module.exports = function (app) {
     app.get('/rs/skus/:id/discounts', function (req, res) {
         res.json(discounts)
     })
-
 }
 
 function getItems(req) {

@@ -87,7 +87,7 @@ module.exports =
         },
         {
             "id": 6,
-            "name": "Beam 3000",
+        "name": "Beam 3000",
             "description": "Beam 3000",
             "disabled": false,
             "startDate": null,
