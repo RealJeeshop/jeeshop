@@ -8,25 +8,6 @@
     padding-left: 1em;
 }*/
 
-.field-container {
-
-    margin-bottom: 1rem;
-    flex: 1;
-}
-
-.field-container label {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0.5rem;
-}
-
-.field-container label span {
-    font-weight: 600;
-}
-
-.field-container:last-child {
-    border-radius: 4px;
-}
 
 /*
 textarea {

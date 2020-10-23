@@ -88,7 +88,6 @@
                     $scope.vat = parseFloat(data);
                 });
 
-
             if (AuthService.isAuthenticated()){
                 $http.get('rs/discounts/eligible?locale=' + locale)
                     .success(function (discounts) {

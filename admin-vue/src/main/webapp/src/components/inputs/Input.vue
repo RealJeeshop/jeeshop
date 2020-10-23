@@ -6,7 +6,10 @@
                     v-model="insideValue"
                     :placeholder="placeholder"
                     :hint="hint"
-                    @input="update"/>
+                    @input="update"
+                    :disabled="disabled"
+                    :dense="dense"
+                    :readonly="readonly" />
         </label>
     </div>
 </template>
@@ -24,7 +27,10 @@
             value: [String,Number],
             placeholder: String,
             name: String,
-            hint: String
+            hint: String,
+            disabled: Boolean,
+            dense: Boolean,
+            readonly: Boolean
         },
         methods: {
             update() {

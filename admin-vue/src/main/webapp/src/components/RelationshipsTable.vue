@@ -52,7 +52,7 @@
 
 </script>
 
-<style>
+<style scoped>
     .half-width {
         width: 35%;
     }
