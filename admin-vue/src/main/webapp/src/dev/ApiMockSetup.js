@@ -72,7 +72,7 @@ module.exports = function (app) {
     })
 
     app.delete('/rs/orders/:id', function (req, res) {
-        _.remove(categories, c => c.id === parseInt(req.params.id))
+        _.remove(orders, c => c.id === parseInt(req.params.id))
         res.status(200)
     })
 
