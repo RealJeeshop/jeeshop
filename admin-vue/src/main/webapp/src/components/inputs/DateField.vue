@@ -28,12 +28,14 @@
 
 <script>
 
+    import DateUtils from "../../lib/dateUtils";
+
     export default {
         name: 'DateField',
         data() {
           return {
               show: false,
-              insideValue: this.value
+              insideValue: this.formatDate(this.value)
           }
         },
         props: {
@@ -45,6 +47,9 @@
         methods: {
             togglePicker() {
                 this.show = !this.show
+            },
+            formatDate(date) {
+                return DateUtils.formatDate(date)
             },
             update() {
                 this.$refs.dialog.save(this.insideValue)

@@ -7,16 +7,16 @@ module.exports =
       "firstname": "gerald",
       "lastname": "min",
       "gender": "m.",
-      "phoneNumber": "",
+      "phoneNumber": "0123456789",
       "address": null,
       "deliveryAddress": null,
       "birthDate": 1403042400000,
       "age": null,
       "creationDate": 1405807200000,
       "updateDate": null,
-      "disabled": null,
+      "disabled": false,
       "activated": true,
       "preferredLocale": null,
-      "newslettersSubscribed": null
+      "newslettersSubscribed": false
     }
   ]

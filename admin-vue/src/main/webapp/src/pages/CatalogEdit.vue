@@ -12,10 +12,10 @@
                 <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
                 <div class="flex one-half">
                     <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
-                               :value="formatDate(item.startDate)" @on-update="update" />
+                               :value="item.startDate" @on-update="update" />
 
                     <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
-                               :value="formatDate(item.endDate)" @on-update="update" />
+                               :value="item.endDate" @on-update="update" />
                 </div>
                 <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
 
