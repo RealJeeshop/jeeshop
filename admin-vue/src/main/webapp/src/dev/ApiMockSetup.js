@@ -5,6 +5,7 @@ const products = require('./data/products')
 const skus = require('./data/skus')
 const discounts = require('./data/discounts')
 const orders = require('./data/orders')
+const mails = require('./data/mails')
 const presentations = require('./data/presentations')
 const _ = require('lodash')
 
@@ -34,6 +35,15 @@ module.exports = function (app) {
     })
     app.head('/rs/users', function (req, res) {
         res.sendStatus(200);
+    })
+
+    // Mail templates
+    app.get('/rs/mailtemplates', function (req, res) {
+        res.json(mails)
+    })
+
+    app.get('/rs/mailtemplates/:id', function (req, res) {
+        res.json(mails.filter(mail => mail.id.toString() === req.params.id)[0])
     })
 
     // Orders

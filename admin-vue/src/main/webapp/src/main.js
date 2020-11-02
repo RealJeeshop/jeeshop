@@ -14,6 +14,8 @@ import Catalogs from "./pages/Catalogs";
 import Stats from "./pages/Stats";
 import Users from "./pages/Users";
 import Emails from "./pages/Emails";
+import EmailEdit from './pages/EmailEdit';
+import EmailOperations from './pages/EmailOperations';
 import Orders from "./pages/Orders";
 import OrderEdit from "./pages/OrderEdit";
 import OrderOperations from "./pages/OrderOperations";
@@ -69,7 +71,28 @@ const router = new VueRouter({
         }
       ]
     },
-    { path: '/emails', component: Emails, meta: { protected: true}},
+    { path: '/emails', component: Emails, meta: { protected: true},
+      children: [
+        {
+          path: 'operations',
+          components: {
+            default: EmailOperations
+          }
+        },
+        {
+          path: 'create',
+          components: {
+            default: EmailEdit
+          }
+        },
+        {
+          path: ':id',
+          components: {
+            default: EmailEdit
+          }
+        }
+      ]
+    },
     { path: '/:itemType', component: Catalogs, meta: { protected: true},
       children: [
         {

@@ -3,6 +3,7 @@ import Vuex, { createLogger } from 'vuex'
 import catalogs from './modules/catalogs'
 import orders from './modules/orders'
 import users from './modules/users'
+import mails from './modules/mails'
 import session from './modules/session'
 
 Vue.use(Vuex)
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         catalogs,
         session,
         orders,
+        mails,
         users
     },
     strict: debug,
