@@ -3,7 +3,7 @@ INSERT INTO `Address` (`id`, `city`, `street`, `zipCode`, `countryIso3Code`, `ge
 (1, 'Paris', '10, rue des lilas', '75001', 'FRA', 'M.', 'Pierre', 'Durand', NULL);
 
 INSERT INTO `Orders` (`id`, `user_id`, `transactionId`, `deliveryAddress_id`, `billingAddress_id`, `status`, `creationDate`, `updateDate`, `paymentDate`, `deliveryDate`, `parcelTrackingKey`, `price`) VALUES
-(1, 1, 3, 1, 1, 'DELIVERED', '2014-06-18 00:52:52', '2014-06-18 00:52:52', '2014-06-18 00:52:52', '2014-06-18 00:52:52', 'TRACKING_KEY', 100.0),
+(1, 1, 3, 1, 1, 'PAYMENT_VALIDATED', '2014-06-18 00:52:52', '2014-06-18 00:52:52', '2014-06-18 00:52:52', '2014-06-18 00:52:52', 'TRACKING_KEY', 100.0),
 (2, 1, 3, 1, 1, 'CREATED', '2020-06-18 00:52:52', '2020-06-18 00:52:52', NULL, '2020-12-18 00:52:52', 'TRACKING_KEY', 100.0);
 
 INSERT INTO `OrderItem` (`id`, `order_id`, `sku_id`, `product_id`, `quantity`, `price`) VALUES

@@ -17,6 +17,7 @@ import Emails from "./pages/Emails";
 import Orders from "./pages/Orders";
 import OrderEdit from "./pages/OrderEdit";
 import OrderOperations from "./pages/OrderOperations";
+import UserEdit from './pages/UserEdit';
 
 import './main.css'
 import './styles/inputs.css'
@@ -52,7 +53,22 @@ const router = new VueRouter({
       ]
     },
     { path: '/stats', component: Stats, meta: { protected: true}},
-    { path: '/users', component: Users, meta: { protected: true}},
+    { path: '/users', component: Users, meta: { protected: true},
+      children: [
+        {
+          path: 'create',
+          components: {
+            default: UserEdit
+          }
+        },
+        {
+          path: ':id',
+          components: {
+            default: UserEdit
+          }
+        }
+      ]
+    },
     { path: '/emails', component: Emails, meta: { protected: true}},
     { path: '/:itemType', component: Catalogs, meta: { protected: true},
       children: [
