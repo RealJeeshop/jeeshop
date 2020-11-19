@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  postgres-jeeshop-admin:
+    image: postgres
+    container_name: postgres-jeeshop-admin
+    environment:
+      POSTGRES_DB: jeeshop
+      POSTGRES_USER: jeeshop
+      POSTGRES_PASSWORD: test
+# Enable this to save jeeshop databse in 'jeeshop-db' local directory
+#    volumes:
+#      - ./jeeshop-db:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+
+  jeeshop:
+    image: jeeshop/admin
+    container_name: jeeshop
+    environment:
+      JEESHOP_DATABASENAME: jeeshop
+      JEESHOP_DATABASE_HOSTNAME: postgres-jeeshop-admin:5432
+      JEESHOP_DATABASE_USERNAME: jeeshop
+      JEESHOP_DATABASE_PASSWORD: test
+      JEESHOP_JDBC_DRIVER: postgresql
+      JEESHOP_CATALOG_DATABASENAME: jeeshop
+      JEESHOP_CATALOG_DATABASE_HOSTNAME: postgres-jeeshop-admin:5432
+      JEESHOP_CATALOG_DATABASE_USERNAME: jeeshop
+      JEESHOP_CATALOG_DATABASE_PASSWORD: test
+      JEESHOP_CATALOG_JDBC_DRIVER: postgresql
+      JEESHOP_MEDIADIR: /tmp
+      PROXY_ADDRESS_FORWARDING: "true"
+    ports:
+      - 8443:8443
+      - 9990:9990
+# Enable this to save jeeshop media in 'jeeshop-media' local directory
+#    volumes:
+#      - ./jeeshop-media:/tmp
+    depends_on:
+      - postgres-jeeshop-admin
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:postgresql://postgres-jeeshop-admin:5432/jeeshop -user=jeeshop -password=test migrate
+    volumes:
+      - ./install/src/main/resources/db/postgresql:/flyway/sql
+      - ./install/docker/flyway:/flyway/conf
+    depends_on:
+      - postgres-jeeshop-admin
+
+
+#volumes:
+#  database-data:
+#  images:

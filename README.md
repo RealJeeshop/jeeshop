@@ -64,7 +64,27 @@ The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul 
 | JEESHOP_SSL_KEYSTORE_PASSWORD | test123 | default keystore password |
 | JEESHOP_MEDIADIR | /tmp | where jeeshop assets, such as catalog items images, should be uploaded |
 
+## With Docker-compose
 
+The docker compose files uses :
+1. the [jeeshop admin](https://hub.docker.com/r/jeeshop/admin) docker image
+2. the latest [postgres docker image](https://hub.docker.com/_/postgres)
+3. the latest [flyway](https://hub.docker.com/r/flyway/flyway) image for database migration
+
+**NB :** Uncomment volumes section in docker-compose.yml to save jeeshop database and or media to local disk.
+
+to start execute 
+  ```shell script
+    docker-compose up
+  ```
+
+to stop
+  ```shell script
+    docker-compose down
+  ```
+application is accessible at https://localhost:8443/jeeshop-admin
+
+**NB :** If the migration fail it may be because the postgres instance was not ready yet. You should give it another try !
 
 ## On [Wildfy](http://wildfly.org/)
 Jeeshop can be deployed to any Java EE 7 application server. (Web profile)
