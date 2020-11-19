@@ -506,8 +506,8 @@
 
                 $scope.getPresentationMediaURI = function (presentationPropertyName) {
                     if ($scope.presentation[presentationPropertyName] != null) {
-                        return 'rs/medias/' + $stateParams.resource + '/' + $scope.EntryId + '/' + $scope.selectedLocale + '/'
-                            + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing;
+                        return 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/'
+                            + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing[presentationPropertyName];
                     }
                 };
 
@@ -522,7 +522,7 @@
                     $scope.presentation[presentationPropertyName] = presentationMedia;
 
                     $scope.upload = $upload.upload({
-                        url: 'rs/medias/' + $stateParams.resource + '/' + EntryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
+                        url: 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/upload',
                         method: 'POST',
                         //headers: {'header-key': 'header-value'},
                         withCredentials: true,
