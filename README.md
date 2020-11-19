@@ -39,10 +39,10 @@ You can take a look at it or start with it to build your e-commerce store.
 1. Create a specific jeeshop database and a jeeshop database applicative user (See section bellow for default database settings)
 2. Download Jeeshop database migration scripts available [here](https://github.com/remibantos/jeeshop/tree/master/install/src/main/resources/db/postgresql).
 
-### <a name="docker-steps">Steps</a>
+### <a name="docker-steps">Steps for Mac & Windows (with a local DB)</a>
   ```shell script
     docker run --rm -v <Scripts Path>/postgresql:/flyway/sql flyway/flyway -url=jdbc:postgresql://host.docker.internal:5432/jeeshop -user=jeeshop -password=test migrate
-    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop -e jeeshop/admin
+    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop jeeshop/admin
   ```
 
 The first command runs Jeeshop database migration scripts, which create Jeeshop tables and data.
