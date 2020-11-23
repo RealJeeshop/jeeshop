@@ -1,132 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>jeeshop</artifactId>
-        <groupId>org.rembx.jeeshop</groupId>
-        <version>0.9-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-	<artifactId>admin</artifactId>
-
-	<packaging>war</packaging>
-
-
-	<dependencies>
-
-		<dependency>
-			<groupId>org.rembx.jeeshop</groupId>
-			<artifactId>catalog</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.rembx.jeeshop</groupId>
-			<artifactId>user</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.rembx.jeeshop</groupId>
-			<artifactId>order</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.rembx.jeeshop</groupId>
-			<artifactId>media</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<warName>${project.parent.artifactId}-${project.artifactId}</warName>
-					<packagingExcludes>
-						node/, node_modules/,
-						package.json, package-lock.json,
-						webpack.config.js
-					</packagingExcludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.wildfly.plugins</groupId>
-				<artifactId>wildfly-maven-plugin</artifactId>
-				<configuration>
-					<filename>${project.parent.artifactId}-${project.artifactId}.war</filename>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.10.0</version>
-
-				<configuration>
-					<workingDirectory>src/main/webapp</workingDirectory>
-				</configuration>
-
-				<executions>
-					<execution>
-						<id>install node and npm</id>
-						<goals>
-							<goal>install-node-and-npm</goal>
-						</goals>
-						<configuration>
-							<nodeVersion>v5.2.0</nodeVersion>
-							<npmVersion>3.9.0</npmVersion>
-						</configuration>
-					</execution>
-					<execution>
-						<id>npm install</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>webpack build</id>
-						<goals>
-							<goal>webpack</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<arguments>&#45;&#45;optimize-minimize</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
-	<profiles>
-		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when
-	invoking mvn. -->
-			<!-- Use this profile for any OpenShift specific customization your app
-	will need. -->
-			<!-- By default that is to put the resulting archive into the 'deployments'
-	folder. -->
-			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-			<id>openshift</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<warName>${project.parent.artifactId}-${project.artifactId}</warName>
-							<outputDirectory>deployments</outputDirectory>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.rembx.jeeshop</groupId>
+    <artifactId>jeeshop</artifactId>
+    <version>0.9-SNAPSHOT</version>
+  </parent>
+  <artifactId>admin</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>catalog</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>user</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>order</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>media</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-multipart</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+		<plugin>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-maven-plugin</artifactId>
+			<version>${quarkus-plugin.version}</version>
+			<executions>
+				<execution>
+					<goals>
+						<goal>build</goal>
+						<goal>generate-code</goal>
+						<goal>generate-code-tests</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+        <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+                <execution>
+                    <id>copy-resources</id>
+                    <!-- here the phase you need -->
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${basedir}/target/classes/db/migration</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>../install/src/main/resources/db/postgresql</directory>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${compiler-plugin.version}</version>
+		</plugin>
+		<plugin>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>${surefire-plugin.version}</version>
+			<configuration>
+				<systemPropertyVariables>
+					<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+					<maven.home>${maven.home}</maven.home>
+				</systemPropertyVariables>
+			</configuration>
+		</plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>openshift</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+              <warName>${project.parent.artifactId}-${project.artifactId}</warName>
+              <outputDirectory>deployments</outputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

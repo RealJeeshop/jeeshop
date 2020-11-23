@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.order;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.order.model.Order;
@@ -12,12 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 public class PriceEngineImplTest { // TODO complete discounts application test
 
-    private EntityManager entityManager;
+    EntityManager entityManager;
     private OrderConfiguration orderConfiguration;
     private OrderFinder orderFinder;
     private DiscountFinder discountFinder;
@@ -25,7 +25,7 @@ public class PriceEngineImplTest { // TODO complete discounts application test
     private PriceEngineImpl orderPriceEngine;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         entityManager = mock(EntityManager.class);
         orderConfiguration = mock(OrderConfiguration.class);

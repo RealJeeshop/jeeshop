@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
@@ -14,8 +15,8 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 
 public class DiscountFinder {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    @PersistenceUnit(CatalogPersistenceUnit.NAME)
+    EntityManager entityManager;
 
     public DiscountFinder() {
     }

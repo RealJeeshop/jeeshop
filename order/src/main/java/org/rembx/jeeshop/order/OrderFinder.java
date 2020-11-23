@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
@@ -16,7 +17,6 @@ import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +31,10 @@ public class OrderFinder {
     @Inject
     private OrderConfiguration orderConfiguration;
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    @PersistenceUnit(UserPersistenceUnit.NAME)
+    EntityManager entityManager;
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
+    @PersistenceUnit(CatalogPersistenceUnit.NAME)
     private EntityManager catalogEntityManager;
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{

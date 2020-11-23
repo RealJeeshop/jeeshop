@@ -3,6 +3,7 @@ package org.rembx.jeeshop.user;
 import com.google.common.collect.Sets;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;
@@ -10,18 +11,17 @@ import org.rembx.jeeshop.user.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
@@ -34,44 +34,35 @@ import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
  */
 
 @Path("/users")
-@Stateless
+@Transactional
+@RequestScoped
 public class Users {
 
     private final static Logger LOG = LoggerFactory.getLogger(Users.class);
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    private EntityManager entityManager;
-
-    @Inject
+    @PersistenceUnit(UserPersistenceUnit.NAME)
+    EntityManager entityManager;
     private UserFinder userFinder;
-
-    @Inject
     private RoleFinder roleFinder;
-
-    @Inject
     private CountryChecker countryChecker;
-
-    @Inject
     private Mailer mailer;
-
-    @Inject
     private MailTemplateFinder mailTemplateFinder;
 
-    @Resource
-    private SessionContext sessionContext;
+    @Context
+    SecurityContext securityContext;
 
     public Users() {
     }
 
-    public Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
-                 MailTemplateFinder mailTemplateFinder, Mailer mailer, SessionContext sessionContext) {
+    Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
+                 MailTemplateFinder mailTemplateFinder, Mailer mailer, SecurityContext securityContext) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
         this.countryChecker = countryChecker;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
-        this.sessionContext = sessionContext;
+        this.securityContext = securityContext;
     }
 
 
@@ -109,7 +100,8 @@ public class Users {
 
         user.setPassword(hashSha256Base64(user.getPassword()));
 
-        if (!sessionContext.isCallerInRole(ADMIN)) {
+          if (!securityContext.isUserInRole(ADMIN)) {
+
             user.setActivated(false);
             generateActionTokenAndSendMail(user, Mails.userRegistration);
         }
@@ -155,15 +147,13 @@ public class Users {
                               @NotNull String newPassword) {
 
         User user;
-
-        if (sessionContext.isCallerInRole(ADMIN)) {
+        if (securityContext.isUserInRole(ADMIN)) {
 
             user = userFinder.findByLogin(userLogin);
 
-        } else if (sessionContext.isCallerInRole(USER)) {
+        } else if (securityContext.isUserInRole(USER)) {
 
-            user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
-
+            user = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
             if (!userLogin.equals(user.getLogin())) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
@@ -202,8 +192,9 @@ public class Users {
     public User modify(@NotNull User user) {
 
         User existingUser = null;
-        if (sessionContext.isCallerInRole(USER) && !sessionContext.isCallerInRole(ADMIN)) {
-            existingUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+        if (securityContext.isUserInRole(USER) && !securityContext.isUserInRole(ADMIN)) {
+            existingUser = userFinder.findByLogin("admin@jeeshop.org");
+            //existingUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
 
             if (!existingUser.getId().equals(user.getId()) || !existingUser.getLogin().equals(user.getLogin())) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -283,8 +274,7 @@ public class Users {
     @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
     public User findCurrentUser() {
 
-        User user = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
-
+        User user = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
         if (user == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

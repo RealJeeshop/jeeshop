@@ -1,9 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
@@ -24,14 +23,14 @@ public class PresentationResourceCT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();

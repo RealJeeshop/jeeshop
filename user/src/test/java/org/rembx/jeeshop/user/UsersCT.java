@@ -1,8 +1,10 @@
 package org.rembx.jeeshop.user;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import io.quarkus.undertow.runtime.HttpSessionContext;
+import org.apache.http.auth.BasicUserPrincipal;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
@@ -11,19 +13,18 @@ import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;
 import org.rembx.jeeshop.user.test.TestUser;
-import sun.security.acl.PrincipalImpl;
 
-import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
@@ -35,22 +36,22 @@ public class UsersCT {
     private TestUser testUser;
     private TestMailTemplate testMailTemplate;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
     private Mailer mailerMock;
-    private SessionContext sessionContextMock;
+    private SecurityContext sessionContextMock;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testUser = TestUser.getInstance();
         testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         mailerMock = mock(Mailer.class);
-        sessionContextMock = mock(SessionContext.class);
+        sessionContextMock = mock(SecurityContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
                 new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
     }
@@ -177,18 +178,19 @@ public class UsersCT {
         }
     }
 
+
     @Test
     public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception {
 
         User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
         service.create(user);
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
 
@@ -201,13 +203,13 @@ public class UsersCT {
         User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
         user.setGender("M.");
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
         service.create(user);
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         assertThat(entityManager.find(User.class, user.getId())).isNotNull();
@@ -227,7 +229,7 @@ public class UsersCT {
 
         user.setAddress(address);
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
         service.create(user);
@@ -235,7 +237,7 @@ public class UsersCT {
 
         doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMailTemplate.userRegistrationMailTemplate().getContent());
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
         verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
 
         final User persistedUser = entityManager.find(User.class, user.getId());
@@ -335,8 +337,8 @@ public class UsersCT {
 
         User user = notActivatedTestUser();
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(user.getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(user.getLogin()));
         service.resetPassword(user.getLogin(), null, "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
@@ -353,7 +355,7 @@ public class UsersCT {
 
         User user = notActivatedTestUser();
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
         service.resetPassword(user.getLogin(), null, "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
@@ -380,8 +382,8 @@ public class UsersCT {
     public void resetPassword_shouldReturnUnauthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() throws Exception {
 
         try {
-            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+            when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+            when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
             service.resetPassword("not_matching_login", null, null);
             fail("should have thrown ex");
@@ -419,8 +421,8 @@ public class UsersCT {
         User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
 
         try {
-            when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-            when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+            when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+            when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
             service.modify(detachedUserToModify);
 
@@ -457,9 +459,10 @@ public class UsersCT {
         }
     }
 
+
     @Test
     public void findCurrentUser_shouldReturnCurrentAuthenticatedUser() throws Exception {
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testUser.firstUser().getLogin()));
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
         assertThat(service.findCurrentUser()).isEqualTo(testUser.firstUser());
     }

@@ -1,11 +1,13 @@
 package org.rembx.jeeshop.store;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.ws.rs.Path;
 
 
 @Path("sipsautoresponse")
-@Stateless
+@Transactional
+@RequestScoped
 // TODO
 public class SIPSAutoResponse {
 

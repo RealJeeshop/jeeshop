@@ -27,7 +27,7 @@ public class PresentationResource {
     private String locale;
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     public PresentationResource() {
     }

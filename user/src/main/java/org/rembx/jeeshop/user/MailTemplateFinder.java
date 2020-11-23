@@ -3,11 +3,11 @@ package org.rembx.jeeshop.user;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +21,8 @@ public class MailTemplateFinder {
 
     public final static String DEFAULT_LOCALE = "en_GB";
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    @PersistenceUnit(UserPersistenceUnit.NAME)
+    EntityManager entityManager;
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
         put("id", mailTemplate.id);

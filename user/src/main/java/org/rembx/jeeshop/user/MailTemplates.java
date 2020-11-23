@@ -8,10 +8,11 @@ import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,22 +28,21 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  */
 
 @Path("/mailtemplates")
-@Stateless
+@Transactional
+@RequestScoped
 public class MailTemplates {
 
-    @Inject
     private Mailer mailer;
 
     @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @Inject
     private MailTemplateFinder mailTemplateFinder;
 
     public MailTemplates() {
     }
 
-    public MailTemplates(EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
+    MailTemplates(EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
         this.entityManager = entityManager;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;

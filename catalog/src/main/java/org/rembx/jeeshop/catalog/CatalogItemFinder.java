@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -25,8 +26,9 @@ import java.util.Map;
  * Utility class for common finders on CatalogItem entities
  */
 public class CatalogItemFinder {
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
+
+    @PersistenceUnit(CatalogPersistenceUnit.NAME)
+    EntityManager entityManager;
 
     public CatalogItemFinder() {
     }

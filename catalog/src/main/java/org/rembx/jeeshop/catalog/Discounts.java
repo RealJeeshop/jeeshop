@@ -1,6 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
+import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -8,15 +10,16 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 import java.util.Set;
 
@@ -30,29 +33,24 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  */
 
 @Path("/discounts")
-@Stateless
-public class
-Discounts {
+@Transactional
+@RequestScoped
+public class Discounts {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    @PersistenceUnit(CatalogPersistenceUnit.NAME)
+    EntityManager entityManager;
 
-    @Inject
     PresentationResource presentationResource;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
-
-    @Inject
     private DiscountFinder discountFinder;
 
     @Resource
-    private SessionContext sessionContext;
+    SecurityContext sessionContext;
 
     public Discounts() {
     }
 
-    public Discounts(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Discounts(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }

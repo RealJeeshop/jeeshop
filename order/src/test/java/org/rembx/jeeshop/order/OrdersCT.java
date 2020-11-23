@@ -1,8 +1,10 @@
 package org.rembx.jeeshop.order;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import io.quarkus.undertow.runtime.HttpSessionContext;
+import org.apache.http.auth.BasicUserPrincipal;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.mail.Mailer;
@@ -15,22 +17,22 @@ import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.Address;
+
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import sun.security.acl.PrincipalImpl;
 
-import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 import static org.rembx.jeeshop.order.model.OrderStatus.PAYMENT_VALIDATED;
 
@@ -38,18 +40,18 @@ public class OrdersCT {
 
     private static EntityManagerFactory emf;
     private static EntityManagerFactory catalogEmf;
-    private EntityManager entityManager;
+    EntityManager entityManager;
     private EntityManager catalogEntityManager;
     private TestOrder testOrder;
     private TestCatalog testCatalog;
 
 
-    private SessionContext sessionContextMock;
+    private SecurityContext sessionContextMock;
     private PriceEngine priceEngineMock;
     private PaymentTransactionEngine paymentTransactionEngine;
     private Orders service;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         emf = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
         catalogEmf = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
@@ -57,14 +59,14 @@ public class OrdersCT {
 
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testOrder = TestOrder.getInstance();
         testCatalog = TestCatalog.getInstance();
 
         entityManager = emf.createEntityManager();
         catalogEntityManager = catalogEmf.createEntityManager();
-        sessionContextMock = mock(SessionContext.class);
+        sessionContextMock = mock(SecurityContext.class);
         priceEngineMock = mock(PriceEngine.class);
         final MailTemplateFinder mailTemplateFinder = new MailTemplateFinder(entityManager);
         paymentTransactionEngine = new DefaultPaymentTransactionEngine(
@@ -106,9 +108,9 @@ public class OrdersCT {
         entityManager.persist(user);
         entityManager.getTransaction().commit();
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl("777@test.com"));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal("777@test.com"));
         try {
             service.find(1L, null);
             fail("should have thrown ex");
@@ -184,13 +186,12 @@ public class OrdersCT {
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
-
     @Test
     public void findAll_whenClientHasUserRoleOnly_shouldReturnNoneEmptyList_WithoutOrdersWithStatusCREATED() {
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         assertThat(service.findAll(null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
     }
@@ -198,9 +199,9 @@ public class OrdersCT {
     @Test
     public void findAll_whenClientHasUserRoleOnlyAndwithPagination_shouldReturnNoneEmptyListPaginated() {
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
@@ -209,9 +210,9 @@ public class OrdersCT {
 
     @Test
     public void findAll_whenClientHasUserRoleOnlyAndByLogin_shouldReturnSearchedOrder() {
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
@@ -220,9 +221,9 @@ public class OrdersCT {
 
     @Test
     public void findAll_whenClientHasUserRoleOnlyAndByStatus_shouldReturnOrdersWithMatchingStatus() {
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
         assertThat(orders).isNotEmpty();
@@ -231,9 +232,9 @@ public class OrdersCT {
 
     @Test
     public void findAll_whenClientHasUserRoleAndByStatusCREATED_shouldReturnOrdersWithThisStatus() {
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, null, null);
         assertThat(orders).isNotEmpty();
@@ -290,8 +291,8 @@ public class OrdersCT {
         Address deliveryAddress = new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA");
         Address billingAddress = new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA");
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
         Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA"));
@@ -301,7 +302,7 @@ public class OrdersCT {
         service.create(order, null);
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.USER);
         //verify(mailerMock).sendMail(testMailTemplate.orderConfirmationMailTemplate().getSubject(), testOrder.firstOrdersUser().getLogin(), "<html><body>Hello M. John Doe. Your order has been registered...</body></html>");
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
@@ -330,8 +331,8 @@ public class OrdersCT {
         orderItems.add(new OrderItem(2L, 2L, 3));
 
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.getCallerPrincipal()).thenReturn(new PrincipalImpl(testOrder.firstOrdersUser().getLogin()));
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
+        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
         entityManager.getTransaction().begin();
         Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
@@ -341,7 +342,7 @@ public class OrdersCT {
         entityManager.getTransaction().commit();
 
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.USER);
         verify(priceEngineMock).computePrice(order);
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
@@ -362,8 +363,8 @@ public class OrdersCT {
     @Test
     public void create_shouldSetGivenUserByLoginInOrder_ForADMINRole() throws Exception {
 
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.USER)).thenReturn(false);
-        when(sessionContextMock.isCallerInRole(JeeshopRoles.ADMIN)).thenReturn(true);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(false);
+        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
         Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
@@ -372,8 +373,8 @@ public class OrdersCT {
         service.create(order, "test@test.com");
         entityManager.getTransaction().commit();
 
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.USER);
-        verify(sessionContextMock).isCallerInRole(JeeshopRoles.ADMIN);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.USER);
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
 
         final Order persistedOrder = entityManager.find(Order.class, order.getId());
 

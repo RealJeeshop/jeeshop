@@ -22,7 +22,7 @@ import java.util.List;
 public class PriceEngineImpl implements PriceEngine {
 
     @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
     @Inject
     private OrderConfiguration orderConfiguration;
