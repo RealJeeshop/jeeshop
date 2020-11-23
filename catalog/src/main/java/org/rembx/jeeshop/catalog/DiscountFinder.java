@@ -15,13 +15,12 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 
 public class DiscountFinder {
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     public DiscountFinder() {
     }
 
-    public DiscountFinder(EntityManager entityManager) {
+    DiscountFinder(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

@@ -1,19 +1,16 @@
 package org.rembx.jeeshop.catalog;
 
-
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -32,29 +29,18 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
-/**
- * @author remi
- */
-
 @Path("/products")
 @Transactional
 @RequestScoped
 public class Products {
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    PresentationResource presentationResource;
-    private CatalogItemFinder catalogItemFinder;
-
     @Context
     SecurityContext sessionContext;
+    PresentationResource presentationResource;
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
 
-    public Products() {
-
-    }
-
-    Products(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }

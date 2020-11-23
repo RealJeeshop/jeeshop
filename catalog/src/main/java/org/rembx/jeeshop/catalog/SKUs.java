@@ -39,19 +39,17 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 @RequestScoped
 public class SKUs {
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    PresentationResource presentationResource;
-    private CatalogItemFinder catalogItemFinder;
-
     @Context
     SecurityContext sessionContext;
+    PresentationResource presentationResource;
+
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
 
     public SKUs() {
     }
 
-    SKUs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }

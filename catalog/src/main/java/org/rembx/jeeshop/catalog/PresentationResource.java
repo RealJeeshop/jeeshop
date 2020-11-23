@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
@@ -26,7 +27,7 @@ public class PresentationResource {
     private CatalogItem parentCatalogItem;
     private String locale;
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
+    @PersistenceUnit(CatalogPersistenceUnit.NAME)
     EntityManager entityManager;
 
     public PresentationResource() {

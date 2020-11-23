@@ -37,8 +37,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 @RequestScoped
 public class Discounts {
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     PresentationResource presentationResource;
     private CatalogItemFinder catalogItemFinder;
@@ -50,7 +49,7 @@ public class Discounts {
     public Discounts() {
     }
 
-    Discounts(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }
