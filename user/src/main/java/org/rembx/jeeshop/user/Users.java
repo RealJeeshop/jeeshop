@@ -39,7 +39,6 @@ public class Users {
 
     private final static Logger LOG = LoggerFactory.getLogger(Users.class);
 
-    private SecurityContext securityContext;
     private EntityManager entityManager;
     private UserFinder userFinder;
     private RoleFinder roleFinder;
@@ -48,21 +47,20 @@ public class Users {
     private MailTemplateFinder mailTemplateFinder;
 
     Users(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
-                 MailTemplateFinder mailTemplateFinder, Mailer mailer, @Context SecurityContext securityContext) {
+                 MailTemplateFinder mailTemplateFinder, Mailer mailer) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
         this.countryChecker = countryChecker;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
-        this.securityContext = securityContext;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public User create(@NotNull User user) {
+    public User create(@Context SecurityContext securityContext, @NotNull User user) {
 
         if (user.getId() != null) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -135,7 +133,7 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userLogin}/password")
     @PermitAll
-    public void resetPassword(@NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token,
+    public void resetPassword(@Context SecurityContext securityContext, @NotNull @PathParam("userLogin") String userLogin, @QueryParam("token") String token,
                               @NotNull String newPassword) {
 
         User user;
@@ -181,7 +179,7 @@ public class Users {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, USER})
-    public User modify(@NotNull User user) {
+    public User modify(@Context SecurityContext securityContext, @NotNull User user) {
 
         User existingUser = null;
         if (securityContext.isUserInRole(USER) && !securityContext.isUserInRole(ADMIN)) {
@@ -264,7 +262,7 @@ public class Users {
     @Path("/current")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
-    public User findCurrentUser() {
+    public User findCurrentUser(@Context SecurityContext securityContext) {
 
         User user = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
         if (user == null) {

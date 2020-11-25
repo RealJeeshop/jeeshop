@@ -16,7 +16,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -29,25 +31,21 @@ public class EligibleDiscounts {
     private DiscountFinder discountFinder;
     private UserFinder userFinder;
     private OrderFinder orderFinder;
-    private HttpSessionContext sessionContext;
 
     private OrderConfiguration orderConfiguration;
 
-    EligibleDiscounts(UserFinder userFinder, DiscountFinder discountFinder, OrderFinder orderFinder,
-                             HttpSessionContext sessionContext) {
+    EligibleDiscounts(UserFinder userFinder, DiscountFinder discountFinder, OrderFinder orderFinder) {
         this.userFinder = userFinder;
         this.discountFinder = discountFinder;
         this.orderFinder = orderFinder;
-        this.sessionContext = sessionContext;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(JeeshopRoles.USER)
-    public List<Discount> findEligible(@QueryParam("locale") String locale) {
+    public List<Discount> findEligible(@Context SecurityContext securityContext, @QueryParam("locale") String locale) {
 
-        //User currentUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
-        User currentUser = userFinder.findByLogin("admin@jeeshop.org");
+        User currentUser = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
 
         Long completedOrders = orderFinder.countUserCompletedOrders(currentUser);
 

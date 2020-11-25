@@ -36,8 +36,6 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 @RequestScoped
 public class Orders {
 
-    @Context
-    SecurityContext securityContext;
     private OrderConfiguration orderConfiguration;
     private EntityManager entityManager;
     private OrderFinder orderFinder;
@@ -48,13 +46,12 @@ public class Orders {
     private PriceEngine priceEngine;
 
     Orders(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
-                  MailTemplateFinder mailTemplateFinder, Mailer mailer, SecurityContext securityContext, PriceEngine priceEngine, PaymentTransactionEngine paymentTransactionEngine) {
+                  MailTemplateFinder mailTemplateFinder, Mailer mailer, PriceEngine priceEngine, PaymentTransactionEngine paymentTransactionEngine) {
         this.entityManager = entityManager;
         this.orderFinder = orderFinder;
         this.userFinder = userFinder;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
-        this.securityContext = securityContext;
         this.priceEngine = priceEngine;
         this.paymentTransactionEngine = paymentTransactionEngine;
     }
@@ -64,7 +61,7 @@ public class Orders {
     @Path("/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
-    public Order find(@PathParam("orderId") @NotNull Long orderId, @QueryParam("enhanced") Boolean enhanced) {
+    public Order find(@Context SecurityContext securityContext, @PathParam("orderId") @NotNull Long orderId, @QueryParam("enhanced") Boolean enhanced) {
         Order order = entityManager.find(Order.class, orderId);
         if (securityContext.isUserInRole(USER) && !securityContext.isUserInRole(ADMIN)) {
             User authenticatedUser = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
@@ -85,7 +82,7 @@ public class Orders {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY, USER})
-    public List<Order> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
+    public List<Order> findAll(@Context SecurityContext securityContext, @QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size,
                                @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("status") OrderStatus status,
                                @QueryParam("skuId") Long skuId, @QueryParam("enhanced") Boolean enhanced) {
 
@@ -102,11 +99,11 @@ public class Orders {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({USER, ADMIN})
-    public Order create(Order order, @QueryParam("userLogin") String userLogin) {
+    public Order create(@Context SecurityContext securityContext, Order order, @QueryParam("userLogin") String userLogin) {
 
         checkOrder(order);
 
-        assignOrderToUser(order, userLogin);
+        assignOrderToUser(securityContext, order, userLogin);
 
         order.setStatus(OrderStatus.CREATED);
 
@@ -169,7 +166,7 @@ public class Orders {
     }
 
 
-    private void assignOrderToUser(Order order, String userLogin) {
+    private void assignOrderToUser(SecurityContext securityContext, Order order, String userLogin) {
         User user;
         if (securityContext.isUserInRole(USER)) {
             user = userFinder.findByLogin(securityContext.getUserPrincipal().getName());

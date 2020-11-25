@@ -74,17 +74,17 @@ public class OrdersCT {
                 mailTemplateFinder, new Mailer(), catalogEntityManager);
 
         service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "20.0")), new UserFinder(entityManager),
-                mailTemplateFinder, null, sessionContextMock, priceEngineMock, paymentTransactionEngine);
+                mailTemplateFinder, null, priceEngineMock, paymentTransactionEngine);
     }
 
     @Test
     public void find() throws Exception {
-        assertThat(service.find(1L, null)).isEqualTo(testOrder.firstOrder());
+        assertThat(service.find(sessionContextMock,1L, null)).isEqualTo(testOrder.firstOrder());
     }
 
     @Test
     public void find_withEnhanceResult_shouldReturnEnhancedOrder() throws Exception {
-        Order enhancedOrder = service.find(1L, true);
+        Order enhancedOrder = service.find(sessionContextMock,1L, true);
 
         assertThat(enhancedOrder).isEqualTo(testOrder.firstOrder());
 
@@ -94,7 +94,7 @@ public class OrdersCT {
     @Test
     public void find_withUnknownId_ShouldThrowException() throws Exception {
         try {
-            service.find(999L, null);
+            service.find(sessionContextMock, 999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -112,7 +112,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal("777@test.com"));
         try {
-            service.find(1L, null);
+            service.find(sessionContextMock, 1L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
@@ -126,45 +126,45 @@ public class OrdersCT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder(), testOrder.secondOrder());
+        assertThat(service.findAll(sessionContextMock, null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder(), testOrder.secondOrder());
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedOrder() {
-        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByStatus_shouldReturnOrdersWithMatchingStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersInGivenStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.DELIVERED, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, OrderStatus.DELIVERED, null, null);
         assertThat(orders).isEmpty();
     }
 
     @Test
     public void findAll_ByStatus_shouldReturnEmptyListWhenThereAreNoOrdersWithItemsMatchingGivenSKUId() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 2L, null);
+        List<Order> orders = service.findAll(sessionContextMock,null, 0, 1, null, null, null, 2L, null);
         assertThat(orders).isEmpty();
     }
 
     @Test
     public void findAll_withEnhancedResults_shouldReturnEnhancedOrders() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, true);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, null, null, true);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
         assertThat(orders.get(0).getDeliveryFee()).isNotNull();
@@ -174,14 +174,14 @@ public class OrdersCT {
 
     @Test
     public void findAll_BySkuId_shouldReturnOrdersWithItemsHavingGivenSkuIdAndStatus() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, 1L, null);
+        List<Order> orders = service.findAll(sessionContextMock,null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, 1L, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
 
     @Test
     public void findAll_BySkuId_shouldReturnOrdersWithItemsHavingGivenSkuId() {
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, 1L, null);
+        List<Order> orders = service.findAll(sessionContextMock,null, 0, 1, null, null, null, 1L, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -193,7 +193,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        assertThat(service.findAll(null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
+        assertThat(service.findAll(sessionContextMock,null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
     }
 
     @Test
@@ -203,7 +203,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(null, 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -214,7 +214,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -225,7 +225,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, OrderStatus.PAYMENT_VALIDATED, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -236,7 +236,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(null, 0, 1, null, null, OrderStatus.CREATED, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, null, 0, 1, null, null, OrderStatus.CREATED, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.secondOrder());
     }
@@ -262,7 +262,7 @@ public class OrdersCT {
 
         try {
             Order order = new Order(null, address, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
-            service.create(order, null);
+            service.create(sessionContextMock, order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -270,7 +270,7 @@ public class OrdersCT {
 
         try {
             Order order = new Order(null, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), address);
-            service.create(order, null);
+            service.create(sessionContextMock, order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -278,7 +278,7 @@ public class OrdersCT {
 
         try {
             Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), address);
-            service.create(order, null);
+            service.create(sessionContextMock, order, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -299,7 +299,7 @@ public class OrdersCT {
 
         order.setOrderDiscounts(new HashSet<>());
 
-        service.create(order, null);
+        service.create(sessionContextMock, order, null);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isUserInRole(JeeshopRoles.USER);
@@ -338,7 +338,7 @@ public class OrdersCT {
         Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
         order.setOrderDiscounts(new HashSet<>());
 
-        service.create(order, null);
+        service.create(sessionContextMock, order, null);
         entityManager.getTransaction().commit();
 
 
@@ -370,7 +370,7 @@ public class OrdersCT {
         Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
         order.setOrderDiscounts(new HashSet<>());
 
-        service.create(order, "test@test.com");
+        service.create(sessionContextMock, order, "test@test.com");
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isUserInRole(JeeshopRoles.USER);

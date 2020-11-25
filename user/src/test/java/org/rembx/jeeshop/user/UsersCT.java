@@ -53,7 +53,7 @@ public class UsersCT {
         mailerMock = mock(Mailer.class);
         sessionContextMock = mock(SecurityContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
-                new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock, sessionContextMock);
+                new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class UsersCT {
         user.setId(777L);
 
         try {
-            service.create(user);
+            service.create(sessionContextMock, user);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -137,7 +137,7 @@ public class UsersCT {
         user.setLogin("test@test.com");
 
         try {
-            service.create(user);
+            service.create(sessionContextMock, user);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.CONFLICT);
@@ -154,7 +154,7 @@ public class UsersCT {
         user.setAddress(address);
 
         try {
-            service.create(user);
+            service.create(sessionContextMock, user);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -171,7 +171,7 @@ public class UsersCT {
         user.setAddress(address);
 
         try {
-            service.create(user);
+            service.create(sessionContextMock, user);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -187,7 +187,7 @@ public class UsersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
 
         entityManager.getTransaction().begin();
-        service.create(user);
+        service.create(sessionContextMock, user);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
@@ -206,7 +206,7 @@ public class UsersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
-        service.create(user);
+        service.create(sessionContextMock, user);
         entityManager.getTransaction().commit();
 
         verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
@@ -232,7 +232,7 @@ public class UsersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
 
         entityManager.getTransaction().begin();
-        service.create(user);
+        service.create(sessionContextMock, user);
         entityManager.getTransaction().commit();
 
         doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMailTemplate.userRegistrationMailTemplate().getContent());
@@ -319,7 +319,7 @@ public class UsersCT {
 
         User user = notActivatedTestUser();
 
-        service.resetPassword(user.getLogin(), user.getActionToken().toString(), "newPassword");
+        service.resetPassword(sessionContextMock, user.getLogin(), user.getActionToken().toString(), "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
@@ -339,7 +339,7 @@ public class UsersCT {
 
         when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(user.getLogin()));
-        service.resetPassword(user.getLogin(), null, "newPassword");
+        service.resetPassword(sessionContextMock, user.getLogin(), null, "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
@@ -356,7 +356,7 @@ public class UsersCT {
         User user = notActivatedTestUser();
 
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
-        service.resetPassword(user.getLogin(), null, "newPassword");
+        service.resetPassword(sessionContextMock, user.getLogin(), null, "newPassword");
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
@@ -371,7 +371,7 @@ public class UsersCT {
     public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception {
 
         try {
-            service.resetPassword("unknown_login", null, null);
+            service.resetPassword(sessionContextMock, "unknown_login", null, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -385,7 +385,7 @@ public class UsersCT {
             when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
             when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
-            service.resetPassword("not_matching_login", null, null);
+            service.resetPassword(sessionContextMock, "not_matching_login", null, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
@@ -398,7 +398,7 @@ public class UsersCT {
 
         detachedUserToModify.setId(testUser.firstUser().getId());
 
-        service.modify(detachedUserToModify);
+        service.modify(sessionContextMock, detachedUserToModify);
 
     }
 
@@ -408,7 +408,7 @@ public class UsersCT {
 
         detachedUser.setId(9999L);
         try {
-            service.modify(detachedUser);
+            service.modify(sessionContextMock, detachedUser);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -424,7 +424,7 @@ public class UsersCT {
             when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
             when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
-            service.modify(detachedUserToModify);
+            service.modify(sessionContextMock, detachedUserToModify);
 
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
@@ -464,7 +464,7 @@ public class UsersCT {
     public void findCurrentUser_shouldReturnCurrentAuthenticatedUser() throws Exception {
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
 
-        assertThat(service.findCurrentUser()).isEqualTo(testUser.firstUser());
+        assertThat(service.findCurrentUser(sessionContextMock)).isEqualTo(testUser.firstUser());
     }
 
     private User notActivatedTestUser() {
