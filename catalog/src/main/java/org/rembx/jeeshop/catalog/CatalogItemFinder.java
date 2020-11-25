@@ -15,6 +15,7 @@ import org.rembx.jeeshop.catalog.model.QCatalogItem;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Response;
@@ -26,7 +27,7 @@ import java.util.Map;
 /**
  * Utility class for common finders on CatalogItem entities
  */
-@ApplicationScoped
+@RequestScoped
 public class CatalogItemFinder {
 
     @PersistenceUnit(value = CatalogPersistenceUnit.NAME)

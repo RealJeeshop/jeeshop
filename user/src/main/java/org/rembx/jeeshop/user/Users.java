@@ -33,29 +33,22 @@ import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
  * Customer resource
  */
 
-@Path("/users")
-@Transactional
+@Path("/rs/users")
 @RequestScoped
 public class Users {
 
     private final static Logger LOG = LoggerFactory.getLogger(Users.class);
 
-    @PersistenceUnit(UserPersistenceUnit.NAME)
-    EntityManager entityManager;
+    private SecurityContext securityContext;
+    private EntityManager entityManager;
     private UserFinder userFinder;
     private RoleFinder roleFinder;
     private CountryChecker countryChecker;
     private Mailer mailer;
     private MailTemplateFinder mailTemplateFinder;
 
-    @Context
-    SecurityContext securityContext;
-
-    public Users() {
-    }
-
-    Users(EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
-                 MailTemplateFinder mailTemplateFinder, Mailer mailer, SecurityContext securityContext) {
+    Users(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
+                 MailTemplateFinder mailTemplateFinder, Mailer mailer, @Context SecurityContext securityContext) {
         this.entityManager = entityManager;
         this.userFinder = userFinder;
         this.roleFinder = roleFinder;
@@ -64,7 +57,6 @@ public class Users {
         this.mailer = mailer;
         this.securityContext = securityContext;
     }
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

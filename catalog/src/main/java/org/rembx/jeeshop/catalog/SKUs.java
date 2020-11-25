@@ -34,20 +34,15 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/skus")
-@Transactional
+@Path("/rs/skus")
 @RequestScoped
 public class SKUs {
 
     @Context
     SecurityContext sessionContext;
     PresentationResource presentationResource;
-
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
-
-    public SKUs() {
-    }
 
     SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;

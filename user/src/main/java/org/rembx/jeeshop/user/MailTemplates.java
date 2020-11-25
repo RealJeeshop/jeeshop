@@ -2,6 +2,7 @@ package org.rembx.jeeshop.user;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.model.MailTemplate;
@@ -28,21 +29,14 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  */
 
 @Path("/mailtemplates")
-@Transactional
 @RequestScoped
 public class MailTemplates {
 
     private Mailer mailer;
-
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    EntityManager entityManager;
-
+    private EntityManager entityManager;
     private MailTemplateFinder mailTemplateFinder;
 
-    public MailTemplates() {
-    }
-
-    MailTemplates(EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
+    MailTemplates(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
         this.entityManager = entityManager;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;

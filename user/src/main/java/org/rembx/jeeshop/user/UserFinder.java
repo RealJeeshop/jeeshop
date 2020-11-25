@@ -8,6 +8,7 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +19,10 @@ import static org.rembx.jeeshop.user.model.QUser.user;
 /**
  * User finder utility
  */
+@RequestScoped
 public class UserFinder {
 
-    @PersistenceUnit(UserPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    public UserFinder() {
-    }
+    private EntityManager entityManager;
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
         put("id", user.id);
@@ -42,7 +40,7 @@ public class UserFinder {
         put("updateDate", user.updateDate);
     }};
 
-    public UserFinder(EntityManager entityManager) {
+    public UserFinder(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

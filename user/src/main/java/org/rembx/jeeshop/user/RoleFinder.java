@@ -6,6 +6,7 @@ import org.rembx.jeeshop.user.model.Role;
 import org.rembx.jeeshop.user.model.RoleName;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 
 import static org.rembx.jeeshop.user.model.QRole.role;
@@ -13,15 +14,12 @@ import static org.rembx.jeeshop.user.model.QRole.role;
 /**
  * User finder utility
  */
+@RequestScoped
 public class RoleFinder {
 
-    @PersistenceUnit(UserPersistenceUnit.NAME)
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
-    public RoleFinder() {
-    }
-
-    public RoleFinder(EntityManager entityManager) {
+    RoleFinder(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

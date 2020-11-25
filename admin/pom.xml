@@ -35,7 +35,15 @@
     </dependency>
   </dependencies>
   <build>
-
+      <resources>
+          <resource>
+              <directory>src/main/resources</directory>
+          </resource>
+          <resource>
+              <directory>src/main/webapp/dist</directory>
+              <targetPath>webapp</targetPath>
+          </resource>
+      </resources>
     <plugins>
         <plugin>
             <groupId>org.jboss.jandex</groupId>
@@ -65,10 +73,46 @@
 			</executions>
 		</plugin>
         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>npm-install</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <workingDirectory>src/main/webapp</workingDirectory>
+                        <executable>npm</executable>
+                        <arguments>
+                            <argument>install</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>npm-build</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <workingDirectory>src/main/webapp</workingDirectory>
+                        <executable>npm</executable>
+                        <arguments>
+                            <argument>run</argument>
+                            <argument>build</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
             <artifactId>maven-resources-plugin</artifactId>
             <executions>
                 <execution>
-                    <id>copy-resources</id>
+                    <id>copy-db-migration-scripts</id>
                     <phase>validate</phase>
                     <goals>
                         <goal>copy-resources</goal>
@@ -82,6 +126,30 @@
                         </resources>
                     </configuration>
                 </execution>
+<!--                <execution>-->
+<!--                    <id>copy-webapp</id>-->
+<!--                    <phase>validate</phase>-->
+<!--                    <goals>-->
+<!--                        <goal>copy-resources</goal>-->
+<!--                    </goals>-->
+<!--                    <configuration>-->
+<!--                        <outputDirectory>${basedir}/src/main/resources</outputDirectory>-->
+<!--                        <resources>-->
+<!--                            <resource>-->
+<!--                                <directory>${basedir}/src/main/webapp</directory>-->
+<!--                                <excludes>-->
+<!--                                    <exclude>**/node_modules/**</exclude>-->
+<!--                                    <exclude>**/node/**</exclude>-->
+<!--                                    <exclude>**/.idea/**</exclude>-->
+<!--                                    <exclude>**/WEB-INF/**</exclude>-->
+<!--                                    <exclude>webpack.config.js</exclude>-->
+<!--                                    <exclude>package.json</exclude>-->
+<!--                                    <exclude>package-lock.json</exclude>-->
+<!--                                </excludes>-->
+<!--                            </resource>-->
+<!--                        </resources>-->
+<!--                    </configuration>-->
+<!--                </execution>-->
             </executions>
         </plugin>
 		<plugin>

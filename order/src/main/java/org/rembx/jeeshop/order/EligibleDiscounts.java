@@ -23,21 +23,15 @@ import java.util.List;
  * Orders resource.
  */
 @Path("discounts/eligible")
-@Transactional
 @RequestScoped
 public class EligibleDiscounts {
 
     private DiscountFinder discountFinder;
     private UserFinder userFinder;
     private OrderFinder orderFinder;
-
-    @Resource
     private HttpSessionContext sessionContext;
 
     private OrderConfiguration orderConfiguration;
-
-    public EligibleDiscounts() {
-    }
 
     EligibleDiscounts(UserFinder userFinder, DiscountFinder discountFinder, OrderFinder orderFinder,
                              HttpSessionContext sessionContext) {

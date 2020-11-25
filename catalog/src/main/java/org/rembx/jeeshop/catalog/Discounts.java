@@ -32,22 +32,16 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/discounts")
-@Transactional
+@Path("/rs/discounts")
 @RequestScoped
 public class Discounts {
 
-    private EntityManager entityManager;
-
-    PresentationResource presentationResource;
-    private CatalogItemFinder catalogItemFinder;
-    private DiscountFinder discountFinder;
-
     @Resource
     SecurityContext sessionContext;
-
-    public Discounts() {
-    }
+    PresentationResource presentationResource;
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
+    private DiscountFinder discountFinder;
 
     Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;

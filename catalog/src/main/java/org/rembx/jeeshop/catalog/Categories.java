@@ -34,25 +34,17 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/categories")
-@Transactional
+@Path("/rs/categories")
 @RequestScoped
 public class Categories {
 
-
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    PresentationResource presentationResource;
-    private CatalogItemFinder catalogItemFinder;
-
     @Context
     SecurityContext sessionContext;
+    PresentationResource presentationResource;
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
 
-    public Categories() {
-    }
-
-    Categories(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }

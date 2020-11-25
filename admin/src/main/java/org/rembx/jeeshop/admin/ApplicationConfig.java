@@ -8,13 +8,13 @@ import org.rembx.jeeshop.user.MailTemplates;
 import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("/rs")
-public class
-        ApplicationConfig extends Application {
+@ApplicationPath("/")
+public class ApplicationConfig extends Application {
 
     // ======================================
     // =          Business methods          =
@@ -23,7 +23,6 @@ public class
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(Catalogs.class);
         classes.add(Categories.class);
         classes.add(Products.class);
         classes.add(SKUs.class);
@@ -33,6 +32,7 @@ public class
         classes.add(MailTemplates.class);
         classes.add(Orders.class);
         classes.add(WebApplicationExceptionMapper.class);
+        classes.add(GatewayResource.class);
         return classes;
     }
 }

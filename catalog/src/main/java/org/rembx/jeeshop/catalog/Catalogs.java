@@ -37,26 +37,17 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/catalogs")
-@Transactional
+@Path("/rs/catalogs")
 @RequestScoped
 public class Catalogs {
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    PresentationResource presentationResource;
-
-    private CatalogItemFinder catalogItemFinder;
-
     @Context
     SecurityContext sessionContext;
+    PresentationResource presentationResource;
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
 
-    public Catalogs() {
-
-    }
-
-    Catalogs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME)EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
     }

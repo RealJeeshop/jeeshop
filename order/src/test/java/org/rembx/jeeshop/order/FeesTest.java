@@ -30,12 +30,10 @@ public class FeesTest {
     @Test
     public void getVATOrShippingFeeShouldReturnNullWhenNoMatchingOrderConfiguration() throws Exception {
 
-        Fees fees = new Fees();
+        Fees fees = new Fees(null);
 
         assertThat(fees.getShippingFee()).isEqualTo(null);
         assertThat(fees.getVAT()).isEqualTo(null);
-
-
     }
 
     private OrderConfiguration orderConfiguration() {

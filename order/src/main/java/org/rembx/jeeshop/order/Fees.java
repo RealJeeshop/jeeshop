@@ -12,15 +12,11 @@ import javax.ws.rs.core.MediaType;
 /**
  * Orders resource.
  */
-@Path("fees")
-@Transactional
+@Path("/rs/fees")
 @RequestScoped
 public class Fees {
 
     private OrderConfiguration orderConfiguration;
-
-    public Fees() {
-    }
 
     Fees(OrderConfiguration orderConfiguration) {
         this.orderConfiguration = orderConfiguration;

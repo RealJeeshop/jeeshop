@@ -7,6 +7,9 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.annotation.Resource;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +20,12 @@ import static org.rembx.jeeshop.user.model.QMailTemplate.mailTemplate;
 /**
  * Newsletter finder utility
  */
+@RequestScoped
 public class MailTemplateFinder {
 
     public final static String DEFAULT_LOCALE = "en_GB";
 
-    @PersistenceUnit(UserPersistenceUnit.NAME)
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
         put("id", mailTemplate.id);
@@ -32,10 +35,11 @@ public class MailTemplateFinder {
         put("updateDate", mailTemplate.updateDate);
     }};
 
-    public MailTemplateFinder() {
+    public static MailTemplateFinder getInstance(EntityManager entityManager) {
+        return new MailTemplateFinder(entityManager);
     }
 
-    public MailTemplateFinder(EntityManager entityManager) {
+    MailTemplateFinder( @PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

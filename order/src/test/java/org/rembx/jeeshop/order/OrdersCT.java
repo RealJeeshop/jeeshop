@@ -68,7 +68,7 @@ public class OrdersCT {
         catalogEntityManager = catalogEmf.createEntityManager();
         sessionContextMock = mock(SecurityContext.class);
         priceEngineMock = mock(PriceEngine.class);
-        final MailTemplateFinder mailTemplateFinder = new MailTemplateFinder(entityManager);
+        final MailTemplateFinder mailTemplateFinder = MailTemplateFinder.getInstance(entityManager);
         paymentTransactionEngine = new DefaultPaymentTransactionEngine(
                 new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("20", "3")),
                 mailTemplateFinder, new Mailer(), catalogEntityManager);

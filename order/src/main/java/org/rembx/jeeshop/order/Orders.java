@@ -32,14 +32,14 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 /**
  * Orders resource.
  */
-@Path("orders")
-@Transactional
+@Path("/rs/orders")
 @RequestScoped
 public class Orders {
 
-    @PersistenceUnit(UserPersistenceUnit.NAME)
-    EntityManager entityManager;
-
+    @Context
+    SecurityContext securityContext;
+    private OrderConfiguration orderConfiguration;
+    private EntityManager entityManager;
     private OrderFinder orderFinder;
     private UserFinder userFinder;
     private Mailer mailer;
@@ -47,16 +47,7 @@ public class Orders {
     private PaymentTransactionEngine paymentTransactionEngine;
     private PriceEngine priceEngine;
 
-
-    @Context
-    SecurityContext securityContext;
-
-    private OrderConfiguration orderConfiguration;
-
-    public Orders() {
-    }
-
-    Orders(EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
+    Orders(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, OrderFinder orderFinder, UserFinder userFinder,
                   MailTemplateFinder mailTemplateFinder, Mailer mailer, SecurityContext securityContext, PriceEngine priceEngine, PaymentTransactionEngine paymentTransactionEngine) {
         this.entityManager = entityManager;
         this.orderFinder = orderFinder;
