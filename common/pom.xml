@@ -44,6 +44,10 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 </project>
