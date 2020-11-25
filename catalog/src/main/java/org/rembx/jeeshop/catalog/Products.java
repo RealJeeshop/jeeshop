@@ -30,7 +30,6 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 @Path("/products")
-@Transactional
 @RequestScoped
 public class Products {
 
