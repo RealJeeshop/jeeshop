@@ -40,7 +40,6 @@ public class SKUs {
 
     @Context
     SecurityContext sessionContext;
-    PresentationResource presentationResource;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
 
@@ -159,7 +158,7 @@ public class SKUs {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, sku);
+        return PresentationResource.build(presentation, locale, sku);
     }
 
     @GET

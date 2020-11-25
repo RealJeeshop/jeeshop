@@ -35,7 +35,6 @@ public class Products {
 
     @Context
     SecurityContext sessionContext;
-    PresentationResource presentationResource;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
 
@@ -167,7 +166,7 @@ public class Products {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, product);
+        return PresentationResource.build(presentation, locale, product);
     }
 
 

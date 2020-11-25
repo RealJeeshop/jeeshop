@@ -7,6 +7,8 @@ import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -21,23 +23,28 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
  *
  * @author remi
  */
+@RequestScoped
 public class PresentationResource {
 
     private Presentation presentation;
     private CatalogItem parentCatalogItem;
     private String locale;
+    private EntityManager entityManager;
 
-    @PersistenceUnit(CatalogPersistenceUnit.NAME)
-    EntityManager entityManager;
-
-    public PresentationResource() {
+    @Inject
+    PresentationResource( @PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
-    public PresentationResource(EntityManager entityManager, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
+    private PresentationResource(EntityManager entityManager, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
         this.entityManager = entityManager;
         this.parentCatalogItem = parentCatalogItem;
         this.locale = locale;
         this.presentation = presentation;
+    }
+
+    static PresentationResource init(EntityManager entityManager, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
+        return new PresentationResource(entityManager, parentCatalogItem, locale, presentation);
     }
 
     @GET
@@ -101,10 +108,7 @@ public class PresentationResource {
         }
     }
 
-    public PresentationResource init(Presentation presentation, String locale, CatalogItem parentCatalogItem) {
-        this.presentation = presentation;
-        this.locale = locale;
-        this.parentCatalogItem = parentCatalogItem;
-        return this;
+    public static PresentationResource build(Presentation presentation, String locale, CatalogItem parentCatalogItem) {
+        return new PresentationResource(null, parentCatalogItem, locale, presentation);
     }
 }

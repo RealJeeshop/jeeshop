@@ -2,7 +2,6 @@ package org.rembx.jeeshop.catalog;
 
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -11,10 +10,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -38,7 +34,6 @@ public class Discounts {
 
     @Resource
     SecurityContext sessionContext;
-    PresentationResource presentationResource;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
     private DiscountFinder discountFinder;
@@ -154,7 +149,7 @@ public class Discounts {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
         Presentation presentation = discount.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, discount);
+        return PresentationResource.build(presentation, locale, discount);
     }
 
     private void checkNotNull(Discount discount) {

@@ -39,7 +39,7 @@ public class PresentationResourceCT {
     @Test
     public void find_shouldReturnPresentation() {
         Presentation presentation = new Presentation("en_GB", "presentation1", "short description", "long description");
-        service = new PresentationResource(null, null, null, presentation);
+        service = PresentationResource.init(null, null, null, presentation);
 
         assertThat(service.find()).isEqualTo(presentation);
     }
@@ -49,7 +49,7 @@ public class PresentationResourceCT {
         CatalogItem parentCatalogItem = testCatalog.aCategoryWithoutPresentation();
 
         Presentation presentation = new Presentation(null, "presentation test", "testShortDesc", "testLongDesc");
-        service = new PresentationResource(entityManager, parentCatalogItem, "fr_FR", null);
+        service = PresentationResource.init(entityManager, parentCatalogItem, "fr_FR", null);
 
         entityManager.getTransaction().begin(); // wrap call in transaction as method is transactional
         service.createLocalizedPresentation(presentation);
@@ -69,7 +69,7 @@ public class PresentationResourceCT {
 
         Presentation presentation = createTestPresentation();
 
-        service = new PresentationResource(entityManager, null, "fr_FR", presentation);
+        service = PresentationResource.init(entityManager, null, "fr_FR", presentation);
 
         UUID uuid = UUID.randomUUID();
         presentation.setShortDescription(uuid.toString());
@@ -92,7 +92,7 @@ public class PresentationResourceCT {
         Presentation presentation = createTestPresentation();
         parentCatalogItem.getPresentationByLocale().put("fr_FR",presentation);
 
-        service = new PresentationResource(entityManager, parentCatalogItem, "fr_FR", presentation);
+        service = PresentationResource.init(entityManager, parentCatalogItem, "fr_FR", presentation);
 
         entityManager.getTransaction().begin(); // wrap call in transaction as method is transactional
         service.delete();

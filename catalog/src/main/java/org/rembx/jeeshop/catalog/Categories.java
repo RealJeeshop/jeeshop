@@ -40,7 +40,6 @@ public class Categories {
 
     @Context
     SecurityContext sessionContext;
-    PresentationResource presentationResource;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
 
@@ -171,7 +170,7 @@ public class Categories {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, category);
+        return PresentationResource.build(presentation, locale, category);
     }
 
     @GET

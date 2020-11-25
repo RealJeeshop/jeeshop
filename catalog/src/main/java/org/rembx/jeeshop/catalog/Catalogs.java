@@ -43,7 +43,6 @@ public class Catalogs {
 
     @Context
     SecurityContext sessionContext;
-    PresentationResource presentationResource;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
 
@@ -153,7 +152,7 @@ public class Catalogs {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         Presentation presentation = catalog.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, catalog);
+        return PresentationResource.build(presentation, locale, catalog);
     }
 
     @GET
