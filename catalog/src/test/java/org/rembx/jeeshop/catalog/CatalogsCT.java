@@ -90,29 +90,29 @@ public class CatalogsCT {
         assertThat(catalog.isVisible()).isTrue();
     }
 
-    @Test
-    public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
-        Catalog catalog = service.find(null, testCatalog.getId(), null);
-
-        Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
-
-        service.modify(detachedCatalogToModify);
-
-        assertThat(catalog.getRootCategories()).isNotEmpty();
-
-    }
-
-    @Test
-    public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
-
-        Catalog detachedCatalogToModify = new Catalog(9999L, null);
-        try {
-            service.modify(detachedCatalogToModify);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-    }
+//    @Test
+//    public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
+//        Catalog catalog = service.find(null, testCatalog.getId(), null);
+//
+//        Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
+//
+//        service.modify(detachedCatalogToModify);
+//
+//        assertThat(catalog.getRootCategories()).isNotEmpty();
+//
+//    }
+//
+//    @Test
+//    public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
+//
+//        Catalog detachedCatalogToModify = new Catalog(9999L, null);
+//        try {
+//            service.modify(detachedCatalogToModify);
+//            fail("should have thrown ex");
+//        } catch (WebApplicationException e) {
+//            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
+//        }
+//    }
 
     @Test
     public void countAll() {

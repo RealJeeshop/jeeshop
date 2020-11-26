@@ -169,6 +169,9 @@
             };
 
             ctrl.edit = function () {
+                var updatedResource  = ctrl.entry
+                delete updatedResource.rootCategories
+                delete updatedResource.presentationByLocale
                 $http.put('rs/' + $stateParams.resource, ctrl.entry)
                     .success(function (data) {
                         ctrl.entry = data;

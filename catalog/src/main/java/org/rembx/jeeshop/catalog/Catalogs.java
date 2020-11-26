@@ -11,6 +11,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -81,6 +82,7 @@ public class Catalogs {
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -95,6 +97,7 @@ public class Catalogs {
     }
 
     @DELETE
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -106,10 +109,10 @@ public class Catalogs {
 
     }
 
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Catalog modify(Catalog catalog) {
         Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
@@ -125,7 +128,8 @@ public class Catalogs {
 
         catalog.setPresentationByLocale(originalCatalog.getPresentationByLocale());
 
-        return entityManager.merge(catalog);
+        Catalog merge = entityManager.merge(catalog);
+        return merge;
     }
 
     @GET

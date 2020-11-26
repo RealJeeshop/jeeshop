@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -60,11 +61,11 @@ public class Discount extends CatalogItem {
     private Double discountValue;
 
     @ManyToMany(mappedBy = "discounts")
-    @XmlTransient
+    @JsonbTransient
     private List<SKU> skus;
 
     @ManyToMany(mappedBy = "discounts")
-    @XmlTransient
+    @JsonbTransient
     private List<Product> products;
 
     @Transient

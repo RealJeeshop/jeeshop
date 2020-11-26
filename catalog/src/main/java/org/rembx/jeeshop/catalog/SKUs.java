@@ -52,6 +52,7 @@ public class SKUs {
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -66,11 +67,11 @@ public class SKUs {
     }
 
     @DELETE
+    @Transactional
+    @Path("/{skuId}")
+    @RolesAllowed(ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    @RolesAllowed(ADMIN)
-    @Path("/{skuId}")
     public void delete(@PathParam("skuId") Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
@@ -91,6 +92,7 @@ public class SKUs {
     }
 
     @PUT
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
