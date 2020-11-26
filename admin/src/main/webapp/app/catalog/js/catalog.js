@@ -434,9 +434,11 @@
                 $scope.catalogEntryCtrl.alerts = [];
                 if (errors != null && errors.length > 0) {
                     $scope.catalogEntryCtrl.alerts.push(errors[0]);
+                    getAvailableLocales();
                 }
+
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
+
             });
         };
 
@@ -461,7 +463,6 @@
                     largeImage: false,
                     smallImage: false
                 };
-
 
                 $scope.feature = {};
 
@@ -563,7 +564,6 @@
                     $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
                         .success(function (data) {
                             $scope.presentation = data;
-                            getAvailableLocales();
                             messages.push({type: 'success', msg: 'Presentation creation complete'});
                             $uibModalInstance.close(messages);
 
