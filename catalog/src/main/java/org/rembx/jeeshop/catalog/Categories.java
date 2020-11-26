@@ -2,18 +2,13 @@ package org.rembx.jeeshop.catalog;
 
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -42,10 +37,12 @@ public class Categories {
     SecurityContext sessionContext;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
@@ -170,7 +167,7 @@ public class Categories {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return PresentationResource.build(presentation, locale, category);
+        return presentationResource.init(category, locale, presentation);
     }
 
     @GET

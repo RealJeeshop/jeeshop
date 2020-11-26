@@ -36,11 +36,13 @@ public class Discounts {
     SecurityContext sessionContext;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
     private DiscountFinder discountFinder;
 
-    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
@@ -149,7 +151,7 @@ public class Discounts {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
         Presentation presentation = discount.getPresentationByLocale().get(locale);
-        return PresentationResource.build(presentation, locale, discount);
+        return presentationResource.init(discount, locale, presentation);
     }
 
     private void checkNotNull(Discount discount) {

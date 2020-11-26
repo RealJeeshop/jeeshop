@@ -50,6 +50,8 @@ public class GatewayResource {
 
                 if (filename.contains("css")) return "text/css";
                 else if (filename.contains("js")) return "text/javascript";
+                else if (filename.contains("jpg")) return "img/jpeg";
+                else if (filename.contains("jpeg")) return "img/jpeg";
                 else return "tex/html";
 
             } else {

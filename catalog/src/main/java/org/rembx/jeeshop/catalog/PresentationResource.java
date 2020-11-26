@@ -10,12 +10,13 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import javax.transaction.*;
+import javax.transaction.NotSupportedException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 
 /**
@@ -30,21 +31,11 @@ public class PresentationResource {
     private CatalogItem parentCatalogItem;
     private String locale;
     private EntityManager entityManager;
+    private UserTransaction transaction;
 
-    @Inject
-    PresentationResource( @PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager) {
+    PresentationResource(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, UserTransaction userTransaction) {
         this.entityManager = entityManager;
-    }
-
-    private PresentationResource(EntityManager entityManager, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
-        this.entityManager = entityManager;
-        this.parentCatalogItem = parentCatalogItem;
-        this.locale = locale;
-        this.presentation = presentation;
-    }
-
-    static PresentationResource init(EntityManager entityManager, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
-        return new PresentationResource(entityManager, parentCatalogItem, locale, presentation);
+        this.transaction = userTransaction;
     }
 
     @GET
@@ -56,7 +47,7 @@ public class PresentationResource {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @Transactional(value = REQUIRES_NEW)
     @RolesAllowed(ADMIN)
     public void delete() {
         checkEntityNotNull();
@@ -68,7 +59,7 @@ public class PresentationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @Transactional(value = REQUIRES_NEW)
     @RolesAllowed(ADMIN)
     public Presentation createLocalizedPresentation(Presentation presentation) {
 
@@ -88,13 +79,13 @@ public class PresentationResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional(value = Transactional.TxType.REQUIRES_NEW)
+    @Transactional(REQUIRES_NEW)
     @RolesAllowed(ADMIN)
     public Presentation modifyLocalizedPresentation(Presentation presentation) {
+
         checkEntityNotNull();
 
         if (this.presentation == null) {
-            // Item does not exist
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         entityManager.merge(presentation);
@@ -108,7 +99,10 @@ public class PresentationResource {
         }
     }
 
-    public static PresentationResource build(Presentation presentation, String locale, CatalogItem parentCatalogItem) {
-        return new PresentationResource(null, parentCatalogItem, locale, presentation);
+    public PresentationResource init(CatalogItem parentCatalogItem, String locale, Presentation presentation) {
+        this.presentation = presentation;
+        this.locale = locale;
+        this.parentCatalogItem = parentCatalogItem;
+        return this;
     }
 }

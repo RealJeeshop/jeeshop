@@ -6,10 +6,7 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -22,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
@@ -33,14 +31,14 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 @RequestScoped
 public class Products {
 
-    @Context
-    SecurityContext sessionContext;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
@@ -142,7 +140,7 @@ public class Products {
     @Path("/{productId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
+    public Product find(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (isAdminUser(sessionContext))
             return product;
@@ -160,13 +158,14 @@ public class Products {
         return product.getPresentationByLocale().keySet();
     }
 
+    @Transactional(REQUIRES_NEW)
     @Path("/{productId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return PresentationResource.build(presentation, locale, product);
+        return presentationResource.init(product, locale, presentation);
     }
 
 
@@ -174,7 +173,7 @@ public class Products {
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<SKU> findChildSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
+    public List<SKU> findChildSKUs(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         List<SKU> childSKUs = product.getChildSKUs();
@@ -192,7 +191,7 @@ public class Products {
     @Path("/{productId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public List<Discount> findDiscounts(@PathParam("productId") @NotNull Long productId) {
+    public List<Discount> findDiscounts(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         List<Discount> discounts = product.getDiscounts();

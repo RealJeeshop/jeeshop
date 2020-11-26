@@ -37,7 +37,7 @@ public class CategoriesCT {
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Categories(entityManager, new CatalogItemFinder(entityManager));
+        service = new Categories(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test

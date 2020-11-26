@@ -38,7 +38,7 @@ public class DiscountsCT {
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Discounts(entityManager, new CatalogItemFinder(entityManager));
+        service = new Discounts(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test

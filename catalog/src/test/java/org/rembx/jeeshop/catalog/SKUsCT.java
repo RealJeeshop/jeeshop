@@ -37,7 +37,7 @@ public class SKUsCT {
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new SKUs(entityManager, new CatalogItemFinder(entityManager));
+        service = new SKUs(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test

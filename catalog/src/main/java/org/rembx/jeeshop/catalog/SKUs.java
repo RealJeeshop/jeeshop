@@ -42,10 +42,12 @@ public class SKUs {
     SecurityContext sessionContext;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
@@ -158,7 +160,7 @@ public class SKUs {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return PresentationResource.build(presentation, locale, sku);
+        return presentationResource.init(sku, locale, presentation);
     }
 
     @GET
