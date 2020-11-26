@@ -178,6 +178,7 @@ public class Users {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed({ADMIN, USER})
     public User modify(@Context SecurityContext securityContext, @NotNull User user) {
 
