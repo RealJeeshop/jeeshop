@@ -4,7 +4,7 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-    <persistence-unit name="User">
+    <persistence-unit name="User" transaction-type="JTA">
         <class>org.rembx.jeeshop.user.model.Role</class>
         <class>org.rembx.jeeshop.user.model.User</class>
         <class>org.rembx.jeeshop.user.model.Address</class>

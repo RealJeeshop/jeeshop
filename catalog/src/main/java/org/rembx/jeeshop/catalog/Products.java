@@ -6,6 +6,7 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -158,7 +159,6 @@ public class Products {
         return product.getPresentationByLocale().keySet();
     }
 
-    @Transactional(REQUIRES_NEW)
     @Path("/{productId}/presentations/{locale}")
     @PermitAll
     public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
@@ -167,7 +167,6 @@ public class Products {
         Presentation presentation = product.getPresentationByLocale().get(locale);
         return presentationResource.init(product, locale, presentation);
     }
-
 
     @GET
     @Path("/{productId}/skus")
