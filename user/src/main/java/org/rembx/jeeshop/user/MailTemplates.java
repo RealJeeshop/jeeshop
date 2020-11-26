@@ -80,17 +80,18 @@ public class MailTemplates {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
+    @Transactional
     @Path("/{id}")
     public void delete(@PathParam("id") Long id) {
         MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
         checkNotNull(mailTemplate);
         entityManager.remove(mailTemplate);
-
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public MailTemplate modify(MailTemplate mailTemplate) {
 
@@ -103,6 +104,7 @@ public class MailTemplates {
             throw new WebApplicationException(Response.Status.CONFLICT);
         }
 
+        mailTemplate.setCreationDate(existingMailTemplate.getCreationDate());
         return entityManager.merge(mailTemplate);
     }
 
