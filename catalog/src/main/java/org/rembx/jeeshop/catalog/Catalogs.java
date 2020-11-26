@@ -11,7 +11,6 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -29,21 +28,15 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
-/**
- * @author remi
- */
-
 @Path("/rs/catalogs")
 @ApplicationScoped
 public class Catalogs {
 
-    @Context
-    SecurityContext sessionContext;
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
     private PresentationResource presentationResource;
 
-    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME)EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -77,7 +70,7 @@ public class Catalogs {
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+    public Catalog find(@Context SecurityContext sessionContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
         if (isAdminUser(sessionContext))
@@ -157,7 +150,9 @@ public class Catalogs {
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+    public List<Category> findCategories(@Context SecurityContext sessionContext,
+                                         @PathParam("catalogId") @NotNull Long catalogId,
+                                         @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);

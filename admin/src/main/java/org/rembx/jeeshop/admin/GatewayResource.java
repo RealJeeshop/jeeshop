@@ -1,16 +1,13 @@
 package org.rembx.jeeshop.admin;
 
 import org.apache.commons.io.IOUtils;
-import org.rembx.jeeshop.catalog.*;
-import org.rembx.jeeshop.media.Medias;
-import org.rembx.jeeshop.order.Orders;
-import org.rembx.jeeshop.rest.WebApplicationExceptionMapper;
-import org.rembx.jeeshop.user.MailTemplates;
-import org.rembx.jeeshop.user.Users;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;

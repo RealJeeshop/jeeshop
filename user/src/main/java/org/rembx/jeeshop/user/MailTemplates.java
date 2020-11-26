@@ -29,7 +29,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * Mail template resource
  */
 
-@Path("/mailtemplates")
+@Path("/rs/mailtemplates")
 @ApplicationScoped
 public class MailTemplates {
 
@@ -61,7 +61,7 @@ public class MailTemplates {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
-    @Path("test/{recipient}")
+    @Path("/test/{recipient}")
     public void sendTestEmail(Object properties, @NotNull @QueryParam("templateName") String templateName, @NotNull @QueryParam("locale") String locale, @NotNull @PathParam("recipient") String recipient) {
         MailTemplate existingTpl = mailTemplateFinder.findByNameAndLocale(templateName, locale);
 

@@ -14,7 +14,7 @@ import java.util.List;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Cacheable
-public class Catalog extends CatalogItem{
+public class Catalog extends CatalogItem {
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "catalogId"),

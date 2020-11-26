@@ -7,7 +7,6 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
@@ -45,6 +43,7 @@ public class Products {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Product create(Product product) {
         if (product.getChildSKUsIds() != null) {
@@ -64,6 +63,7 @@ public class Products {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     @Path("/{productId}")
     public void delete(@PathParam("productId") Long productId) {
@@ -88,6 +88,7 @@ public class Products {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Product modify(Product product) {
         Product originalProduct = entityManager.find(Product.class, product.getId());

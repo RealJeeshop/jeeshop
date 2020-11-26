@@ -10,9 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-/**
- * Orders resource.
- */
 @Path("/rs/fees")
 @ApplicationScoped
 public class Fees {
@@ -22,7 +19,6 @@ public class Fees {
     Fees(OrderConfiguration orderConfiguration) {
         this.orderConfiguration = orderConfiguration;
     }
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -42,7 +42,7 @@ public class CatalogsCT {
     @Test
     public void findCategories_shouldReturn404ExWhenCatalogNotFound() {
         try {
-            service.findCategories(9999L, null);
+            service.findCategories(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -51,13 +51,13 @@ public class CatalogsCT {
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
-        List<Category> categories = service.findCategories(testCatalog.getEmptyCatalogId(), null);
+        List<Category> categories = service.findCategories(null, testCatalog.getEmptyCatalogId(), null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
-        List<Category> categories = service.findCategories(testCatalog.getId(), null);
+        List<Category> categories = service.findCategories(null, testCatalog.getId(), null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 
@@ -85,14 +85,14 @@ public class CatalogsCT {
 
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
-        Catalog catalog = service.find(testCatalog.getId(), null);
+        Catalog catalog = service.find(null, testCatalog.getId(), null);
         assertThat(catalog).isNotNull();
         assertThat(catalog.isVisible()).isTrue();
     }
 
     @Test
     public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
-        Catalog catalog = service.find(testCatalog.getId(), null);
+        Catalog catalog = service.find(null, testCatalog.getId(), null);
 
         Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
 
