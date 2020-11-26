@@ -26,7 +26,7 @@ public class CatalogItemFinderTest {
 
     @BeforeEach
     public void setup() {
-        instance = new CatalogItemFinder();
+        instance = new CatalogItemFinder(null);
     }
 
 

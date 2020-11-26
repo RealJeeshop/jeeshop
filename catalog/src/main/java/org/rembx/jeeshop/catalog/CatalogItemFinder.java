@@ -30,13 +30,9 @@ import java.util.Map;
 @ApplicationScoped
 public class CatalogItemFinder {
 
-    @PersistenceUnit(value = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    public CatalogItemFinder() {
-    }
-
-    CatalogItemFinder(EntityManager entityManager) {
+    CatalogItemFinder(@PersistenceUnit(value = CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

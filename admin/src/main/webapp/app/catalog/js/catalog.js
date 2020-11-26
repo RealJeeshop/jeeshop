@@ -169,7 +169,6 @@
             };
 
             ctrl.edit = function () {
-                console.log(JSON.stringify())
                 $http.put('rs/' + $stateParams.resource, ctrl.entry)
                     .success(function (data) {
                         ctrl.entry = data;

@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.catalog;
 
-
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -46,8 +45,10 @@ public class Catalogs {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start,
+                                 @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy,
+                                 @QueryParam("isDesc") Boolean isDesc) {
+
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
         else

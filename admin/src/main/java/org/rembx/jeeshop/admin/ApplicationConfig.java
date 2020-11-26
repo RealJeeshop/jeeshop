@@ -8,7 +8,6 @@ import org.rembx.jeeshop.user.MailTemplates;
 import org.rembx.jeeshop.user.Users;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,13 +15,11 @@ import java.util.Set;
 @ApplicationPath("/")
 public class ApplicationConfig extends Application {
 
-    // ======================================
-    // =          Business methods          =
-    // ======================================
-
     @Override
     public Set<Class<?>> getClasses() {
+
         Set<Class<?>> classes = new HashSet<>();
+        classes.add(Catalogs.class);
         classes.add(Categories.class);
         classes.add(Products.class);
         classes.add(SKUs.class);
