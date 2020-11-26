@@ -29,10 +29,6 @@
       <artifactId>media</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-multipart</artifactId>
-    </dependency>
   </dependencies>
   <build>
       <resources>
