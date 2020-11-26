@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.store;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.Path;
@@ -7,7 +8,7 @@ import javax.ws.rs.Path;
 
 @Path("sipsautoresponse")
 @Transactional
-@RequestScoped
+@ApplicationScoped
 // TODO
 public class SIPSAutoResponse {
 

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -34,7 +35,7 @@ import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
  */
 
 @Path("/rs/users")
-@RequestScoped
+@ApplicationScoped
 public class Users {
 
     private final static Logger LOG = LoggerFactory.getLogger(Users.class);

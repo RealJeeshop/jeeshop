@@ -26,7 +26,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
  *
  * @author remi
  */
-@RequestScoped
+@ApplicationScoped
 public class PresentationResource {
 
     private Presentation presentation;

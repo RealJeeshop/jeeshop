@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Utility class for common finders on CatalogItem entities
  */
-@RequestScoped
+@ApplicationScoped
 public class CatalogItemFinder {
 
     @PersistenceUnit(value = CatalogPersistenceUnit.NAME)

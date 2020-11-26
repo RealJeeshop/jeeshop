@@ -15,6 +15,7 @@ import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -27,7 +28,7 @@ import static org.rembx.jeeshop.order.model.QOrder.order;
 /**
  * Order finder utility
  */
-@RequestScoped
+@ApplicationScoped
 public class OrderFinder {
 
     @Inject

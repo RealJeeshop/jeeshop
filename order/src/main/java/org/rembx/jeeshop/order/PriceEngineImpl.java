@@ -11,6 +11,7 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderDiscount;
 import org.rembx.jeeshop.order.model.OrderItem;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import java.util.List;
  * Order price engine
  * Computes order's price and updates Order's properties
  */
-@RequestScoped
+@ApplicationScoped
 @Default
 public class PriceEngineImpl implements PriceEngine {
 

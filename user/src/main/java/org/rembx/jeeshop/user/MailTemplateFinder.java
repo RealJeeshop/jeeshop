@@ -8,6 +8,7 @@ import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -20,7 +21,7 @@ import static org.rembx.jeeshop.user.model.QMailTemplate.mailTemplate;
 /**
  * Newsletter finder utility
  */
-@RequestScoped
+@ApplicationScoped
 public class MailTemplateFinder {
 
     public final static String DEFAULT_LOCALE = "en_GB";

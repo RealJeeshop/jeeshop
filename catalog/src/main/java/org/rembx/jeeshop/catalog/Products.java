@@ -29,7 +29,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 @Path("/rs/products")
-@RequestScoped
+@ApplicationScoped
 public class Products {
 
     private EntityManager entityManager;

@@ -10,6 +10,7 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  */
 
 @Path("/rs/catalogs")
-@RequestScoped
+@ApplicationScoped
 public class Catalogs {
 
     @Context

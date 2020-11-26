@@ -8,6 +8,7 @@ import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import static org.rembx.jeeshop.user.model.QUser.user;
 /**
  * User finder utility
  */
-@RequestScoped
+@ApplicationScoped
 public class UserFinder {
 
     private EntityManager entityManager;

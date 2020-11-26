@@ -14,6 +14,7 @@ import org.rembx.jeeshop.user.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -26,7 +27,7 @@ import static org.rembx.jeeshop.order.mail.Mails.orderValidated;
 /**
  * Default implementation of PaymentTransactionEngine
  */
-@RequestScoped
+@ApplicationScoped
 public class DefaultPaymentTransactionEngine implements PaymentTransactionEngine {
 
     private final static Logger LOG = LoggerFactory.getLogger(DefaultPaymentTransactionEngine.class);

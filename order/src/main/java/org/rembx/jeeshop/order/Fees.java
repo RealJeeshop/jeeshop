@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.order;
 
 import javax.annotation.security.PermitAll;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -13,7 +14,7 @@ import javax.ws.rs.core.MediaType;
  * Orders resource.
  */
 @Path("/rs/fees")
-@RequestScoped
+@ApplicationScoped
 public class Fees {
 
     private OrderConfiguration orderConfiguration;

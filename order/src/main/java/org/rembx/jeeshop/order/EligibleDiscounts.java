@@ -9,6 +9,7 @@ import org.rembx.jeeshop.user.model.User;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -25,7 +26,7 @@ import java.util.List;
  * Orders resource.
  */
 @Path("discounts/eligible")
-@RequestScoped
+@ApplicationScoped
 public class EligibleDiscounts {
 
     private DiscountFinder discountFinder;

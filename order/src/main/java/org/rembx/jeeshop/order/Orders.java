@@ -14,6 +14,7 @@ import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -33,7 +34,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
  * Orders resource.
  */
 @Path("/rs/orders")
-@RequestScoped
+@ApplicationScoped
 public class Orders {
 
     private OrderConfiguration orderConfiguration;

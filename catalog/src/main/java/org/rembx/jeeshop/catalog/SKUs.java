@@ -9,6 +9,7 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,7 +36,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  */
 
 @Path("/rs/skus")
-@RequestScoped
+@ApplicationScoped
 public class SKUs {
 
     @Context
@@ -67,6 +68,7 @@ public class SKUs {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     @Path("/{skuId}")
     public void delete(@PathParam("skuId") Long skuId) {
