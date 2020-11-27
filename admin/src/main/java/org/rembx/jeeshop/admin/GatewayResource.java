@@ -5,7 +5,9 @@ import org.apache.commons.io.IOUtils;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
@@ -19,10 +21,10 @@ public class GatewayResource {
 
     @GET
     @Path("/")
+    @Produces(MediaType.TEXT_HTML)
     public Response getFrontendRoot() throws IOException {
         return getFrontendStaticFile("index.html");
     }
-
 
     @GET
     @Path("/{fileName:.+}")
@@ -49,7 +51,7 @@ public class GatewayResource {
                 else if (filename.contains("js")) return "text/javascript";
                 else if (filename.contains("jpg")) return "img/jpeg";
                 else if (filename.contains("jpeg")) return "img/jpeg";
-                else return "tex/html";
+                else return "text/html";
 
             } else {
                 return type;
@@ -57,7 +59,7 @@ public class GatewayResource {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "tex/html";
+            return "text/html";
         }
     }
 

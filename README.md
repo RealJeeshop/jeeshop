@@ -31,32 +31,55 @@ See [Jeeshop GraphQL](https://github.com/muskacirca/jeeshop-graphql) project
 Jeestore is a front-end demonstration application application which consumes Jeeshop [REST APIs](#backend).
 You can take a look at it or start with it to build your e-commerce store.
 
+# Development
+
+Jeeshop use [quarkus](https://www.quarkus.io) as backend framework.
+
+`application.properties file located in ./admin/src/main/resources enables to configure the app server.
+
+to start app, run 
+  ```shell script
+    ./mvnw clean package quarkus:dev
+  ```
 # Installation
 
-## With Docker
-
+## with Docker
 ### Prerequisite
-1. Create a specific jeeshop database and a jeeshop database applicative user (See section bellow for default database settings)
-2. Download Jeeshop database migration scripts available [here](https://github.com/remibantos/jeeshop/tree/master/install/src/main/resources/db/postgresql).
+Create a specific jeeshop database and a jeeshop database applicative user (See section bellow for default database settings)
 
-### <a name="docker-steps">Steps for Mac & Windows (with a local DB)</a>
+### Build
+
   ```shell script
-    docker run --rm -v <Scripts Path>/postgresql:/flyway/sql flyway/flyway -url=jdbc:postgresql://host.docker.internal:5432/jeeshop -user=jeeshop -password=test migrate
-    docker run -p 9990:9990 -p 8443:8443 -e JEESHOP_DATABASE_USERNAME=jeeshop jeeshop/admin
+    mvn package -Dquarkus.package.type=fast-jar
+    docker build -t jeeshop/admin .
+  ```
+The first command build Jeeshop Admin with prod environment.
+The second one build the docker image.
+
+### Run 
+To run jeeshop/admin image on port 8080 :
+  ```shell script
+    docker run -i --rm -p 8080:8080 -e PORT=8080 jeeshop/admin
+  ```
+If you want to run in debug mode, run the container using :
+  ```shell script
+    docker run -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" -e PORT=8080 jeeshop/admin
   ```
 
 The first command runs Jeeshop database migration scripts, which create Jeeshop tables and data.
 The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul APIs exposed. It can be customised with the following environment variables:
 
+### Configuration
+
 | Environment variable  | Default | Description |
 | -------------| ------------- | ------------- |
 | JEESHOP_DATABASENAME | jeeshop  | |
-| JEESHOP_DATABASE_HOSTNAME | host.docker.internal | host running this docker image |
+| JEESHOP_DATABASE_HOSTNAME | host.docker.internal:5432 | host running this docker image |
 | JEESHOP_DATABASE_USERNAME | jeeshop | ------------- |
 | JEESHOP_DATABASE_PASSWORD | test  |------------- |
 | JEESHOP_JDBC_DRIVER | postgresql  | postgresql, mysql |
 | JEESHOP_CATALOG_DATABASENAME | jeeshop  |------------- |
-| JEESHOP_CATALOG_DATABASE_HOSTNAME | host.docker.internal  |------------- |
+| JEESHOP_CATALOG_DATABASE_HOSTNAME | host.docker.internal:5432  |------------- |
 | JEESHOP_CATALOG_DATABASE_USERNAME | jeeshop | ------------- |
 | JEESHOP_CATALOG_DATABASE_PASSWORD | test  |------------- |
 | JEESHOP_CATALOG_JDBC_DRIVER | postgresql  | postgresql, mysql |
@@ -64,8 +87,12 @@ The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul 
 | JEESHOP_SSL_KEYSTORE_PASSWORD | test123 | default keystore password |
 | JEESHOP_MEDIADIR | /tmp | where jeeshop assets, such as catalog items images, should be uploaded |
 
+## With docker-compose
+  ```shell script
+    docker-compose up
+  ```
 
-
+# Old configuration (DEPRECATED)
 ## On [Wildfy](http://wildfly.org/)
 Jeeshop can be deployed to any Java EE 7 application server. (Web profile)
 
