@@ -4,11 +4,13 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +20,10 @@ import static org.rembx.jeeshop.user.model.QUser.user;
 /**
  * User finder utility
  */
+@ApplicationScoped
 public class UserFinder {
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    public UserFinder() {
-    }
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
         put("id", user.id);
@@ -42,7 +41,7 @@ public class UserFinder {
         put("updateDate", user.updateDate);
     }};
 
-    public UserFinder(EntityManager entityManager) {
+    public UserFinder(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

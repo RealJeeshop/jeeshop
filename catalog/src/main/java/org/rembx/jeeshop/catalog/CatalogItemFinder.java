@@ -7,12 +7,15 @@ import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.QCatalogItem;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Response;
@@ -24,14 +27,12 @@ import java.util.Map;
 /**
  * Utility class for common finders on CatalogItem entities
  */
+@ApplicationScoped
 public class CatalogItemFinder {
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
+
     private EntityManager entityManager;
 
-    public CatalogItemFinder() {
-    }
-
-    public CatalogItemFinder(EntityManager entityManager) {
+    CatalogItemFinder(@PersistenceUnit(value = CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

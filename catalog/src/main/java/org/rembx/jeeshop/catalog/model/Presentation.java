@@ -2,6 +2,7 @@ package org.rembx.jeeshop.catalog.model;
 
 import org.rembx.jeeshop.media.model.Media;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -72,7 +73,7 @@ public class Presentation {
     @JoinTable(joinColumns = @JoinColumn(name = "presentationId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId"))
     @OrderColumn(name = "orderIdx")
-    @XmlTransient
+    @JsonbTransient
     private List<Media> otherMedia;
 
     @ElementCollection(fetch = FetchType.EAGER)

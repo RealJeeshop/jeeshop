@@ -1,5 +1,7 @@
 package org.rembx.jeeshop.order;
 
+import io.quarkus.arc.DefaultBean;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -9,6 +11,9 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderDiscount;
 import org.rembx.jeeshop.order.model.OrderItem;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,25 +24,16 @@ import java.util.List;
  * Order price engine
  * Computes order's price and updates Order's properties
  */
+@ApplicationScoped
+@Default
 public class PriceEngineImpl implements PriceEngine {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    @Inject
     private OrderConfiguration orderConfiguration;
-
-    @Inject
     private DiscountFinder discountFinder;
-
-    @Inject
     private OrderFinder orderFinder;
 
-    public PriceEngineImpl() {
-
-    }
-
-    public PriceEngineImpl(EntityManager entityManager, OrderConfiguration orderConfiguration,
+    PriceEngineImpl(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, OrderConfiguration orderConfiguration,
                            OrderFinder orderFinder, DiscountFinder discountFinder) {
         this.entityManager = entityManager;
         this.orderConfiguration = orderConfiguration;

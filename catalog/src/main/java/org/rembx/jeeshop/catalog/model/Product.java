@@ -1,11 +1,11 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
     @OrderColumn(name = "orderIdx")
-    @XmlTransient
+    @JsonbTransient
     private List<SKU> childSKUs;
 
     @Transient
@@ -31,7 +31,7 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @XmlTransient
+    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient

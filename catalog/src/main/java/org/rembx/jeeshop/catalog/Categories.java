@@ -1,21 +1,22 @@
 package org.rembx.jeeshop.catalog;
 
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,31 +31,24 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/categories")
-@Stateless
+@Path("/rs/categories")
+@ApplicationScoped
 public class Categories {
 
-    @Inject
-    PresentationResource presentationResource;
-
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
+    @Context
+    SecurityContext sessionContext;
     private EntityManager entityManager;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    @Resource
-    private SessionContext sessionContext;
-
-    public Categories() {
-    }
-
-    public Categories(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -74,6 +68,7 @@ public class Categories {
     }
 
     @DELETE
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -97,6 +92,7 @@ public class Categories {
     }
 
     @PUT
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -176,7 +172,7 @@ public class Categories {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, category);
+        return presentationResource.init(category, locale, presentation);
     }
 
     @GET

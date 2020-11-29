@@ -1,15 +1,16 @@
 package org.rembx.jeeshop.role;
 
-import javax.ejb.SessionContext;
+import javax.ws.rs.core.SecurityContext;
+
 
 /**
  * Created by remi on 24/06/14.
  */
 public class AuthorizationUtils {
 
-    public static boolean isAdminUser(SessionContext sessionContext) {
-        return sessionContext != null && sessionContext.getCallerPrincipal()!=null
-                && sessionContext.isCallerInRole(JeeshopRoles.ADMIN);
+    public static boolean isAdminUser(SecurityContext sessionContext) {
+        return sessionContext != null && sessionContext.getUserPrincipal() != null
+                && sessionContext.isUserInRole(JeeshopRoles.ADMIN);
     }
 
 }

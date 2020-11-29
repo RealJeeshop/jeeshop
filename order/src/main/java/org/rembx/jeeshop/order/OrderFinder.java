@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
@@ -14,30 +15,32 @@ import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.rembx.jeeshop.order.model.QOrder.order;
 
-/**
- * Order finder utility
- */
+@ApplicationScoped
 public class OrderFinder {
 
-    @Inject
+    private EntityManager entityManager;
+    private EntityManager catalogEntityManager;
     private OrderConfiguration orderConfiguration;
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
-    private EntityManager entityManager;
+    OrderFinder(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager,
+                @PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager catalogEntityManager,
+                OrderConfiguration orderConfiguration) {
+        this.entityManager = entityManager;
+        this.catalogEntityManager = catalogEntityManager;
+        this.orderConfiguration = orderConfiguration;
+    }
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager catalogEntityManager;
-
-    private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<String, ComparableExpressionBase<?>>() {{
+    private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<>() {{
         put("id", order.id);
         put("owner", order.user.lastname);
         put("login", order.user.login);
@@ -45,17 +48,6 @@ public class OrderFinder {
         put("creationDate", order.creationDate);
         put("updateDate", order.updateDate);
     }};
-
-
-    public OrderFinder() {
-    }
-
-    public OrderFinder(EntityManager entityManager, EntityManager catalogEntityManager, OrderConfiguration orderConfiguration) {
-        this.entityManager = entityManager;
-        this.catalogEntityManager = catalogEntityManager;
-        this.orderConfiguration = orderConfiguration;
-    }
-
 
     public Long countUserCompletedOrders(User user) {
         return new JPAQueryFactory(entityManager)

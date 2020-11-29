@@ -1,21 +1,20 @@
 package org.rembx.jeeshop.catalog;
 
-
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,38 +26,24 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
-/**
- * @author remi
- */
-
-@Path("/products")
-@Stateless
+@Path("/rs/products")
+@ApplicationScoped
 public class Products {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    @Inject
-    PresentationResource presentationResource;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    @Resource
-    private SessionContext sessionContext;
-
-    public Products() {
-
-    }
-
-    public Products(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Product create(Product product) {
         if (product.getChildSKUsIds() != null) {
@@ -78,6 +63,7 @@ public class Products {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     @Path("/{productId}")
     public void delete(@PathParam("productId") Long productId) {
@@ -102,6 +88,7 @@ public class Products {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Product modify(Product product) {
         Product originalProduct = entityManager.find(Product.class, product.getId());
@@ -155,7 +142,7 @@ public class Products {
     @Path("/{productId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Product find(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
+    public Product find(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         if (isAdminUser(sessionContext))
             return product;
@@ -179,15 +166,14 @@ public class Products {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, product);
+        return presentationResource.init(product, locale, presentation);
     }
-
 
     @GET
     @Path("/{productId}/skus")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<SKU> findChildSKUs(@PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
+    public List<SKU> findChildSKUs(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         List<SKU> childSKUs = product.getChildSKUs();
@@ -205,7 +191,7 @@ public class Products {
     @Path("/{productId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public List<Discount> findDiscounts(@PathParam("productId") @NotNull Long productId) {
+    public List<Discount> findDiscounts(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         List<Discount> discounts = product.getDiscounts();

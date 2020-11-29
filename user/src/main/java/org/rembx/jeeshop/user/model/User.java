@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.user.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -69,7 +70,7 @@ public class User {
     private Boolean activated;
 
     @Column(columnDefinition = "BINARY(16)")
-    @XmlTransient
+    @JsonbTransient
     private UUID actionToken;
 
     private String preferredLocale;
@@ -79,7 +80,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
-    @XmlTransient
+    @JsonbTransient
     private Set<Role> roles;
 
     public User() {

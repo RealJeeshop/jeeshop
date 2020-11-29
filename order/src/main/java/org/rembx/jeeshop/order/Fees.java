@@ -1,30 +1,24 @@
 package org.rembx.jeeshop.order;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-/**
- * Orders resource.
- */
-@Path("fees")
-@Stateless
+@Path("/rs/fees")
+@ApplicationScoped
 public class Fees {
 
-    @Inject
     private OrderConfiguration orderConfiguration;
 
-    public Fees() {
-    }
-
-    public Fees(OrderConfiguration orderConfiguration) {
+    Fees(OrderConfiguration orderConfiguration) {
         this.orderConfiguration = orderConfiguration;
     }
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

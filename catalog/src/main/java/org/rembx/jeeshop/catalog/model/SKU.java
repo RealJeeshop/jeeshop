@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,7 +38,7 @@ public class SKU extends CatalogItem{
     @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @XmlTransient
+    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient

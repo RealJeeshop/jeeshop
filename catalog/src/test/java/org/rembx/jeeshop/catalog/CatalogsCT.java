@@ -1,8 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
 public class CatalogsCT {
@@ -25,24 +25,24 @@ public class CatalogsCT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Catalogs(entityManager, new CatalogItemFinder(entityManager));
+        service = new Catalogs(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test
     public void findCategories_shouldReturn404ExWhenCatalogNotFound() {
         try {
-            service.findCategories(9999L, null);
+            service.findCategories(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -51,13 +51,13 @@ public class CatalogsCT {
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
-        List<Category> categories = service.findCategories(testCatalog.getEmptyCatalogId(), null);
+        List<Category> categories = service.findCategories(null, testCatalog.getEmptyCatalogId(), null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
-        List<Category> categories = service.findCategories(testCatalog.getId(), null);
+        List<Category> categories = service.findCategories(null, testCatalog.getId(), null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 
@@ -85,14 +85,14 @@ public class CatalogsCT {
 
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
-        Catalog catalog = service.find(testCatalog.getId(), null);
+        Catalog catalog = service.find(null, testCatalog.getId(), null);
         assertThat(catalog).isNotNull();
         assertThat(catalog.isVisible()).isTrue();
     }
 
     @Test
     public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
-        Catalog catalog = service.find(testCatalog.getId(), null);
+        Catalog catalog = service.find(null, testCatalog.getId(), null);
 
         Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
 

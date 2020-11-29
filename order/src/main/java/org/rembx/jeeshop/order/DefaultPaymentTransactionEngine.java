@@ -2,6 +2,7 @@ package org.rembx.jeeshop.order;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.SKU;
 import org.rembx.jeeshop.mail.Mailer;
@@ -13,9 +14,10 @@ import org.rembx.jeeshop.user.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.UUID;
@@ -25,27 +27,19 @@ import static org.rembx.jeeshop.order.mail.Mails.orderValidated;
 /**
  * Default implementation of PaymentTransactionEngine
  */
+@ApplicationScoped
 public class DefaultPaymentTransactionEngine implements PaymentTransactionEngine {
 
     private final static Logger LOG = LoggerFactory.getLogger(DefaultPaymentTransactionEngine.class);
 
-    @Inject
     private OrderFinder orderFinder;
-
-    @Inject
     private MailTemplateFinder mailTemplateFinder;
-
-    @Inject
     private Mailer mailer;
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager catalogEntityManager;
 
-
-    public DefaultPaymentTransactionEngine() {
-    }
-
-    DefaultPaymentTransactionEngine(OrderFinder orderFinder, MailTemplateFinder mailTemplateFinder, Mailer mailer, EntityManager catalogEntityManager) {
+    DefaultPaymentTransactionEngine( OrderFinder orderFinder, MailTemplateFinder mailTemplateFinder, Mailer mailer,
+                                     @PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager catalogEntityManager) {
         this.orderFinder = orderFinder;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;

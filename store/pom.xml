@@ -1,86 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-	<parent>
-        <artifactId>jeeshop</artifactId>
-        <groupId>org.rembx.jeeshop</groupId>
-        <version>0.9-SNAPSHOT</version>
-    </parent>
-
-	<artifactId>store</artifactId>
-    <name>store</name>
-    <packaging>war</packaging>
-
-	<properties>
-		<jeeshop.version>${project.parent.version}</jeeshop.version>
-	</properties>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>org.rembx.jeeshop</groupId>
-            <artifactId>catalog</artifactId>
-            <version>${jeeshop.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.rembx.jeeshop</groupId>
-            <artifactId>user</artifactId>
-            <version>${jeeshop.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.rembx.jeeshop</groupId>
-            <artifactId>order</artifactId>
-            <version>${jeeshop.version}</version>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warName>${project.parent.artifactId}-${project.artifactId}</warName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <configuration>
-                    <filename>${project.parent.artifactId}-${project.artifactId}.war</filename>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <!-- When built in OpenShift the 'openshift' profile will be used when
-    invoking mvn. -->
-            <!-- Use this profile for any OpenShift specific customization your app
-    will need. -->
-            <!-- By default that is to put the resulting archive into the 'deployments'
-    folder. -->
-            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <warName>ROOT</warName>
-                            <outputDirectory>deployments</outputDirectory>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.rembx.jeeshop</groupId>
+    <artifactId>jeeshop</artifactId>
+    <version>0.9-SNAPSHOT</version>
+  </parent>
+  <artifactId>store</artifactId>
+  <packaging>war</packaging>
+  <name>store</name>
+  <properties>
+    <jeeshop.version>${project.parent.version}</jeeshop.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>catalog</artifactId>
+      <version>${jeeshop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>user</artifactId>
+      <version>${jeeshop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rembx.jeeshop</groupId>
+      <artifactId>order</artifactId>
+      <version>${jeeshop.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-multipart</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>${project.parent.artifactId}-${project.artifactId}</warName>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.wildfly.plugins</groupId>
+        <artifactId>wildfly-maven-plugin</artifactId>
+        <configuration>
+          <filename>${project.parent.artifactId}-${project.artifactId}.war</filename>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

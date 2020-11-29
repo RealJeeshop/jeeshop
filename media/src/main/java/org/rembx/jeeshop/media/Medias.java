@@ -26,12 +26,9 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 /**
- * Medias resource
- */
-@Path("/medias")
-/**
  * TODO file location base folder to be accessible by web server
  */
+@Path("/rs/medias")
 public class Medias {
 
     static final String JEESHOP_MEDIA_DIR = "jeeshop-media";
@@ -44,7 +41,10 @@ public class Medias {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
     @Path("/{type}/{id}/{locale}/upload")
-    public void upload(@Context HttpServletRequest request, @NotNull @PathParam("type") String itemType, @NotNull @PathParam("id") Long itemId, @NotNull @PathParam("locale") String locale) {
+    public void upload(@Context HttpServletRequest request,
+                       @NotNull @PathParam("type") String itemType,
+                       @NotNull @PathParam("id") Long itemId,
+                       @NotNull @PathParam("locale") String locale) {
 
         try {
             ServletFileUpload upload = new ServletFileUpload();

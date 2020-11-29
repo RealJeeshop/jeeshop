@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.order.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
@@ -19,7 +20,7 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne
-    @XmlTransient
+    @JsonbTransient
     private Order order;
 
     @NotNull

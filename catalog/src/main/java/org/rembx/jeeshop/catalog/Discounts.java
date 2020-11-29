@@ -1,6 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -8,15 +9,15 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 import java.util.Set;
 
@@ -29,35 +30,25 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/discounts")
-@Stateless
-public class
-Discounts {
-
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
-    private EntityManager entityManager;
-
-    @Inject
-    PresentationResource presentationResource;
-
-    @Inject
-    private CatalogItemFinder catalogItemFinder;
-
-    @Inject
-    private DiscountFinder discountFinder;
+@Path("/rs/discounts")
+@ApplicationScoped
+public class Discounts {
 
     @Resource
-    private SessionContext sessionContext;
+    SecurityContext sessionContext;
+    private EntityManager entityManager;
+    private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
+    private DiscountFinder discountFinder;
 
-    public Discounts() {
-    }
-
-    public Discounts(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -67,6 +58,7 @@ Discounts {
     }
 
     @DELETE
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -90,6 +82,7 @@ Discounts {
     }
 
     @PUT
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -163,7 +156,7 @@ Discounts {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
         Presentation presentation = discount.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, discount);
+        return presentationResource.init(discount, locale, presentation);
     }
 
     private void checkNotNull(Discount discount) {

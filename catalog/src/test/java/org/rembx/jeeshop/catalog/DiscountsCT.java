@@ -1,8 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
@@ -14,7 +14,7 @@ import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.rembx.jeeshop.catalog.model.Discount.ApplicableTo.ORDER;
 import static org.rembx.jeeshop.catalog.model.Discount.Trigger.AMOUNT;
 import static org.rembx.jeeshop.catalog.model.Discount.Trigger.QUANTITY;
@@ -27,18 +27,18 @@ public class DiscountsCT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Discounts(entityManager, new CatalogItemFinder(entityManager));
+        service = new Discounts(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test
