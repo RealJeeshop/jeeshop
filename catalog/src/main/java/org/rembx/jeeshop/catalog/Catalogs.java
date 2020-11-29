@@ -72,10 +72,10 @@ public class Catalogs {
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Catalog find(@Context SecurityContext sessionContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+    public Catalog find(@Context SecurityContext securityContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
-        if (isAdminUser(sessionContext))
+        if (isAdminUser(securityContext))
             return catalog;
         else
             return catalogItemFinder.filterVisible(catalog, locale);
@@ -155,7 +155,7 @@ public class Catalogs {
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Category> findCategories(@Context SecurityContext sessionContext,
+    public List<Category> findCategories(@Context SecurityContext securityContext,
                                          @PathParam("catalogId") @NotNull Long catalogId,
                                          @QueryParam("locale") String locale) {
 
@@ -167,7 +167,7 @@ public class Catalogs {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext)) {
+        if (isAdminUser(securityContext)) {
             return rootCategories;
         } else {
             return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);

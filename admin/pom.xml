@@ -37,7 +37,7 @@
           </resource>
           <resource>
               <directory>src/main/webapp/dist</directory>
-              <targetPath>webapp</targetPath>
+              <targetPath>META-INF/resources</targetPath>
           </resource>
       </resources>
     <plugins>
@@ -162,20 +162,4 @@
 		</plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>openshift</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <warName>${project.parent.artifactId}-${project.artifactId}</warName>
-              <outputDirectory>deployments</outputDirectory>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

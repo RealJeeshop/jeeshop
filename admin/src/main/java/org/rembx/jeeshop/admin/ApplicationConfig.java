@@ -29,7 +29,6 @@ public class ApplicationConfig extends Application {
         classes.add(MailTemplates.class);
         classes.add(Orders.class);
         classes.add(WebApplicationExceptionMapper.class);
-        classes.add(GatewayResource.class);
         return classes;
     }
 }
