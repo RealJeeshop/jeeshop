@@ -20,10 +20,10 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Maven
-      run: mvn -B verify --file pom.xml
+      run: mvn package -Dquarkus.package.type=fast-jar
 
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: jeeshop-admin.war
-        path: admin/target/jeeshop-admin.war
+    - name: Dockerize
+      run: docker build -t jeeshop/admin .
+
+    - name: Deploy to Docker hub
+      run:

@@ -33,7 +33,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 /**
  * Orders resource.
  */
-@Path("/rs/orders")
+@Path("/orders")
 @ApplicationScoped
 public class Orders {
 

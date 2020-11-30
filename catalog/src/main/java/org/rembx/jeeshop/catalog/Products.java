@@ -26,7 +26,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
-@Path("/rs/products")
+@Path("/products")
 @ApplicationScoped
 public class Products {
 

@@ -31,7 +31,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/rs/categories")
+@Path("/categories")
 @ApplicationScoped
 public class Categories {
 

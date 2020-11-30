@@ -28,7 +28,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 /**
  * TODO file location base folder to be accessible by web server
  */
-@Path("/rs/medias")
+@Path("/medias")
 public class Medias {
 
     static final String JEESHOP_MEDIA_DIR = "jeeshop-media";

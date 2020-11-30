@@ -34,7 +34,7 @@ import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
  * Customer resource
  */
 
-@Path("/rs/users")
+@Path("/users")
 @ApplicationScoped
 public class Users {
 
