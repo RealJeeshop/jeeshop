@@ -48,7 +48,7 @@
     });
 
     app.controller("CatalogEntriesController", ['$http', '$uibModal', '$scope', '$state', '$stateParams',
-        function ($http, $dialog, $scope, $state, $stateParams) {
+        function ($http, $uibModal, $scope, $state, $stateParams) {
 
             var ctrl = this;
             ctrl.alerts = [];
@@ -117,7 +117,7 @@
                     $http.delete('rs/' + $stateParams.resource + "/" + ctrl.entries[index].id)
                         .success(function (data) {
                             ctrl.entries.splice(index, 1);
-                            $scope.findEntries();
+                            ctrl.findEntries();
                         })
                         .error(function (data) {
                             ctrl.alerts.push({type: 'danger', msg: 'Technical error'});
@@ -169,6 +169,9 @@
             };
 
             ctrl.edit = function () {
+                var updatedResource  = ctrl.entry
+                delete updatedResource.rootCategories
+                delete updatedResource.presentationByLocale
                 $http.put('rs/' + $stateParams.resource, ctrl.entry)
                     .success(function (data) {
                         ctrl.entry = data;
@@ -209,7 +212,8 @@
 
         }]);
 
-    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', function ($http, $scope, $uibModal, $log, $stateParams) {
+    app.controller('CatalogRelationshipsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams',
+    function ($http, $scope, $uibModal, $log, $stateParams) {
         var ctrl = this;
         $scope.itemsIds = [];
         $scope.items = [];
@@ -344,7 +348,8 @@
 
             }]);
 
-    app.controller('PresentationsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', 'LocalesService', function ($http, $scope, $uibModal, $log, $stateParams, LocalesService) {
+    app.controller('PresentationsController', ['$http', '$scope', '$uibModal', '$log', '$stateParams', 'LocalesService',
+    function ($http, $scope, $uibModal, $log, $stateParams, LocalesService) {
 
         var ctrl = this;
 
@@ -431,9 +436,11 @@
                 $scope.catalogEntryCtrl.alerts = [];
                 if (errors != null && errors.length > 0) {
                     $scope.catalogEntryCtrl.alerts.push(errors[0]);
+                    getAvailableLocales();
                 }
+
             }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
+
             });
         };
 
@@ -458,7 +465,6 @@
                     largeImage: false,
                     smallImage: false
                 };
-
 
                 $scope.feature = {};
 
@@ -506,8 +512,8 @@
 
                 $scope.getPresentationMediaURI = function (presentationPropertyName) {
                     if ($scope.presentation[presentationPropertyName] != null) {
-                        return 'rs/medias/' + $stateParams.resource + '/' + $scope.EntryId + '/' + $scope.selectedLocale + '/'
-                            + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing;
+                        return 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/'
+                            + $scope.presentation[presentationPropertyName].uri + '?refresh=' + $scope.isProcessing[presentationPropertyName];
                     }
                 };
 
@@ -522,7 +528,7 @@
                     $scope.presentation[presentationPropertyName] = presentationMedia;
 
                     $scope.upload = $upload.upload({
-                        url: 'rs/medias/' + $stateParams.resource + '/' + EntryId + '/' + $scope.selectedLocale + '/upload', //upload.php script, node.js route, or servlet url
+                        url: 'rs/medias/' + $stateParams.resource + '/' + $scope.entryId + '/' + $scope.selectedLocale + '/upload',
                         method: 'POST',
                         //headers: {'header-key': 'header-value'},
                         withCredentials: true,
@@ -560,7 +566,6 @@
                     $http.post(presentationsResourceURI + "/" + $scope.selectedLocale, $scope.presentation)
                         .success(function (data) {
                             $scope.presentation = data;
-                            getAvailableLocales();
                             messages.push({type: 'success', msg: 'Presentation creation complete'});
                             $uibModalInstance.close(messages);
 

@@ -1,8 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatSKUsOf;
 
 public class ProductsCT {
@@ -26,30 +26,30 @@ public class ProductsCT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Products(entityManager, new CatalogItemFinder(entityManager));
+        service = new Products(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test
     public void find_withIdOfVisibleProduct_ShouldReturnExpectedProduct() {
-        assertThat(service.find(testCatalog.aProductWithSKUs().getId(), null)).isEqualTo(testCatalog.aProductWithSKUs());
-        assertThat(service.find(testCatalog.aProductWithSKUs().getId(), null).isVisible()).isTrue();
+        assertThat(service.find(null, testCatalog.aProductWithSKUs().getId(), null)).isEqualTo(testCatalog.aProductWithSKUs());
+        assertThat(service.find(null, testCatalog.aProductWithSKUs().getId(), null).isVisible()).isTrue();
     }
 
     @Test
     public void find_withIdOfDisableProduct_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.aDisabledProduct().getId(), null);
+            service.find(null, testCatalog.aDisabledProduct().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -59,7 +59,7 @@ public class ProductsCT {
     @Test
     public void find_withIdOfExpiredProduct_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.anExpiredProduct().getId(), null);
+            service.find(null, testCatalog.anExpiredProduct().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -69,7 +69,7 @@ public class ProductsCT {
     @Test
     public void find_withUnknownProductId_ShouldThrowNotFoundException() {
         try {
-            service.find(9999L, null);
+            service.find(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -80,7 +80,7 @@ public class ProductsCT {
     @Test
     public void findSKUs_shouldReturn404ExWhenProductNotFound() {
         try {
-            service.findChildSKUs(9999L, null);
+            service.findChildSKUs(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -89,14 +89,14 @@ public class ProductsCT {
 
     @Test
     public void findSKUs_shouldNotReturnExpiredNorDisabledSKUs() {
-        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithSKUs().getId(), null);
+        List<SKU> skus = service.findChildSKUs(null, testCatalog.aProductWithSKUs().getId(), null);
         assertThat(skus).isNotEmpty();
         assertThatSKUsOf(skus).areVisibleSKUsOfAProductWithSKUs();
     }
 
     @Test
     public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
-        List<SKU> skus = service.findChildSKUs(testCatalog.aProductWithoutSKUs().getId(), null);
+        List<SKU> skus = service.findChildSKUs(null, testCatalog.aProductWithoutSKUs().getId(), null);
         assertThat(skus).isEmpty();
     }
 
@@ -124,7 +124,7 @@ public class ProductsCT {
 
     @Test
     public void modifyProduct_ShouldModifyProductAttributesAndPreserveSKUsWhenNotProvided() {
-        Product product = service.find(testCatalog.aProductWithSKUs().getId(), null);
+        Product product = service.find(null, testCatalog.aProductWithSKUs().getId(), null);
 
         Product detachedProductToModify = new Product(testCatalog.aProductWithSKUs().getId(), product.getName(), product.getDescription(), product.getStartDate(), product.getEndDate(), product.isDisabled());
 

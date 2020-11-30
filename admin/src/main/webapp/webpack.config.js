@@ -4,6 +4,6 @@ module.exports = {
     },
     output: {
         filename: '[name]_bundle.js',
-        path: './app/built'
+        path: './dist'
     }
 };

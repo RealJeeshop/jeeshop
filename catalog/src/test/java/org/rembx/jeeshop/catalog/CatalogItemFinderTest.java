@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -9,8 +9,8 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CatalogItemFinderTest {
 
@@ -24,9 +24,9 @@ public class CatalogItemFinderTest {
     };
 
 
-    @Before
+    @BeforeEach
     public void setup() {
-        instance = new CatalogItemFinder();
+        instance = new CatalogItemFinder(null);
     }
 
 

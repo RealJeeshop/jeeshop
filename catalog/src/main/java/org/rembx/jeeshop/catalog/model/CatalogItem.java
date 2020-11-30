@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -66,7 +67,7 @@ public abstract class CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "catalogItemId", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "presentationId"))
     @MapKey(name = "locale")
-    @XmlTransient
+    @JsonbTransient
     private Map<String, Presentation> presentationByLocale;
 
     @Transient
@@ -123,6 +124,10 @@ public abstract class CatalogItem {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

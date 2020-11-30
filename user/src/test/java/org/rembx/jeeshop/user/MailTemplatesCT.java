@@ -1,8 +1,8 @@
 package org.rembx.jeeshop.user;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;
@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -28,15 +28,15 @@ public class MailTemplatesCT {
 
     private TestMailTemplate testMailTemplate;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
     private Mailer mailerMock;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testMailTemplate = TestMailTemplate.getInstance();
         entityManager = entityManagerFactory.createEntityManager();

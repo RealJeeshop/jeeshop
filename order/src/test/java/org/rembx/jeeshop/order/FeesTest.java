@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.order;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,12 +30,10 @@ public class FeesTest {
     @Test
     public void getVATOrShippingFeeShouldReturnNullWhenNoMatchingOrderConfiguration() throws Exception {
 
-        Fees fees = new Fees();
+        Fees fees = new Fees(null);
 
         assertThat(fees.getShippingFee()).isEqualTo(null);
         assertThat(fees.getVAT()).isEqualTo(null);
-
-
     }
 
     private OrderConfiguration orderConfiguration() {

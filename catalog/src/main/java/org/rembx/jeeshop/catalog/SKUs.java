@@ -1,21 +1,26 @@
 package org.rembx.jeeshop.catalog;
 
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
+import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,31 +35,24 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * @author remi
  */
 
-@Path("/skus")
-@Stateless
+@Path("/rs/skus")
+@ApplicationScoped
 public class SKUs {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
+    @Context
+    SecurityContext sessionContext;
     private EntityManager entityManager;
-
-    @Inject
-    PresentationResource presentationResource;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    @Resource
-    private SessionContext sessionContext;
-
-    public SKUs() {
-    }
-
-    public SKUs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -69,10 +67,11 @@ public class SKUs {
     }
 
     @DELETE
+    @Transactional
+    @Path("/{skuId}")
+    @RolesAllowed(ADMIN)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    @Path("/{skuId}")
     public void delete(@PathParam("skuId") Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
@@ -93,6 +92,7 @@ public class SKUs {
     }
 
     @PUT
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -164,7 +164,7 @@ public class SKUs {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, sku);
+        return presentationResource.init(sku, locale, presentation);
     }
 
     @GET

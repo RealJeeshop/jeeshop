@@ -1,24 +1,23 @@
 package org.rembx.jeeshop.catalog;
 
-
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,41 +28,28 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
-/**
- * @author remi
- */
-
-@Path("/catalogs")
-@Stateless
+@Path("/rs/catalogs")
+@ApplicationScoped
 public class Catalogs {
 
-    @PersistenceContext(unitName = CatalogPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    @Inject
-    PresentationResource presentationResource;
-
-    @Inject
     private CatalogItemFinder catalogItemFinder;
+    private PresentationResource presentationResource;
 
-    @Resource
-    private SessionContext sessionContext;
-
-    public Catalogs() {
-
-    }
-
-    public Catalogs(EntityManager entityManager, CatalogItemFinder catalogItemFinder) {
+    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
+        this.presentationResource = presentationResource;
     }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+    public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start,
+                                 @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy,
+                                 @QueryParam("isDesc") Boolean isDesc) {
+
         if (search != null)
             return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
         else
@@ -86,16 +72,17 @@ public class Catalogs {
     @Path("/{catalogId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Catalog find(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+    public Catalog find(@Context SecurityContext securityContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
-        if (isAdminUser(sessionContext))
+        if (isAdminUser(securityContext))
             return catalog;
         else
             return catalogItemFinder.filterVisible(catalog, locale);
     }
 
     @POST
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -110,6 +97,7 @@ public class Catalogs {
     }
 
     @DELETE
+    @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
@@ -121,10 +109,10 @@ public class Catalogs {
 
     }
 
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public Catalog modify(Catalog catalog) {
         Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
@@ -140,7 +128,8 @@ public class Catalogs {
 
         catalog.setPresentationByLocale(originalCatalog.getPresentationByLocale());
 
-        return entityManager.merge(catalog);
+        Catalog merge = entityManager.merge(catalog);
+        return merge;
     }
 
     @GET
@@ -159,14 +148,16 @@ public class Catalogs {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         Presentation presentation = catalog.getPresentationByLocale().get(locale);
-        return presentationResource.init(presentation, locale, catalog);
+        return presentationResource.init(catalog, locale, presentation);
     }
 
     @GET
     @Path("/{catalogId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Category> findCategories(@PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
+    public List<Category> findCategories(@Context SecurityContext securityContext,
+                                         @PathParam("catalogId") @NotNull Long catalogId,
+                                         @QueryParam("locale") String locale) {
 
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
@@ -176,7 +167,7 @@ public class Catalogs {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext)) {
+        if (isAdminUser(securityContext)) {
             return rootCategories;
         } else {
             return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);

@@ -2,16 +2,19 @@ package org.rembx.jeeshop.user;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.model.MailTemplate;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,23 +29,15 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * Mail template resource
  */
 
-@Path("/mailtemplates")
-@Stateless
+@Path("/rs/mailtemplates")
+@ApplicationScoped
 public class MailTemplates {
 
-    @Inject
     private Mailer mailer;
-
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
-
-    @Inject
     private MailTemplateFinder mailTemplateFinder;
 
-    public MailTemplates() {
-    }
-
-    public MailTemplates(EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
+    MailTemplates(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, MailTemplateFinder mailTemplateFinder, Mailer mailer) {
         this.entityManager = entityManager;
         this.mailTemplateFinder = mailTemplateFinder;
         this.mailer = mailer;
@@ -66,7 +61,7 @@ public class MailTemplates {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
-    @Path("test/{recipient}")
+    @Path("/test/{recipient}")
     public void sendTestEmail(Object properties, @NotNull @QueryParam("templateName") String templateName, @NotNull @QueryParam("locale") String locale, @NotNull @PathParam("recipient") String recipient) {
         MailTemplate existingTpl = mailTemplateFinder.findByNameAndLocale(templateName, locale);
 
@@ -85,17 +80,18 @@ public class MailTemplates {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
+    @Transactional
     @Path("/{id}")
     public void delete(@PathParam("id") Long id) {
         MailTemplate mailTemplate = entityManager.find(MailTemplate.class, id);
         checkNotNull(mailTemplate);
         entityManager.remove(mailTemplate);
-
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
     @RolesAllowed(ADMIN)
     public MailTemplate modify(MailTemplate mailTemplate) {
 
@@ -108,6 +104,7 @@ public class MailTemplates {
             throw new WebApplicationException(Response.Status.CONFLICT);
         }
 
+        mailTemplate.setCreationDate(existingMailTemplate.getCreationDate());
         return entityManager.merge(mailTemplate);
     }
 

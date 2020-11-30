@@ -1,27 +1,26 @@
 package org.rembx.jeeshop.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.Role;
 import org.rembx.jeeshop.user.model.RoleName;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import static org.rembx.jeeshop.user.model.QRole.role;
 
 /**
  * User finder utility
  */
+@ApplicationScoped
 public class RoleFinder {
 
-    @PersistenceContext(unitName = UserPersistenceUnit.NAME)
     private EntityManager entityManager;
 
-    public RoleFinder() {
-    }
-
-    public RoleFinder(EntityManager entityManager) {
+    RoleFinder(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

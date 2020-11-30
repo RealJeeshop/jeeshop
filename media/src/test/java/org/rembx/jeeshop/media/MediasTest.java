@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.media;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.ws.rs.core.Response;
@@ -9,13 +9,13 @@ import java.io.File;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MediasTest {
 
     Medias medias;
 
-    @Before
+    @BeforeEach
     public void setup() {
         medias = new Medias();
     }

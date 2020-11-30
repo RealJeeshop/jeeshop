@@ -2,6 +2,7 @@ package org.rembx.jeeshop.user.model;
 
 import org.rembx.jeeshop.media.model.Media;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,7 +44,7 @@ public class MailTemplate {
     @ManyToMany
     @JoinTable(name = "MailTemplate_Media", joinColumns = @JoinColumn(name = "mailTemplateId"),
             inverseJoinColumns = @JoinColumn(name = "mediaId"))
-    @XmlTransient
+    @JsonbTransient
     Set<Media> medias;
 
     @Temporal(TemporalType.TIMESTAMP)

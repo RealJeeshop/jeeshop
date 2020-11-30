@@ -1,8 +1,8 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.fail;
 import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
 
@@ -27,18 +26,18 @@ public class CategoriesCT {
 
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
+    EntityManager entityManager;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
-        service = new Categories(entityManager, new CatalogItemFinder(entityManager));
+        service = new Categories(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test
