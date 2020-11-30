@@ -30,7 +30,7 @@ services:
       JEESHOP_MEDIADIR: /tmp
       PROXY_ADDRESS_FORWARDING: "true"
     ports:
-      - 8080:8080
+      - 8443:8443
     volumes:
       - ./images:/tmp
     depends_on:

@@ -1,9 +1,21 @@
+const path = require('path');
+
 module.exports = {
-    entry: {
-        app : './app/app.js'
-    },
+    entry: './src/main.js',
     output: {
-        filename: '[name]_bundle.js',
-        path: './dist'
-    }
-};
+        path: path.resolve(__dirname, 'built'),
+        filename: 'app_bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
+            }
+        ]
+    },
+}

@@ -14,7 +14,6 @@
     <module>user</module>
     <module>store</module>
     <module>admin</module>
-	<module>admin-vue</module>
     <module>common</module>
     <module>media</module>
     <module>order</module>
