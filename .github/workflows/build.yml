@@ -29,14 +29,13 @@ jobs:
         path: admin/target/
 
   deploy:
-    if: contains( github.ref, 'master')
     runs-on: ubuntu-latest
     steps:
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         with:
-          name: jeeshop-admin
-          path: target
+          name: .
+          path: admin/target
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
