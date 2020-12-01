@@ -91,3 +91,7 @@ The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul 
   ```shell script
     docker-compose up
   ```
+
+# Demo dataset
+
+All files needed for demo data re located in `install/src/main/resources/demo`
