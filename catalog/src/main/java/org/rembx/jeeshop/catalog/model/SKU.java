@@ -38,7 +38,6 @@ public class SKU extends CatalogItem{
     @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient

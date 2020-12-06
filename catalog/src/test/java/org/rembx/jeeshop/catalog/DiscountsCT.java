@@ -49,24 +49,24 @@ public class DiscountsCT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Discount> discounts = service.findAll(null, 0, 1, null, null);
+        List<Discount> discounts = service.findAll(null, 0, 1, null, null, null);
         assertThat(discounts).isNotEmpty();
         assertThat(discounts).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aVisibleDisount().getId().toString(), null, null, null, null)).containsExactly(testCatalog.aVisibleDisount());
+        assertThat(service.findAll(testCatalog.aVisibleDisount().getId().toString(), null, null, null, null, null)).containsExactly(testCatalog.aVisibleDisount());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aVisibleDisount().getName(), null, null, null, null)).containsExactly(testCatalog.aVisibleDisount());
+        assertThat(service.findAll(testCatalog.aVisibleDisount().getName(), null, null, null, null, null)).containsExactly(testCatalog.aVisibleDisount());
     }
 
     @Test

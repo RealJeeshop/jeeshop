@@ -102,24 +102,24 @@ public class ProductsCT {
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
+        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Product> categories = service.findAll(null, 0, 1, null, null);
+        List<Product> categories = service.findAll(null, 0, 1, null, null, null);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getId().toString(), null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getId().toString(), null, null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getName(), null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
+        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getName(), null, null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
     }
 
     @Test

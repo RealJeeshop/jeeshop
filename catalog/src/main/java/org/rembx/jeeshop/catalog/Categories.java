@@ -8,7 +8,6 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -126,11 +125,11 @@ public class Categories {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Category> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(category, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(category, search, start, size, orderBy, isDesc, locale);
         else
-            return catalogItemFinder.findAll(category, start, size, orderBy, isDesc);
+            return catalogItemFinder.findAll(category, start, size, orderBy, isDesc, locale);
     }
 
     @GET
