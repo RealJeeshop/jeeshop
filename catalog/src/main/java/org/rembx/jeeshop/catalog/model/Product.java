@@ -21,7 +21,6 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<SKU> childSKUs;
 
     @Transient
@@ -31,7 +30,6 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient
