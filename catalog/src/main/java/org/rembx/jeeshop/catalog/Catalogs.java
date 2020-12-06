@@ -48,12 +48,13 @@ public class Catalogs {
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Catalog> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start,
                                  @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy,
-                                 @QueryParam("isDesc") Boolean isDesc) {
+                                 @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
 
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
-        else
-            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale);
+        else {
+            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
+        }
     }
 
     @GET

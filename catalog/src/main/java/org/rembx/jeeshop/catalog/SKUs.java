@@ -2,18 +2,13 @@ package org.rembx.jeeshop.catalog;
 
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -118,11 +113,11 @@ public class SKUs {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<SKU> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(sKU, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(sKU, search, start, size, orderBy, isDesc, locale);
         else
-            return catalogItemFinder.findAll(sKU, start, size, orderBy, isDesc);
+            return catalogItemFinder.findAll(sKU, start, size, orderBy, isDesc, locale);
     }
 
     @GET

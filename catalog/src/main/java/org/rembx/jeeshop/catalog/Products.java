@@ -120,11 +120,11 @@ public class Products {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc, locale);
         else
-            return catalogItemFinder.findAll(product, start, size, orderBy, isDesc);
+            return catalogItemFinder.findAll(product, start, size, orderBy, isDesc, locale);
     }
 
     @GET

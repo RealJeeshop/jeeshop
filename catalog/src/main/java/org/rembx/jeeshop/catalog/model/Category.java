@@ -23,7 +23,6 @@ public class Category extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "parentCategoryId"),
             inverseJoinColumns = @JoinColumn(name = "childCategoryId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<Category> childCategories;
 
     @Transient

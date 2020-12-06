@@ -21,7 +21,6 @@ public class Catalog extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "catalogId"),
             inverseJoinColumns = @JoinColumn(name = "categoryId"))
     @OrderColumn(name="orderIdx")
-    @JsonbTransient
     private List<Category> rootCategories;
 
     @Transient
