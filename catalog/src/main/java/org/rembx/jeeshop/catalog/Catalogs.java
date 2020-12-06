@@ -21,7 +21,6 @@ import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
@@ -52,17 +51,9 @@ public class Catalogs {
                                  @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
 
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale);
         else {
-            List<Catalog> catalogs = catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc);
-            if (locale != null) {
-                return catalogs.stream().peek(catalog1 -> {
-                    Presentation presentation = catalog1.getPresentationByLocale().get(locale);
-                    catalog1.setLocalizedPresentation(presentation);
-                }).collect(Collectors.toList());
-            } else {
-                return catalogs;
-            }
+            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
         }
     }
 

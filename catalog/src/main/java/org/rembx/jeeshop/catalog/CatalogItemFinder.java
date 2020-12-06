@@ -15,14 +15,13 @@ import org.rembx.jeeshop.catalog.model.QCatalogItem;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for common finders on CatalogItem entities
@@ -54,14 +53,17 @@ public class CatalogItemFinder {
 
     }
 
-    public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+    public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
         JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath);
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.fetch();
+        List<T> catalogItems = query.fetch();
+        return locale != null
+                ? catalogItems.stream().peek(c -> c.setLocalizedPresentation(locale)).collect(Collectors.toList())
+                : catalogItems;
     }
 
 
@@ -75,7 +77,7 @@ public class CatalogItemFinder {
     }
 
     public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPath<T> entityPath, String searchCriteria,
-                                                                Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+                                                                Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
         JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath)
@@ -83,7 +85,10 @@ public class CatalogItemFinder {
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.fetch();
+        List<T> fetch = query.fetch();
+        return locale != null
+                ? fetch.stream().peek(c -> c.setLocalizedPresentation(locale)).collect(Collectors.toList())
+                : fetch;
     }
 
     public Long countAll(EntityPath<? extends CatalogItem> entityPath) {
