@@ -28,6 +28,7 @@ ARG RUN_JAVA_VERSION=1.3.8
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
+
 # Install java and the run-java script
 # Also set up permissions for user `1001`
 RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
@@ -50,6 +51,11 @@ COPY --chown=1001 admin/target/quarkus-app/lib/ /deployments/lib/
 COPY --chown=1001 admin/target/quarkus-app/*.jar /deployments/
 COPY --chown=1001 admin/target/quarkus-app/app/ /deployments/app/
 COPY --chown=1001 admin/target/quarkus-app/quarkus/ /deployments/quarkus/
+
+ENV DATA_DIR="/jeeshop"
+RUN mkdir -p $DATA_DIR
+RUN chown -R 1001:1001 $DATA_DIR
+RUN chmod -R 760 $DATA_DIR
 
 EXPOSE ${PORT}
 USER 1001

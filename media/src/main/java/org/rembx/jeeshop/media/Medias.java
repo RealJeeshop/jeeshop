@@ -89,7 +89,7 @@ public class Medias {
             path = Paths.get(System.getenv(OPENSHIFT_DATA_DIR)).resolve(JEESHOP_MEDIA_DIR);
         } else if (StringUtils.isNotEmpty(System.getenv(JEESHOP_DATA_DIR))) {
             path = Paths.get(System.getenv(JEESHOP_DATA_DIR)).resolve(JEESHOP_MEDIA_DIR);
-        }else{
+        } else {
             path = Paths.get(Medias.JEESHOP_MEDIA_DIR);
         }
 
