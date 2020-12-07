@@ -92,6 +92,7 @@ The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul 
     docker-compose up
   ```
 
+if binding JEESHOP_DATA_DIR to another directoty on local host, ensure you have the good permissions on the host (eg 1001:root)
 
 # Demo dataset
 
