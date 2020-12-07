@@ -28,7 +28,6 @@ services:
       JEESHOP_CATALOG_DATABASE_PASSWORD: test
       JEESHOP_CATALOG_JDBC_DRIVER: postgresql
       JEESHOP_DATADIR: /jeeshop
-      JEESHOP_MEDIADIR: medias
       PROXY_ADDRESS_FORWARDING: "true"
     ports:
       - 8080:8080
