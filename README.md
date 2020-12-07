@@ -83,14 +83,15 @@ The second one starts a Jeeshop instance with Jeeshop-Admin and Jeeshop RESTFul 
 | JEESHOP_CATALOG_DATABASE_USERNAME | jeeshop | ------------- |
 | JEESHOP_CATALOG_DATABASE_PASSWORD | test  |------------- |
 | JEESHOP_CATALOG_JDBC_DRIVER | postgresql  | postgresql, mysql |
-| JEESHOP_SSL_KEYSTORE_PATH | /opt/jboss/wildfly/standalone/configuration/server.keystore  | default keystore used to provide ssl |
+| JEESHOP_SSL_KEYSTORE_PATH | META-INF/resources/server.keystore  | default keystore used to provide ssl |
 | JEESHOP_SSL_KEYSTORE_PASSWORD | test123 | default keystore password |
-| JEESHOP_MEDIADIR | /tmp | where jeeshop assets, such as catalog items images, should be uploaded |
+| JEESHOP_DATA_DIR | . | where jeeshop assets, such as catalog items images, should be uploaded. For docker build this value is set to /jeeshop |
 
 ## With docker-compose
   ```shell script
     docker-compose up
   ```
+
 
 # Demo dataset
 
