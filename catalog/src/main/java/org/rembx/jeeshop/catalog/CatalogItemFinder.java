@@ -9,9 +9,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.lang.math.NumberUtils;
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.QCatalogItem;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -47,7 +45,10 @@ public class CatalogItemFinder {
                 )
                 .fetch();
 
-        results.forEach((catalogItem) -> catalogItem.setLocalizedPresentation(locale));
+        results.forEach((catalogItem) -> {
+            catalogItem.setLocalizedPresentation(locale);
+            mapCatalogItemChildrenPresentation(catalogItem, locale);
+        });
 
         return results;
 
@@ -62,8 +63,10 @@ public class CatalogItemFinder {
 
         List<T> catalogItems = query.fetch();
         return locale != null
-                ? catalogItems.stream().peek(c -> c.setLocalizedPresentation(locale)).collect(Collectors.toList())
-                : catalogItems;
+                ? catalogItems.stream().peek(c -> {
+                    c.setLocalizedPresentation(locale);
+                    mapCatalogItemChildrenPresentation(c, locale);
+                }).collect(Collectors.toList()) : catalogItems;
     }
 
 
@@ -87,7 +90,10 @@ public class CatalogItemFinder {
 
         List<T> fetch = query.fetch();
         return locale != null
-                ? fetch.stream().peek(c -> c.setLocalizedPresentation(locale)).collect(Collectors.toList())
+                ? fetch.stream().peek(c -> {
+                    c.setLocalizedPresentation(locale);
+                    mapCatalogItemChildrenPresentation(c, locale);
+                    }).collect(Collectors.toList())
                 : fetch;
     }
 
@@ -116,8 +122,34 @@ public class CatalogItemFinder {
         }
 
         catalogItem.setLocalizedPresentation(locale);
+        mapCatalogItemChildrenPresentation(catalogItem, locale);
 
         return catalogItem;
+    }
+
+    private <T extends CatalogItem> void mapCatalogItemChildrenPresentation(T catalogItem, String locale) {
+
+        if (locale == null) return;
+
+        if (catalogItem instanceof Catalog) {
+            ((Catalog) catalogItem).setRootCategories(((Catalog) catalogItem).getRootCategories().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+        } else if (catalogItem instanceof Category) {
+            ((Category) catalogItem).setChildCategories(((Category) catalogItem).getChildCategories().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+        } else if (catalogItem instanceof Product) {
+            ((Product) catalogItem).setChildSKUs(((Product) catalogItem).getChildSKUs().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+            ((Product) catalogItem).setDiscounts(((Product) catalogItem).getDiscounts().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+        }
     }
 
     private void addOffsetAndLimitToQuery(Integer offset, Integer limit, JPAQuery query, String orderBy, Boolean isDesc, QCatalogItem qCatalogItem) {
