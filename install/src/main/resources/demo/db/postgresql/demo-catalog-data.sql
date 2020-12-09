@@ -22,12 +22,16 @@ INSERT INTO media (id, uri) VALUES
 (38, 'energy_x2.jpg'),
 (39, 'energy_x2.jpg');
 
+SELECT setval('media_id_seq', (SELECT MAX(id) from media));
+
 --
 -- data for table Catalog
 --
 
 INSERT INTO catalog (id, description, disabled, endDate, name, startDate) VALUES
 (1, 'Catalog of Hyperbike store', false, NULL, 'Hyperbike catalog', NULL);
+
+SELECT setval('catalog_id_seq', (SELECT MAX(id) from catalog));
 
 --
 -- data for table Presentation
@@ -54,6 +58,8 @@ INSERT INTO presentation (id, displayName, promotion, features, locale, shortDes
 (30, '10 pourcent de remise dès 100€ d''achats !', 'fa-gift', NULL, 'fr', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (31, '10 percent off from 100€ of purchase!', 'fa-gift', NULL, 'en', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
+SELECT setval('presentation_id_seq', (SELECT MAX(id) from presentation));
+
 --
 -- data for table Product
 --
@@ -64,6 +70,8 @@ INSERT INTO product (id, description, disabled, endDate, name, startDate) VALUES
 (3, 'VTC Lazer V2', true, NULL, 'Lazer V2', NULL),
 (4, 'VTC Beam 3000', false, '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52'),
 (5, 'Michelin NX01 tire', false, NULL, 'Michelin NX01', NULL);
+
+SELECT setval('product_id_seq', (SELECT MAX(id) from product));
 
 --
 -- data for table Category
@@ -78,6 +86,9 @@ INSERT INTO category (id, description, disabled, endDate, name, startDate) VALUE
 (6, 'Wheels rubric', false, '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52'),
 (7, 'Mountain Bikes category', false, NULL, 'Mountain Bikes', NULL),
 (12, 'Racing Bikes category', false, NULL, 'Racing Bikes', NULL);
+
+SELECT setval('category_id_seq', (SELECT MAX(id) from category));
+
 
 --
 -- data for table Category_Category
@@ -106,6 +117,8 @@ INSERT INTO catalog_category (catalogId, categoryId, orderIdx) VALUES
 INSERT INTO discount (id, description, disabled, endDate, name, startDate, discountValue, triggerValue, triggerRule, type, applicableTo, uniqueUse, usesPerCustomer, voucherCode) VALUES
   (2, 'Free delivery fee for first order', false, NULL, 'Order - Free delivery - first order', NULL, 12, 1, 'ORDER_NUMBER', 'SHIPPING_FEE_DISCOUNT_AMOUNT', 'ORDER', true, NULL, NULL),
   (5, '10 percent off for order amount of 100', false, NULL, '10 percent off', NULL, 10, 100, 'AMOUNT', 'DISCOUNT_RATE', 'ORDER', NULL, NULL, NULL);
+
+SELECT setval('discount_id_seq', (SELECT MAX(id) from discount));
 
 --
 -- Contenu de la table Discount_Presentation
@@ -171,8 +184,6 @@ INSERT INTO presentation_feature (presentationId, name, value) VALUES
 (23, 'Suspension', 'Pas de suspension arrière.'),
 (23, 'Tailles', 'M|L|XL');
 
-
-
 --
 -- data for table SKU
 --
@@ -184,6 +195,8 @@ INSERT INTO sku (id, description, disabled, endDate, name, startDate, currency, 
 (4, 'Michelin NX01', false, NULL, 'Michelin NX01', NULL, NULL, 10, 2, 'X1213JJLB-4', 3),
 (5, 'Lazer V2', false, NULL, 'Lazer V2', NULL, NULL, 10, 100, 'X1213JJLB-5', 3),
 (6, 'Beam 3000', false, NULL, 'Beam 3000', NULL, NULL, NULL, NULL, NULL, NULL);
+
+SELECT setval('sku_id_seq', (SELECT MAX(id) from sku));
 
 
 --
@@ -217,5 +230,6 @@ INSERT INTO mailtemplate (id, name, locale, content, subject, creationDate, upda
   (5, 'orderValidated', 'fr', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Bonjour ${user.gender} ${user.firstname} ${user.lastname},</h3>\n\n<p>Nous avons le plaisir de vous confirmer la validation de votre commande numéro <strong>${reference}</strong></p>\n\n<p>Vous recevrez prochainement un e-mail lors de son expédition par nos services.</p>\n\n<h3><em>Détail : </em></h3>\n\n<table style="width:100%;border-width:1px; border-style=solid; text-align:justify">\n    <thead>\n    <th></th>\n    <th>Article</th>\n    <th>Quantité</th>\n    <th>Prix</th>\n    </thead>\n    <tbody>\n    <#list items as item>\n    <tr>\n        <td style="text-align:center">\n            <img src="https://apps-jeeshop.rhcloud.com/jeeshop-media/${item.presentationImageURI}" style="width:4em;height:auto"></img>\n        </td>\n        <td>${item.displayName}</td>\n        <td>${item.quantity}</td>\n        <td>${item.price} € TTC</td>\n    </tr>\n    </#list>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>Livraison par transporteur</td>\n        <td></td>\n        <td>${deliveryFee} € TTC</td>\n    </tr>\n    <#list orderDiscounts as orderDiscount>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>${orderDiscount.displayName}</td>\n        <td></td>\n        <td>- ${orderDiscount.discountValue} <#if orderDiscount.rateType>%<#else>€ TTC</#if></td>\n    </tr>\n    </#list>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><i>Total HT</i></td>\n        <td><i>#{price*100/(100+vat); m2M2} €</i></td>\n    </tr>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><b><i>Total TTC</i><b></td>\n        <td><b><i>${price} €</i></b></td>\n    </tr>\n    </tbody>\n</table>\n<br/>\n\n<table style="width:100%">\n    <tr>\n        <td style="width:45%">\n            <h4>Adresse de livraison</h4>\n            <p>\n            ${deliveryAddress.gender}\n  ${deliveryAddress.firstname}\n  ${deliveryAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Société</i></b>\n                <br/>\n            ${deliveryAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Adresse</i></b>\n                <br/>\n            ${deliveryAddress.street}\n                <br/>\n            ${deliveryAddress.city}\n                <br/>\n            ${deliveryAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Pays</i></b>\n                <br/>\n            ${deliveryAddress.countryIso3Code}\n            </p>\n        </td>\n        <td style="width:10%"></td>\n        <td style="width:45%">\n            <h4>Adresse de facturation</h4>\n            <p>\n            ${billingAddress.gender}\n  ${billingAddress.firstname}\n  ${billingAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Société</i></b>\n                <br/>\n            ${billingAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Adresse</i></b>\n                <br/>\n            ${billingAddress.street}\n                <br/>\n            ${billingAddress.city}\n                <br/>\n            ${billingAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Pays</i></b>\n                <br/>\n            ${billingAddress.countryIso3Code}\n            </p>\n        </td>\n    </tr>\n</table>\n\n<p>Cordialement</p>', 'Confirmation de votre commande', '2016-01-11 01:46:33', NULL),
   (6, 'orderValidated', 'en', '<div style="width:100%;text-align:center">\n    <a href="https://apps-jeeshop.rhcloud.com">\n        <img src="https://apps-jeeshop.rhcloud.com/jeeshop-store/images/logo.png" style=" width: 10em; height: auto; padding-bottom: 1em;" alt="Jeeshop store demo">\n    </a>\n</div>\n\n<h3>Hello ${user.gender} ${user.firstname} ${user.lastname},</h3>\n\n<p>We are glad to confim the validation of your order <strong>${reference}</strong></p>\n\n<p>You will receive another e-mail when it will be shipped.</p>\n\n<h3><em>Details :</em></h3>\n\n<table style="width:100%;border-width:1px; border-style=solid; text-align:justify">\n    <thead>\n    <th></th>\n    <th>Item</th>\n    <th>Quantity</th>\n    <th>Price</th>\n    </thead>\n    <tbody>\n    <#list items as item>\n    <tr>\n        <td style="text-align:center">\n            <img src="https://apps-jeeshop.rhcloud.com/jeeshop-media/${item.presentationImageURI}" style="width:4em;height:auto"></img>\n        </td>\n        <td>${item.displayName}</td>\n        <td>${item.quantity}</td>\n        <td>${item.price} €</td>\n    </tr>\n    </#list>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>Package delivery company</td>\n        <td></td>\n        <td>${deliveryFee} €</td>\n    </tr>\n    <#list orderDiscounts as orderDiscount>\n    <tr>\n        <td style="text-align:center">\n        </td>\n        <td>${orderDiscount.displayName}</td>\n        <td></td>\n        <td>- ${orderDiscount.discountValue} <#if orderDiscount.rateType>%<#else>€</#if></td>\n    </tr>\n    </#list>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><i>Total HT</i></td>\n        <td><i>#{price*100/(100+vat); m2M2} €</i></td>\n    </tr>\n    <tr>\n        <td></td>\n        <td></td>\n        <td><b><i>Total TTC</i><b></td>\n        <td><b><i>${price} €</i></b></td>\n    </tr>\n    </tbody>\n</table>\n<br/>\n\n<table style="width:100%">\n    <tr>\n        <td style="width:45%">\n            <h4>Delivery address</h4>\n            <p>\n            ${deliveryAddress.gender}\n  ${deliveryAddress.firstname}\n  ${deliveryAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Company</i></b>\n                <br/>\n            ${deliveryAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Address</i></b>\n                <br/>\n            ${deliveryAddress.street}\n                <br/>\n            ${deliveryAddress.city}\n                <br/>\n            ${deliveryAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Country</i></b>\n                <br/>\n            ${deliveryAddress.countryIso3Code}\n            </p>\n        </td>\n        <td style="width:10%"></td>\n        <td style="width:45%">\n            <h4>Billing address</h4>\n            <p>\n            ${billingAddress.gender}\n  ${billingAddress.firstname}\n  ${billingAddress.lastname}\n            </p>\n\n            <p>\n                <b><i>Company</i></b>\n                <br/>\n            ${billingAddress.company!''''}\n            </p>\n\n            <p>\n                <b><i>Address</i></b>\n                <br/>\n            ${billingAddress.street}\n                <br/>\n            ${billingAddress.city}\n                <br/>\n            ${billingAddress.zipCode}\n            </p>\n\n            <p>\n                <b><i>Country</i></b>\n                <br/>\n            ${billingAddress.countryIso3Code}\n            </p>\n        </td>\n    </tr>\n</table>\n\n<p>Best regards</p>', 'Confirmation of your order', '2016-01-11 01:47:09', NULL);
 
+SELECT setval('mailtemplate_id_seq', (SELECT MAX(id) from mailtemplate));
 
 
