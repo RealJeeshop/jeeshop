@@ -37,7 +37,7 @@ jobs:
 
       - name: Build and push
         if: contains( github.ref, 'develop')
-        id: docker_build
+        id: docker_build_develop
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build and push
         if: contains( github.ref, 'master')
-        id: docker_build
+        id: docker_build_master
         uses: docker/build-push-action@v2
         with:
           push: true
