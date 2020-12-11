@@ -56,6 +56,7 @@ public class TestCatalog {
 
     private static Discount discount1;
 
+
     public static TestCatalog getInstance() {
         if (instance != null)
             return instance;
