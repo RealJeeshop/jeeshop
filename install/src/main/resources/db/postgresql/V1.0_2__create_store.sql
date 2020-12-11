@@ -6,6 +6,7 @@ create table if not exists store (
     enddate date null,
     name varchar(50) not null,
     startdate date null,
+    owner varchar(100) not null,
     address_id bigint null,
     openingHours varchar(255) null);
 
@@ -26,3 +27,5 @@ alter table store
 
 alter table schedules
     add constraint fk_schedules_store foreign key (store_id) references store (id);
+
+insert into "role" (id, name) values (3, 'store_admin');

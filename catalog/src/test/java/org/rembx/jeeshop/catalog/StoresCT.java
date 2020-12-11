@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,10 +41,12 @@ public class StoresCT {
     public void findAll_shouldReturnNoneEmptyList() {
         assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
+
     @Test
     public void findAll_shouldLoadSchedules() {
         List<Store> all = service.findAll(null, null, null, null, null, null);
         assertThat(all).isNotEmpty();
         assertThat(all.get(0).getSchedules()).isNotEmpty();
+        assertThat(all.get(0).getSchedules().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
     }
 }

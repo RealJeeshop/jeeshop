@@ -22,8 +22,7 @@ import java.util.Set;
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QStore.store;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/stores")
 @ApplicationScoped
@@ -82,8 +81,9 @@ public class Stores {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Store create(Store store) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Store create(@Context SecurityContext securityContext, Store store) {
+        store.setOwner(securityContext.getUserPrincipal().getName()); // FIXME ?
         entityManager.persist(store);
         return store;
     }
@@ -92,20 +92,30 @@ public class Stores {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    @Path("/{catalogId}")
-    public void delete(@PathParam("storeId") Long storeId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{storeId}")
+    public void delete(@Context SecurityContext securityContext, @PathParam("storeId") Long storeId) {
         Store store = entityManager.find(Store.class, storeId);
         checkNotNull(store);
-        entityManager.remove(store);
+
+        if (isOwner(securityContext, store) || isAdminUser(securityContext)) {
+            entityManager.remove(store);
+        } else {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+
+    }
+
+    private boolean isOwner(SecurityContext securityContext, Store store) {
+        return store.getOwner().equals(securityContext.getUserPrincipal().getName());
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @RolesAllowed(ADMIN)
-    public Store modify(Store store) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Store modify(@Context SecurityContext securityContext, Store store) {
         Store originalCatalog = entityManager.find(Store.class, store.getId());
         checkNotNull(originalCatalog);
 
@@ -117,10 +127,12 @@ public class Stores {
 //            store.setCatalogs(originalCatalog.getCatalogs());
 //        }
 
-        store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
-
-        Store merge = entityManager.merge(store);
-        return merge;
+        if (isOwner(securityContext, store) || isAdminUser(securityContext)) {
+            store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
+            return entityManager.merge(store);
+        } else {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
     }
 
     @GET

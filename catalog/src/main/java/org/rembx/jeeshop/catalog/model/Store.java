@@ -4,6 +4,8 @@ import org.rembx.jeeshop.address.Address;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,6 +34,11 @@ public class Store extends CatalogItem {
 
     @OneToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "store")
     List<Schedules> schedules;
+
+    @Email
+    @NotNull
+    @Column(nullable = false, length = 100)
+    String owner;
 
     public Store() {
     }
@@ -75,5 +82,13 @@ public class Store extends CatalogItem {
 
     public void setSchedules(List<Schedules> schedules) {
         this.schedules = schedules;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }
