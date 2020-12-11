@@ -1,11 +1,14 @@
 package org.rembx.jeeshop.catalog.test;
 
+import com.google.common.collect.Lists;
 import org.assertj.core.api.AbstractAssert;
 import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -26,6 +29,7 @@ public class TestCatalog {
     private final static Date tomorrow = Timestamp.from(ZonedDateTime.now().plusDays(1).toInstant());
     private final static Date yesterday = Timestamp.from(ZonedDateTime.now().minusDays(1).toInstant());
 
+    private static Store store;
 
     private static Catalog catalog;
     private static Catalog emptyCatalog;
@@ -103,7 +107,15 @@ public class TestCatalog {
         childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled, product4));
         product1.setChildSKUs(Arrays.asList(sku1, sku2, sku3, sku4, sku5));
 
-        entityManager.persist(catalog);
+
+        store = new Store("Shop");
+
+
+        Schedules schedules = new Schedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
+        store.setSchedules(Lists.newArrayList(schedules));
+        store.setCatalogs(Lists.newArrayList(catalog));
+
+        entityManager.persist(store);
         entityManager.getTransaction().commit();
 
         instance = new TestCatalog();

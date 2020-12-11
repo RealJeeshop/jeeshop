@@ -7,6 +7,9 @@
     <!-- Catalog persistence unit-->
     <persistence-unit name="Catalog">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>org.rembx.jeeshop.catalog.model.Store</class>
+        <class>org.rembx.jeeshop.address.Address</class>
+        <class>org.rembx.jeeshop.catalog.model.Schedules</class>
         <class>org.rembx.jeeshop.catalog.model.Catalog</class>
         <class>org.rembx.jeeshop.catalog.model.Category</class>
         <class>org.rembx.jeeshop.catalog.model.Product</class>

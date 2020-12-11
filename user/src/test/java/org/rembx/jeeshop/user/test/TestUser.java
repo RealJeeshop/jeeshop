@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.user.test;
 
+import org.rembx.jeeshop.address.Address;
 import org.rembx.jeeshop.user.model.*;
 
 import javax.persistence.EntityManager;

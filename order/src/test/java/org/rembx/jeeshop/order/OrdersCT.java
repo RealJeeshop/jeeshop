@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,7 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
-import org.rembx.jeeshop.user.model.Address;
+import org.rembx.jeeshop.address.Address;
 
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
