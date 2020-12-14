@@ -1,7 +1,10 @@
 package org.rembx.jeeshop.catalog;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.model.Catalog;
+import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Presentation;
+import org.rembx.jeeshop.catalog.model.Store;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.PermitAll;
@@ -181,5 +184,4 @@ public class Stores implements CatalogItems<Store> {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
-
 }

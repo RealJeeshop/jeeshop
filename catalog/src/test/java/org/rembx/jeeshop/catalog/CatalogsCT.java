@@ -1,28 +1,19 @@
 package org.rembx.jeeshop.catalog;
 
-import org.apache.http.auth.BasicUserPrincipal;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
-import org.rembx.jeeshop.catalog.model.Store;
 import org.rembx.jeeshop.catalog.test.CatalogItemCRUDTester;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
