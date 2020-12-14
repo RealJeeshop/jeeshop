@@ -3,7 +3,6 @@ package org.rembx.jeeshop.catalog;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
-import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -29,7 +28,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/stores")
 @ApplicationScoped
-public class Stores {
+public class Stores implements CatalogItems<Store> {
 
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
@@ -71,8 +70,8 @@ public class Stores {
     @Path("/{storeId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Store find(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
-        Store store = entityManager.find(Store.class, catalogId);
+    public Store find(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long itemId, @QueryParam("locale") String locale) {
+        Store store = entityManager.find(Store.class, itemId);
 
         if (isAdminUser(securityContext) || isOwner(securityContext, store.getOwner()))
             return store;

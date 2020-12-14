@@ -34,6 +34,7 @@ public class TestCatalog {
     public final static String OWNER = "777@test.com";
 
     private static Store store;
+    private static Store hiddenStore;
 
     private static Catalog catalog;
     private static Catalog emptyCatalog;
@@ -113,6 +114,11 @@ public class TestCatalog {
         rootCat2.setChildCategories(Arrays.asList(childCat1Empty, childCat2, childCat3Expired, childCat4Disabled, childCat5WithPresentation, childCat6WithoutPresentation));
         childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled, product4));
         product1.setChildSKUs(Arrays.asList(sku1, sku2, sku3, sku4, sku5));
+
+        hiddenStore = new Store("Hidden Shop");
+        hiddenStore.setOwner(OWNER);
+        hiddenStore.setDisabled(true);
+        entityManager.persist(hiddenStore);
 
         store = new Store("Shop");
         store.setOwner(OWNER);
