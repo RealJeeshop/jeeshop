@@ -4,10 +4,8 @@ import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.rembx.jeeshop.catalog.CatalogItems;
-import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Store;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.persistence.EntityManager;
@@ -15,20 +13,19 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.SecurityContext;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CatalogItemCRUDTester<T extends CatalogItem> {
+public abstract class CatalogItemCRUDTester<T extends CatalogItem> {
 
     private static EntityManagerFactory entityManagerFactory;
     protected EntityManager entityManager;
     protected SecurityContext securityContext;
     protected TestCatalog testCatalog;
-    protected CatalogItems<T> service;
-    protected Class<T> itemClass;
+
+    protected abstract Class<T> getItemClass();
+    protected abstract CatalogItems<T> getService();
 
     @BeforeAll
     public static void beforeClass() {
@@ -36,7 +33,7 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
     }
 
     @BeforeEach
-    public void resetMocks() {
+    public void setUp() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         securityContext = mock(SecurityContext.class);
@@ -45,7 +42,7 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
     protected T test_create(T catalogItem) {
 
         entityManager.getTransaction().begin();
-        service.create(securityContext, catalogItem);
+        getService().create(securityContext, catalogItem);
         entityManager.getTransaction().commit();
 
         return refreshCatalogItem(catalogItem);
@@ -58,16 +55,16 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
         entityManager.getTransaction().commit();
 
         entityManager.getTransaction().begin();
-        service.delete(securityContext, catalogItem.getId());
+        getService().delete(securityContext, catalogItem.getId());
         entityManager.getTransaction().commit();
     }
 
     protected void test_modify(T catalogItem) {
-        service.modify(securityContext, catalogItem);
+        getService().modify(securityContext, catalogItem);
     }
 
     private T refreshCatalogItem(T store) {
-        T actualStore = entityManager.find(itemClass, store.getId());
+        T actualStore = entityManager.find(getItemClass(), store.getId());
         entityManager.remove(store);
         return actualStore;
     }

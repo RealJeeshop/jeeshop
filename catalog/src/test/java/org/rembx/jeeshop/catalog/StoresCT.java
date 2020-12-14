@@ -20,17 +20,25 @@ public class StoresCT extends CatalogItemCRUDTester<Store> {
 
     private Stores localService;
 
+    @Override
+    protected Class<Store> getItemClass() {
+        return Store.class;
+    }
+
+    @Override
+    protected CatalogItems<Store> getService() {
+        return this.localService;
+    }
+
     @BeforeEach
     public void setup() {
-        itemClass = Store.class;
-        service = new Stores(entityManager, new CatalogItemFinder(entityManager), null);
-        this.localService = (Stores) service;
+        this.localService = new Stores(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
 
-        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
+        assertThat(localService.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
@@ -38,7 +46,7 @@ public class StoresCT extends CatalogItemCRUDTester<Store> {
 
         setAdminUser();
 
-        Store store = service.find(securityContext, 2L, null);
+        Store store = localService.find(securityContext, 2L, null);
         assertThat(store).isNotNull();
         assertThat(store.getPremisses()).isNotEmpty();
         assertThat(store.getPremisses().get(0).getSchedules()).isNotEmpty();
@@ -48,7 +56,7 @@ public class StoresCT extends CatalogItemCRUDTester<Store> {
     @Test
     public void find_shouldLoadNonVisibleItem_for_admin() {
         setAdminUser();
-        Store store = service.find(securityContext, 1L, null);
+        Store store = localService.find(securityContext, 1L, null);
         assertThat(store).isNotNull();
     }
 
@@ -56,7 +64,7 @@ public class StoresCT extends CatalogItemCRUDTester<Store> {
     @Test
     public void find_shouldLoadNonVisibleItem_for_store_admin() {
         setStoreAdminUser();
-        Store store = service.find(securityContext, 1L, null);
+        Store store = localService.find(securityContext, 1L, null);
         assertThat(store).isNotNull();
     }
 
