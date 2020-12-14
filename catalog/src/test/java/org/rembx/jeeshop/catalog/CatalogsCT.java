@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
+import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,15 +9,19 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
 public class CatalogsCT {
@@ -26,6 +31,7 @@ public class CatalogsCT {
     private TestCatalog testCatalog;
     private static EntityManagerFactory entityManagerFactory;
     EntityManager entityManager;
+    private SecurityContext securityContext;
 
     @BeforeAll
     public static void beforeClass() {
@@ -36,6 +42,7 @@ public class CatalogsCT {
     public void setup() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
+        securityContext = mock(SecurityContext.class);
         service = new Catalogs(entityManager, new CatalogItemFinder(entityManager), null);
     }
 
@@ -57,7 +64,10 @@ public class CatalogsCT {
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
-        List<Category> categories = service.findCategories(null, testCatalog.getId(), null);
+
+        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
+        List<Category> categories = service.findCategories(securityContext, testCatalog.getId(), null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 
@@ -85,21 +95,35 @@ public class CatalogsCT {
 
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
-        Catalog catalog = service.find(null, testCatalog.getId(), null);
+
+        setUpSecurityMock(TestCatalog.OWNER);
+
+        Catalog catalog = service.find(securityContext, testCatalog.getId(), null);
         assertThat(catalog).isNotNull();
         assertThat(catalog.isVisible()).isTrue();
     }
 
     @Test
     public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
-        Catalog catalog = service.find(null, testCatalog.getId(), null);
+
+        setUpSecurityMock(TestCatalog.OWNER);
+
+        Catalog catalog = service.find(securityContext, testCatalog.getId(), null);
 
         Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
 
-        service.modify(detachedCatalogToModify);
+        setUpSecurityMock(TestCatalog.OWNER);
+
+        service.modify(securityContext, detachedCatalogToModify);
 
         assertThat(catalog.getRootCategories()).isNotEmpty();
 
+    }
+
+    private void setUpSecurityMock(String owner) {
+        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
+        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal(owner));
     }
 
     @Test
@@ -107,7 +131,9 @@ public class CatalogsCT {
 
         Catalog detachedCatalogToModify = new Catalog(9999L, null);
         try {
-            service.modify(detachedCatalogToModify);
+            setUpSecurityMock(TestCatalog.OWNER);
+
+            service.modify(securityContext, detachedCatalogToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -128,8 +154,10 @@ public class CatalogsCT {
     public void create_shouldPersist() {
         Catalog catalog = new Catalog("New Test Catalog");
 
+        setUpSecurityMock("777@test.com");
+
         entityManager.getTransaction().begin();
-        service.create(catalog);
+        service.create(securityContext, catalog);
         entityManager.getTransaction().commit();
 
         assertThat(entityManager.find(Catalog.class, catalog.getId())).isNotNull();
@@ -141,11 +169,14 @@ public class CatalogsCT {
 
         entityManager.getTransaction().begin();
         Catalog catalog = new Catalog("Test Catalog");
+        catalog.setOwner(TestCatalog.OWNER);
         entityManager.persist(catalog);
         entityManager.getTransaction().commit();
 
+        setUpSecurityMock(TestCatalog.OWNER);
+
         entityManager.getTransaction().begin();
-        service.delete(catalog.getId());
+        service.delete(securityContext, catalog.getId());
         entityManager.getTransaction().commit();
 
         assertThat(entityManager.find(Catalog.class, catalog.getId())).isNull();
@@ -156,7 +187,8 @@ public class CatalogsCT {
 
         try {
             entityManager.getTransaction().begin();
-            service.delete(666L);
+            setUpSecurityMock(TestCatalog.OWNER);
+            service.delete(securityContext, 666L);
             entityManager.getTransaction().commit();
             fail("should have thrown ex");
         } catch (WebApplicationException e) {

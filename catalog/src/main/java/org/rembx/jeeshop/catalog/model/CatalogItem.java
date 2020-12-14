@@ -2,6 +2,7 @@ package org.rembx.jeeshop.catalog.model;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -72,6 +73,11 @@ public abstract class CatalogItem {
 
     @Transient
     private Presentation localizedPresentation;
+
+    @Email
+    @NotNull
+    @Column(nullable = false, length = 100)
+    String owner;
 
     public CatalogItem() {
     }
@@ -259,4 +265,11 @@ public abstract class CatalogItem {
 
         }
 
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 }

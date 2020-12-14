@@ -13,4 +13,10 @@ public class AuthorizationUtils {
                 && sessionContext.isUserInRole(JeeshopRoles.ADMIN);
     }
 
+    public static  boolean isOwner(SecurityContext securityContext, String owner) {
+        return securityContext != null && securityContext.getUserPrincipal() != null
+                && owner != null && securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)
+                && owner.equals(securityContext.getUserPrincipal().getName());
+    }
+
 }

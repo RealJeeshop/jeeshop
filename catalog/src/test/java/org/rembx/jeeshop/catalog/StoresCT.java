@@ -1,10 +1,10 @@
 package org.rembx.jeeshop.catalog;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
+import org.rembx.jeeshop.catalog.model.Premises;
 import org.rembx.jeeshop.catalog.model.Store;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
@@ -46,7 +46,10 @@ public class StoresCT {
     public void findAll_shouldLoadSchedules() {
         List<Store> all = service.findAll(null, null, null, null, null, null);
         assertThat(all).isNotEmpty();
-        assertThat(all.get(0).getSchedules()).isNotEmpty();
-        assertThat(all.get(0).getSchedules().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
+
+        List<Premises> premisses = all.get(0).getPremisses();
+        assertThat(premisses).isNotEmpty();
+        assertThat(premisses.get(0).getSchedules()).isNotEmpty();
+        assertThat(premisses.get(0).getSchedules().get(0).getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
     }
 }

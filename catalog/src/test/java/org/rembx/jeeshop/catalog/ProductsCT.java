@@ -158,7 +158,7 @@ public class ProductsCT {
 
     @Test
     public void create_shouldPersist() {
-        Product product = new Product("name", "description", new Date(), new Date(), false);
+        Product product = new Product("name", "description", new Date(), new Date(), false, "test@test.com");
 
         entityManager.getTransaction().begin();
         service.create(product);
@@ -172,7 +172,7 @@ public class ProductsCT {
     public void delete_shouldRemove() {
 
         entityManager.getTransaction().begin();
-        Product product = new Product("Test", "", null, null, null);
+        Product product = new Product("Test", "", null, null, null, "test@test.com");
         entityManager.persist(product);
         entityManager.getTransaction().commit();
 

@@ -3,6 +3,7 @@ package org.rembx.jeeshop.catalog;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.rembx.jeeshop.catalog.OwnerUtils.attachOwner;
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QStore.store;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/stores")
@@ -71,7 +74,7 @@ public class Stores {
     public Store find(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Store store = entityManager.find(Store.class, catalogId);
 
-        if (isAdminUser(securityContext))
+        if (isAdminUser(securityContext) || isOwner(securityContext, store.getOwner()))
             return store;
         else
             return catalogItemFinder.filterVisible(store, locale);
@@ -83,7 +86,7 @@ public class Stores {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, STORE_ADMIN})
     public Store create(@Context SecurityContext securityContext, Store store) {
-        store.setOwner(securityContext.getUserPrincipal().getName()); // FIXME ?
+        attachOwner(securityContext, store);
         entityManager.persist(store);
         return store;
     }
@@ -98,16 +101,12 @@ public class Stores {
         Store store = entityManager.find(Store.class, storeId);
         checkNotNull(store);
 
-        if (isOwner(securityContext, store) || isAdminUser(securityContext)) {
+        if (isOwner(securityContext, store.getOwner()) || isAdminUser(securityContext)) {
             entityManager.remove(store);
         } else {
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
-    }
-
-    private boolean isOwner(SecurityContext securityContext, Store store) {
-        return store.getOwner().equals(securityContext.getUserPrincipal().getName());
     }
 
     @PUT
@@ -127,7 +126,7 @@ public class Stores {
 //            store.setCatalogs(originalCatalog.getCatalogs());
 //        }
 
-        if (isOwner(securityContext, store) || isAdminUser(securityContext)) {
+        if (isOwner(securityContext, store.getOwner()) || isAdminUser(securityContext)) {
             store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
             return entityManager.merge(store);
         } else {
@@ -158,9 +157,9 @@ public class Stores {
     @Path("/{storeId}/catalogs")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Catalog> findCategories(@Context SecurityContext securityContext,
-                                         @PathParam("storeId") @NotNull Long storeId,
-                                         @QueryParam("locale") String locale) {
+    public List<Catalog> findCatalogs(@Context SecurityContext securityContext,
+                                      @PathParam("storeId") @NotNull Long storeId,
+                                      @QueryParam("locale") String locale) {
 
         Store loadedStore = entityManager.find(Store.class, storeId);
         checkNotNull(loadedStore);
@@ -170,7 +169,7 @@ public class Stores {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(securityContext)) {
+        if (isAdminUser(securityContext) || isOwner(securityContext, loadedStore.getOwner())) {
             return catalogs;
         } else {
             return catalogItemFinder.findVisibleCatalogItems(catalog, catalogs, locale);

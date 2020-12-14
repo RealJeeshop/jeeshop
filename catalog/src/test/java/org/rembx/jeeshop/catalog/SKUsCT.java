@@ -148,7 +148,7 @@ public class SKUsCT {
     @Test
     public void create_shouldPersist() {
         SKU sku = new SKU("name", "description", 1.0, 2, "reference",
-                new Date(), new Date(), false, 1);
+                new Date(), new Date(), false, 1, "test@test.com");
 
         entityManager.getTransaction().begin();
         service.create(sku);
@@ -162,7 +162,7 @@ public class SKUsCT {
     public void delete_shouldRemove() {
 
         entityManager.getTransaction().begin();
-        SKU sku = new SKU("Test", "", null, null, null, null, null, null, null);
+        SKU sku = new SKU("Test", "", null, null, null, null, null, null, null, "test@test.com");
         entityManager.persist(sku);
         entityManager.getTransaction().commit();
 

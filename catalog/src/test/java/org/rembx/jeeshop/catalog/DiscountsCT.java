@@ -93,7 +93,7 @@ public class DiscountsCT {
 
     @Test
     public void create_shouldPersist() {
-        Discount discount = new Discount("discount777", "a discount", ORDER, DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0, 1, true, null, null, false);
+        Discount discount = new Discount("discount777", "a discount", ORDER, DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0, 1, true, null, null, false, "test@test.com");
 
         entityManager.getTransaction().begin();
         service.create(discount);
@@ -107,7 +107,7 @@ public class DiscountsCT {
     public void delete_shouldRemove() {
 
         entityManager.getTransaction().begin();
-        Discount discount = new Discount("discount888", "a discount", ORDER, DISCOUNT_RATE, QUANTITY, null, 0.1, 2.0, 1, true, null, null, false);
+        Discount discount = new Discount("discount888", "a discount", ORDER, DISCOUNT_RATE, QUANTITY, null, 0.1, 2.0, 1, true, null, null, false, "test@test.com");
         entityManager.persist(discount);
         entityManager.getTransaction().commit();
 

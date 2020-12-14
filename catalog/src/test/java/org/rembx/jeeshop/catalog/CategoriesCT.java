@@ -215,7 +215,7 @@ public class CategoriesCT {
 
     @Test
     public void create_shouldPersist() {
-        Category category = new Category("name", "description", new Date(), new Date(), false);
+        Category category = new Category("name", "description", new Date(), new Date(), false, "test@test.com");
 
         entityManager.getTransaction().begin();
         service.create(category);
@@ -230,6 +230,7 @@ public class CategoriesCT {
 
         entityManager.getTransaction().begin();
         Category category = new Category("Test category", "");
+        category.setOwner("test@test.com");
         entityManager.persist(category);
         entityManager.getTransaction().commit();
 
