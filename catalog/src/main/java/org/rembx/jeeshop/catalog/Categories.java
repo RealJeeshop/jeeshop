@@ -52,6 +52,8 @@ public class Categories {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
     public Category create(Category category) {
+
+
         if (category.getChildCategories() != null) {
             List<Category> newCategories = new ArrayList<>();
             category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));

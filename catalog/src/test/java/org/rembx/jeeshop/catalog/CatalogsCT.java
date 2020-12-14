@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
+import org.rembx.jeeshop.catalog.model.Store;
+import org.rembx.jeeshop.catalog.test.CatalogItemCRUDTester;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
@@ -24,32 +26,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
-public class CatalogsCT {
+public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
 
-    private Catalogs service;
+    private Catalogs localService;
 
-    private TestCatalog testCatalog;
-    private static EntityManagerFactory entityManagerFactory;
-    EntityManager entityManager;
-    private SecurityContext securityContext;
+    @Override
+    protected Class<Catalog> getItemClass() {
+        return Catalog.class;
+    }
 
-    @BeforeAll
-    public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
+    @Override
+    protected CatalogItems<Catalog> getService() {
+        return this.localService;
     }
 
     @BeforeEach
     public void setup() {
-        testCatalog = TestCatalog.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        securityContext = mock(SecurityContext.class);
-        service = new Catalogs(entityManager, new CatalogItemFinder(entityManager), null);
+        this.localService = new Catalogs(entityManager, new CatalogItemFinder(entityManager), null);;
     }
 
     @Test
     public void findCategories_shouldReturn404ExWhenCatalogNotFound() {
         try {
-            service.findCategories(null, 9999L, null);
+            localService.findCategories(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -58,7 +57,7 @@ public class CatalogsCT {
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
-        List<Category> categories = service.findCategories(null, testCatalog.getEmptyCatalogId(), null);
+        List<Category> categories = localService.findCategories(null, testCatalog.getEmptyCatalogId(), null);
         assertThat(categories).isEmpty();
     }
 
@@ -67,38 +66,38 @@ public class CatalogsCT {
 
         when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
-        List<Category> categories = service.findCategories(securityContext, testCatalog.getId(), null);
+        List<Category> categories = localService.findCategories(securityContext, testCatalog.getId(), null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
+        assertThat(localService.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Catalog> catalogs = service.findAll(null, 0, 1, null, null, null);
+        List<Catalog> catalogs = localService.findAll(null, 0, 1, null, null, null);
         assertThat(catalogs).isNotEmpty();
         assertThat(catalogs).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.getId().toString(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
+        assertThat(localService.findAll(testCatalog.getId().toString(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(TestCatalog.getCatalog().getName(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
+        assertThat(localService.findAll(TestCatalog.getCatalog().getName(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
     }
 
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
 
-        setUpSecurityMock(TestCatalog.OWNER);
+        setStoreAdminUser();
 
-        Catalog catalog = service.find(securityContext, testCatalog.getId(), null);
+        Catalog catalog = localService.find(securityContext, testCatalog.getId(), null);
         assertThat(catalog).isNotNull();
         assertThat(catalog.isVisible()).isTrue();
     }
@@ -106,34 +105,24 @@ public class CatalogsCT {
     @Test
     public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
 
-        setUpSecurityMock(TestCatalog.OWNER);
+        setStoreAdminUser();
 
-        Catalog catalog = service.find(securityContext, testCatalog.getId(), null);
+        Catalog detachedCatalogToModify = new Catalog(2L, "New name");
 
-        Catalog detachedCatalogToModify = new Catalog(1L, catalog.getName());
+        test_modify(detachedCatalogToModify);
 
-        setUpSecurityMock(TestCatalog.OWNER);
+        assertThat(detachedCatalogToModify.getName()).isEqualTo("New name");
+        assertThat(detachedCatalogToModify.getRootCategories()).isNotEmpty();
 
-        service.modify(securityContext, detachedCatalogToModify);
-
-        assertThat(catalog.getRootCategories()).isNotEmpty();
-
-    }
-
-    private void setUpSecurityMock(String owner) {
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
-        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal(owner));
     }
 
     @Test
     public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
 
+        setStoreAdminUser();
         Catalog detachedCatalogToModify = new Catalog(9999L, null);
         try {
-            setUpSecurityMock(TestCatalog.OWNER);
-
-            service.modify(securityContext, detachedCatalogToModify);
+            test_modify(detachedCatalogToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -142,54 +131,86 @@ public class CatalogsCT {
 
     @Test
     public void countAll() {
-        assertThat(service.count(null)).isGreaterThan(0);
+        assertThat(localService.count(null)).isGreaterThan(0);
     }
 
     @Test
     public void countAll_withUnknownSearchCriteria() {
-        assertThat(service.count("666")).isEqualTo(0);
+        assertThat(localService.count("666")).isEqualTo(0);
     }
 
     @Test
-    public void create_shouldPersist() {
-        Catalog catalog = new Catalog("New Test Catalog");
+    public void create_shouldSetupOwner_for_admin() {
 
-        setUpSecurityMock("777@test.com");
+        setAdminUser();
+        Catalog catalog = new Catalog("Catalog");
+        catalog.setOwner(TestCatalog.OWNER);
 
-        entityManager.getTransaction().begin();
-        service.create(securityContext, catalog);
-        entityManager.getTransaction().commit();
+        Catalog actualCatalog = test_create(catalog);
 
-        assertThat(entityManager.find(Catalog.class, catalog.getId())).isNotNull();
-        entityManager.remove(catalog);
+        assertThat(actualCatalog).isNotNull();
+        assertThat(actualCatalog.getOwner()).isEqualTo(TestCatalog.OWNER);
+    }
+
+    @Test
+    public void create_shouldThrowBadRequest_whenOwnerIsNull_for_admin() {
+
+        setAdminUser();
+        Catalog catalog = new Catalog("Catalog");
+
+        try {
+            test_create(catalog);
+            fail("should have thrown an exception");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+        }
+    }
+
+    @Test
+    public void create_shouldSetupOwner_for_store_admin() {
+
+        setStoreAdminUser();
+        Catalog catalog = new Catalog("Catalog");
+
+        Catalog actualCatalog = test_create(catalog);
+
+        assertThat(actualCatalog).isNotNull();
+        assertThat(actualCatalog.getOwner()).isEqualTo(TestCatalog.OWNER);
     }
 
     @Test
     public void delete_shouldRemove() {
 
-        entityManager.getTransaction().begin();
+        setStoreAdminUser();
+
         Catalog catalog = new Catalog("Test Catalog");
         catalog.setOwner(TestCatalog.OWNER);
-        entityManager.persist(catalog);
-        entityManager.getTransaction().commit();
 
-        setUpSecurityMock(TestCatalog.OWNER);
-
-        entityManager.getTransaction().begin();
-        service.delete(securityContext, catalog.getId());
-        entityManager.getTransaction().commit();
+        test_delete(catalog);
 
         assertThat(entityManager.find(Catalog.class, catalog.getId())).isNull();
+    }
+
+    @Test
+    public void delete_shouldThrowForbidden_for_store_admin() {
+
+        try {
+            setStoreAdminUser();
+            Catalog catalog = new Catalog("catalog");
+            catalog.setOwner("test@test.org");
+            test_delete(catalog);
+            fail("Should have throw an exception");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
+        }
     }
 
     @Test
     public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
-            entityManager.getTransaction().begin();
-            setUpSecurityMock(TestCatalog.OWNER);
-            service.delete(securityContext, 666L);
-            entityManager.getTransaction().commit();
+            setStoreAdminUser();
+            localService.delete(securityContext, 666L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);

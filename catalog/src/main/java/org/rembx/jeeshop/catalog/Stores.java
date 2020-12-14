@@ -30,9 +30,9 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 @ApplicationScoped
 public class Stores implements CatalogItems<Store> {
 
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
 
     Stores(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
@@ -117,17 +117,18 @@ public class Stores implements CatalogItems<Store> {
         Store originalCatalog = entityManager.find(Store.class, store.getId());
         checkNotNull(originalCatalog);
 
-//        if (store.getRootCategoriesIds() != null) {
-//            List<Category> newCategories = new ArrayList<>();
-//            store.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
-//            store.setRootCategories(newCategories);
-//        } else {
-//            store.setCatalogs(originalCatalog.getCatalogs());
-//        }
+        if (store.getCatalogsIds() != null) {
+            List<Catalog> catalogs = new ArrayList<>();
+            store.getCatalogsIds().forEach(categoryId -> catalogs.add(entityManager.find(Catalog.class, categoryId)));
+            store.setCatalogs(catalogs);
+        } else {
+            store.setCatalogs(originalCatalog.getCatalogs());
+        }
 
         if (isOwner(securityContext, store.getOwner()) || isAdminUser(securityContext)) {
             store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
             return entityManager.merge(store);
+
         } else {
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }

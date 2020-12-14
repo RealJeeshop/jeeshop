@@ -20,6 +20,9 @@ public class Store extends CatalogItem {
     @OrderColumn(name="orderIdx")
     List<Catalog> catalogs;
 
+    @Transient
+    List<Long> catalogsIds;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Premises> premisses;
 
@@ -49,5 +52,13 @@ public class Store extends CatalogItem {
 
     public void setPremisses(List<Premises> premisses) {
         this.premisses = premisses;
+    }
+
+    public List<Long> getCatalogsIds() {
+        return catalogsIds;
+    }
+
+    public void setCatalogsIds(List<Long> catalogsIds) {
+        this.catalogsIds = catalogsIds;
     }
 }

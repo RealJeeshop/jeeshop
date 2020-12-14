@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.catalog;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.security.identity.SecurityIdentity;
 import org.rembx.jeeshop.catalog.model.Catalog;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
@@ -32,11 +31,11 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/catalogs")
 @ApplicationScoped
-public class Catalogs {
+public class Catalogs implements CatalogItems<Catalog> {
 
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
 
     Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
@@ -52,11 +51,9 @@ public class Catalogs {
                                  @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy,
                                  @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
 
-        if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale);
-        else {
-            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
-        }
+        return search != null
+                ? catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale)
+                : catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
     }
 
     @GET
@@ -64,10 +61,9 @@ public class Catalogs {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
-        if (search != null)
-            return catalogItemFinder.countBySearchCriteria(catalog, search);
-        else
-            return catalogItemFinder.countAll(catalog);
+        return search != null
+                ? catalogItemFinder.countBySearchCriteria(catalog, search)
+                : catalogItemFinder.countAll(catalog);
     }
 
     @GET
@@ -87,7 +83,7 @@ public class Catalogs {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     public Catalog create(@Context SecurityContext securityContext, Catalog catalog) {
 
         attachOwner(securityContext, catalog);
@@ -97,6 +93,7 @@ public class Catalogs {
             catalog.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             catalog.setRootCategories(newCategories);
         }
+
         entityManager.persist(catalog);
         return catalog;
     }
@@ -108,9 +105,13 @@ public class Catalogs {
     @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{catalogId}")
     public void delete(@Context SecurityContext securityContext, @PathParam("catalogId") Long catalogId) {
-        Catalog loadedCatalog = catalogItemFinder.findOne(catalog, catalogId, securityContext);
+        Catalog loadedCatalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(loadedCatalog);
-        entityManager.remove(loadedCatalog);
+
+        if (isAdminUser(securityContext) || isOwner(securityContext, loadedCatalog.getOwner()))
+            entityManager.remove(loadedCatalog);
+        else
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     @PUT
