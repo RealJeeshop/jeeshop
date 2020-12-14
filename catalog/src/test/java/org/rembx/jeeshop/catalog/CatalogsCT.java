@@ -130,6 +130,20 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     }
 
     @Test
+    public void modifyNonManagedCatalog_ShouldThrowForbiddenException() {
+
+        setSAnotherStoreAdminUser();
+        Catalog detachedCatalogToModify = new Catalog(1L, "name");
+
+        try {
+            test_modify(detachedCatalogToModify);
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
+        }
+    }
+
+    @Test
     public void countAll() {
         assertThat(localService.count(null)).isGreaterThan(0);
     }

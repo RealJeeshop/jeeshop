@@ -114,8 +114,12 @@ public class Stores implements CatalogItems<Store> {
     @Transactional
     @RolesAllowed({ADMIN, STORE_ADMIN})
     public Store modify(@Context SecurityContext securityContext, Store store) {
+
         Store originalCatalog = entityManager.find(Store.class, store.getId());
         checkNotNull(originalCatalog);
+
+        if (!isOwner(securityContext, originalCatalog.getOwner()) && !isAdminUser(securityContext))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
 
         if (store.getCatalogsIds() != null) {
             List<Catalog> catalogs = new ArrayList<>();
@@ -125,13 +129,8 @@ public class Stores implements CatalogItems<Store> {
             store.setCatalogs(originalCatalog.getCatalogs());
         }
 
-        if (isOwner(securityContext, store.getOwner()) || isAdminUser(securityContext)) {
-            store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
-            return entityManager.merge(store);
-
-        } else {
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
+        store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
+        return entityManager.merge(store);
     }
 
     @GET

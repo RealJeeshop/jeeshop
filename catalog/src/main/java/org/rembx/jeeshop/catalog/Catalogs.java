@@ -120,8 +120,12 @@ public class Catalogs implements CatalogItems<Catalog> {
     @Transactional
     @RolesAllowed({ADMIN, STORE_ADMIN})
     public Catalog modify(@Context SecurityContext securityContext, Catalog catalogToModify) {
-        Catalog originalCatalog = catalogItemFinder.findOne(catalog, catalogToModify.getId(), securityContext);
+
+        Catalog originalCatalog = entityManager.find(Catalog.class, catalogToModify.getId());
         checkNotNull(originalCatalog);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, originalCatalog.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
 
         if (catalogToModify.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();

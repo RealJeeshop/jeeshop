@@ -148,9 +148,8 @@ public class StoresCT extends CatalogItemCRUDTester<Store> {
     public void modify_shouldThrowForbidden_for_store_admin() {
 
         try {
-            setStoreAdminUser();
+            setSAnotherStoreAdminUser();
             Store store = new Store(1L, "Superstore");
-            store.setOwner("test@test.org");
             test_modify(store);
             fail("Should have throw an exception");
         } catch (WebApplicationException e) {

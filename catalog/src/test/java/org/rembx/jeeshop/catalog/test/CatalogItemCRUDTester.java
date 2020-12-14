@@ -79,4 +79,10 @@ public abstract class CatalogItemCRUDTester<T extends CatalogItem> {
         when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
         when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal(TestCatalog.OWNER));
     }
+
+    protected void setSAnotherStoreAdminUser() {
+        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
+        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("test@test.org"));
+    }
 }
