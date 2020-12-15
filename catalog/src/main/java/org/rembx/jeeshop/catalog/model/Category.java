@@ -39,6 +39,11 @@ public class Category extends CatalogItem {
     public Category() {
     }
 
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Category(String name, String description) {
         this.name = name;
         this.description = description;

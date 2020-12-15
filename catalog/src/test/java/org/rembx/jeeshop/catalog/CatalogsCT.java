@@ -26,13 +26,7 @@ public class CatalogsCT {
     public void setupClass() {
         tester = new CatalogItemCRUDTester<>(Catalog.class);
         this.localService = new Catalogs(tester.getEntityManager(), new CatalogItemFinder(tester.getEntityManager()), null);
-        ;
         tester.setService(this.localService);
-    }
-
-    @BeforeEach
-    public void setUp() {
-        tester.setUp();
     }
 
     @Test

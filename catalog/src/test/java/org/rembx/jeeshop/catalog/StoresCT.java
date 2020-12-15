@@ -28,11 +28,6 @@ public class StoresCT {
         tester.setService(this.localService);
     }
 
-    @BeforeEach
-    public void setUp() {
-        tester.setUp();
-    }
-
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
 

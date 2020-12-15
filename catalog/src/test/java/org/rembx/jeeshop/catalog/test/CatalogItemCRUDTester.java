@@ -34,9 +34,6 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
     public CatalogItemCRUDTester(Class<T> itemClass) {
         this.itemClass = itemClass;
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
-    }
-
-    public void setUp() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         securityContext = mock(SecurityContext.class);
@@ -87,6 +84,11 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
         when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
         when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("test@test.org"));
+    }
+
+    public void setPublicUser() {
+        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
     }
 
     public EntityManager getEntityManager() {
