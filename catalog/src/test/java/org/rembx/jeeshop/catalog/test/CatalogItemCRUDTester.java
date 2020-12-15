@@ -1,8 +1,6 @@
 package org.rembx.jeeshop.catalog.test;
 
 import org.apache.http.auth.BasicUserPrincipal;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.rembx.jeeshop.catalog.CatalogItems;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
@@ -13,76 +11,93 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.SecurityContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public abstract class CatalogItemCRUDTester<T extends CatalogItem> {
+public class CatalogItemCRUDTester<T extends CatalogItem> {
 
     private static EntityManagerFactory entityManagerFactory;
     protected EntityManager entityManager;
     protected SecurityContext securityContext;
     protected TestCatalog testCatalog;
+    private Class<T> itemClass;
+    protected CatalogItems<T> service;
 
-    protected abstract Class<T> getItemClass();
-    protected abstract CatalogItems<T> getService();
+    public CatalogItems<T> getService() {
+        return service;
+    }
 
-    @BeforeAll
-    public static void beforeClass() {
+    public void setService(CatalogItems<T> service) {
+        this.service = service;
+    }
+
+    public CatalogItemCRUDTester(Class<T> itemClass) {
+        this.itemClass = itemClass;
         entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
     }
 
-    @BeforeEach
     public void setUp() {
         testCatalog = TestCatalog.getInstance();
         entityManager = entityManagerFactory.createEntityManager();
         securityContext = mock(SecurityContext.class);
     }
 
-    protected T test_create(T catalogItem) {
+    public T test_create(T catalogItem) {
 
         entityManager.getTransaction().begin();
-        getService().create(securityContext, catalogItem);
+        service.create(securityContext, catalogItem);
         entityManager.getTransaction().commit();
 
         return refreshCatalogItem(catalogItem);
     }
 
-    protected void test_delete(T catalogItem) {
+    public void test_delete(T catalogItem) {
 
         entityManager.getTransaction().begin();
         entityManager.persist(catalogItem);
         entityManager.getTransaction().commit();
 
         entityManager.getTransaction().begin();
-        getService().delete(securityContext, catalogItem.getId());
+        service.delete(securityContext, catalogItem.getId());
         entityManager.getTransaction().commit();
     }
 
-    protected void test_modify(T catalogItem) {
-        getService().modify(securityContext, catalogItem);
+    public void test_modify(T catalogItem) {
+        service.modify(securityContext, catalogItem);
     }
 
     private T refreshCatalogItem(T store) {
-        T actualStore = entityManager.find(getItemClass(), store.getId());
+        T actualStore = entityManager.find(itemClass, store.getId());
         entityManager.remove(store);
         return actualStore;
     }
 
-    protected void setAdminUser() {
+    public void setAdminUser() {
         when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("admin@jeeshop.org"));
         when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
     }
 
-    protected void setStoreAdminUser() {
+    public void setStoreAdminUser() {
         when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
         when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal(TestCatalog.OWNER));
     }
 
-    protected void setSAnotherStoreAdminUser() {
+    public void setSAnotherStoreAdminUser() {
         when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
         when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("test@test.org"));
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public SecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    public TestCatalog getFixtures() {
+        return testCatalog;
     }
 }

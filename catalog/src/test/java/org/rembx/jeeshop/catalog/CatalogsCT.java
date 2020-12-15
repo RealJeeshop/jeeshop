@@ -17,23 +17,22 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.rembx.jeeshop.catalog.test.Assertions.assertThatCategoriesOf;
 
-public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
+public class CatalogsCT {
 
     private Catalogs localService;
+    private CatalogItemCRUDTester<Catalog> tester;
 
-    @Override
-    protected Class<Catalog> getItemClass() {
-        return Catalog.class;
-    }
-
-    @Override
-    protected CatalogItems<Catalog> getService() {
-        return this.localService;
+    @BeforeEach
+    public void setupClass() {
+        tester = new CatalogItemCRUDTester<>(Catalog.class);
+        this.localService = new Catalogs(tester.getEntityManager(), new CatalogItemFinder(tester.getEntityManager()), null);
+        ;
+        tester.setService(this.localService);
     }
 
     @BeforeEach
-    public void setup() {
-        this.localService = new Catalogs(entityManager, new CatalogItemFinder(entityManager), null);;
+    public void setUp() {
+        tester.setUp();
     }
 
     @Test
@@ -48,16 +47,16 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenCatalogIsEmpty() {
-        List<Category> categories = localService.findCategories(null, testCatalog.getEmptyCatalogId(), null);
+        List<Category> categories = localService.findCategories(null, tester.getFixtures().getEmptyCatalogId(), null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledRootCategories() {
 
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
-        List<Category> categories = localService.findCategories(securityContext, testCatalog.getId(), null);
+        when(tester.getSecurityContext().isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
+        when(tester.getSecurityContext().isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
+        List<Category> categories = localService.findCategories(tester.getSecurityContext(), tester.getFixtures().getCatalogId(), null);
         assertThatCategoriesOf(categories).areVisibleRootCategories();
     }
 
@@ -75,7 +74,7 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(localService.findAll(testCatalog.getId().toString(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
+        assertThat(localService.findAll(tester.getFixtures().getCatalogId().toString(), null, null, null, null, null)).containsExactly(TestCatalog.getCatalog());
     }
 
     @Test
@@ -86,9 +85,9 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void find_withIdOfVisibleCatalog_ShouldReturnExpectedCatalog() {
 
-        setStoreAdminUser();
+        tester.setStoreAdminUser();
 
-        Catalog catalog = localService.find(securityContext, testCatalog.getId(), null);
+        Catalog catalog = localService.find(tester.getSecurityContext(), tester.getFixtures().getCatalogId(), null);
         assertThat(catalog).isNotNull();
         assertThat(catalog.isVisible()).isTrue();
     }
@@ -96,11 +95,11 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void modifyCatalog_ShouldModifyCatalogAttributesAndPreserveRootCategoriesWhenNotProvided() {
 
-        setStoreAdminUser();
+        tester.setStoreAdminUser();
 
         Catalog detachedCatalogToModify = new Catalog(2L, "New name");
 
-        test_modify(detachedCatalogToModify);
+        tester.test_modify(detachedCatalogToModify);
 
         assertThat(detachedCatalogToModify.getName()).isEqualTo("New name");
         assertThat(detachedCatalogToModify.getRootCategories()).isNotEmpty();
@@ -110,10 +109,10 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void modifyUnknownCatalog_ShouldThrowNotFoundException() {
 
-        setStoreAdminUser();
+        tester.setStoreAdminUser();
         Catalog detachedCatalogToModify = new Catalog(9999L, null);
         try {
-            test_modify(detachedCatalogToModify);
+            tester.test_modify(detachedCatalogToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -123,11 +122,11 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void modifyNonManagedCatalog_ShouldThrowForbiddenException() {
 
-        setSAnotherStoreAdminUser();
+        tester.setSAnotherStoreAdminUser();
         Catalog detachedCatalogToModify = new Catalog(1L, "name");
 
         try {
-            test_modify(detachedCatalogToModify);
+            tester.test_modify(detachedCatalogToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -147,11 +146,11 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void create_shouldSetupOwner_for_admin() {
 
-        setAdminUser();
+        tester.setAdminUser();
         Catalog catalog = new Catalog("Catalog");
         catalog.setOwner(TestCatalog.OWNER);
 
-        Catalog actualCatalog = test_create(catalog);
+        Catalog actualCatalog = tester.test_create(catalog);
 
         assertThat(actualCatalog).isNotNull();
         assertThat(actualCatalog.getOwner()).isEqualTo(TestCatalog.OWNER);
@@ -160,11 +159,11 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void create_shouldThrowBadRequest_whenOwnerIsNull_for_admin() {
 
-        setAdminUser();
+        tester.setAdminUser();
         Catalog catalog = new Catalog("Catalog");
 
         try {
-            test_create(catalog);
+            tester.test_create(catalog);
             fail("should have thrown an exception");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
@@ -174,10 +173,10 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void create_shouldSetupOwner_for_store_admin() {
 
-        setStoreAdminUser();
+        tester.setStoreAdminUser();
         Catalog catalog = new Catalog("Catalog");
 
-        Catalog actualCatalog = test_create(catalog);
+        Catalog actualCatalog = tester.test_create(catalog);
 
         assertThat(actualCatalog).isNotNull();
         assertThat(actualCatalog.getOwner()).isEqualTo(TestCatalog.OWNER);
@@ -186,24 +185,24 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     @Test
     public void delete_shouldRemove() {
 
-        setStoreAdminUser();
+        tester.setStoreAdminUser();
 
         Catalog catalog = new Catalog("Test Catalog");
         catalog.setOwner(TestCatalog.OWNER);
 
-        test_delete(catalog);
+        tester.test_delete(catalog);
 
-        assertThat(entityManager.find(Catalog.class, catalog.getId())).isNull();
+        assertThat(tester.getEntityManager().find(Catalog.class, catalog.getId())).isNull();
     }
 
     @Test
     public void delete_shouldThrowForbidden_for_store_admin() {
 
         try {
-            setStoreAdminUser();
+            tester.setStoreAdminUser();
             Catalog catalog = new Catalog("catalog");
             catalog.setOwner("test@test.org");
-            test_delete(catalog);
+            tester.test_delete(catalog);
             fail("Should have throw an exception");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -214,8 +213,8 @@ public class CatalogsCT extends CatalogItemCRUDTester<Catalog> {
     public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
-            setStoreAdminUser();
-            localService.delete(securityContext, 666L);
+            tester.setStoreAdminUser();
+            localService.delete(tester.getSecurityContext(), 666L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);

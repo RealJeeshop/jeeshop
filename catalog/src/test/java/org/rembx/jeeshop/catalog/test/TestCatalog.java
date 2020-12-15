@@ -3,7 +3,6 @@ package org.rembx.jeeshop.catalog.test;
 import com.google.common.collect.Lists;
 import org.assertj.core.api.AbstractAssert;
 import org.rembx.jeeshop.address.Address;
-import org.rembx.jeeshop.catalog.model.Premises;
 import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
@@ -142,7 +141,7 @@ public class TestCatalog {
     }
 
 
-    public Long getId() {
+    public Long getCatalogId() {
         return catalog.getId();
     }
 
