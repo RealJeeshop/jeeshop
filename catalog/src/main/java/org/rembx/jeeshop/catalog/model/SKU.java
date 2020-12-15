@@ -49,6 +49,11 @@ public class SKU extends CatalogItem{
     public SKU() {
     }
 
+    public SKU(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public SKU(String name, String description, Double price, Integer quantity, String reference,
                Date startDate, Date endDate, Boolean disabled, Integer threshold, String owner) {
         this.name = name;

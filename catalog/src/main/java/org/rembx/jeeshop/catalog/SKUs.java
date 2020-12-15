@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.rembx.jeeshop.catalog.OwnerUtils.attachOwner;
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * @author remi
@@ -32,13 +33,11 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 @Path("/rs/skus")
 @ApplicationScoped
-public class SKUs {
+public class SKUs implements CatalogItems<SKU> {
 
-    @Context
-    SecurityContext sessionContext;
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
 
     SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
@@ -50,8 +49,11 @@ public class SKUs {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public SKU create(SKU sku) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public SKU create(@Context SecurityContext securityContext, SKU sku) {
+
+        attachOwner(securityContext, sku);
+
         if (sku.getDiscountsIds() != null) {
             List<Discount> newDiscounts = new ArrayList<>();
             sku.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
@@ -64,48 +66,58 @@ public class SKUs {
     @DELETE
     @Transactional
     @Path("/{skuId}")
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete(@PathParam("skuId") Long skuId) {
+    public void delete(@Context SecurityContext securityContext, @PathParam("skuId") Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
 
-        List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.childSKUs, sku);
-        for (Product product : productHolders) {
-            product.getChildSKUs().remove(sku);
-        }
+        if (isAdminUser(securityContext) || isOwner(securityContext, sku.getOwner())) {
 
-        List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.skus, sku);
-        for (Discount discount : discountHolders) {
-            sku.getDiscounts().remove(discount);
-            discount.getSkus().remove(sku);
-        }
+            List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.childSKUs, sku);
+            for (Product product : productHolders) {
+                product.getChildSKUs().remove(sku);
+            }
 
-        entityManager.remove(sku);
+            List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.skus, sku);
+            for (Discount discount : discountHolders) {
+                sku.getDiscounts().remove(discount);
+                discount.getSkus().remove(sku);
+            }
 
+            entityManager.remove(sku);
+
+        } else throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     @PUT
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public SKU modify(SKU sku) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public SKU modify(@Context SecurityContext securityContext, SKU sku) {
+
         SKU originalSKU = entityManager.find(SKU.class, sku.getId());
         checkNotNull(originalSKU);
 
-        if (sku.getDiscountsIds() != null) {
-            List<Discount> newDiscounts = new ArrayList<>();
-            sku.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
-            sku.setDiscounts(newDiscounts);
+        if (isAdminUser(securityContext) || isOwner(securityContext, originalSKU.getOwner())) {
+
+            if (sku.getDiscountsIds() != null) {
+                List<Discount> newDiscounts = new ArrayList<>();
+                sku.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+                sku.setDiscounts(newDiscounts);
+            } else {
+                sku.setDiscounts(originalSKU.getDiscounts());
+            }
+
+            sku.setPresentationByLocale(originalSKU.getPresentationByLocale());
+
+            return entityManager.merge(sku);
+
         } else {
-            sku.setDiscounts(originalSKU.getDiscounts());
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
-
-        sku.setPresentationByLocale(originalSKU.getPresentationByLocale());
-
-        return entityManager.merge(sku);
     }
 
     @GET
@@ -135,9 +147,12 @@ public class SKUs {
     @Path("/{skuId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public SKU find(@PathParam("skuId") @NotNull Long skuId, @QueryParam("locale") String locale) {
+    public SKU find(@Context SecurityContext securityContext, @PathParam("skuId") @NotNull Long skuId, @QueryParam("locale") String locale) {
+
         SKU sku = entityManager.find(SKU.class, skuId);
-        if (isAdminUser(sessionContext))
+        checkNotNull(sku);
+
+        if (isAdminUser(securityContext) || isOwner(securityContext, sku.getOwner()))
             return sku;
         else
             return catalogItemFinder.filterVisible(sku, locale);
@@ -165,16 +180,18 @@ public class SKUs {
     @GET
     @Path("/{skuId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public List<Discount> findDiscounts(@PathParam("skuId") @NotNull Long skuId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public List<Discount> findDiscounts(@Context SecurityContext securityContext, @PathParam("skuId") @NotNull Long skuId) {
+
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
+
         List<Discount> discounts = sku.getDiscounts();
         if (discounts.isEmpty()) {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext))
+        if (isAdminUser(securityContext) || isOwner(securityContext, sku.getOwner()))
             return discounts;
         else
             return catalogItemFinder.findVisibleCatalogItems(discount, discounts, null);
