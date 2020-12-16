@@ -21,10 +21,11 @@
             <v-main class="page-content">
                 <router-view :key="$route.fullPath"></router-view>
             </v-main>
-            <v-footer color="#272727" dark>
-                Real Jeeshop &copy; 2020
-            </v-footer>
+
         </v-content>
+        <v-footer color="#272727" dark>
+            Real Jeeshop &copy; 2020
+        </v-footer>
     </v-app>
 </template>
 
