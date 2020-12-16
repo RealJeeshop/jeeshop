@@ -32,7 +32,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/discounts")
 @ApplicationScoped
-public class Discounts implements CatalogItems<Discount> {
+public class Discounts implements CatalogItemService<Discount> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;

@@ -33,7 +33,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/skus")
 @ApplicationScoped
-public class SKUs implements CatalogItems<SKU> {
+public class SKUs implements CatalogItemService<SKU> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;

@@ -31,7 +31,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/catalogs")
 @ApplicationScoped
-public class Catalogs implements CatalogItems<Catalog> {
+public class Catalogs implements CatalogItemService<Catalog> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;

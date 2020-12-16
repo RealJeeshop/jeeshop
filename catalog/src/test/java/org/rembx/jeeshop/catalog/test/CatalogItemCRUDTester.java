@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.catalog.test;
 
 import org.apache.http.auth.BasicUserPrincipal;
-import org.rembx.jeeshop.catalog.CatalogItems;
+import org.rembx.jeeshop.catalog.CatalogItemService;
 import org.rembx.jeeshop.catalog.model.CatalogItem;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.role.JeeshopRoles;
@@ -21,13 +21,13 @@ public class CatalogItemCRUDTester<T extends CatalogItem> {
     protected SecurityContext securityContext;
     protected TestCatalog testCatalog;
     private Class<T> itemClass;
-    protected CatalogItems<T> service;
+    protected CatalogItemService<T> service;
 
-    public CatalogItems<T> getService() {
+    public CatalogItemService<T> getService() {
         return service;
     }
 
-    public void setService(CatalogItems<T> service) {
+    public void setService(CatalogItemService<T> service) {
         this.service = service;
     }
 
