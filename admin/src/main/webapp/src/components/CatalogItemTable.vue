@@ -61,6 +61,10 @@
 
 <style lang="scss" scoped>
 
+    .table-container {
+        background-color: white;
+    }
+
     .table-header {
         display: flex;
         justify-content: space-between;

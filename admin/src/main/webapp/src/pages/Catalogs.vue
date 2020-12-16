@@ -3,7 +3,6 @@
         <v-toolbar color="#484848" dark flat>
             <v-tabs class="sub-header-menu" align-with-title>
                 <v-tabs-slider color="yellow"></v-tabs-slider>
-
                 <v-tab to="/catalogs">Catalogs</v-tab>
                 <v-tab to="/categories">Categories</v-tab>
                 <v-tab to="/products">Products</v-tab>

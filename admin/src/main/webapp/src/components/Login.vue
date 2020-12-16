@@ -21,13 +21,6 @@
             </v-list>
         </v-menu>
     </div>
-
-    <div v-else class="login-form-container">
-        <v-text-field v-model="email" placeholder="email" :hide-details="true" solo />
-        <v-text-field v-model="password" placeholder="password" type="password" :hide-details="true" solo />
-        <v-btn color="primary" @click="login({email: email, password: password})">Login</v-btn>
-        <!--<p v-if="error" class="error">Bad login information</p>-->
-    </div>
 </template>
 
 <script>

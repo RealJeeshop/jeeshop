@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import VueI18n from "vue-i18n";
 
 Vue.use(VueRouter)
+Vue.use(VueI18n)
 
 import App from './App.vue'
 import Settings from './pages/Settings.vue'
@@ -29,6 +31,26 @@ import './styles/flex.scss'
 import CatalogEdit from "./pages/CatalogEdit";
 
 Vue.config.productionTip = false
+
+// Ready translated locale messages
+const messages = {
+  en: {
+    login: {
+      title: 'Please login'
+    }
+  },
+  fr: {
+    message: {
+      hello: 'Veuillez vous authentifier'
+    }
+  }
+}
+
+// Create VueI18n instance with options
+const i18n = new VueI18n({
+  locale: 'en',
+  messages,
+})
 
 
 const router = new VueRouter({
@@ -128,5 +150,6 @@ new Vue({
   router,
   store,
   vuetify,
+  i18n,
   render: h => h(App)
 })

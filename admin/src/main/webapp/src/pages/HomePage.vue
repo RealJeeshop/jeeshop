@@ -1,14 +1,30 @@
 <template>
     <div class="page-content column padded-xl">
-        <h1>Home Page</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin posuere erat dolor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus commodo vel diam sed porta. Proin ut porta tortor, sit amet sollicitudin leo. Quisque placerat quam ante. Vivamus commodo, tellus a sodales facilisis, nibh augue rhoncus ex, eget ultricies odio metus sit amet nunc. Suspendisse tincidunt malesuada maximus. Sed et placerat nisl. Mauris venenatis, velit sed aliquam rhoncus, erat enim hendrerit massa, sed placerat ante risus dignissim risus.
-        </p>
+        <div v-if="loggedIn">
+            <div></div>
+        </div>
+        <div v-else class="flex full column x-centered">
+            <Login />
+        </div>
     </div>
 </template>
 
 <script>
+    import Login from './Login'
+    import {mapState} from "vuex";
     export default {
-        name: 'HomePage'
+        name: 'HomePage',
+        components: {Login},
+        computed: mapState({
+            error: state => state.session.error,
+            loading: state => state.session.loading,
+            loggedIn: state => state.session.loggedIn
+        }),
     }
 </script>
+
+<style>
+    .login-container {
+
+    }
+</style>

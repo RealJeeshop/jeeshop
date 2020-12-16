@@ -1,11 +1,19 @@
 .flex {
   display: flex;
+}
 
-  .column {
-    flex-direction: column;
-  }
+.flex.column {
+  flex-direction: column;
+}
 
-  .one-half {
-    flex: 0.5;
-  }
+.flex.full {
+  flex: 1;
+}
+
+.flex.one-half {
+  flex: 0.5;
+}
+
+.flex.column.x-centered {
+  align-items: center;
 }
