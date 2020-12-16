@@ -175,10 +175,14 @@ public class Categories implements CatalogItems<Category> {
     @GET
     @Path("/{categoryId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("categoryId") @NotNull Long categoryId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("categoryId") @NotNull Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, category.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return category.getPresentationByLocale().keySet();
     }
 

@@ -161,10 +161,14 @@ public class SKUs implements CatalogItems<SKU> {
     @GET
     @Path("/{skuId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("skuId") @NotNull Long skuId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("skuId") @NotNull Long skuId) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, sku.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return sku.getPresentationByLocale().keySet();
     }
 

@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
@@ -83,7 +84,12 @@ public class CategoriesCT {
 
     @Test
     public void findLocales_OfACategoryWithPresentations_shouldReturnExpectedPresentations() {
-        assertThat(localService.findPresentationsLocales(tester.getFixtures().aCategoryWithPresentation().getId())).containsOnly(Locale.US.toString(), Locale.ENGLISH.toString());
+
+        tester.setAdminUser();
+        Set<String> locales = localService.findPresentationsLocales(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithPresentation().getId());
+
+        assertThat(locales).containsOnly(Locale.US.toString(), Locale.ENGLISH.toString());
     }
 
     @Test

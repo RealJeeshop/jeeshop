@@ -139,10 +139,14 @@ public class Stores implements CatalogItems<Store> {
     @GET
     @Path("/{storeId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("storeId") @NotNull Long storeId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long storeId) {
         Store loadedStore = entityManager.find(Store.class, storeId);
         checkNotNull(loadedStore);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, loadedStore.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return loadedStore.getPresentationByLocale().keySet();
     }
 

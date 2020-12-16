@@ -170,9 +170,13 @@ public class Products implements CatalogItems<Product> {
     @Path("/{productId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("productId") @NotNull Long productId) {
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, product.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return product.getPresentationByLocale().keySet();
     }
 
