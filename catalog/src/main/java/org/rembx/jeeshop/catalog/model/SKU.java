@@ -49,6 +49,11 @@ public class SKU extends CatalogItem{
     public SKU() {
     }
 
+    public SKU(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public SKU(String name, String description) {
         this.name = name;
         this.description = description;
