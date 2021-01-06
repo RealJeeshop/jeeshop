@@ -8,7 +8,8 @@ const state = () => ({
     categories: [],
     skus: [],
     discounts: [],
-    addCatalogStatus: null
+    addCatalogStatus: null,
+    error: null
 })
 
 const getters = {
@@ -85,6 +86,25 @@ const actions = {
                 commit('setAddCatalogStatus', 'failed')
                 commit('setItems', {itemType, items: existingItems})
             })
+    },
+
+    async insertProductWithSku({ commit }, {product, sku}) {
+
+        try {
+            console.log('sku : ' + JSON.stringify(sku))
+            console.log('product : ' + JSON.stringify(product))
+            let insertedSKU = await CatalogAPI.upsert('skus', sku).data
+            commit('addItem', {itemType: 'skus', item: insertedSKU})
+
+            product.childSKUsIds = [insertedSKU.id]
+            let insertedProduct = await CatalogAPI.upsert('products', product).data
+
+            commit('addItem', {itemType: 'products', item: insertedProduct})
+            commit('setAddCatalogStatus', 'successful')
+
+        } catch (e) {
+            commit('setAddCatalogStatus', 'failed')
+        }
     }
 }
 
