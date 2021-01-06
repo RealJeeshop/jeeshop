@@ -35,18 +35,11 @@ import LinkProduct from "./pages/LinkProduct";
 
 Vue.config.productionTip = false
 
-// Ready translated locale messages
+import EnglishTrad from './assets/english'
+import FrenchTrad from './assets/french'
 const messages = {
-  en: {
-    login: {
-      title: 'Please login'
-    }
-  },
-  fr: {
-    message: {
-      hello: 'Veuillez vous authentifier'
-    }
-  }
+  en: EnglishTrad,
+  fr: FrenchTrad
 }
 
 // Create VueI18n instance with options

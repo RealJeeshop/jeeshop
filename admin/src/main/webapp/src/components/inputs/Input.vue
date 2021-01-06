@@ -9,7 +9,10 @@
                     @input="update"
                     :disabled="disabled"
                     :dense="dense"
-                    :readonly="readonly" />
+                    :error="error"
+                    :readonly="readonly"
+                    :rules="rules"
+                    hide-details="auto"/>
         </label>
     </div>
 </template>
@@ -30,7 +33,9 @@
             hint: String,
             disabled: Boolean,
             dense: Boolean,
-            readonly: Boolean
+            error: Boolean,
+            readonly: Boolean,
+            rules: Array
         },
         methods: {
             update() {

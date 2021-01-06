@@ -80,10 +80,10 @@ const actions = {
         CatalogAPI.upsert(itemType, item)
             .then((response) => {
                 commit('addItem', {itemType, item: response.data})
-                commit('setAddCatalogStatus', 'successful')
+                commit('setAddCatalogStatus', {status: 'successful'})
             })
             .catch(() => {
-                commit('setAddCatalogStatus', 'failed')
+                commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred saving catalog item'})
                 commit('setItems', {itemType, items: existingItems})
             })
     },
@@ -91,20 +91,22 @@ const actions = {
     async insertProductWithSku({ commit }, {product, sku}) {
 
         try {
-            console.log('sku : ' + JSON.stringify(sku))
-            console.log('product : ' + JSON.stringify(product))
-            let insertedSKU = await CatalogAPI.upsert('skus', sku).data
-            commit('addItem', {itemType: 'skus', item: insertedSKU})
 
-            product.childSKUsIds = [insertedSKU.id]
-            let insertedProduct = await CatalogAPI.upsert('products', product).data
+            let insertedSKU = await CatalogAPI.upsert('skus', sku)
+            commit('addItem', {itemType: 'skus', item: insertedSKU.data})
 
-            commit('addItem', {itemType: 'products', item: insertedProduct})
-            commit('setAddCatalogStatus', 'successful')
+            product.childSKUsIds = [insertedSKU.data.id]
+            let insertedProduct = await CatalogAPI.upsert('products', product)
+            commit('addItem', {itemType: 'products', item: insertedProduct.data})
+            commit('setAddCatalogStatus', {status: 'successful'})
 
         } catch (e) {
-            commit('setAddCatalogStatus', 'failed')
+            commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})
         }
+    },
+
+    setCatalogActionStatus({commit}, status) {
+        commit('setAddCatalogStatus', status)
     }
 }
 
