@@ -1,8 +1,9 @@
 .item-edit-container {
   background-color: #efefef;
-  flex: 2;
+  flex: 2 0;
   border-left: 1px solid #e0e0e0;
   padding-bottom: 2em;
+  max-width: 1024px;
 
   .header {
     display: flex;

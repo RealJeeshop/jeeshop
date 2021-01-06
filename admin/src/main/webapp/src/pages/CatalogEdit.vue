@@ -9,7 +9,7 @@
         <div class="form-container">
             <div class="default-fields-container column">
                 <Input label="Name" name="name" :value="item.name" @on-update="update" />
-                <Textarea label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
+                <Input label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
                 <div class="flex one-half">
                     <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
                                :value="item.startDate" @on-update="update" />
@@ -105,7 +105,6 @@
     import './edit-form.scss'
     import { mapState } from 'vuex'
     import Input from "../components/inputs/Input";
-    import Textarea from "../components/inputs/Textarea";
     import DateField from "../components/inputs/DateField";
     import Select from "../components/inputs/Select";
     import PresentationTable from "../components/PresentationsTable";
@@ -117,12 +116,13 @@
 
     export default {
         name: 'CatalogEdit',
-        components: {RelationshipsTable, PresentationTable, LocaleEdition, RelationshipsEdition, Select, Input, Textarea, DateField},
+        components: {RelationshipsTable, PresentationTable, LocaleEdition, RelationshipsEdition, Select, Input, DateField},
         data: () => {
             return {
                 itemType: undefined,
                 itemId: undefined,
                 editedRelationshipType: undefined,
+                locale: undefined,
                 showLocaleEdition: false,
                 showRelationshipEdition: false,
                 selectedRelationships: [],
@@ -143,7 +143,6 @@
         computed: {
             ...mapState({
                 item(state) {
-
                     let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
                     return find ? _.cloneDeep(find) : {}
                 },
@@ -198,7 +197,7 @@
                 this.showRelationshipEdition = true
             },
             fetchItem() {
-                this.itemType = this.$route.params.itemType
+                this.itemType = this.$route.params.itemType || 'products'
                 this.itemId = parseInt(this.$route.params.id)
                 if (this.itemId) {
                     this.$store.dispatch('catalogs/getItemById', {itemType: this.itemType, itemId: this.itemId})

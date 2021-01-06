@@ -109,16 +109,14 @@
 
         },
         created () {
-
-            this.itemType = this.$route.params.itemType
-            this.showEditPanel = !!this.$route.params.id;
+            this.itemType = this.$route.params.itemType || 'products'
+            this.showEditPanel = !!this.$route.params.id || this.$route.path.indexOf("create") !== -1;
             if (!this.showEditPanel) this.$store.dispatch('catalogs/getItems', this.itemType)
         },
 
         updated() {
-
-            this.itemType = this.$route.params.itemType
-            this.showEditPanel = !!this.$route.params.id;
+            this.itemType = this.$route.params.itemType || 'products'
+            this.showEditPanel = !!this.$route.params.id || this.$route.path.indexOf("create") !== -1;
         }
     }
 </script>
