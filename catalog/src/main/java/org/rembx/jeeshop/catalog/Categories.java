@@ -8,7 +8,6 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -89,6 +88,29 @@ public class Categories {
 
         entityManager.remove(category);
 
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    @Path("/{categoryId}/products")
+    public Category attachProducts(@PathParam("categoryId") Long categoryId, List<Long> productsIds) {
+
+        Category originalCategory = entityManager.find(Category.class, categoryId);
+        checkNotNull(originalCategory);
+
+        List<Product> newProduct = new ArrayList<>();
+        productsIds.forEach(productId -> newProduct.add(entityManager.find(Product.class, productId)));
+
+        if (originalCategory.getChildProducts() != null) {
+            originalCategory.getChildProducts().addAll(newProduct);
+        } else {
+            originalCategory.setChildProducts(newProduct);
+        }
+
+        return entityManager.merge(originalCategory);
     }
 
     @PUT

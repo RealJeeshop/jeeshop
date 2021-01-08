@@ -88,14 +88,9 @@ const actions = {
             })
     },
 
-    async insertProductWithSku({ state, commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
+    async insertProductWithSku({ commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
 
         try {
-
-            console.log('product : ' + JSON.stringify(product))
-            console.log('sku : ' + JSON.stringify(sku))
-            console.log('presentation : ' + JSON.stringify(presentation))
-            console.log('rootCategoriesIds : ' + JSON.stringify(rootCategoriesIds))
 
             if (sku) {
                 let insertedSKU = await CatalogAPI.upsert('skus', sku)
@@ -113,13 +108,9 @@ const actions = {
             }
 
             if (rootCategoriesIds) {
-                let rootCategories = state.categories.filter(c => rootCategoriesIds.findIndex(c.id) !== -1)
-                console.log('rootCtegories : ' + JSON.stringify(rootCategories))
-
-                rootCategories.forEach(async c => {
-                    c.childProductsIds.push(insertedProduct.data.id)
-                    await CatalogAPI.upsert('categories', c)
-                })
+                for (const id of rootCategoriesIds) {
+                    await CatalogAPI.attachProductToCategory(id, [insertedProduct.data.id])
+                }
             }
 
             if (discountsIds) {
@@ -128,6 +119,7 @@ const actions = {
             }
 
         } catch (e) {
+            console.log('e : ' + JSON.stringify(e))
             commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})
         }
     },

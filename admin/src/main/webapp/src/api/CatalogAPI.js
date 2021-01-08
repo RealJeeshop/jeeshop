@@ -98,6 +98,14 @@ const CatalogAPI = {
         }
     },
 
+    attachProductToCategory(categoryId, productIds) {
+        return new Promise((success, die) => {
+            axios.put(`/rs/categories/${categoryId}/products`, productIds)
+                .then(response => success(response.data))
+                .catch(die)
+        })
+    },
+
     createLocalizedPresentation(itemType, itemId, locale, presentation) {
         return new Promise((success, die) => {
             axios.post(`/rs/${itemType}/${itemId}/presentations/${locale}`, presentation)
