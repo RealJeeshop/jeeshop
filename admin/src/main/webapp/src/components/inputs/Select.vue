@@ -3,6 +3,7 @@
         <v-select :items="items"
                   :label="label"
                   v-model="value"
+                  :rules="rules"
                   :placeholder="placeholder" />
     </div>
 </template>
@@ -14,7 +15,8 @@
             label: String,
             items: Array[Object],
             placeholder: String,
-            value: String
+            value: String,
+            rules: Array
         },
         // data() {
         //     return {

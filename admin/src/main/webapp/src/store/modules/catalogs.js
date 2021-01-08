@@ -88,17 +88,44 @@ const actions = {
             })
     },
 
-    async insertProductWithSku({ commit }, {product, sku}) {
+    async insertProductWithSku({ state, commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
 
         try {
 
-            let insertedSKU = await CatalogAPI.upsert('skus', sku)
-            commit('addItem', {itemType: 'skus', item: insertedSKU.data})
+            console.log('product : ' + JSON.stringify(product))
+            console.log('sku : ' + JSON.stringify(sku))
+            console.log('presentation : ' + JSON.stringify(presentation))
+            console.log('rootCategoriesIds : ' + JSON.stringify(rootCategoriesIds))
 
-            product.childSKUsIds = [insertedSKU.data.id]
+            if (sku) {
+                let insertedSKU = await CatalogAPI.upsert('skus', sku)
+                commit('addItem', {itemType: 'skus', item: insertedSKU.data})
+                product.childSKUsIds = [insertedSKU.data.id]
+            }
+
             let insertedProduct = await CatalogAPI.upsert('products', product)
             commit('addItem', {itemType: 'products', item: insertedProduct.data})
             commit('setAddCatalogStatus', {status: 'successful'})
+
+            if (presentation) {
+                await CatalogAPI.createLocalizedPresentation('products',
+                    insertedProduct.data.id, "fr_FR", presentation)
+            }
+
+            if (rootCategoriesIds) {
+                let rootCategories = state.categories.filter(c => rootCategoriesIds.findIndex(c.id) !== -1)
+                console.log('rootCtegories : ' + JSON.stringify(rootCategories))
+
+                rootCategories.forEach(async c => {
+                    c.childProductsIds.push(insertedProduct.data.id)
+                    await CatalogAPI.upsert('categories', c)
+                })
+            }
+
+            if (discountsIds) {
+
+                console.log('discounts : ' + JSON.stringify(discountsIds))
+            }
 
         } catch (e) {
             commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})

@@ -21,8 +21,7 @@
               label="Select one or categories"
               item-text="name"
               item-value="name"
-              multiple
-          >
+              multiple>
             <template v-slot:selection="data">
               <v-chip
                   v-bind="data.attrs"

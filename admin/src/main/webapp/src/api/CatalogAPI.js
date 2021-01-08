@@ -96,7 +96,16 @@ const CatalogAPI = {
         } else {
             return axios.post(`/rs/${itemType}`, item)
         }
+    },
+
+    createLocalizedPresentation(itemType, itemId, locale, presentation) {
+        return new Promise((success, die) => {
+            axios.post(`/rs/${itemType}/${itemId}/presentations/${locale}`, presentation)
+                .then(response => success(response.data))
+                .catch(die)
+        })
     }
+
 }
 
 function prepareRequestByItemType(itemType, id) {

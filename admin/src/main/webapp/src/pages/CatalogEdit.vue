@@ -6,83 +6,85 @@
             <span @click="close" class="close-icon"></span>
         </div>
 
-        <div class="form-container">
-            <div class="default-fields-container column">
-                <Input label="Name" name="name" :value="item.name" @on-update="update" />
-                <Input label="Description" :value="item.description" name="description" placeholder="description" @on-update="update" />
-                <div class="flex one-half">
-                    <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
-                               :value="item.startDate" @on-update="update" />
+        <v-form class="form-container" ref="form">
+          <div class="default-fields-container column">
+            <Input label="Name" name="name" :value="item.name" :rules="required" @on-update="update" />
+            <Input label="Description" name="description" placeholder="description"
+                   :value="item.description" @on-update="update" />
 
-                    <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
-                               :value="item.endDate" @on-update="update" />
-                </div>
-                <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
+            <div class="flex one-half">
+              <DateField name="startDate" label="Start Date" placeholder="Choose visibility date"
+                         :value="item.startDate" @on-update="update" />
+
+              <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
+                         :value="item.endDate" @on-update="update" />
+            </div>
+            <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
+
+          </div>
+
+          <div v-if="itemType === 'catalogs'">
+            <RelationshipsTable label="Root categories" itemType="categories"
+                                :values="item.rootCategoriesIds"
+                                @open-edition="openRelationshipEdition" />
+          </div>
+
+          <div v-else-if="itemType === 'skus'">
+            <div class="fields-container">
+
+              <Input label="Reference" :value="item.reference" placeholder=""/>
+              <Input label="Quantity" :value="item.quantity" placeholder=""/>
+
+              <Input label="Price" :value="item.price" placeholder=""/>
+              <Select label="Currency" :items="currencies" :value="item.currency"/>
+
+              <Input label="Threshold" :value="item.threshold" placeholder=""/>
 
             </div>
+            <RelationshipsTable label="SKU discounts" itemType="discounts"
+                                @open-edition="openRelationshipEdition"
+                                :values="item.discountsIds"/>
 
-            <div v-if="itemType === 'catalogs'">
-                <RelationshipsTable label="Root categories" itemType="categories"
-                                    :values="item.rootCategoriesIds"
-                                    @open-edition="openRelationshipEdition" />
+          </div>
+
+          <div v-else-if="itemType === 'products'">
+            <RelationshipsTable label="Child SKUs" itemType="skus"
+                                @open-edition="openRelationshipEdition"
+                                :values="item.childSKUsIds"/>
+
+            <RelationshipsTable label="Product discounts" itemType="discounts"
+                                @open-edition="openRelationshipEdition"
+                                :values="item.discountsIds"/>
+          </div>
+
+          <div v-else-if="itemType === 'categories'">
+            <RelationshipsTable itemType="categories"
+                                label="Child Categories"
+                                @open-edition="openRelationshipEdition"
+                                :values="item.childCategoriesIds" />
+
+            <RelationshipsTable label="Child products"
+                                itemType="products"
+                                @open-edition="openRelationshipEdition"
+                                :values="item.childProductsIds"/>
+          </div>
+
+          <div v-else-if="itemType === 'discounts'">
+            <div class="fields-container">
+              <Select label="Applicable to..." :items="applyTarget" :rules="required" :value="item.applicableTo"/>
+              <Input label="Voucher code" :value="item.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
+              <Select label="Type" :items="discountTypes"  :rules="required" :value="item.type" />
+              <Input label="Value" :value="item.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
+              <Select label="Trigger threshold rules" :items="thresholdRules" :value="item.triggerRule"/>
+              <Input label="Threshold" :value="item.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
+              <Input label="Number of use per customer" :value="item.usesPerCustomer" placeholder="Enter a number ..."/>
+              <v-checkbox label="Cumulative" :value="item.uniqueUse" />
             </div>
-
-            <div v-else-if="itemType === 'skus'">
-                <div class="fields-container">
-
-                    <Input label="Reference" :value="item.reference" placeholder=""/>
-                    <Input label="Quantity" :value="item.quantity" placeholder=""/>
-
-                    <Input label="Price" :value="item.price" placeholder=""/>
-                    <Select label="Currency" :items="currencies" :value="item.currency"/>
-
-                    <Input label="Threshold" :value="item.threshold" placeholder=""/>
-
-                </div>
-                <RelationshipsTable label="SKU discounts" itemType="discounts"
-                                    @open-edition="openRelationshipEdition"
-                                    :values="item.discountsIds"/>
-
-            </div>
-
-            <div v-else-if="itemType === 'products'">
-                <RelationshipsTable label="Child SKUs" itemType="skus"
-                                    @open-edition="openRelationshipEdition"
-                                    :values="item.childSKUsIds"/>
-
-                <RelationshipsTable label="Product discounts" itemType="discounts"
-                                    @open-edition="openRelationshipEdition"
-                                    :values="item.discountsIds"/>
-            </div>
-
-            <div v-else-if="itemType === 'categories'">
-                <RelationshipsTable itemType="categories"
-                                    label="Child Categories"
-                                    @open-edition="openRelationshipEdition"
-                                    :values="item.childCategoriesIds" />
-
-                <RelationshipsTable label="Child products"
-                                    itemType="products"
-                                    @open-edition="openRelationshipEdition"
-                                    :values="item.childProductsIds"/>
-            </div>
-
-            <div v-else-if="itemType === 'discounts'">
-                <div class="fields-container">
-                    <Select label="Applicable to..." :items="applyTarget" :value="item.applicableTo"/>
-                    <Input label="Voucher code" :value="item.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
-                    <Select label="Type" :items="discountTypes" :value="item.type" />
-                    <Input label="Value" :value="item.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
-                    <Select label="Trigger threshold rules" :items="thresholdRules" :value="item.triggerRule"/>
-                    <Input label="Threshold" :value="item.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
-                    <Input label="Number of use per customer" :value="item.usesPerCustomer" placeholder="Enter a number ..."/>
-                    <v-checkbox label="Cumulative" :value="item.uniqueUse" />
-                </div>
-            </div>
+          </div>
 
 
-            <v-btn color="primary" elevation="2" @click="saveItem()">Save</v-btn>
-        </div>
+          <v-btn color="primary" elevation="2" @click="saveItem()">Save</v-btn>
+        </v-form>
 
         <LocaleEdition v-if="showLocaleEdition"
                        :open="showLocaleEdition"
@@ -117,7 +119,7 @@
     export default {
         name: 'CatalogEdit',
         components: {RelationshipsTable, PresentationTable, LocaleEdition, RelationshipsEdition, Select, Input, DateField},
-        data: () => {
+        data() {
             return {
                 itemType: undefined,
                 itemId: undefined,
@@ -137,7 +139,10 @@
                     {value: "AMOUNT", text: "Specific price"},
                     {value: "ORDER_NUMBER", text: "Number of orders (1 means first)"}
                 ],
-                yesNo: ["Yes", "No"]
+                yesNo: ["Yes", "No"],
+                required: [
+                  value => !!value || this.$t("common.required"),
+                ],
             }
         },
         computed: {
@@ -171,8 +176,11 @@
               this.$router.back()
             },
             saveItem() {
-                this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
-                this.close()
+
+                if (this.$refs.form.validate()) {
+                  this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
+                  this.close()
+                }
             },
             update(field) {
                 this.item[field.key] = field.value
