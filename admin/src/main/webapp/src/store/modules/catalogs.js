@@ -100,23 +100,25 @@ const actions = {
 
             let insertedProduct = await CatalogAPI.upsert('products', product)
             commit('addItem', {itemType: 'products', item: insertedProduct.data})
-            commit('setAddCatalogStatus', {status: 'successful'})
+
+            let insertedProductId = insertedProduct.data.id;
 
             if (presentation) {
                 await CatalogAPI.createLocalizedPresentation('products',
-                    insertedProduct.data.id, "fr_FR", presentation)
+                    insertedProductId, "fr_FR", presentation)
             }
 
             if (rootCategoriesIds) {
                 for (const id of rootCategoriesIds) {
-                    await CatalogAPI.attachProductToCategory(id, [insertedProduct.data.id])
+                    await CatalogAPI.attachProductToCategory(id, [insertedProductId])
                 }
             }
 
             if (discountsIds) {
-
-                console.log('discounts : ' + JSON.stringify(discountsIds))
+                await CatalogAPI.attachDiscountsToProduct([insertedProductId], discountsIds)
             }
+
+            commit('setAddCatalogStatus', {status: 'successful'})
 
         } catch (e) {
             console.log('e : ' + JSON.stringify(e))

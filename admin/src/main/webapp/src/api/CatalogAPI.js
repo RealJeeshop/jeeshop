@@ -106,6 +106,15 @@ const CatalogAPI = {
         })
     },
 
+    attachDiscountsToProduct(productId, discountsIds) {
+        return new Promise((success, die) => {
+            axios.put(`/rs/products/${productId}/discounts`, discountsIds)
+                .then(response => success(response.data))
+                .catch(die)
+        })
+    },
+
+
     createLocalizedPresentation(itemType, itemId, locale, presentation) {
         return new Promise((success, die) => {
             axios.post(`/rs/${itemType}/${itemId}/presentations/${locale}`, presentation)

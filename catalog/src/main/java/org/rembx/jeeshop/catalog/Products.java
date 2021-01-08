@@ -115,6 +115,29 @@ public class Products {
         return entityManager.merge(product);
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    @Path("/{productId}/discounts")
+    public Product attachDiscounts(@PathParam("productId") Long productId, List<Long> discountsIds) {
+
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+
+        List<Discount> newDiscounts = new ArrayList<>();
+        discountsIds.forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+
+        if (product.getDiscounts() != null) {
+            product.getDiscounts().addAll(newDiscounts);
+        } else {
+            product.setDiscounts(newDiscounts);
+        }
+
+        return entityManager.merge(product);
+    }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
