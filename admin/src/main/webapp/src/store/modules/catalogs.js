@@ -97,43 +97,117 @@ const actions = {
             })
     },
 
-    async insertProductWithSku({ commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
+    async insertCatalogItem({ commit }, {itemType, payload}) {
 
         try {
 
-            if (sku) {
-                let insertedSKU = await CatalogAPI.upsert('skus', sku)
-                commit('addItem', {itemType: 'skus', item: insertedSKU.data})
-                product.childSKUsIds = [insertedSKU.data.id]
-            }
+            console.log('payload : ' + JSON.stringify(payload))
+            let sku = payload.sku
+            let presentation = payload.presentation
 
-            let insertedProduct = await CatalogAPI.upsert('products', product)
-            commit('addItem', {itemType: 'products', item: insertedProduct.data})
+            delete payload.sku
+            delete payload.presentation
+            let item = payload
 
-            let insertedProductId = insertedProduct.data.id;
-
-            if (presentation) {
-                await CatalogAPI.createLocalizedPresentation('products',
-                    insertedProductId, "fr_FR", presentation)
-            }
-
-            if (rootCategoriesIds) {
-                for (const id of rootCategoriesIds) {
-                    await CatalogAPI.attachProductToCategory(id, [insertedProductId])
+            if (this.itemType === 'products') {
+                if (sku) {
+                    let insertedSKU = await CatalogAPI.upsert('skus', sku)
+                    commit('addItem', {itemType: 'skus', item: insertedSKU.data})
+                    item.childSKUsIds = [insertedSKU.data.id]
                 }
             }
 
-            if (discountsIds) {
-                await CatalogAPI.attachDiscountsToProduct([insertedProductId], discountsIds)
+            let insertedItem = await CatalogAPI.upsert(itemType, item)
+            commit('addItem', {itemType: itemType, item: insertedItem.data})
+            let insertedItemId = insertedItem.data.id;
+
+            if (itemType === 'catalogs' && payload.rootCategoriesIds && payload.rootCategoriesIds.length > 0) {
+
+                await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, "categories", payload.rootCategoriesIds)
+
+            } else if (itemType === 'categories') {
+
+                if (payload.childCategoriesIds && payload.childCategoriesIds.length > 0) {
+                    await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, 'categories', payload.childCategoriesIds)
+                }
+
+                if (payload.childProductsIds && payload.childProductsIds.length > 0) {
+                    await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, 'products', payload.childProductsIds)
+                }
+
+            } else if (itemType === 'products') {
+
+                if (payload.categoriesIds && payload.categoriesIds.length > 0) {
+                    for (const id of payload.categoriesIds) {
+                        await CatalogAPI.attachAssociatedItems(id, 'categories', itemType [insertedItemId])
+                    }
+                }
+
+                if (payload.discountsIds && payload.discountsIds.length > 0) {
+                    await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, 'discounts', payload.discountsIds)
+                }
+
+            } else if (itemType === 'skus' && payload.discountsIds && payload.discountsIds.length > 0) {
+                await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, 'discoounts', payload.discountsIds)
+            }
+
+            console.log('presentation : ' + JSON.stringify(presentation))
+            if (presentation) {
+
+                console.log("inserting presentation")
+                let result = await CatalogAPI.createLocalizedPresentation(itemType,
+                    insertedItemId, "fr_FR", presentation)
+                console.log('result : ' + JSON.stringify(result))
+
             }
 
             commit('setAddCatalogStatus', {status: 'successful'})
 
+
         } catch (e) {
             console.log('e : ' + JSON.stringify(e))
-            commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})
+            commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating ' + itemType})
         }
+
     },
+
+    // async insertProductWithSku({ commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
+    //
+    //     try {
+    //
+    //         if (sku) {
+    //             let insertedSKU = await CatalogAPI.upsert('skus', sku)
+    //             commit('addItem', {itemType: 'skus', item: insertedSKU.data})
+    //             product.childSKUsIds = [insertedSKU.data.id]
+    //         }
+    //
+    //         let insertedProduct = await CatalogAPI.upsert('products', product)
+    //         commit('addItem', {itemType: 'products', item: insertedProduct.data})
+    //
+    //         let insertedProductId = insertedProduct.data.id;
+    //
+    //         if (presentation) {
+    //             await CatalogAPI.createLocalizedPresentation('products',
+    //                 insertedProductId, "fr_FR", presentation)
+    //         }
+    //
+    //         if (rootCategoriesIds) {
+    //             for (const id of rootCategoriesIds) {
+    //                 await CatalogAPI.attachProductToCategory(id, [insertedProductId])
+    //             }
+    //         }
+    //
+    //         if (discountsIds) {
+    //             await CatalogAPI.attachDiscountsToProduct([insertedProductId], discountsIds)
+    //         }
+    //
+    //         commit('setAddCatalogStatus', {status: 'successful'})
+    //
+    //     } catch (e) {
+    //         console.log('e : ' + JSON.stringify(e))
+    //         commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})
+    //     }
+    // },
 
     setCatalogActionStatus({commit}, status) {
         commit('setAddCatalogStatus', status)

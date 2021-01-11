@@ -98,9 +98,9 @@ const CatalogAPI = {
         }
     },
 
-    attachProductToCategory(categoryId, productIds) {
+    attachAssociatedItems(itemId, itemType, targetItemType, itemIds) {
         return new Promise((success, die) => {
-            axios.put(`/rs/categories/${categoryId}/products`, productIds)
+            axios.put(`/rs/${itemType}/${itemId}/${targetItemType}`, itemIds)
                 .then(response => success(response.data))
                 .catch(die)
         })

@@ -43,7 +43,8 @@
     props: {
       title: String,
       label: String,
-      items: Array
+      items: Array,
+      placeholder: String
     },
     data() {
       return {

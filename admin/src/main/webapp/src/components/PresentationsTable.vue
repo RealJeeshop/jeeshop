@@ -26,12 +26,12 @@
             return {
                 itemId: this.value ? this.value.itemId : undefined,
                 itemType: this.value ? this.value.itemType : undefined,
-                presentations: this.value ? this.value.availableLocales : [],
+                presentations: this.value && this.value.availableLocales ? this.value.availableLocales : [],
             }
         },
         watch: {
             value() {
-                this.presentations = this.value ? this.value.availableLocales : []
+                this.presentations = this.value && this.value.availableLocales ? this.value.availableLocales : []
             }
         },
         methods: {

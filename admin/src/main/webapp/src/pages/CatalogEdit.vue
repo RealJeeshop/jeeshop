@@ -104,19 +104,19 @@
 
 <script>
 
-    import './edit-form.scss'
-    import { mapState } from 'vuex'
-    import Input from "../components/inputs/Input";
-    import DateField from "../components/inputs/DateField";
-    import Select from "../components/inputs/Select";
-    import PresentationTable from "../components/PresentationsTable";
-    import RelationshipsTable from "../components/RelationshipsTable";
-    import DateUtils from '../lib/dateUtils'
-    import _ from "lodash";
-    import LocaleEdition from "../components/LocaleEdition";
-    import RelationshipsEdition from '../components/RelationshipsEdition'
+import './edit-form.scss'
+import {mapState} from 'vuex'
+import Input from "../components/inputs/Input";
+import DateField from "../components/inputs/DateField";
+import Select from "../components/inputs/Select";
+import PresentationTable from "../components/PresentationsTable";
+import RelationshipsTable from "../components/RelationshipsTable";
+import DateUtils from '../lib/dateUtils'
+import _ from "lodash";
+import LocaleEdition from "../components/LocaleEdition";
+import RelationshipsEdition from '../components/RelationshipsEdition'
 
-    export default {
+export default {
         name: 'CatalogEdit',
         components: {RelationshipsTable, PresentationTable, LocaleEdition, RelationshipsEdition, Select, Input, DateField},
         data() {
@@ -151,10 +151,17 @@
         computed: {
             ...mapState({
                 item(state) {
-                    let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                  let newVar = find ? _.cloneDeep(find) : {};
-                  console.log('newVar : ' + JSON.stringify(newVar))
-                  return newVar
+                  let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+
+                  if (find) {
+                    console.log('find : ' + JSON.stringify(find))
+                    this.presentations = {
+                      itemType: this.itemType,
+                      itemId: this.itemId,
+                      availableLocales: find.localizedPresentation
+                    }
+                    return _.cloneDeep(find)
+                  } else return {}
                 },
                 // presentation(state) {
                 //

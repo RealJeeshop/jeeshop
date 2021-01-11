@@ -29,27 +29,27 @@
           </v-flex>
 
           <v-flex v-if="itemType === 'skus'" flex-wrap>
-            <Input label="Name" name="skuName" :value="skuName" :rules="required" @on-update="update"/>
-            <Input label="Reference" name="reference" :value="reference"  @on-update="update"/>
-            <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="update"/>
+            <Input label="Name" name="name" :value="sku.name" :rules="required" @on-update="updateSku"/>
+            <Input label="Reference" name="reference" :value="sku.reference"  @on-update="updateSku"/>
+            <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="updateSku"/>
 
-            <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="currency" @on-update="update"/>
-            <Input label="Price" name="price" :value="price" :rules="required" @on-update="update"/>
+            <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="sku.currency" @on-update="updateSku"/>
+            <Input label="Price" name="price" :value="sku.price" :rules="required" @on-update="updateSku"/>
 
-            <Input label="Threshold" name="threshold" :value="threshold"
-                   placeholder="when the threshold is reached it will send you a notification" @on-update="update"/>
+            <Input label="Threshold" name="threshold" :value="sku.threshold"
+                   placeholder="when the threshold is reached it will send you a notification" @on-update="updateSku"/>
           </v-flex>
 
           <v-flex v-if="itemType === 'discounts'" flex-wrap>
 
-            <Select label="Applicable to..." :items="applyTarget" :rules="required" :value="discount.applicableTo"/>
-            <Input label="Voucher code" :value="discount.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
-            <Select label="Type" :items="discountTypes"  :rules="required" :value="discount.type" />
-            <Input label="Value" :value="discount.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
-            <Select label="Trigger threshold rules" :items="thresholdRules" :value="discount.triggerRule"/>
-            <Input label="Threshold" :value="discount.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
-            <Input label="Number of use per customer" :value="discount.usesPerCustomer" placeholder="Enter a number ..."/>
-            <v-checkbox label="Cumulative" :value="discount.uniqueUse" />
+            <Select label="Applicable to..." name="applicableTo" :items="applyTarget" :rules="required" :value="discount.applicableTo" @on-update="updateDiscount" />
+            <Input label="Voucher code" name="voucherCode" :value="discount.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers" @on-update="updateDiscount" />
+            <Select label="Type" name="type" :items="discountTypes"  :rules="required" :value="discount.type" @on-update="updateDiscount" />
+            <Input label="Value" name="discountValue" :value="discount.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)" @on-update="updateDiscount" />
+            <Select label="Trigger threshold rules" name="triggerRule" :items="thresholdRules" :value="discount.triggerRule" @on-update="updateDiscount" />
+            <Input label="Threshold" name="triggerValue" :value="discount.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)" @on-update="updateDiscount" />
+            <Input label="Number of use per customer" name="usesPerCustomer" :value="discount.usesPerCustomer" placeholder="Enter a number ..." @on-update="updateDiscount" />
+            <v-checkbox label="Cumulative" name="uniqueUse" :value="discount.uniqueUse"  @on-update="updateDiscount" />
           </v-flex>
 
           <v-flex flex-column>
@@ -82,14 +82,14 @@
                 <v-switch v-model="addProductSKU" inset/>
               </v-flex>
               <v-flex v-if="addProductSKU" flex-wrap>
-                <Input label="Name" name="skuName" :value="skuName" :rules="required" @on-update="update"/>
-                <Input label="Reference" name="reference" :value="reference"  @on-update="update"/>
-                <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="update"/>
+                <Input label="Name" name="name" :value="sku.name" :rules="required" @on-update="update"/>
+                <Input label="Reference" name="reference" :value="sku.reference"  @on-update="update"/>
+                <Input label="Quantity" name="quantity" :rules="required" :value="sku.quantity" @on-update="update"/>
 
-                <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="currency" @on-update="update"/>
-                <Input label="Price" name="price" :value="price" :rules="required" @on-update="update"/>
+                <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="sku.currency" @on-update="update"/>
+                <Input label="Price" name="price" :value="sku.price" :rules="required" @on-update="update"/>
 
-                <Input label="Threshold" name="threshold" :value="threshold"
+                <Input label="Threshold" name="threshold" :value="sku.threshold"
                        placeholder="when the threshold is reached it will send you a notification" @on-update="update"/>
               </v-flex>
 
@@ -214,36 +214,81 @@ export default {
 
       if (this.$refs.form.validate()) {
 
-        this.$store.dispatch("catalogs/insertProductWithSku", {
-          sku: this.addProductSKU ? {
-            name: this.skuName,
-            startDate: this.startDate,
-            endDate: this.endDate,
-            reference: this.reference,
-            quantity: this.quantity,
-            currency: this.currency,
-            price: this.price,
-            threshold: this.threshold
-          } : null,
-          product: {
-            name: this.name,
-            description: this.description,
-            startDate: this.startDate,
-            endDate: this.endDate,
-          },
-          presentation: this.addPresentation ? this.presentation : null,
-          rootCategoriesIds: this.selectedCategories,
-          discountsIds: this.selectedDiscounts
+        this.$store.dispatch("catalogs/insertCatalogItem", {
+          itemType: this.itemType,
+          payload: this.buildPayload()
         })
+
+        // this.$store.dispatch("catalogs/insertProductWithSku", {
+        //   sku: this.addProductSKU ? {
+        //     name: this.skuName,
+        //     startDate: this.startDate,
+        //     endDate: this.endDate,
+        //
+        //   } : null,
+        //   product: {
+        //     name: this.name,
+        //     description: this.description,
+        //     startDate: this.startDate,
+        //     endDate: this.endDate,
+        //   },
+        //   presentation: this.addPresentation ? this.presentation : null,
+        //   rootCategoriesIds: this.selectedCategories,
+        //   discountsIds: this.selectedDiscounts
+        // })
 
         this.$router.back()
       }
+    },
+    buildPayload() {
+
+      let defaultPayload = {
+        name: this.name,
+        description: this.description,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        presentation: this.addPresentation ?this.presentation : null
+      }
+
+      if (this.itemType === 'catalogs') {
+        return Object.assign(defaultPayload, {
+          rootCategoriesIds: this.selectedCategories
+        })
+
+      } else if (this.itemType === 'categories') {
+        return Object.assign(defaultPayload, {
+          childCategoriesIds: this.selectedCategories,
+          childProductsIds: this.selectedProducts
+        })
+
+      } else if (this.itemType === 'products') {
+        return Object.assign(defaultPayload, {
+          categoriesIds: this.selectedCategories,
+          discountsIds: this.selectedDiscounts,
+          sku: this.addProductSKU ? this.sku : null
+        })
+
+      } else if (this.itemType === 'skus') {
+        return Object.assign(defaultPayload, this.sku, {
+          discountsIds: this.selectedDiscounts
+        })
+
+      } else if (this.itemType === 'discounts') {
+        return Object.assign(defaultPayload, this.discounts)
+      }
+
     },
     update({key, value}) {
       this[key] = value
     },
     updatePresentation({key, value}) {
       this.presentation[key] = value
+    },
+    updateSku({key, value}) {
+      this.sku[key] = value
+    },
+    updateDiscount({key, value}) {
+      this.discount[key] = value
     },
     updateSelectedCategories(categories) {
       this.selectedCategories = categories
