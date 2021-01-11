@@ -2,18 +2,13 @@ package org.rembx.jeeshop.catalog;
 
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -109,6 +104,29 @@ public class SKUs {
         }
 
         sku.setPresentationByLocale(originalSKU.getPresentationByLocale());
+
+        return entityManager.merge(sku);
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    @Path("/{skuId}/discounts")
+    public SKU attachDiscounts(@PathParam("skuId") Long skuId, List<Long> discountsIds) {
+
+        SKU sku = entityManager.find(SKU.class, skuId);
+        checkNotNull(sku);
+
+        List<Discount> newDiscounts = new ArrayList<>();
+        discountsIds.forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+
+        if (sku.getDiscounts() != null) {
+            sku.getDiscounts().addAll(newDiscounts);
+        } else {
+            sku.setDiscounts(newDiscounts);
+        }
 
         return entityManager.merge(sku);
     }

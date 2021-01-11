@@ -118,6 +118,29 @@ public class Categories {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(ADMIN)
+    @Path("/{categoryId}/categories")
+    public Category attachCategories(@PathParam("categoryId") Long categoryId, List<Long> categoriesIds) {
+
+        Category category = entityManager.find(Category.class, categoryId);
+        checkNotNull(category);
+
+        List<Category> newCategory = new ArrayList<>();
+        categoriesIds.forEach(id -> newCategory.add(entityManager.find(Category.class, id)));
+
+        if (category.getChildCategories() != null) {
+            category.getChildCategories().addAll(newCategory);
+        } else {
+            category.setChildCategories(newCategory);
+        }
+
+        return entityManager.merge(category);
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
     public Category modify(Category category) {
         Category originalCategory = entityManager.find(Category.class, category.getId());
         checkNotNull(originalCategory);

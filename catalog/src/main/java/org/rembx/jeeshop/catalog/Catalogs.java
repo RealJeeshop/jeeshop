@@ -132,6 +132,30 @@ public class Catalogs {
         return merge;
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(ADMIN)
+    @Path("/{catalogId}/categories")
+    public Catalog attachCategories(@PathParam("catalogId") Long catalogId, List<Long> categoriesIds) {
+
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(catalog);
+
+        List<Category> newCategory = new ArrayList<>();
+        categoriesIds.forEach(categoryId -> newCategory.add(entityManager.find(Category.class, categoryId)));
+
+        if (catalog.getRootCategories() != null) {
+            catalog.getRootCategories().addAll(newCategory);
+        } else {
+            catalog.setRootCategories(newCategory);
+        }
+
+        return entityManager.merge(catalog);
+    }
+
+
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
