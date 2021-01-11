@@ -19,7 +19,7 @@
               <DateField name="endDate" label="End Date" placeholder="Choose visibility end date"
                          :value="item.endDate" @on-update="update" />
             </div>
-            <PresentationTable :value="localizedPresentation" @update-locale="onSelectLocale"/>
+            <PresentationTable :value="presentations" @update-locale="onSelectLocale"/>
 
           </div>
 
@@ -88,7 +88,7 @@
 
         <LocaleEdition v-if="showLocaleEdition"
                        :open="showLocaleEdition"
-                       :data="item.availableLocales[this.locale]"
+                       :data="item.availableLocales ? item.availableLocales[this.locale] : null"
                        @on-cancel="showLocaleEdition = false"
                        @on-save="saveLocale" />
 
@@ -128,6 +128,9 @@
                 showLocaleEdition: false,
                 showRelationshipEdition: false,
                 selectedRelationships: [],
+
+                presentations: {},
+
                 currencies: [{value: "EUR", text: "Euros"}, {value: "USD", text: "Dollars"}],
                 applyTarget: [{value: "ORDER", text: "An order"}, {value: "ITEM", text: "An item"}],
                 discountTypes: [{value: "DISCOUNT_RATE", text: "Discount rate"},
@@ -149,16 +152,18 @@
             ...mapState({
                 item(state) {
                     let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                    return find ? _.cloneDeep(find) : {}
+                  let newVar = find ? _.cloneDeep(find) : {};
+                  console.log('newVar : ' + JSON.stringify(newVar))
+                  return newVar
                 },
-                presentation(state) {
-
-                    let item = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                    return item && item.availableLocales && item.availableLocales[this.locale]
-                        ? _.cloneDeep(item.availableLocales[this.locale])
-                        : {}
-
-                }
+                // presentation(state) {
+                //
+                //     let item = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
+                //     return item && item.availableLocales && item.availableLocales[this.locale]
+                //         ? _.cloneDeep(item.availableLocales[this.locale])
+                //         : {}
+                //
+                // }
             }),
             localizedPresentation() {
                 return {
@@ -189,11 +194,25 @@
                 return DateUtils.formatDate(date)
             },
             onSelectLocale(locale) {
+              console.log('localer : ' + JSON.stringify(locale))
                 this.locale = locale
                 this.showLocaleEdition = true
             },
-            saveLocale() {
+            saveLocale(presentation) {
+              console.log("FUCK")
                 this.showLocaleEdition = false
+                this.$store.dispatch("catalogs/attachPresentation", {
+                  itemType: this.itemType,
+                  itemId: this.itemId,
+                  presentation: presentation
+                })
+
+              let existingLocales = this.presentations.availableLocales ? this.presentations.availableLocales : []
+              this.presentations = {
+                itemType: this.itemType,
+                itemId: this.itemId,
+                availableLocales: [presentation.locale].concat(existingLocales)
+              }
             },
             saveRelationship() {
                 this.selectedRelationships = []

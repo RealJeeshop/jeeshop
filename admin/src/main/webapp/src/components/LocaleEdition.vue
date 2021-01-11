@@ -5,20 +5,20 @@
             <v-card-title v-else class="headline">Add new presentation</v-card-title>
             <v-card-text>
                 <div v-if="!presentation.locale" class="fields-container">
-                    <Select label="Select a locale" :items="availableLocales"/>
+                    <Select label="Select a locale" name="locale" :items="availableLocales" @on-update="update"/>
                 </div>
                 <div class="fields-container">
-                    <Input label="Name" :value="presentation.displayName" @on-update="update" />
-                    <Input label="Promotion text" :value="presentation.promotion" @on-update="update"/>
-                    <Textarea label="Short description" :value="presentation.shortDescription" @on-update="update" />
-                    <Textarea label="Medium description" :value="presentation.mediumDescription" @on-update="update" />
-                    <Textarea label="Long description" :value="presentation.longDescription" @on-update="update"/>
+                    <Input label="Name" name="displayName" :value="presentation.displayName" @on-update="update" />
+                    <Input label="Promotion text" name="promotion" :value="presentation.promotion" @on-update="update"/>
+                    <Textarea label="Short description" name="shortDescription" :value="presentation.shortDescription" @on-update="update" />
+                    <Textarea label="Medium description" name="mediumDescription" :value="presentation.mediumDescription" @on-update="update" />
+                    <Textarea label="Long description" name="longDescription" :value="presentation.longDescription" @on-update="update"/>
                 </div>
                 <div class="fields-container">
-                    <FileInput label="Thumbnail" :value="presentation.thumbnail" @on-update="update" />
-                    <FileInput label="Small Image" :value="presentation.smallImage" @on-update="update" />
-                    <FileInput label="Large Image" :value="presentation.largeImage" @on-update="update" />
-                    <FileInput label="Video" :value="presentation.video" @on-update="update" />
+                    <FileInput label="Thumbnail" name="thumbnail" :value="presentation.thumbnail" @on-update="update" />
+                    <FileInput label="Small Image" name="smallImage" :value="presentation.smallImage" @on-update="update" />
+                    <FileInput label="Large Image" name="largeImage" :value="presentation.largeImage" @on-update="update" />
+                    <FileInput label="Video" name="video" :value="presentation.video" @on-update="update" />
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -42,7 +42,7 @@
         data() {
             return {
                 presentation: this.data ? this.data : {},
-                availableLocales: ["English", "French", "Chinese"]
+                availableLocales: [{value: "en", text: "English"}, {text: "French", value: "fr"}, {text: "Chinese", value: "zh" }]
             }
         },
         props: {
@@ -59,11 +59,11 @@
                 this.$emit("on-cancel")
             },
             addLocale() {
-                this.$emit("on-save")
+                this.$emit("on-save", this.presentation)
             },
             updateLocale() {
                 // TODO dispatch the update of the presentation
-                this.$emit("on-save")
+                this.$emit("on-save", this.presentation)
             },
             update(field) {
                 this.presentation[field.key] = field.value

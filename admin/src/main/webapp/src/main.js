@@ -30,8 +30,6 @@ import './styles/forms.scss'
 import './styles/flex.scss'
 import CatalogEdit from "./pages/CatalogEdit";
 import CreateProduct from "./pages/CreateProduct";
-import AddPresentation from "./pages/AddPresentation";
-import LinkProduct from "./pages/LinkProduct";
 
 Vue.config.productionTip = false
 
@@ -110,40 +108,40 @@ const router = new VueRouter({
         }
       ]
     },
-    { path: '/products', component: Catalogs, meta: { protected: true},
-      children: [
-        {
-          path: 'create',
-          components: {
-            edit: CreateProduct
-          }
-        },
-        {
-          path: 'create/presentation',
-          components: {
-            edit: AddPresentation
-          }
-        },
-        {
-          path: 'create/link',
-          components: {
-            edit: LinkProduct
-          }
-        },
-        {
-          path: ':id',
-          components: {
-            edit: CatalogEdit
-          }
-        }
-      ]
-    },
+    // { path: '/products', component: Catalogs, meta: { protected: true},
+    //   children: [
+    //     {
+    //       path: 'create',
+    //       components: {
+    //         edit: CreateProduct
+    //       }
+    //     },
+    //     {
+    //       path: 'create/presentation',
+    //       components: {
+    //         edit: AddPresentation
+    //       }
+    //     },
+    //     {
+    //       path: 'create/link',
+    //       components: {
+    //         edit: LinkProduct
+    //       }
+    //     },
+    //     {
+    //       path: ':id',
+    //       components: {
+    //         edit: CatalogEdit
+    //       }
+    //     }
+    //   ]
+    // },
     { path: '/:itemType', component: Catalogs, meta: { protected: true},
       children: [
         {
           path: 'create',
           components: {
-            edit: CatalogEdit
+            edit: CreateProduct
           }
         },
         {

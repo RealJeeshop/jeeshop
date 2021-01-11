@@ -2,7 +2,7 @@
 
     <div class="item-edit-container">
       <div class="header">
-        <h2>{{ $t("catalogs.products.create.title") }}</h2>
+        <h2>{{ $t(`catalogs.${itemType}.create.title`) }}</h2>
         <span @click="close" class="close-icon"></span>
       </div>
 
@@ -28,27 +28,33 @@
             </v-flex>
           </v-flex>
 
-          <v-flex flex-column>
-            <v-flex align-center justify-space-between>
-              <strong>Ajouter un élément de stock</strong>
-              <v-switch v-model="addProductSKU" inset/>
-            </v-flex>
-            <v-flex v-if="addProductSKU" flex-wrap>
-              <Input label="Name" name="skuName" :value="skuName" :rules="required" @on-update="update"/>
-              <Input label="Reference" name="reference" :value="reference"  @on-update="update"/>
-              <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="update"/>
+          <v-flex v-if="itemType === 'skus'" flex-wrap>
+            <Input label="Name" name="skuName" :value="skuName" :rules="required" @on-update="update"/>
+            <Input label="Reference" name="reference" :value="reference"  @on-update="update"/>
+            <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="update"/>
 
-              <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="currency" @on-update="update"/>
-              <Input label="Price" name="price" :value="price" :rules="required" @on-update="update"/>
+            <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="currency" @on-update="update"/>
+            <Input label="Price" name="price" :value="price" :rules="required" @on-update="update"/>
 
-              <Input label="Threshold" name="threshold" :value="threshold"
-                     placeholder="when the threshold is reached it will send you a notification" @on-update="update"/>
-            </v-flex>
+            <Input label="Threshold" name="threshold" :value="threshold"
+                   placeholder="when the threshold is reached it will send you a notification" @on-update="update"/>
+          </v-flex>
+
+          <v-flex v-if="itemType === 'discounts'" flex-wrap>
+
+            <Select label="Applicable to..." :items="applyTarget" :rules="required" :value="discount.applicableTo"/>
+            <Input label="Voucher code" :value="discount.voucherCode" placeholder="Enter voucher code" hint="Voucher code used by customers"/>
+            <Select label="Type" :items="discountTypes"  :rules="required" :value="discount.type" />
+            <Input label="Value" :value="discount.discountValue" placeholder="Enter a number..." hint="Discount value (rate or amount)"/>
+            <Select label="Trigger threshold rules" :items="thresholdRules" :value="discount.triggerRule"/>
+            <Input label="Threshold" :value="discount.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)"/>
+            <Input label="Number of use per customer" :value="discount.usesPerCustomer" placeholder="Enter a number ..."/>
+            <v-checkbox label="Cumulative" :value="discount.uniqueUse" />
           </v-flex>
 
           <v-flex flex-column>
             <v-flex align-center justify-space-between>
-              <strong>Ajouter une présentation</strong>
+              <strong>Ajouter une présentation ?</strong>
               <v-switch v-model="addPresentation" inset/>
             </v-flex>
             <v-flex v-if="addPresentation" flex-column>
@@ -69,78 +75,68 @@
             </v-flex>
           </v-flex>
 
-          <v-flex flex-column>
-            <v-flex align-center justify-space-between>
-              <strong>Associer une catégorie</strong>
-              <v-switch v-model="addAssociatedItem" inset/>
-            </v-flex>
-            <v-flex v-if="addAssociatedItem" flex-column>
-              <v-flex flex-column>
-                <v-autocomplete
-                    v-model="selectedCategories"
-                    :items="categories"
-                    label="Select one or categories"
-                    item-text="name"
-                    item-value="id"
-                    multiple chips>
-                  <template v-slot:selection="data">
-                    <v-chip
-                        v-bind="data.attrs"
-                        :input-value="data.selected"
-                        close
-                        @click="data.select"
-                        @click:close="remove('categories', data.item)">{{ data.item.name }}</v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template v-if="typeof data.item !== 'object'">
-                      <v-list-item-content v-text="data.item"></v-list-item-content>
-                    </template>
-                    <template v-else>
-                      <v-list-item-content>
-                        <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
+          <div v-if="itemType === 'products'">
+            <v-flex flex-column>
+              <v-flex align-center justify-space-between>
+                <strong>Ajouter un élément de stock</strong>
+                <v-switch v-model="addProductSKU" inset/>
               </v-flex>
-            </v-flex>
-          </v-flex>
+              <v-flex v-if="addProductSKU" flex-wrap>
+                <Input label="Name" name="skuName" :value="skuName" :rules="required" @on-update="update"/>
+                <Input label="Reference" name="reference" :value="reference"  @on-update="update"/>
+                <Input label="Quantity" name="quantity" :rules="required" :value="quantity" @on-update="update"/>
 
-          <v-flex flex-column>
-            <v-flex align-center justify-space-between>
-              <strong>Associer un réduction ?</strong>
-              <v-switch v-model="addDiscount" inset/>
-            </v-flex>
-            <v-flex v-if="addDiscount" flex-wrap>
+                <Select label="Currency" name="currency" :items="currencies" :rules="required" :value="currency" @on-update="update"/>
+                <Input label="Price" name="price" :value="price" :rules="required" @on-update="update"/>
 
-              <v-autocomplete
-                  v-model="selectedDiscounts"
-                  :items="discounts"
-                  label="Select one or more discounts"
-                  item-text="name"
-                  item-value="id"
-                  multiple chips>
-                <template v-slot:selection="data">
-                  <v-chip v-bind="data.attrs" :input-value="data.selected" @click="data.select"
-                          @click:close="remove('discounts', data.item)" close>
-                    {{ data.item.name }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template v-if="typeof data.item !== 'object'">
-                    <v-list-item-content v-text="data.item"></v-list-item-content>
-                  </template>
-                  <template v-else>
-                    <v-list-item-content>
-                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
+                <Input label="Threshold" name="threshold" :value="threshold"
+                       placeholder="when the threshold is reached it will send you a notification" @on-update="update"/>
+              </v-flex>
+
+              <AutocompleteInput :items="categories"
+                                 label="Select one or more categories"
+                                 title="Associer des catégories ?"
+                                 @on-update="updateSelectedCategories"/>
+
+              <AutocompleteInput :items="discounts"
+                                 label="Select one or more discounts"
+                                 title="Associer des réductions ?"
+                                 @on-update="updateSelectedDiscounts"/>
 
             </v-flex>
-          </v-flex>
+          </div>
 
+          <div v-if="itemType === 'categories'">
+
+            <AutocompleteInput :items="categories"
+                               label="Select one or more categories"
+                               title="Associer des catégories ?"
+                               @on-update="updateSelectedCategories"/>
+
+            <AutocompleteInput :items="products"
+                               label="Select one or more products"
+                               title="Associer des produits ?"
+                               @on-update="updateSelectedProducts"/>
+
+          </div>
+
+          <div v-if="itemType === 'catalogs'">
+
+            <AutocompleteInput :items="categories"
+                               label="Select one or more categories"
+                               title="Associer des catégories ?"
+                               @on-update="updateSelectedCategories"/>
+
+          </div>
+
+          <div v-if="itemType === 'skus'">
+
+            <AutocompleteInput :items="discounts"
+                               label="Select one or more discount"
+                               title="Associer des réduction ?"
+                               @on-update="updateSelectedDiscounts"/>
+
+          </div>
         </v-form>
         <v-btn color="primary" elevation="2" @click="saveItem()">Sauvegarder</v-btn>
       </div>
@@ -155,12 +151,14 @@ import DateField from "@/components/inputs/DateField";
 import FileInput from "@/components/inputs/FileInput";
 import Textarea from "@/components/inputs/Textarea";
 import {mapState} from "vuex";
+import AutocompleteInput from "@/components/inputs/AutocompleteInput";
 
 export default {
   name: 'CreateProduct',
-  components: {Input, DateField, Select, FileInput, Textarea},
+  components: {AutocompleteInput, Input, DateField, Select, FileInput, Textarea},
   data() {
     return {
+      itemType: undefined,
       name: undefined,
       required: [
         value => !!value || this.$t("common.required"),
@@ -172,16 +170,28 @@ export default {
       isLimitedInTime: false,
       addProductSKU: false,
       addPresentation: false,
-      addAssociatedItem: false,
-      addDiscount: false,
       reference: undefined,
       quantity: undefined,
       price: undefined,
       currency: undefined,
       threshold: undefined,
       presentation: {},
+      discount: {},
+      sku: {},
       selectedCategories: [],
       selectedDiscounts: [],
+      selectedProducts: [],
+      applyTarget: [{value: "ORDER", text: "An order"}, {value: "ITEM", text: "An item"}],
+      discountTypes: [{value: "DISCOUNT_RATE", text: "Discount rate"},
+        {value: "ORDER_DISCOUNT_AMOUNT", text: "Order amount discount"},
+        {value: "SHIPPING_FEE_DISCOUNT_AMOUNT", text: "Shipping fee amount discount"}
+      ],
+      thresholdRules: [
+        {value: "QUANTITY", text: "Specific quantity"},
+        {value: "AMOUNT", text: "Specific price"},
+        {value: "ORDER_NUMBER", text: "Number of orders (1 means first)"}
+      ],
+      yesNo: ["Yes", "No"],
       currencies: [{value: "EUR", text: "Euros"}, {value: "USD", text: "Dollars"}]
     }
   },
@@ -192,6 +202,9 @@ export default {
       },
       discounts(state) {
         return state.catalogs.discounts.filter(d => d.applicableTo === "ITEM")
+      },
+      products(state) {
+        return state.catalogs.products
       }
     })
   },
@@ -219,11 +232,11 @@ export default {
             endDate: this.endDate,
           },
           presentation: this.addPresentation ? this.presentation : null,
-          rootCategoriesIds: this.addAssociatedItem ? this.selectedCategories : null,
-          discountsIds: this.addDiscount ? this.selectedDiscounts : null
+          rootCategoriesIds: this.selectedCategories,
+          discountsIds: this.selectedDiscounts
         })
 
-        this.$router.push("/products/create/presentation")
+        this.$router.back()
       }
     },
     update({key, value}) {
@@ -231,22 +244,25 @@ export default {
     },
     updatePresentation({key, value}) {
       this.presentation[key] = value
-
+    },
+    updateSelectedCategories(categories) {
+      this.selectedCategories = categories
+    },
+    updateSelectedDiscounts(discounts) {
+      this.selectedDiscounts = discounts
+    },
+    updateSelectedProducts(products) {
+      this.selectedProducts= products
     },
     close() {
       this.$router.back()
-    },
-    remove(itemType, item) {
-
-      if (itemType === 'categories'){
-        let index = this.selectedCategories.findIndex(c => c.id === item.id)
-        this.selectedCategories.splice(index, 1)
-
-      } else if (itemType === 'discounts') {
-        let index = this.selectedDiscounts.findIndex(c => c === item.id)
-        this.selectedDiscounts.splice(index, 1)
-      }
     }
+  },
+  created() {
+    this.itemType = this.$route.params.itemType
+  },
+  updated() {
+    console.log("updating catalog edit")
   }
 }
 </script>

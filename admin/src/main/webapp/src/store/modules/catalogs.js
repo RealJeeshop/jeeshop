@@ -62,6 +62,15 @@ const actions = {
         commit('addItem', {itemType, item})
     },
 
+    attachPresentation({commit}, {itemType, itemId, presentation}) {
+        commit('setLocale', {
+            itemType: itemType,
+            itemId: itemId,
+            locale: presentation.locale,
+            presentation: presentation
+        })
+    },
+
     getPresentation({ commit }, {itemType, itemId, locale}) {
         CatalogAPI.getPresentation(itemType, itemId, locale)
             .then(response => commit('setLocale', {

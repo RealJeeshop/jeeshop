@@ -39,7 +39,6 @@
         },
         methods: {
             update() {
-              console.log("ho")
                 this.$emit('on-update', {key: this.name, value: this.insideValue})
             }
         }
