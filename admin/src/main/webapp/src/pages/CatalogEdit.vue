@@ -154,7 +154,7 @@ export default {
                   let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
 
                   if (find) {
-                    console.log('find : ' + JSON.stringify(find))
+
                     this.presentations = {
                       itemType: this.itemType,
                       itemId: this.itemId,
@@ -201,12 +201,16 @@ export default {
                 return DateUtils.formatDate(date)
             },
             onSelectLocale(locale) {
-              console.log('localer : ' + JSON.stringify(locale))
                 this.locale = locale
+                this.$store.dispatch("catalogs/getPresentation", {
+                  itemType: this.itemType,
+                  itemId: this.itemId,
+                  locale: locale
+                })
+
                 this.showLocaleEdition = true
             },
             saveLocale(presentation) {
-              console.log("FUCK")
                 this.showLocaleEdition = false
                 this.$store.dispatch("catalogs/attachPresentation", {
                   itemType: this.itemType,
@@ -239,11 +243,8 @@ export default {
             }
         },
         created() {
-            console.log("creating catalog edit")
+
             this.fetchItem()
-        },
-        updated() {
-            console.log("updating catalog edit")
         }
 
 

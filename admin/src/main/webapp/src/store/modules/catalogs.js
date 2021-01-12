@@ -30,6 +30,14 @@ const getters = {
          return items.find(item => {
              return item.id === parseInt(id)
         })
+    },
+
+    getPresentation : (state) => (itemType, itemId, locale) => {
+
+        let find = state[itemType].find(i => i.id === itemId);
+        if (find && find.availableLocales && find.availableLocales[locale]) {
+            return find.availableLocales[locale]
+        } else return null
     }
 }
 
@@ -71,13 +79,17 @@ const actions = {
         })
     },
 
-    getPresentation({ commit }, {itemType, itemId, locale}) {
+    getPresentation({ getters, commit }, {itemType, itemId, locale}) {
+
+       let cachedPresentation = getters.getPresentation(itemType, itemId, locale)
+       if (cachedPresentation) return;
+
         CatalogAPI.getPresentation(itemType, itemId, locale)
-            .then(response => commit('setLocale', {
+            .then(presentation => commit('setLocale', {
                 itemType: itemType,
                 itemId: itemId,
                 locale: locale,
-                presentation: response
+                presentation: presentation
 
             })).catch(error => console.log('error : ' + JSON.stringify(error)));
     },
@@ -101,7 +113,6 @@ const actions = {
 
         try {
 
-            console.log('payload : ' + JSON.stringify(payload))
             let sku = payload.sku
             let presentation = payload.presentation
 
@@ -151,14 +162,16 @@ const actions = {
                 await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, 'discoounts', payload.discountsIds)
             }
 
-            console.log('presentation : ' + JSON.stringify(presentation))
             if (presentation) {
+               let insertedPresentation = await CatalogAPI.createLocalizedPresentation(itemType, insertedItemId,
+                   "fr", presentation)
 
-                console.log("inserting presentation")
-                let result = await CatalogAPI.createLocalizedPresentation(itemType,
-                    insertedItemId, "fr_FR", presentation)
-                console.log('result : ' + JSON.stringify(result))
-
+                commit('setLocale', {
+                    itemType: itemType,
+                    itemId: insertedItemId,
+                    locale: insertedPresentation.locale,
+                    presentation: insertedPresentation
+                })
             }
 
             commit('setAddCatalogStatus', {status: 'successful'})
@@ -170,44 +183,6 @@ const actions = {
         }
 
     },
-
-    // async insertProductWithSku({ commit }, {product, sku, presentation, rootCategoriesIds, discountsIds}) {
-    //
-    //     try {
-    //
-    //         if (sku) {
-    //             let insertedSKU = await CatalogAPI.upsert('skus', sku)
-    //             commit('addItem', {itemType: 'skus', item: insertedSKU.data})
-    //             product.childSKUsIds = [insertedSKU.data.id]
-    //         }
-    //
-    //         let insertedProduct = await CatalogAPI.upsert('products', product)
-    //         commit('addItem', {itemType: 'products', item: insertedProduct.data})
-    //
-    //         let insertedProductId = insertedProduct.data.id;
-    //
-    //         if (presentation) {
-    //             await CatalogAPI.createLocalizedPresentation('products',
-    //                 insertedProductId, "fr_FR", presentation)
-    //         }
-    //
-    //         if (rootCategoriesIds) {
-    //             for (const id of rootCategoriesIds) {
-    //                 await CatalogAPI.attachProductToCategory(id, [insertedProductId])
-    //             }
-    //         }
-    //
-    //         if (discountsIds) {
-    //             await CatalogAPI.attachDiscountsToProduct([insertedProductId], discountsIds)
-    //         }
-    //
-    //         commit('setAddCatalogStatus', {status: 'successful'})
-    //
-    //     } catch (e) {
-    //         console.log('e : ' + JSON.stringify(e))
-    //         commit('setAddCatalogStatus', {status: 'failed', message: 'An error occurred creating product'})
-    //     }
-    // },
 
     setCatalogActionStatus({commit}, status) {
         commit('setAddCatalogStatus', status)
@@ -232,12 +207,16 @@ const mutations = {
     setLocale(state, payload) {
         let existingId = state[payload.itemType].findIndex(item => item.id === payload.itemId)
         if (existingId !== -1) {
+            let newLocale = payload.locale
+            //newLocale[payload.locale] = payload.presentation
 
-            let newLocale = {}
-            newLocale[payload.locale] = payload.presentation
 
             let item = _.cloneDeep(state[payload.itemType][existingId])
-            item.availableLocales = Object.assign({}, item.availableLocales, newLocale)
+            item.localizedPresentation = _.union(item.localizedPresentation, [newLocale])
+
+            let newAvailableLocale = {}
+            newAvailableLocale[payload.locale] = payload.presentation;
+            item.availableLocales = Object.assign({}, item.availableLocales ? item.availableLocales : {}, newAvailableLocale)
             state[payload.itemType][existingId] = _.cloneDeep(item)
         }
     },

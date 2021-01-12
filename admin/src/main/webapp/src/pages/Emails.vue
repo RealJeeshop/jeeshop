@@ -56,7 +56,6 @@
                 this.$router.push('/emails/create')
             },
             handleItemSelection(id) {
-                console.log('selected mail template id : ' + JSON.stringify(id))
                 this.$router.push(`/emails/${id}`)
             }
         },

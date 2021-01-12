@@ -152,6 +152,7 @@ import FileInput from "@/components/inputs/FileInput";
 import Textarea from "@/components/inputs/Textarea";
 import {mapState} from "vuex";
 import AutocompleteInput from "@/components/inputs/AutocompleteInput";
+import moment from 'moment'
 
 export default {
   name: 'CreateProduct',
@@ -245,9 +246,9 @@ export default {
       let defaultPayload = {
         name: this.name,
         description: this.description,
-        startDate: this.startDate,
-        endDate: this.endDate,
-        presentation: this.addPresentation ?this.presentation : null
+        startDate: moment(this.startDate).toISOString(),
+        endDate: moment(this.endDate).toISOString(),
+        presentation: this.addPresentation ? this.presentation : null
       }
 
       if (this.itemType === 'catalogs') {
@@ -265,7 +266,10 @@ export default {
         return Object.assign(defaultPayload, {
           categoriesIds: this.selectedCategories,
           discountsIds: this.selectedDiscounts,
-          sku: this.addProductSKU ? this.sku : null
+          sku: this.addProductSKU ? Object.assign(this.sku, {
+            startDate: moment(this.startDate).toISOString(),
+              endDate: moment(this.endDate).toISOString()
+          }) : null
         })
 
       } else if (this.itemType === 'skus') {
@@ -305,9 +309,6 @@ export default {
   },
   created() {
     this.itemType = this.$route.params.itemType
-  },
-  updated() {
-    console.log("updating catalog edit")
   }
 }
 </script>

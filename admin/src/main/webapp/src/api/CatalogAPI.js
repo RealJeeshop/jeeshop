@@ -14,9 +14,8 @@ const CatalogAPI = {
             axios.all([axios.get(`/rs/${itemType}/${id}`), CatalogAPI.getLocales(itemType, id)].concat(additionalRequests)
             ).then(axios.spread((...responses) => {
 
-                const item = Object.assign(responses[0].data,
-                    { localizedPresentation: responses[1].data },
-                    handleResponseByItemType(itemType, responses[1].data, responses))
+                const item = Object.assign(handleResponseByItemType(itemType, responses[0].data, responses),
+                    { localizedPresentation: responses[1].data })
 
                 let allPresentations = item.localizedPresentation
                     .map(locale => this.getPresentation(itemType, id, locale));
@@ -26,7 +25,8 @@ const CatalogAPI = {
                         for(let i=0; i < item.localizedPresentation.length; i++) {
                             let newObject = {}
                             newObject[responses[i].locale] = responses[i]
-                            item.availableLocales = Object.assign(item.availableLocales ? item.availableLocales : {}, newObject)
+                            let availableLocales = Object.assign(item.availableLocales ? item.availableLocales : {}, newObject);
+                            item.availableLocales = availableLocales
                         }
 
                         success(item)

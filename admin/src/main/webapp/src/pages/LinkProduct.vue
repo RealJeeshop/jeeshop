@@ -109,7 +109,6 @@ export default {
       },
       discounts(state) {
         return state.catalogs.discounts.filter(d => {
-          console.log('d : ' + JSON.stringify(d.applicableTo))
           return d.applicableTo === "ITEM"
         })
       }

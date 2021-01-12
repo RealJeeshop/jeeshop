@@ -55,7 +55,6 @@
                 this.$router.push('/users/create')
             },
             handleItemSelection(id) {
-                console.log('selected user id : ' + JSON.stringify(id))
                 this.$router.push(`/users/${id}`)
             }
         },
