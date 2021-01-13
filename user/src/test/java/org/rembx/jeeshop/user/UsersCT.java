@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.user;
 
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

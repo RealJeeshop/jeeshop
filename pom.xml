@@ -12,7 +12,7 @@
     <module>install</module>
     <module>catalog</module>
     <module>user</module>
-    <module>store</module>
+<!--    <module>store</module>-->
     <module>admin</module>
     <module>common</module>
     <module>media</module>
@@ -210,6 +210,11 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire-plugin.version}</version>
+          <configuration>
+            <includes>
+              <include>**/*CT.java</include>
+            </includes>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

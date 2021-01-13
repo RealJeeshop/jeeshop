@@ -6,15 +6,14 @@ import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -23,8 +22,8 @@ import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * @author remi
@@ -32,27 +31,27 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 @Path("/discounts")
 @ApplicationScoped
-public class Discounts {
+public class Discounts implements CatalogItemService<Discount> {
 
-    @Resource
-    SecurityContext sessionContext;
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
     private DiscountFinder discountFinder;
 
-    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource, DiscountFinder discountFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
+        this.discountFinder = discountFinder;
     }
 
     @POST
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Discount create(Discount discount) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Discount create(@Context SecurityContext securityContext, Discount discount) {
+        attachOwner(securityContext, discount);
         entityManager.persist(discount);
         return discount;
     }
@@ -61,38 +60,44 @@ public class Discounts {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{discountId}")
-    public void delete(@PathParam("discountId") Long discountId) {
+    public void delete(@Context SecurityContext securityContext, @PathParam("discountId") Long discountId) {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
 
-        List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.discounts, discount);
-        for (Product product : productHolders) {
-            product.getDiscounts().remove(discount);
-        }
+        if (isAdminUser(securityContext) || isOwner(securityContext, discount.getOwner())) {
 
-        List<SKU> skuHolders = catalogItemFinder.findForeignHolder(QSKU.sKU, QSKU.sKU.discounts, discount);
-        for (SKU sku : skuHolders) {
-            sku.getDiscounts().remove(discount);
-        }
+            List<Product> productHolders = catalogItemFinder.findForeignHolder(QProduct.product, QProduct.product.discounts, discount);
+            for (Product product : productHolders) {
+                product.getDiscounts().remove(discount);
+            }
 
-        entityManager.remove(discount);
+            List<SKU> skuHolders = catalogItemFinder.findForeignHolder(QSKU.sKU, QSKU.sKU.discounts, discount);
+            for (SKU sku : skuHolders) {
+                sku.getDiscounts().remove(discount);
+            }
 
+            entityManager.remove(discount);
+
+        } else throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     @PUT
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Discount modify(Discount discount) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Discount modify(@Context SecurityContext securityContext, Discount discount) {
         Discount originalDiscount = entityManager.find(Discount.class, discount.getId());
         checkNotNull(originalDiscount);
 
-        discount.setPresentationByLocale(originalDiscount.getPresentationByLocale());
+        if (isAdminUser(securityContext) || isOwner(securityContext, discount.getOwner())) {
 
-        return entityManager.merge(discount);
+            discount.setPresentationByLocale(originalDiscount.getPresentationByLocale());
+            return entityManager.merge(discount);
+
+        } else throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     @GET
@@ -100,11 +105,11 @@ public class Discounts {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Discount> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(discount, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(discount, search, start, size, orderBy, isDesc, locale);
         else
-            return catalogItemFinder.findAll(discount, start, size, orderBy, isDesc);
+            return catalogItemFinder.findAll(discount, start, size, orderBy, isDesc, locale);
     }
 
 
@@ -131,10 +136,12 @@ public class Discounts {
     @GET
     @Path("/{discountId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Discount find(@PathParam("discountId") @NotNull Long discountId, @QueryParam("locale") String locale) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Discount find(@Context SecurityContext securityContext, @PathParam("discountId") @NotNull Long discountId, @QueryParam("locale") String locale) {
         Discount discount = entityManager.find(Discount.class, discountId);
-        if (isAdminUser(sessionContext))
+        checkNotNull(discount);
+
+        if (isAdminUser(securityContext) || isOwner(securityContext, discount.getOwner()))
             return discount;
         else
             return catalogItemFinder.filterVisible(discount, locale);
@@ -143,10 +150,15 @@ public class Discounts {
     @GET
     @Path("/{discountId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("discountId") @NotNull Long discountId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("discountId") @NotNull Long discountId) {
+
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, discount.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return discount.getPresentationByLocale().keySet();
     }
 

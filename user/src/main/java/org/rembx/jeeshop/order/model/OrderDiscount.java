@@ -1,16 +1,7 @@
 package org.rembx.jeeshop.order.model;
 
-import org.rembx.jeeshop.user.model.Address;
-import org.rembx.jeeshop.user.model.User;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
 
 /**
  * OrderDiscount entity

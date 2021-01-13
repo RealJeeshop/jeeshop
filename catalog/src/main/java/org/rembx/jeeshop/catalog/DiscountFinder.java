@@ -7,9 +7,7 @@ import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +16,7 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 @ApplicationScoped
 public class DiscountFinder {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     DiscountFinder(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;

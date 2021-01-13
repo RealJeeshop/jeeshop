@@ -11,19 +11,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Build with Maven
-      run: mvn package -Dquarkus.package.type=fast-jar
+      - name: Build with Maven
+        run: mvn -B package -Dquarkus.package.type=fast-jar --file pom.xml
 
-    - name: Dockerize
-      run: docker build -t jeeshop/admin .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
-    - name: Deploy to Docker hub
-      run:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        if: contains( github.ref, 'master') || contains( github.ref, 'develop')
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        if: contains( github.ref, 'develop')
+        id: docker_build_develop
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: jeeshop/admin:dev
+
+      - name: Build and push
+        if: contains( github.ref, 'master')
+        id: docker_build_master
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: jeeshop/admin:latest
+
+      - name: Image digest
+        if: contains( github.ref, 'master')
+        run: echo ${{ steps.docker_build.outputs.digest }}

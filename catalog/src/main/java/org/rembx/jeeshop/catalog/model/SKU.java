@@ -1,13 +1,10 @@
 package org.rembx.jeeshop.catalog.model;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +35,6 @@ public class SKU extends CatalogItem{
     @JoinTable(joinColumns = @JoinColumn(name = "skuId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient
@@ -53,8 +49,18 @@ public class SKU extends CatalogItem{
     public SKU() {
     }
 
+    public SKU(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public SKU(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public SKU(String name, String description, Double price, Integer quantity, String reference,
-                Date startDate, Date endDate, Boolean disabled, Integer threshold) {
+               Date startDate, Date endDate, Boolean disabled, Integer threshold, String owner) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -64,6 +70,7 @@ public class SKU extends CatalogItem{
         this.startDate = startDate;
         this.endDate = endDate;
         this.threshold = threshold;
+        this.owner = owner;
     }
 
     public SKU(Long id, String name, String description, Double price, Integer quantity, String reference,

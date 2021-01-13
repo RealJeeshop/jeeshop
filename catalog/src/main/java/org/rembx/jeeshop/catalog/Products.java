@@ -23,12 +23,12 @@ import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/products")
 @ApplicationScoped
-public class Products {
+public class Products implements CatalogItemService<Product> {
 
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
@@ -44,8 +44,11 @@ public class Products {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @RolesAllowed(ADMIN)
-    public Product create(Product product) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Product create(@Context SecurityContext securityContext, Product product) {
+
+        attachOwner(securityContext, product);
+
         if (product.getChildSKUsIds() != null) {
             List<SKU> newSkus = new ArrayList<>();
             product.getChildSKUsIds().forEach(skuId -> newSkus.add(entityManager.find(SKU.class, skuId)));
@@ -64,55 +67,66 @@ public class Products {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{productId}")
-    public void delete(@PathParam("productId") Long productId) {
+    public void delete(@Context SecurityContext securityContext, @PathParam("productId") Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
 
-        List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childProducts, product);
-        for (Category category : categoryHolders) {
-            category.getChildProducts().remove(product);
+        if (isAdminUser(securityContext) || isOwner(securityContext, product.getOwner())) {
+            List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childProducts, product);
+            for (Category category : categoryHolders) {
+                category.getChildProducts().remove(product);
+            }
+
+            List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.products, product);
+            for (Discount discount : discountHolders) {
+                product.getDiscounts().remove(discount);
+                discount.getProducts().remove(product);
+            }
+
+            entityManager.remove(product);
+
+        } else {
+
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
-
-        List<Discount> discountHolders = catalogItemFinder.findForeignHolder(QDiscount.discount, QDiscount.discount.products, product);
-        for (Discount discount : discountHolders) {
-            product.getDiscounts().remove(discount);
-            discount.getProducts().remove(product);
-        }
-
-        entityManager.remove(product);
-
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @RolesAllowed(ADMIN)
-    public Product modify(Product product) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Product modify(@Context SecurityContext securityContext, Product product) {
         Product originalProduct = entityManager.find(Product.class, product.getId());
         checkNotNull(originalProduct);
 
-        if (product.getChildSKUsIds() != null) {
-            List<SKU> newSkus = new ArrayList<>();
-            product.getChildSKUsIds().forEach(skuId -> newSkus.add(entityManager.find(SKU.class, skuId)));
-            product.setChildSKUs(newSkus);
+        if (isAdminUser(securityContext) || isOwner(securityContext, originalProduct.getOwner())) {
+
+            if (product.getChildSKUsIds() != null) {
+                List<SKU> newSkus = new ArrayList<>();
+                product.getChildSKUsIds().forEach(skuId -> newSkus.add(entityManager.find(SKU.class, skuId)));
+                product.setChildSKUs(newSkus);
+            } else {
+                product.setChildSKUs(originalProduct.getChildSKUs());
+            }
+
+            if (product.getDiscountsIds() != null) {
+                List<Discount> newDiscounts = new ArrayList<>();
+                product.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+                product.setDiscounts(newDiscounts);
+            } else {
+                product.setDiscounts(originalProduct.getDiscounts());
+            }
+
+            product.setPresentationByLocale(originalProduct.getPresentationByLocale());
+
+            return entityManager.merge(product);
+
         } else {
-            product.setChildSKUs(originalProduct.getChildSKUs());
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
-
-        if (product.getDiscountsIds() != null) {
-            List<Discount> newDiscounts = new ArrayList<>();
-            product.getDiscountsIds().forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
-            product.setDiscounts(newDiscounts);
-        } else {
-            product.setDiscounts(originalProduct.getDiscounts());
-        }
-
-        product.setPresentationByLocale(originalProduct.getPresentationByLocale());
-
-        return entityManager.merge(product);
     }
 
     @PUT
@@ -143,11 +157,11 @@ public class Products {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public List<Product> findAll(@QueryParam("search") String search, @QueryParam("start") Integer start, @QueryParam("size") Integer size
-            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc) {
+            , @QueryParam("orderBy") String orderBy, @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
         if (search != null)
-            return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc);
+            return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc, locale);
         else
-            return catalogItemFinder.findAll(product, start, size, orderBy, isDesc);
+            return catalogItemFinder.findAll(product, start, size, orderBy, isDesc, locale);
     }
 
     @GET
@@ -167,7 +181,8 @@ public class Products {
     @PermitAll
     public Product find(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId, @QueryParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
-        if (isAdminUser(sessionContext))
+        checkNotNull(product);
+        if (isAdminUser(sessionContext) || isOwner(sessionContext, product.getOwner()))
             return product;
         else
             return catalogItemFinder.filterVisible(product, locale);
@@ -176,10 +191,14 @@ public class Products {
     @GET
     @Path("/{productId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("productId") @NotNull Long productId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, product.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return product.getPresentationByLocale().keySet();
     }
 
@@ -204,7 +223,7 @@ public class Products {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext))
+        if (isAdminUser(sessionContext) || isOwner(sessionContext, product.getOwner()))
             return childSKUs;
         else
             return catalogItemFinder.findVisibleCatalogItems(sKU, childSKUs, locale);
@@ -213,7 +232,7 @@ public class Products {
     @GET
     @Path("/{productId}/discounts")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
     public List<Discount> findDiscounts(@Context SecurityContext sessionContext, @PathParam("productId") @NotNull Long productId) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
@@ -222,7 +241,7 @@ public class Products {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext))
+        if (isAdminUser(sessionContext) || isOwner(sessionContext, product.getOwner()))
             return discounts;
         else
             return catalogItemFinder.findVisibleCatalogItems(discount, discounts, null);

@@ -23,6 +23,7 @@ ApplicationConfig extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
+        classes.add(Stores.class);
         classes.add(Catalogs.class);
         classes.add(Categories.class);
         classes.add(Products.class);

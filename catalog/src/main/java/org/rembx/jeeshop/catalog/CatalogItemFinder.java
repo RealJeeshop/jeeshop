@@ -8,21 +8,23 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.quarkus.hibernate.orm.PersistenceUnit;
+import io.quarkus.security.identity.SecurityIdentity;
 import org.apache.commons.lang.math.NumberUtils;
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.QCatalogItem;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.rembx.jeeshop.catalog.model.QStore.store;
 
 /**
  * Utility class for common finders on CatalogItem entities
@@ -48,20 +50,28 @@ public class CatalogItemFinder {
                 )
                 .fetch();
 
-        results.forEach((catalogItem) -> catalogItem.setLocalizedPresentation(locale));
+        results.forEach((catalogItem) -> {
+            catalogItem.setLocalizedPresentation(locale);
+            mapCatalogItemChildrenPresentation(catalogItem, locale);
+        });
 
         return results;
 
     }
 
-    public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+    public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
         JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath);
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.fetch();
+        List<T> catalogItems = query.fetch();
+        return locale != null
+                ? catalogItems.stream().peek(c -> {
+                    c.setLocalizedPresentation(locale);
+                    mapCatalogItemChildrenPresentation(c, locale);
+                }).collect(Collectors.toList()) : catalogItems;
     }
 
 
@@ -75,7 +85,7 @@ public class CatalogItemFinder {
     }
 
     public <T extends CatalogItem> List<T> findBySearchCriteria(EntityPath<T> entityPath, String searchCriteria,
-                                                                Integer offset, Integer limit, String orderBy, Boolean isDesc) {
+                                                                Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 
         JPAQuery<T> query = new JPAQueryFactory(entityManager).selectFrom(entityPath)
@@ -83,7 +93,13 @@ public class CatalogItemFinder {
 
         addOffsetAndLimitToQuery(offset, limit, query, orderBy, isDesc, qCatalogItem);
 
-        return query.fetch();
+        List<T> fetch = query.fetch();
+        return locale != null
+                ? fetch.stream().peek(c -> {
+                    c.setLocalizedPresentation(locale);
+                    mapCatalogItemChildrenPresentation(c, locale);
+                    }).collect(Collectors.toList())
+                : fetch;
     }
 
     public Long countAll(EntityPath<? extends CatalogItem> entityPath) {
@@ -111,8 +127,34 @@ public class CatalogItemFinder {
         }
 
         catalogItem.setLocalizedPresentation(locale);
+        mapCatalogItemChildrenPresentation(catalogItem, locale);
 
         return catalogItem;
+    }
+
+    private <T extends CatalogItem> void mapCatalogItemChildrenPresentation(T catalogItem, String locale) {
+
+        if (locale == null) return;
+
+        if (catalogItem instanceof Catalog) {
+            ((Catalog) catalogItem).setRootCategories(((Catalog) catalogItem).getRootCategories().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+        } else if (catalogItem instanceof Category) {
+            ((Category) catalogItem).setChildCategories(((Category) catalogItem).getChildCategories().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+        } else if (catalogItem instanceof Product) {
+            ((Product) catalogItem).setChildSKUs(((Product) catalogItem).getChildSKUs().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+
+            ((Product) catalogItem).setDiscounts(((Product) catalogItem).getDiscounts().stream()
+                    .peek(c -> c.setLocalizedPresentation(locale))
+                    .collect(Collectors.toList()));
+        }
     }
 
     private void addOffsetAndLimitToQuery(Integer offset, Integer limit, JPAQuery query, String orderBy, Boolean isDesc, QCatalogItem qCatalogItem) {
@@ -155,4 +197,21 @@ public class CatalogItemFinder {
         }
     }
 
+    public <T extends CatalogItem> T findOne(EntityPath<T> entityPath, Long itemId, SecurityContext securityIdentity) {
+
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        JPAQuery<T> query = new JPAQueryFactory(entityManager)
+                .selectFrom(entityPath)
+                .where(qCatalogItem.id.eq(itemId));
+
+        if (securityIdentity.isUserInRole(JeeshopRoles.ADMIN)) {
+            return query.fetchOne();
+
+        } else if (securityIdentity.isUserInRole(JeeshopRoles.STORE_ADMIN)) {
+            return query.where(qCatalogItem.owner.eq(securityIdentity.getUserPrincipal().getName()))
+                    .fetchOne();
+        }
+
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
 }

@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import io.quarkus.undertow.runtime.HttpSessionContext;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +16,9 @@ import org.rembx.jeeshop.role.JeeshopRoles;
 import org.rembx.jeeshop.user.MailTemplateFinder;
 import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.Address;
-
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import org.rembx.jeeshop.user.test.TestUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,6 +43,7 @@ public class OrdersCT {
     private EntityManager catalogEntityManager;
     private TestOrder testOrder;
     private TestCatalog testCatalog;
+    private TestUser testUser;
 
 
     private SecurityContext sessionContextMock;
@@ -63,6 +63,7 @@ public class OrdersCT {
     public void setup() {
         testOrder = TestOrder.getInstance();
         testCatalog = TestCatalog.getInstance();
+        testUser = TestUser.getInstance();
 
         entityManager = emf.createEntityManager();
         catalogEntityManager = catalogEmf.createEntityManager();
@@ -395,6 +396,7 @@ public class OrdersCT {
 
         entityManager.getTransaction().begin();
         Order order = new Order();
+        order.setUser(testUser.firstUser());
         order.setStatus(OrderStatus.VALIDATED);
         entityManager.persist(order);
         entityManager.getTransaction().commit();

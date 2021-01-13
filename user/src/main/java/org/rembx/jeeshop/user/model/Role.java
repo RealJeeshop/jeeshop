@@ -16,7 +16,6 @@ public class Role {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleName name;

@@ -27,12 +27,12 @@ services:
       JEESHOP_CATALOG_DATABASE_USERNAME: jeeshop
       JEESHOP_CATALOG_DATABASE_PASSWORD: test
       JEESHOP_CATALOG_JDBC_DRIVER: postgresql
-      JEESHOP_MEDIADIR: /tmp
+      JEESHOP_DATA_DIR: /jeeshop
       PROXY_ADDRESS_FORWARDING: "true"
     ports:
       - 8443:8443
     volumes:
-      - ./images:/tmp
+      - ./images:/jeeshop
     depends_on:
       - postgres-jeeshop-admin
 

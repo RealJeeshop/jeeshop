@@ -1,11 +1,14 @@
 package org.rembx.jeeshop.catalog.test;
 
+import com.google.common.collect.Lists;
 import org.assertj.core.api.AbstractAssert;
 import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -26,6 +29,10 @@ public class TestCatalog {
     private final static Date tomorrow = Timestamp.from(ZonedDateTime.now().plusDays(1).toInstant());
     private final static Date yesterday = Timestamp.from(ZonedDateTime.now().minusDays(1).toInstant());
 
+    public final static String OWNER = "777@test.com";
+
+    private static Store store;
+    private static Store hiddenStore;
 
     private static Catalog catalog;
     private static Catalog emptyCatalog;
@@ -52,6 +59,7 @@ public class TestCatalog {
 
     private static Discount discount1;
 
+
     public static TestCatalog getInstance() {
         if (instance != null)
             return instance;
@@ -61,21 +69,23 @@ public class TestCatalog {
         entityManager.getTransaction().begin();
 
         emptyCatalog = new Catalog("empty");
+        emptyCatalog.setOwner(OWNER);
         entityManager.persist(emptyCatalog);
 
         catalog = new Catalog("test");
+        catalog.setOwner(OWNER);
 
-        rootCat1Empty = new Category("rootCat1", "Root category 1 empty", now, tomorrow, false);
-        rootCat2 = new Category("rootCat2", "Root category 2 with child categories", now, tomorrow, false);
-        rootCat3Expired = new Category("rootCat3", "Root category 3 expired", now, yesterday, false);
+        rootCat1Empty = new Category("rootCat1", "Root category 1 empty", now, tomorrow, false, OWNER);
+        rootCat2 = new Category("rootCat2", "Root category 2 with child categories", now, tomorrow, false, OWNER);
+        rootCat3Expired = new Category("rootCat3", "Root category 3 expired", now, yesterday, false, OWNER);
 
 
-        childCat1Empty = new Category("childCat1", "Child category 1", now, tomorrow, false);
-        childCat2 = new Category("childCat2", "Child category 2 with products", now, tomorrow, false);
-        childCat3Expired = new Category("childCat3", "Child category 3 expired", now, yesterday, false);
-        childCat4Disabled = new Category("childCat4", "Child category 4 disabled", now, tomorrow, true);
-        childCat5WithPresentation = new Category("childCat5", "Child category 5 with presentation", now, tomorrow, false);
-        childCat6WithoutPresentation = new Category("childCat6", "Child category 6 without presentation", now, tomorrow, true);
+        childCat1Empty = new Category("childCat1", "Child category 1", now, tomorrow, false, OWNER);
+        childCat2 = new Category("childCat2", "Child category 2 with products", now, tomorrow, false, OWNER);
+        childCat3Expired = new Category("childCat3", "Child category 3 expired", now, yesterday, false, OWNER);
+        childCat4Disabled = new Category("childCat4", "Child category 4 disabled", now, tomorrow, true, OWNER);
+        childCat5WithPresentation = new Category("childCat5", "Child category 5 with presentation", now, tomorrow, false, OWNER);
+        childCat6WithoutPresentation = new Category("childCat6", "Child category 6 without presentation", now, tomorrow, true, OWNER);
         childCat6WithoutPresentation.setPresentationByLocale(new HashMap<>());
         Presentation presentationUKChildCat5 = new Presentation("en", "Chocolat cakes", PresentationTexts.TEXT_1000, PresentationTexts.TEXT_2000);
         Presentation presentationUSChildCat5 = new Presentation("en_US", "Chocolat cakes", PresentationTexts.TEXT_1000, PresentationTexts.TEXT_2000);
@@ -84,18 +94,18 @@ public class TestCatalog {
             put(Locale.US.toString(), presentationUSChildCat5);
         }});
 
-        product1 = new Product("product1", "description", now, tomorrow, false);
-        product2Expired = new Product("product2", "description", now, yesterday, false);
-        product3Disabled = new Product("product3", "description", now, yesterday, true);
-        product4 = new Product("product4", "description", now, yesterday, false);
+        product1 = new Product("product1", "description", now, tomorrow, false, OWNER);
+        product2Expired = new Product("product2", "description", now, yesterday, false, OWNER);
+        product3Disabled = new Product("product3", "description", now, yesterday, true, OWNER);
+        product4 = new Product("product4", "description", now, yesterday, false, OWNER);
 
-        sku1 = new SKU("sku1", "Sku1 enabled", 10d, 100, "X1213JJLB-1", now, tomorrow, false, 3);
-        sku2 = new SKU("sku2", "Sku2 disabled", 10d, 100, "X1213JJLB-2", now, tomorrow, true, 3);
-        sku3 = new SKU("sku3", "Sku3 expired", 10d, 100, "X1213JJLB-3", now, yesterday, false, 3);
-        sku4 = new SKU("sku4", "Sku4 not available", 10d, 2, "X1213JJLB-4", now, tomorrow, false, 3);
-        sku5 = new SKU("sku5", "Sku5 with discounts", 10d, 100, "X1213JJLB-5", now, tomorrow, false, 3);
+        sku1 = new SKU("sku1", "Sku1 enabled", 10d, 100, "X1213JJLB-1", now, tomorrow, false, 3, OWNER);
+        sku2 = new SKU("sku2", "Sku2 disabled", 10d, 100, "X1213JJLB-2", now, tomorrow, true, 3, OWNER);
+        sku3 = new SKU("sku3", "Sku3 expired", 10d, 100, "X1213JJLB-3", now, yesterday, false, 3, OWNER);
+        sku4 = new SKU("sku4", "Sku4 not available", 10d, 2, "X1213JJLB-4", now, tomorrow, false, 3, OWNER);
+        sku5 = new SKU("sku5", "Sku5 with discounts", 10d, 100, "X1213JJLB-5", now, tomorrow, false, 3, OWNER);
 
-        discount1 = new Discount("discount1", "a discount", ORDER, DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0, 1, true, now, tomorrow, false);
+        discount1 = new Discount("discount1", "a discount", ORDER, DISCOUNT_RATE, AMOUNT, null, 0.1, 2.0, 1, true, now, tomorrow, false, OWNER);
         sku5.setDiscounts(Arrays.asList(discount1));
 
         catalog.setRootCategories(Arrays.asList(rootCat1Empty, rootCat2, rootCat3Expired));
@@ -103,7 +113,25 @@ public class TestCatalog {
         childCat2.setChildProducts(Arrays.asList(product1, product2Expired, product3Disabled, product4));
         product1.setChildSKUs(Arrays.asList(sku1, sku2, sku3, sku4, sku5));
 
-        entityManager.persist(catalog);
+        hiddenStore = new Store("Hidden Shop");
+        hiddenStore.setOwner(OWNER);
+        hiddenStore.setDisabled(true);
+        entityManager.persist(hiddenStore);
+
+        store = new Store("Shop");
+        store.setOwner(OWNER);
+
+        PremisesOpeningSchedules schedules = new PremisesOpeningSchedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
+        PremisesAddress address = new PremisesAddress("10, rue des lilas", "Paris", "75001", "FRA");
+
+        Premises premises = new Premises();
+        premises.setAddress(address);
+        premises.setSchedules(Lists.newArrayList(schedules));
+
+        store.setPremisses(Lists.newArrayList(premises));
+        store.setCatalogs(Lists.newArrayList(catalog));
+
+        entityManager.persist(store);
         entityManager.getTransaction().commit();
 
         instance = new TestCatalog();
@@ -112,7 +140,7 @@ public class TestCatalog {
     }
 
 
-    public Long getId() {
+    public Long getCatalogId() {
         return catalog.getId();
     }
 

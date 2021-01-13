@@ -1,11 +1,9 @@
 package org.rembx.jeeshop.catalog.model;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -21,7 +19,6 @@ public class Catalog extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "catalogId"),
             inverseJoinColumns = @JoinColumn(name = "categoryId"))
     @OrderColumn(name="orderIdx")
-    @JsonbTransient
     private List<Category> rootCategories;
 
     @Transient

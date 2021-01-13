@@ -1,10 +1,8 @@
 package org.rembx.jeeshop.catalog.model;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +19,6 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "skuId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<SKU> childSKUs;
 
     @Transient
@@ -31,7 +28,6 @@ public class Product extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "productId"),
             inverseJoinColumns = @JoinColumn(name = "discountId"))
     @OrderColumn(name = "orderIdx")
-    @JsonbTransient
     private List<Discount> discounts;
 
     @Transient
@@ -40,17 +36,30 @@ public class Product extends CatalogItem {
     public Product() {
     }
 
-    public Product(String name, String description, Date startDate, Date endDate, Boolean disabled) {
+    public Product(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+
+    public Product(String name) {
+        this.name = name;
+    }
+
+    public Product(String name, String description, Date startDate, Date endDate, Boolean disabled, String owner) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;
+        this.owner = owner;
     }
+
 
     public Product(Long id, String name, String description, Date startDate, Date endDate, Boolean disabled) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;

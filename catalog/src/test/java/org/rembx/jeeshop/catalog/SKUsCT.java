@@ -1,17 +1,14 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.test.CatalogItemCRUDTester;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
@@ -22,34 +19,27 @@ import static org.rembx.jeeshop.catalog.test.Assertions.assertThatDiscountsOf;
 
 public class SKUsCT {
 
-    private SKUs service;
-
-    private TestCatalog testCatalog;
-    private static EntityManagerFactory entityManagerFactory;
-    EntityManager entityManager;
-
-    @BeforeAll
-    public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
-    }
+    private SKUs localService;
+    private CatalogItemCRUDTester<SKU> tester;
 
     @BeforeEach
     public void setup() {
-        testCatalog = TestCatalog.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        service = new SKUs(entityManager, new CatalogItemFinder(entityManager), null);
+        tester = new CatalogItemCRUDTester<>(SKU.class);
+        localService = new SKUs(tester.getEntityManager(), new CatalogItemFinder(tester.getEntityManager()), null);
+        tester.setService(this.localService);
     }
 
     @Test
     public void find_withIdOfVisibleSKU_ShouldReturnExpectedSKU() {
-        assertThat(service.find(testCatalog.aVisibleSKU().getId(), null)).isEqualTo(testCatalog.aVisibleSKU());
-        assertThat(service.find(testCatalog.aVisibleSKU().getId(), null).isVisible()).isTrue();
+        SKU catalogItem = localService.find(tester.getSecurityContext(), tester.getFixtures().aVisibleSKU().getId(), null);
+        assertThat(catalogItem).isEqualTo(tester.getFixtures().aVisibleSKU());
+        assertThat(catalogItem.isVisible()).isTrue();
     }
 
     @Test
     public void find_withIdOfDisableSKU_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.aDisabledSKU().getId(), null);
+            localService.find(tester.getSecurityContext(), tester.getFixtures().aDisabledSKU().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -58,15 +48,15 @@ public class SKUsCT {
 
     @Test
     public void find_withIdOfUnAvailableSKU_ShouldReturnUnAvailableSKU() {
-        assertThat(service.find(testCatalog.aSKUNotAvailable().getId(), null)).isEqualTo(testCatalog.aSKUNotAvailable());
-        assertThat(service.find(testCatalog.aSKUNotAvailable().getId(), null).isAvailable()).isFalse();
+        assertThat(localService.find(tester.getSecurityContext(), tester.getFixtures().aSKUNotAvailable().getId(), null)).isEqualTo(tester.getFixtures().aSKUNotAvailable());
+        assertThat(localService.find(tester.getSecurityContext(), tester.getFixtures().aSKUNotAvailable().getId(), null).isAvailable()).isFalse();
 
     }
 
     @Test
     public void find_withIdOfExpiredSKU_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.anExpiredSKU().getId(), null);
+            localService.find(tester.getSecurityContext(), tester.getFixtures().anExpiredSKU().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -76,7 +66,7 @@ public class SKUsCT {
     @Test
     public void find_withUnknownSKUId_ShouldThrowNotFoundException() {
         try {
-            service.find(9999L, null);
+            localService.find(tester.getSecurityContext(), 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -87,7 +77,7 @@ public class SKUsCT {
     @Test
     public void findDiscounts_shouldReturn404ExWhenSKUNotFound() {
         try {
-            service.findDiscounts(9999L);
+            localService.findDiscounts(tester.getSecurityContext(), 9999L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -96,31 +86,31 @@ public class SKUsCT {
 
     @Test
     public void findDiscounts_shouldNotReturnExpiredNorDisabledDiscounts() {
-        List<Discount> discounts = service.findDiscounts(testCatalog.aSKUWithDiscounts().getId());
+        List<Discount> discounts = localService.findDiscounts(tester.getSecurityContext(), tester.getFixtures().aSKUWithDiscounts().getId());
         assertThat(discounts).isNotEmpty();
         assertThatDiscountsOf(discounts).areVisibleDiscountsOfASKUWithDiscounts();
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
+        assertThat(localService.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<SKU> categories = service.findAll(null, 0, 1, null, null);
+        List<SKU> categories = localService.findAll(null, 0, 1, null, null, null);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aSKUNotAvailable().getId().toString(), null, null, null, null)).containsExactly(testCatalog.aSKUNotAvailable());
+        assertThat(localService.findAll(tester.getFixtures().aSKUNotAvailable().getId().toString(), null, null, null, null, null)).containsExactly(tester.getFixtures().aSKUNotAvailable());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aSKUNotAvailable().getName(), null, null, null, null)).containsExactly(testCatalog.aSKUNotAvailable());
+        assertThat(localService.findAll(tester.getFixtures().aSKUNotAvailable().getName(), null, null, null, null, null)).containsExactly(tester.getFixtures().aSKUNotAvailable());
     }
 
     @Test
@@ -128,7 +118,7 @@ public class SKUsCT {
 
         SKU detachedProductToModify = new SKU(9999L, null, null, null, null, null, null, null, null, null);
         try {
-            service.modify(detachedProductToModify);
+            localService.modify(tester.getSecurityContext(), detachedProductToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -136,50 +126,120 @@ public class SKUsCT {
     }
 
     @Test
+    public void modify_ShouldThrowForbiddenException_for_store_admin() {
+
+        tester.setSAnotherStoreAdminUser();
+        SKU sku = new SKU(tester.getFixtures().aVisibleSKU().getId(), "New name");
+        try {
+            tester.test_modify(sku);
+            ;
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
+        }
+    }
+
+    @Test
+    public void modify_ShouldModify_for_store_admin() {
+
+        tester.setStoreAdminUser();
+        SKU sku = new SKU(tester.getFixtures().aVisibleSKU().getId(), "New name");
+        tester.test_modify(sku);
+
+        Assertions.assertThat(sku.getName()).isEqualTo("New name");
+    }
+
+    @Test
     public void countAll() {
-        assertThat(service.count(null)).isGreaterThan(0);
+        assertThat(localService.count(null)).isGreaterThan(0);
     }
 
     @Test
     public void countAll_withUnknownSearchCriteria() {
-        assertThat(service.count("666")).isEqualTo(0);
+        assertThat(localService.count("666")).isEqualTo(0);
     }
 
     @Test
-    public void create_shouldPersist() {
+    public void create_shouldPersistAndAttachOwner_for_admin() {
+
+        tester.setAdminUser();
+
         SKU sku = new SKU("name", "description", 1.0, 2, "reference",
-                new Date(), new Date(), false, 1);
+                new Date(), new Date(), false, 1, "test@test.com");
 
-        entityManager.getTransaction().begin();
-        service.create(sku);
-        entityManager.getTransaction().commit();
-
-        assertThat(entityManager.find(SKU.class, sku.getId())).isNotNull();
-        entityManager.remove(sku);
+        SKU createdSKU = tester.test_create(sku);
+        assertThat(createdSKU).isNotNull();
+        assertThat(createdSKU.getOwner()).isEqualTo("test@test.com");
     }
 
     @Test
-    public void delete_shouldRemove() {
+    public void create_shouldPersistAndAttachOwner_for_store_admin() {
 
-        entityManager.getTransaction().begin();
-        SKU sku = new SKU("Test", "", null, null, null, null, null, null, null);
-        entityManager.persist(sku);
-        entityManager.getTransaction().commit();
+        tester.setStoreAdminUser();
 
-        entityManager.getTransaction().begin();
-        service.delete(sku.getId());
-        entityManager.getTransaction().commit();
+        SKU sku = new SKU("name", "description", 1.0, 2, "reference",
+                new Date(), new Date(), false, 1, null);
 
-        assertThat(entityManager.find(SKU.class, sku.getId())).isNull();
+        SKU createdSKU = tester.test_create(sku);
+        assertThat(createdSKU).isNotNull();
+        assertThat(createdSKU.getOwner()).isEqualTo(TestCatalog.OWNER);
+    }
+
+    @Test
+    public void create_shouldThrow_BadRequest_for_Admin() {
+
+        try {
+            tester.setAdminUser();
+            SKU sku = new SKU("Test", "");
+            tester.test_create(sku);
+            fail("should have throw an exception");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+        }
+    }
+
+    @Test
+    public void delete_shouldRemove_for_admin() {
+
+        tester.setAdminUser();
+        SKU sku = new SKU("Test", "");
+        sku.setOwner("an@owner.fr");
+        tester.test_delete(sku);
+        assertThat(tester.getEntityManager().find(SKU.class, sku.getId())).isNull();
+    }
+
+    @Test
+    public void delete_shouldRemove_for_store_Admin() {
+
+        tester.setStoreAdminUser();
+        SKU sku = new SKU("Test", "");
+        sku.setOwner(TestCatalog.OWNER);
+        tester.test_delete(sku);
+        assertThat(tester.getEntityManager().find(SKU.class, sku.getId())).isNull();
+    }
+
+
+    @Test
+    public void delete_shouldThrow_Forbidden_for_store_Admin() {
+
+        try {
+            tester.setStoreAdminUser();
+            SKU sku = new SKU("Test", "");
+            sku.setOwner("test@test.org");
+            tester.test_delete(sku);
+            fail("should have throw an exception");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
+        }
     }
 
     @Test
     public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
-            entityManager.getTransaction().begin();
-            service.delete(666L);
-            entityManager.getTransaction().commit();
+            tester.getEntityManager().getTransaction().begin();
+            localService.delete(tester.getSecurityContext(), 666L);
+            tester.getEntityManager().getTransaction().commit();
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
