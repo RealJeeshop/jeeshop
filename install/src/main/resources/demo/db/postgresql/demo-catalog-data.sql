@@ -36,8 +36,8 @@ SELECT setval('catalog_id_seq', (SELECT MAX(id) from catalog));
 
 -- data for Store
 
-INSERT INTO address (city, street, zipcode, countryiso3code, gender, firstname, lastname, company)
-VALUES ('Paris', '7, Rue du vélodrome', '75001', 'FRA', 'M.', 'Paul', 'Smith', 'Hyperbike Store Limited');
+INSERT INTO premises_address (city, street, zipcode, countryiso3code)
+VALUES ('Paris', '7, Rue du vélodrome', '75001', 'FRA');
 
 insert into "user" (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
 values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', true, 'm.' , 'Paul', 'Smith', 'admin@hyperbike.com', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', null, null);
@@ -50,7 +50,7 @@ INSERT INTO Store (id, name, description, startDate, endDate, disabled, owner) V
 SELECT setval('store_id_seq', (SELECT MAX(id) from store));
 
 INSERT INTO premises (address_id, store_id)
-VALUES ((SELECT MAX(id) from address), (SELECT MAX(id) from store));
+VALUES ((SELECT MAX(id) from premises_address), (SELECT MAX(id) from store));
 
 
 --

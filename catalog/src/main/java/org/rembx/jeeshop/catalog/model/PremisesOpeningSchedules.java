@@ -1,8 +1,5 @@
 package org.rembx.jeeshop.catalog.model;
 
-import org.apache.james.mime4j.dom.datetime.DateTime;
-
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,7 +12,7 @@ import java.time.LocalTime;
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
 @Cacheable
-public class Schedules {
+public class PremisesOpeningSchedules {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +32,14 @@ public class Schedules {
     @Column
     LocalTime timeClose;
 
-    public Schedules() {
+    public PremisesOpeningSchedules() {
     }
 
-    public Schedules(Long id) {
+    public PremisesOpeningSchedules(Long id) {
         this.id = id;
     }
 
-    public Schedules(Store store, DayOfWeek dayOfWeek, LocalTime timeOpen, LocalTime timeClose) {
+    public PremisesOpeningSchedules(Store store, DayOfWeek dayOfWeek, LocalTime timeOpen, LocalTime timeClose) {
         this.store = store;
         this.dayOfWeek = dayOfWeek;
         this.timeOpen = timeOpen;

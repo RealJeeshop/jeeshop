@@ -1,7 +1,5 @@
 package org.rembx.jeeshop.user.model;
 
-import org.rembx.jeeshop.address.Address;
-
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

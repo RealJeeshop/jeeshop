@@ -26,6 +26,13 @@ create table if not exists store (
     startdate date null,
     owner varchar(100) not null);
 
+create table if not exists premises_address (
+  id serial not null primary key,
+  city varchar(255) not null,
+  street varchar(255)not null,
+  zipcode varchar (10) not null,
+  countryiso3code varchar (3) not null);
+
 create table if not exists premises (
     id serial not null primary key,
     store_id bigint not null,
@@ -45,7 +52,7 @@ create table if not exists store_presentation (
     primary key (catalogitemid,presentationid));
 
 alter table premises
-    add constraint fk_premises_address foreign key (address_id) references address (id),
+    add constraint fk_premises_address foreign key (address_id) references premises_address (id),
     add constraint fk_premises_store foreign key (store_id) references store (id);
 
 alter table schedules

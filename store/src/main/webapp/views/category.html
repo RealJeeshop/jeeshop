@@ -1,9 +1,0 @@
-<div ng-controller="CategoryCtrl as categoryCtrl">
-
-    <h1 class="text-center">{{categoryCtrl.category.localizedPresentation.promotion}}</h1>
-
-    <category-childs ng-show="categoryCtrl.hasChildCategories()" items="childCategories" itemtype="'categories'"></category-childs>
-
-    <category-childs ng-show="categoryCtrl.hasChildProducts()" items="childProducts" itemtype="'products'"></category-childs>
-
-</div>

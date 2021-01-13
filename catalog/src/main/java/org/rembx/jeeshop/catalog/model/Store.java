@@ -1,12 +1,11 @@
 package org.rembx.jeeshop.catalog.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @XmlRootElement
@@ -60,5 +59,19 @@ public class Store extends CatalogItem {
 
     public void setCatalogsIds(List<Long> catalogsIds) {
         this.catalogsIds = catalogsIds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Store store = (Store) o;
+        return Objects.equals(premisses, store.premisses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), premisses);
     }
 }

@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.rembx.jeeshop.address.Address;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;

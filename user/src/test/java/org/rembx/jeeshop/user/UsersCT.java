@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.address.Address;
+import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestMailTemplate;

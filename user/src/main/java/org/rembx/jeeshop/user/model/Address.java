@@ -1,4 +1,4 @@
-package org.rembx.jeeshop.address;
+package org.rembx.jeeshop.user.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

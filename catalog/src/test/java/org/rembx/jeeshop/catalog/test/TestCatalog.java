@@ -2,7 +2,6 @@ package org.rembx.jeeshop.catalog.test;
 
 import com.google.common.collect.Lists;
 import org.assertj.core.api.AbstractAssert;
-import org.rembx.jeeshop.address.Address;
 import org.rembx.jeeshop.catalog.model.*;
 
 import javax.persistence.EntityManager;
@@ -122,8 +121,8 @@ public class TestCatalog {
         store = new Store("Shop");
         store.setOwner(OWNER);
 
-        Schedules schedules = new Schedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
-        Address address = new Address("10", "Paris", "75001", "", "", "", "", "FRA");
+        PremisesOpeningSchedules schedules = new PremisesOpeningSchedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
+        PremisesAddress address = new PremisesAddress("10, rue des lilas", "Paris", "75001", "FRA");
 
         Premises premises = new Premises();
         premises.setAddress(address);

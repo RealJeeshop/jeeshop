@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
-import org.rembx.jeeshop.address.Address;
+import org.rembx.jeeshop.user.model.Address;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestUser;

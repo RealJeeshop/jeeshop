@@ -1,7 +1,5 @@
 package org.rembx.jeeshop.catalog.model;
 
-import org.rembx.jeeshop.address.Address;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,10 +17,10 @@ public class Premises {
     Long id;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Address address;
+    PremisesAddress address;
 
-    @OneToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Schedules> schedules;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<PremisesOpeningSchedules> schedules;
 
     public Premises() {
     }
@@ -31,7 +29,7 @@ public class Premises {
         this.id = id;
     }
 
-    public Premises(Long id, Address address, List<Schedules> schedules) {
+    public Premises(Long id, PremisesAddress address, List<PremisesOpeningSchedules> schedules) {
         this.id = id;
         this.address = address;
         this.schedules = schedules;
@@ -45,19 +43,19 @@ public class Premises {
         this.id = id;
     }
 
-    public Address getAddress() {
+    public PremisesAddress getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(PremisesAddress address) {
         this.address = address;
     }
 
-    public List<Schedules> getSchedules() {
+    public List<PremisesOpeningSchedules> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(List<Schedules> schedules) {
+    public void setSchedules(List<PremisesOpeningSchedules> schedules) {
         this.schedules = schedules;
     }
 }

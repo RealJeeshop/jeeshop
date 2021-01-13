@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.rembx.jeeshop.catalog.OwnerUtils.attachOwner;
 import static org.rembx.jeeshop.catalog.model.QDiscount.discount;
 import static org.rembx.jeeshop.catalog.model.QSKU.sKU;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
