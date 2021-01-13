@@ -8,18 +8,23 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.quarkus.hibernate.orm.PersistenceUnit;
+import io.quarkus.security.identity.SecurityIdentity;
 import org.apache.commons.lang.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
+import org.rembx.jeeshop.role.JeeshopRoles;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.rembx.jeeshop.catalog.model.QStore.store;
 
 /**
  * Utility class for common finders on CatalogItem entities
@@ -192,4 +197,21 @@ public class CatalogItemFinder {
         }
     }
 
+    public <T extends CatalogItem> T findOne(EntityPath<T> entityPath, Long itemId, SecurityContext securityIdentity) {
+
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        JPAQuery<T> query = new JPAQueryFactory(entityManager)
+                .selectFrom(entityPath)
+                .where(qCatalogItem.id.eq(itemId));
+
+        if (securityIdentity.isUserInRole(JeeshopRoles.ADMIN)) {
+            return query.fetchOne();
+
+        } else if (securityIdentity.isUserInRole(JeeshopRoles.STORE_ADMIN)) {
+            return query.where(qCatalogItem.owner.eq(securityIdentity.getUserPrincipal().getName()))
+                    .fetchOne();
+        }
+
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
 }

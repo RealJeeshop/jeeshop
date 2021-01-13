@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
@@ -185,8 +184,7 @@ public class Users {
 
         User existingUser = null;
         if (securityContext.isUserInRole(USER) && !securityContext.isUserInRole(ADMIN)) {
-            existingUser = userFinder.findByLogin("admin@jeeshop.org");
-            //existingUser = userFinder.findByLogin(sessionContext.getCallerPrincipal().getName());
+            existingUser = userFinder.findByLogin(securityContext.getUserPrincipal().getName());
 
             if (!existingUser.getId().equals(user.getId()) || !existingUser.getLogin().equals(user.getLogin())) {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);

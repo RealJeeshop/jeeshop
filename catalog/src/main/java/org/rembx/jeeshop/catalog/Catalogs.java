@@ -25,16 +25,16 @@ import java.util.Set;
 import static org.rembx.jeeshop.catalog.model.QCatalog.catalog;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 @Path("/rs/catalogs")
 @ApplicationScoped
-public class Catalogs {
+public class Catalogs implements CatalogItemService<Catalog> {
 
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
 
     Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
@@ -50,11 +50,9 @@ public class Catalogs {
                                  @QueryParam("size") Integer size, @QueryParam("orderBy") String orderBy,
                                  @QueryParam("isDesc") Boolean isDesc, @QueryParam("locale") String locale) {
 
-        if (search != null)
-            return catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale);
-        else {
-            return catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
-        }
+        return search != null
+                ? catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale)
+                : catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
     }
 
     @GET
@@ -62,12 +60,10 @@ public class Catalogs {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
     public Long count(@QueryParam("search") String search) {
-        if (search != null)
-            return catalogItemFinder.countBySearchCriteria(catalog, search);
-        else
-            return catalogItemFinder.countAll(catalog);
+        return search != null
+                ? catalogItemFinder.countBySearchCriteria(catalog, search)
+                : catalogItemFinder.countAll(catalog);
     }
-
 
     @GET
     @Path("/{catalogId}")
@@ -76,7 +72,7 @@ public class Catalogs {
     public Catalog find(@Context SecurityContext securityContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
-        if (isAdminUser(securityContext))
+        if (isAdminUser(securityContext) || isOwner(securityContext, catalog.getOwner()))
             return catalog;
         else
             return catalogItemFinder.filterVisible(catalog, locale);
@@ -86,13 +82,17 @@ public class Catalogs {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Catalog create(Catalog catalog) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Catalog create(@Context SecurityContext securityContext, Catalog catalog) {
+
+        attachOwner(securityContext, catalog);
+
         if (catalog.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
             catalog.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
             catalog.setRootCategories(newCategories);
         }
+
         entityManager.persist(catalog);
         return catalog;
     }
@@ -101,45 +101,55 @@ public class Catalogs {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{catalogId}")
-    public void delete(@PathParam("catalogId") Long catalogId) {
-        Catalog catalog = entityManager.find(Catalog.class, catalogId);
-        checkNotNull(catalog);
-        entityManager.remove(catalog);
+    public void delete(@Context SecurityContext securityContext, @PathParam("catalogId") Long catalogId) {
+        Catalog loadedCatalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(loadedCatalog);
 
+        if (isAdminUser(securityContext) || isOwner(securityContext, loadedCatalog.getOwner()))
+            entityManager.remove(loadedCatalog);
+        else
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @RolesAllowed(ADMIN)
-    public Catalog modify(Catalog catalog) {
-        Catalog originalCatalog = entityManager.find(Catalog.class, catalog.getId());
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Catalog modify(@Context SecurityContext securityContext, Catalog catalogToModify) {
+
+        Catalog originalCatalog = entityManager.find(Catalog.class, catalogToModify.getId());
         checkNotNull(originalCatalog);
 
-        if (catalog.getRootCategoriesIds() != null) {
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, originalCatalog.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
+        if (catalogToModify.getRootCategoriesIds() != null) {
             List<Category> newCategories = new ArrayList<>();
-            catalog.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
-            catalog.setRootCategories(newCategories);
+            catalogToModify.getRootCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
+            catalogToModify.setRootCategories(newCategories);
         } else {
-            catalog.setRootCategories(originalCatalog.getRootCategories());
+            catalogToModify.setRootCategories(originalCatalog.getRootCategories());
         }
 
-        catalog.setPresentationByLocale(originalCatalog.getPresentationByLocale());
+        catalogToModify.setPresentationByLocale(originalCatalog.getPresentationByLocale());
 
-        Catalog merge = entityManager.merge(catalog);
-        return merge;
+        return entityManager.merge(catalogToModify);
     }
 
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("catalogId") @NotNull Long catalogId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("catalogId") @NotNull Long catalogId) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, catalog.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return catalog.getPresentationByLocale().keySet();
     }
 
@@ -168,7 +178,7 @@ public class Catalogs {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(securityContext)) {
+        if (isAdminUser(securityContext) || isOwner(securityContext, catalog.getOwner())) {
             return rootCategories;
         } else {
             return catalogItemFinder.findVisibleCatalogItems(category, rootCategories, locale);

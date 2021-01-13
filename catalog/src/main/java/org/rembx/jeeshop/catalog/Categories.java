@@ -23,8 +23,8 @@ import java.util.Set;
 import static org.rembx.jeeshop.catalog.model.QCategory.category;
 import static org.rembx.jeeshop.catalog.model.QProduct.product;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * @author remi
@@ -32,13 +32,11 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
 
 @Path("/rs/categories")
 @ApplicationScoped
-public class Categories {
+public class Categories implements CatalogItemService<Category> {
 
-    @Context
-    SecurityContext sessionContext;
-    private EntityManager entityManager;
-    private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private final EntityManager entityManager;
+    private final CatalogItemFinder catalogItemFinder;
+    private final PresentationResource presentationResource;
 
     Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
         this.entityManager = entityManager;
@@ -50,8 +48,11 @@ public class Categories {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Category create(Category category) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Category create(@Context SecurityContext securityContext, Category category) {
+
+        attachOwner(securityContext, category);
+
         if (category.getChildCategories() != null) {
             List<Category> newCategories = new ArrayList<>();
             category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
@@ -62,6 +63,7 @@ public class Categories {
             category.getChildProductsIds().forEach(productId -> newProducts.add(entityManager.find(Product.class, productId)));
             category.setChildProducts(newProducts);
         }
+
         entityManager.persist(category);
         return category;
     }
@@ -70,54 +72,65 @@ public class Categories {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{categoryId}")
-    public void delete(@PathParam("categoryId") Long categoryId) {
+    public void delete(@Context SecurityContext securityContext, @PathParam("categoryId") Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
 
-        List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childCategories, category);
-        for (Category categoryHolder : categoryHolders) {
-            categoryHolder.getChildCategories().remove(category);
+        if (!isOwner(securityContext, category.getOwner()) && !isAdminUser(securityContext))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
+        else {
+
+            List<Category> categoryHolders = catalogItemFinder.findForeignHolder(QCategory.category, QCategory.category.childCategories, category);
+            for (Category categoryHolder : categoryHolders) {
+                categoryHolder.getChildCategories().remove(category);
+            }
+
+            List<Catalog> catalogHolders = catalogItemFinder.findForeignHolder(QCatalog.catalog, QCatalog.catalog.rootCategories, category);
+            for (Catalog catalogHolder : catalogHolders) {
+                catalogHolder.getRootCategories().remove(category);
+            }
+
+            entityManager.remove(category);
         }
-
-        List<Catalog> catalogHolders = catalogItemFinder.findForeignHolder(QCatalog.catalog, QCatalog.catalog.rootCategories, category);
-        for (Catalog catalogHolder : catalogHolders) {
-            catalogHolder.getRootCategories().remove(category);
-        }
-
-        entityManager.remove(category);
-
     }
 
     @PUT
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
-    public Category modify(Category category) {
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    public Category modify(@Context SecurityContext securityContext, Category category) {
         Category originalCategory = entityManager.find(Category.class, category.getId());
         checkNotNull(originalCategory);
 
-        if (category.getChildCategoriesIds() != null) {
-            List<Category> newCategories = new ArrayList<>();
-            category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
-            category.setChildCategories(newCategories);
+        if (isOwner(securityContext, originalCategory.getOwner()) || isAdminUser(securityContext)) {
+
+            if (category.getChildCategoriesIds() != null) {
+                List<Category> newCategories = new ArrayList<>();
+                category.getChildCategoriesIds().forEach(categoryId -> newCategories.add(entityManager.find(Category.class, categoryId)));
+                category.setChildCategories(newCategories);
+            } else {
+                category.setChildCategories(originalCategory.getChildCategories());
+            }
+
+            if (category.getChildProductsIds() != null) {
+                List<Product> newProducts = new ArrayList<>();
+                category.getChildProductsIds().forEach(productId -> newProducts.add(entityManager.find(Product.class, productId)));
+                category.setChildProducts(newProducts);
+            } else {
+                category.setChildProducts(originalCategory.getChildProducts());
+            }
+
+            category.setPresentationByLocale(originalCategory.getPresentationByLocale());
+
+            return entityManager.merge(category);
+
         } else {
-            category.setChildCategories(originalCategory.getChildCategories());
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
-
-        if (category.getChildProductsIds() != null) {
-            List<Product> newProducts = new ArrayList<>();
-            category.getChildProductsIds().forEach(productId -> newProducts.add(entityManager.find(Product.class, productId)));
-            category.setChildProducts(newProducts);
-        } else {
-            category.setChildProducts(originalCategory.getChildProducts());
-        }
-
-        category.setPresentationByLocale(originalCategory.getPresentationByLocale());
-
-        return entityManager.merge(category);
     }
 
     @GET
@@ -131,6 +144,7 @@ public class Categories {
         else
             return catalogItemFinder.findAll(category, start, size, orderBy, isDesc, locale);
     }
+
 
     @GET
     @Path("/count")
@@ -147,21 +161,27 @@ public class Categories {
     @Path("/{categoryId}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Category find(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+    public Category find(@Context SecurityContext securityContext, @PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+
         Category category = entityManager.find(Category.class, categoryId);
-        if (isAdminUser(sessionContext))
-            return category;
-        else
-            return catalogItemFinder.filterVisible(category, locale);
+        checkNotNull(category);
+
+        return !isAdminUser(securityContext) && !isOwner(securityContext, category.getOwner())
+                ? catalogItemFinder.filterVisible(category, locale)
+                : category;
     }
 
     @GET
     @Path("/{categoryId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
-    public Set<String> findPresentationsLocales(@PathParam("categoryId") @NotNull Long categoryId) {
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
+    public Set<String> findPresentationsLocales(@Context SecurityContext securityContext, @PathParam("categoryId") @NotNull Long categoryId) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
+
+        if (!isAdminUser(securityContext) && !isOwner(securityContext, category.getOwner()))
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+
         return category.getPresentationByLocale().keySet();
     }
 
@@ -178,7 +198,7 @@ public class Categories {
     @Path("/{categoryId}/categories")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Category> findChildCategories(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+    public List<Category> findChildCategories(@Context SecurityContext securityContext, @PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
         Category cat = entityManager.find(Category.class, categoryId);
         checkNotNull(cat);
         List<Category> childCategories = cat.getChildCategories();
@@ -186,10 +206,9 @@ public class Categories {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext))
-            return childCategories;
-        else
-            return catalogItemFinder.findVisibleCatalogItems(category, childCategories, locale);
+        return !isAdminUser(securityContext) && !isOwner(securityContext, cat.getOwner())
+                ? catalogItemFinder.findVisibleCatalogItems(category, childCategories, locale)
+                : childCategories;
     }
 
 
@@ -197,20 +216,19 @@ public class Categories {
     @Path("/{categoryId}/products")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<Product> findChildProducts(@PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+    public List<Product> findChildProducts(@Context SecurityContext securityContext, @PathParam("categoryId") @NotNull Long categoryId, @QueryParam("locale") String locale) {
+
         Category cat = entityManager.find(Category.class, categoryId);
         checkNotNull(cat);
 
         List<Product> childProducts = cat.getChildProducts();
-
         if (childProducts.isEmpty()) {
             return new ArrayList<>();
         }
 
-        if (isAdminUser(sessionContext))
-            return childProducts;
-        else
-            return catalogItemFinder.findVisibleCatalogItems(product, childProducts, locale);
+        return !isOwner(securityContext, cat.getOwner()) && isAdminUser(securityContext)
+                ? catalogItemFinder.findVisibleCatalogItems(product, childProducts, locale)
+                : childProducts;
     }
 
     private void checkNotNull(Category cat) {

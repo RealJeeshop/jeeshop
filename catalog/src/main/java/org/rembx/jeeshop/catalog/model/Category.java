@@ -4,9 +4,7 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +39,11 @@ public class Category extends CatalogItem {
     public Category() {
     }
 
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Category(String name, String description) {
         this.name = name;
         this.description = description;
@@ -55,12 +58,13 @@ public class Category extends CatalogItem {
         this.disabled = disabled;
     }
 
-    public Category(String name, String description, Date startDate, Date endDate, Boolean disabled) {
+    public Category(String name, String description, Date startDate, Date endDate, Boolean disabled, String owner) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;
+        this.owner = owner;
     }
 
     public List<Category> getChildCategories() {

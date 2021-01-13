@@ -1,17 +1,13 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.test.CatalogItemCRUDTester;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
@@ -22,34 +18,26 @@ import static org.rembx.jeeshop.catalog.test.Assertions.assertThatSKUsOf;
 
 public class ProductsCT {
 
-    private Products service;
-
-    private TestCatalog testCatalog;
-    private static EntityManagerFactory entityManagerFactory;
-    EntityManager entityManager;
-
-    @BeforeAll
-    public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
-    }
+    private Products localService;
+    private CatalogItemCRUDTester<Product> tester;
 
     @BeforeEach
     public void setup() {
-        testCatalog = TestCatalog.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        service = new Products(entityManager, new CatalogItemFinder(entityManager), null);
+        tester = new CatalogItemCRUDTester<>(Product.class);
+        localService = new Products(tester.getEntityManager(), new CatalogItemFinder(tester.getEntityManager()), null);
+        tester.setService(this.localService);
     }
 
     @Test
     public void find_withIdOfVisibleProduct_ShouldReturnExpectedProduct() {
-        assertThat(service.find(null, testCatalog.aProductWithSKUs().getId(), null)).isEqualTo(testCatalog.aProductWithSKUs());
-        assertThat(service.find(null, testCatalog.aProductWithSKUs().getId(), null).isVisible()).isTrue();
+        assertThat(localService.find(null, tester.getFixtures().aProductWithSKUs().getId(), null)).isEqualTo(tester.getFixtures().aProductWithSKUs());
+        assertThat(localService.find(null, tester.getFixtures().aProductWithSKUs().getId(), null).isVisible()).isTrue();
     }
 
     @Test
     public void find_withIdOfDisableProduct_ShouldThrowForbiddenException() {
         try {
-            service.find(null, testCatalog.aDisabledProduct().getId(), null);
+            localService.find(null, tester.getFixtures().aDisabledProduct().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -59,7 +47,7 @@ public class ProductsCT {
     @Test
     public void find_withIdOfExpiredProduct_ShouldThrowForbiddenException() {
         try {
-            service.find(null, testCatalog.anExpiredProduct().getId(), null);
+            localService.find(null, tester.getFixtures().anExpiredProduct().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -69,7 +57,7 @@ public class ProductsCT {
     @Test
     public void find_withUnknownProductId_ShouldThrowNotFoundException() {
         try {
-            service.find(null, 9999L, null);
+            localService.find(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -80,7 +68,7 @@ public class ProductsCT {
     @Test
     public void findSKUs_shouldReturn404ExWhenProductNotFound() {
         try {
-            service.findChildSKUs(null, 9999L, null);
+            localService.findChildSKUs(null, 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -89,107 +77,146 @@ public class ProductsCT {
 
     @Test
     public void findSKUs_shouldNotReturnExpiredNorDisabledSKUs() {
-        List<SKU> skus = service.findChildSKUs(null, testCatalog.aProductWithSKUs().getId(), null);
+        List<SKU> skus = localService.findChildSKUs(null, tester.getFixtures().aProductWithSKUs().getId(), null);
         assertThat(skus).isNotEmpty();
         assertThatSKUsOf(skus).areVisibleSKUsOfAProductWithSKUs();
     }
 
     @Test
     public void findSKUs_shouldReturnEmptyListWhenNoChildProducts() {
-        List<SKU> skus = service.findChildSKUs(null, testCatalog.aProductWithoutSKUs().getId(), null);
+        List<SKU> skus = localService.findChildSKUs(null, tester.getFixtures().aProductWithoutSKUs().getId(), null);
         assertThat(skus).isEmpty();
     }
 
+
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
+        assertThat(localService.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Product> categories = service.findAll(null, 0, 1, null, null, null);
+        List<Product> categories = localService.findAll(null, 0, 1, null, null, null);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getId().toString(), null, null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
+        assertThat(localService.findAll(tester.getFixtures().aProductWithoutSKUs().getId().toString(), null, null, null, null, null)).containsExactly(tester.getFixtures().aProductWithoutSKUs());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aProductWithoutSKUs().getName(), null, null, null, null, null)).containsExactly(testCatalog.aProductWithoutSKUs());
+        assertThat(localService.findAll(tester.getFixtures().aProductWithoutSKUs().getName(), null, null, null, null, null)).containsExactly(tester.getFixtures().aProductWithoutSKUs());
     }
+
 
     @Test
     public void modifyProduct_ShouldModifyProductAttributesAndPreserveSKUsWhenNotProvided() {
-        Product product = service.find(null, testCatalog.aProductWithSKUs().getId(), null);
 
-        Product detachedProductToModify = new Product(testCatalog.aProductWithSKUs().getId(), product.getName(), product.getDescription(), product.getStartDate(), product.getEndDate(), product.isDisabled());
+        tester.setAdminUser();
 
-        service.modify(detachedProductToModify);
+        Product product = new Product(tester.getFixtures().aProductWithSKUs().getId(), "New name");
 
+        tester.test_modify(product);
+
+        assertThat(product.getName()).isEqualTo("New name");
         assertThat(product.getChildSKUs()).containsOnlyElementsOf(product.getChildSKUs());
-
     }
 
     @Test
     public void modifyUnknownProduct_ShouldThrowNotFoundException() {
 
-        Product detachedProductToModify = new Product(9999L, null, null, null, null, null);
+        Product detachedProductToModify = new Product(9999L, null);
         try {
-            service.modify(detachedProductToModify);
+            tester.setAdminUser();
+            localService.modify(tester.getSecurityContext(), detachedProductToModify);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
         }
     }
 
+
     @Test
     public void countAll() {
-        assertThat(service.count(null)).isGreaterThan(0);
+        assertThat(localService.count(null)).isGreaterThan(0);
     }
 
     @Test
     public void countAll_withUnknownSearchCriteria() {
-        assertThat(service.count("666")).isEqualTo(0);
+        assertThat(localService.count("666")).isEqualTo(0);
+    }
+
+
+    @Test
+    public void create_shouldPersist_for_admin() {
+
+        tester.setAdminUser();
+        Product product = new Product("name", "description", new Date(), new Date(), false, TestCatalog.OWNER);
+
+        Product actualProduct = tester.test_create(product);
+
+        assertThat(actualProduct).isNotNull();
+        assertThat(actualProduct.getOwner()).isEqualTo(TestCatalog.OWNER);
     }
 
     @Test
-    public void create_shouldPersist() {
-        Product product = new Product("name", "description", new Date(), new Date(), false);
+    public void create_withoutOwner_shouldThrow_BadRequest_for_admin() {
 
-        entityManager.getTransaction().begin();
-        service.create(product);
-        entityManager.getTransaction().commit();
+        try {
+            tester.setAdminUser();
+            Product product = new Product("name");
+            tester.test_create(product);
+            fail("Should have thrown an exception");
 
-        assertThat(entityManager.find(Product.class, product.getId())).isNotNull();
-        entityManager.remove(product);
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+        }
     }
+
+    @Test
+    public void create_shouldPersist_for_store_admin() {
+
+        tester.setAdminUser();
+        Product product = new Product("name", "description", new Date(), new Date(), false, TestCatalog.OWNER);
+
+        Product actualProduct = tester.test_create(product);
+
+        assertThat(actualProduct).isNotNull();
+        assertThat(actualProduct.getOwner()).isEqualTo(TestCatalog.OWNER);
+    }
+
 
     @Test
     public void delete_shouldRemove() {
 
-        entityManager.getTransaction().begin();
-        Product product = new Product("Test", "", null, null, null);
-        entityManager.persist(product);
-        entityManager.getTransaction().commit();
+        tester.setStoreAdminUser();
+        Product product = new Product("Test", "", null, null, null, "test@test.com");
+        product.setOwner(TestCatalog.OWNER);
+        tester.test_delete(product);
+        assertThat(tester.getEntityManager().find(Product.class, product.getId())).isNull();
+    }
 
-        entityManager.getTransaction().begin();
-        service.delete(product.getId());
-        entityManager.getTransaction().commit();
+    @Test
+    public void delete_NonManagedEntity_shouldThrow_Forbidden() {
 
-        assertThat(entityManager.find(Product.class, product.getId())).isNull();
+        try {
+            tester.setStoreAdminUser();
+            Product product = new Product("Test", "", null, null, null, "test@test.com");
+            tester.test_delete(product);
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
+        }
     }
 
     @Test
     public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
-            entityManager.getTransaction().begin();
-            service.delete(666L);
-            entityManager.getTransaction().commit();
+            tester.setAdminUser();
+            localService.delete(tester.getSecurityContext(), 666L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);

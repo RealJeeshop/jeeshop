@@ -1,49 +1,39 @@
 package org.rembx.jeeshop.catalog;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Category;
 import org.rembx.jeeshop.catalog.model.Product;
+import org.rembx.jeeshop.catalog.test.CatalogItemCRUDTester;
 import org.rembx.jeeshop.catalog.test.PresentationTexts;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.rembx.jeeshop.catalog.test.Assertions.*;
 
-
 public class CategoriesCT {
-    private Categories service;
 
-    private TestCatalog testCatalog;
-    private static EntityManagerFactory entityManagerFactory;
-    EntityManager entityManager;
-
-    @BeforeAll
-    public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
-    }
+    private Categories localService;
+    private CatalogItemCRUDTester<Category> tester;
 
     @BeforeEach
     public void setup() {
-        testCatalog = TestCatalog.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        service = new Categories(entityManager, new CatalogItemFinder(entityManager), null);
+        tester = new CatalogItemCRUDTester<>(Category.class);
+        localService = new Categories(tester.getEntityManager(), new CatalogItemFinder(tester.getEntityManager()), null);
+        tester.setService(this.localService);
     }
 
     @Test
     public void find_withIdOfVisibleCategory_ShouldReturnExpectedCategory() {
-        Category category = service.find(testCatalog.aCategoryWithProducts().getId(), null);
-        assertThat(category).isEqualTo(testCatalog.aCategoryWithProducts());
+        tester.setAdminUser();
+        Category category = localService.find(tester.getSecurityContext(), tester.getFixtures().aCategoryWithProducts().getId(), null);
+        assertThat(category).isEqualTo(tester.getFixtures().aCategoryWithProducts());
         assertThat(category.isVisible()).isTrue();
 
     }
@@ -51,7 +41,8 @@ public class CategoriesCT {
     @Test
     public void find_withIdOfDisableCategory_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.aDisabledCategory().getId(), null);
+            tester.setPublicUser();
+            localService.find(tester.getSecurityContext(), tester.getFixtures().aDisabledCategory().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -61,7 +52,8 @@ public class CategoriesCT {
     @Test
     public void find_withIdOfExpiredCategory_ShouldThrowForbiddenException() {
         try {
-            service.find(testCatalog.anExpiredCategory().getId(), null);
+            tester.setPublicUser();
+            localService.find(tester.getSecurityContext(), tester.getFixtures().anExpiredCategory().getId(), null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
@@ -70,28 +62,41 @@ public class CategoriesCT {
 
     @Test
     public void find_idOfCategoryWithPresentation_ShouldReturnExpectedPresentation() {
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), Locale.ENGLISH.toString())).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
+        tester.setPublicUser();
+        Category actual = localService.find(tester.getSecurityContext(), tester.getFixtures().aCategoryWithPresentation().getId(), Locale.ENGLISH.toString());
+        assertThat(actual).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test
     public void find_idOfCategoryWithPresentation_WithNoLocaleSpecifiedShouldReturnFallbackLocalePresentation() {
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), null)).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
+        tester.setPublicUser();
+        Category category = localService.find(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithPresentation().getId(), null);
+        assertThat(category).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test
     public void find_idOfCategoryWithPresentation_WithNotSupportedLocaleSpecifiedShouldReturnFallbackLocalePresentation() {
-        assertThat(service.find(testCatalog.aCategoryWithPresentation().getId(), "it_IT")).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
+        tester.setPublicUser();
+        Category category = localService.find(tester.getSecurityContext(), tester.getFixtures().aCategoryWithPresentation().getId(), "it_IT");
+        assertThat(category).hasLocalizedPresentationShortDescription(Locale.ENGLISH.toString(), PresentationTexts.TEXT_1000);
     }
 
     @Test
     public void findLocales_OfACategoryWithPresentations_shouldReturnExpectedPresentations() {
-        assertThat(service.findPresentationsLocales(testCatalog.aCategoryWithPresentation().getId())).containsOnly(Locale.US.toString(), Locale.ENGLISH.toString());
+
+        tester.setAdminUser();
+        Set<String> locales = localService.findPresentationsLocales(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithPresentation().getId());
+
+        assertThat(locales).containsOnly(Locale.US.toString(), Locale.ENGLISH.toString());
     }
 
     @Test
     public void find_withUnknownCategoryId_ShouldThrowNotFoundException() {
         try {
-            service.find(9999L, null);
+            tester.setAdminUser();
+            localService.find(tester.getSecurityContext(), 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -101,7 +106,8 @@ public class CategoriesCT {
     @Test
     public void findCategories_shouldReturn404ExWhenCategoryNotFound() {
         try {
-            service.findChildCategories(9999L, null);
+            tester.setAdminUser();
+            localService.findChildCategories(tester.getSecurityContext(), 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -110,21 +116,26 @@ public class CategoriesCT {
 
     @Test
     public void findCategories_shouldNotReturnExpiredNorDisabledCategories() {
-        List<Category> categories = service.findChildCategories(testCatalog.aRootCategoryWithChildCategories().getId(), null);
+        tester.setPublicUser();
+        List<Category> categories = localService.findChildCategories(tester.getSecurityContext(),
+                tester.getFixtures().aRootCategoryWithChildCategories().getId(), null);
         assertThat(categories).isNotEmpty();
         assertThatCategoriesOf(categories).areVisibleChildCategoriesOfARootCategoryWithChildCategories();
     }
 
     @Test
     public void findCategories_shouldReturnEmptyListWhenNoChildCategories() {
-        List<Category> categories = service.findChildCategories(testCatalog.aCategoryWithProducts().getId(), null);
+        tester.setAdminUser();
+        List<Category> categories = localService.findChildCategories(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithProducts().getId(), null);
         assertThat(categories).isEmpty();
     }
 
     @Test
     public void findProducts_shouldReturn404ExWhenCategoryNotFound() {
         try {
-            service.findChildProducts(9999L, null);
+            tester.setAdminUser();
+            localService.findChildProducts(tester.getSecurityContext(), 9999L, null);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -133,70 +144,70 @@ public class CategoriesCT {
 
     @Test
     public void findProducts_shouldNotReturnExpiredNorDisabledProducts() {
-        List<Product> products = service.findChildProducts(testCatalog.aCategoryWithProducts().getId(), null);
+        tester.setAdminUser();
+        List<Product> products = localService.findChildProducts(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithProducts().getId(), null);
         assertThat(products).isNotEmpty();
         assertThatProductsOf(products).areVisibleProductsOfAChildCategoryWithProducts();
     }
 
     @Test
     public void findProducts_shouldReturnEmptyListWhenNoChildProducts() {
-        List<Product> products = service.findChildProducts(testCatalog.aCategoryWithoutProducts().getId(), null);
+        tester.setAdminUser();
+        List<Product> products = localService.findChildProducts(tester.getSecurityContext(),
+                tester.getFixtures().aCategoryWithoutProducts().getId(), null);
         assertThat(products).isEmpty();
     }
 
     @Test
     public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null, null)).isNotEmpty();
+        assertThat(localService.findAll(null, null, null, null, null, null)).isNotEmpty();
     }
 
     @Test
     public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<Category> categories = service.findAll(null, 0, 1, null, null, null);
+        List<Category> categories = localService.findAll(null, 0, 1, null, null, null);
         assertThat(categories).isNotEmpty();
         assertThat(categories).hasSize(1);
     }
 
     @Test
     public void findAll_withIdSearchParam_shouldReturnResultsWithMatchingId() {
-        assertThat(service.findAll(testCatalog.aCategoryWithoutProducts().getId().toString(), null, null, null, null, null)).containsExactly(testCatalog.aCategoryWithoutProducts());
+        assertThat(localService.findAll(tester.getFixtures().aCategoryWithoutProducts().getId().toString(), null, null, null, null, null)).containsExactly(tester.getFixtures().aCategoryWithoutProducts());
     }
 
     @Test
     public void findAll_withNameSearchParam_shouldReturnResultsWithMatchingName() {
-        assertThat(service.findAll(testCatalog.aCategoryWithoutProducts().getName(), null, null, null, null, null)).containsExactly(testCatalog.aCategoryWithoutProducts());
+        assertThat(localService.findAll(tester.getFixtures().aCategoryWithoutProducts().getName(), null, null, null, null, null)).containsExactly(tester.getFixtures().aCategoryWithoutProducts());
     }
 
     @Test
     public void modifyCategory_ShouldModifyCategoryAttributesAndPreserveCategoriesWhenNotProvided() {
-        Category category = service.find(testCatalog.aRootCategoryWithChildCategories().getId(), null);
 
-        Category detachedCategoryToModify = new Category(testCatalog.aRootCategoryWithChildCategories().getId(), category.getName(), category.getDescription(), category.getStartDate(), category.getEndDate(), category.isDisabled());
-
-        service.modify(detachedCategoryToModify);
-
-        assertThat(category.getChildCategories()).containsExactlyElementsOf(category.getChildCategories());
-
+        tester.setAdminUser();
+        Category category = new Category(tester.getFixtures().aRootCategoryWithChildCategories().getId(), "New name");
+        tester.test_modify(category);
+        assertThat(category.getName()).isEqualTo("New name");
+        assertThat(category.getChildCategories()).isNotEmpty();
     }
 
     @Test
     public void modifyCategory_ShouldModifyCategoryAttributesAndPreserveChildProductsWhenNotProvided() {
-        Category category = service.find(testCatalog.aCategoryWithProducts().getId(), null);
 
-        Category detachedCategoryToModify = new Category(testCatalog.aCategoryWithProducts().getId(), category.getName(), category.getDescription(), category.getStartDate(), category.getEndDate(), category.isDisabled());
-        detachedCategoryToModify.setDescription(category.getDescription());
-
-        service.modify(detachedCategoryToModify);
-
-        assertThat(category.getChildCategories()).containsExactlyElementsOf(category.getChildCategories());
-
+        tester.setAdminUser();
+        Category category = new Category(tester.getFixtures().aCategoryWithProducts().getId(), "New name");
+        ;
+        tester.test_modify(category);
+        assertThat(category.getName()).isEqualTo("New name");
+        assertThat(category.getChildProducts()).isNotEmpty();
     }
 
     @Test
     public void modifyUnknownCategory_ShouldThrowNotFoundException() {
 
-        Category detachedCategoryToModify = new Category(9999L, null, null, null, null, null);
         try {
-            service.modify(detachedCategoryToModify);
+            Category category = new Category(9999L, null);
+            localService.modify(tester.getSecurityContext(), category);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
@@ -205,51 +216,84 @@ public class CategoriesCT {
 
     @Test
     public void countAll() {
-        assertThat(service.count(null)).isGreaterThan(0);
+        assertThat(localService.count(null)).isGreaterThan(0);
     }
 
     @Test
     public void countAll_withUnknownSearchCriteria() {
-        assertThat(service.count("666")).isEqualTo(0);
+        assertThat(localService.count("666")).isEqualTo(0);
     }
 
     @Test
-    public void create_shouldPersist() {
-        Category category = new Category("name", "description", new Date(), new Date(), false);
+    public void create_shouldSetupOwner_for_admin() {
 
-        entityManager.getTransaction().begin();
-        service.create(category);
-        entityManager.getTransaction().commit();
+        tester.setAdminUser();
+        Category category = new Category("name", "description", new Date(), new Date(), false, "test@test.com");
+        category.setOwner(TestCatalog.OWNER);
 
-        assertThat(entityManager.find(Category.class, category.getId())).isNotNull();
-        entityManager.remove(category);
+        Category actualCategory = tester.test_create(category);
+
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getOwner()).isEqualTo(TestCatalog.OWNER);
+    }
+
+    @Test
+    public void create_shouldSetupOwner_for_store_admin() {
+
+        tester.setStoreAdminUser();
+        Category category = new Category("name", "");
+        Category actualCategory = tester.test_create(category);
+
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getOwner()).isEqualTo(TestCatalog.OWNER);
+    }
+
+    @Test
+    public void create_withoutOwner_shouldThrow_BadRequestEx_for_admin() {
+
+        try {
+            tester.setAdminUser();
+            Category category = new Category("name", "description");
+            tester.test_create(category);
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+        }
     }
 
     @Test
     public void delete_shouldRemove() {
 
-        entityManager.getTransaction().begin();
+        tester.setStoreAdminUser();
         Category category = new Category("Test category", "");
-        entityManager.persist(category);
-        entityManager.getTransaction().commit();
-
-        entityManager.getTransaction().begin();
-        service.delete(category.getId());
-        entityManager.getTransaction().commit();
-
-        assertThat(entityManager.find(Category.class, category.getId())).isNull();
+        category.setOwner(TestCatalog.OWNER);
+        tester.test_delete(category);
+        assertThat(tester.getEntityManager().find(Category.class, category.getId())).isNull();
     }
 
     @Test
     public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
 
         try {
-            entityManager.getTransaction().begin();
-            service.delete(666L);
-            entityManager.getTransaction().commit();
+            tester.setStoreAdminUser();
+            localService.delete(tester.getSecurityContext(), 666L);
             fail("should have thrown ex");
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @Test
+    public void delete_NonManagedEntry_shouldThrowForbiddenEx() {
+
+        try {
+            tester.setStoreAdminUser();
+            Category category = new Category("Test category", "");
+            category.setOwner("test@test.com");
+            tester.test_delete(category);
+            fail("should have thrown ex");
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.FORBIDDEN);
         }
     }
 }
