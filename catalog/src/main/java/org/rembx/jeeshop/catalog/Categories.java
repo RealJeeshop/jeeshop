@@ -124,7 +124,7 @@ public class Categories implements CatalogItemService<Category> {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{categoryId}/categories")
     public Category attachCategories(@PathParam("categoryId") Long categoryId, List<Long> categoriesIds) {
 

@@ -1,24 +1,29 @@
+import axios from "axios";
+
 export default {
 
-    login(email, pass, cb) {
+    async login(email, pass) {
 
-        cb = arguments[arguments.length - 1]
-        if (localStorage.token) {
-            if (cb) cb(true)
-            this.onChange(true)
-            return
-        }
+        return new Promise((success, die) => {
 
-        pretendRequest(email, pass, (res) => {
-            if (res.authenticated) {
-                localStorage.token = res.token
-                if (cb) cb(true)
-                this.onChange(true)
-            } else {
-                if (cb) cb(false)
-                this.onChange(false)
-            }
+                axios.head('/rs/users/administrators', {
+                    auth: {
+                        username: email,
+                        password: pass
+                    }
+                }).then(result => {
+                    if (result) {
+                        localStorage.token = btoa(`${email}:${pass}`)
+                        success(true)
+                    } else {
+                        delete localStorage.token
+                        success(false)
+                    }
+                }).catch(die)
         })
+
+
+
     },
 
     getToken () {
@@ -37,17 +42,4 @@ export default {
 
 
     onChange () {}
-}
-
-function pretendRequest (email, pass, cb) {
-    setTimeout(() => {
-        if (email === 'a' && pass === 'a') {
-            cb({
-                authenticated: true,
-                token: Math.random().toString(36).substring(7)
-            })
-        } else {
-            cb({ authenticated: false })
-        }
-    }, 500)
 }

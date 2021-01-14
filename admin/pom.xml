@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -8,6 +9,17 @@
         <version>0.9-SNAPSHOT</version>
     </parent>
     <artifactId>admin</artifactId>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>1.10.5.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.rembx.jeeshop</groupId>
@@ -29,6 +41,7 @@
             <artifactId>media</artifactId>
             <version>${project.version}</version>
         </dependency>
+
     </dependencies>
     <build>
         <resources>
@@ -36,8 +49,8 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>src/main/webapp/dist</directory>
                 <targetPath>META-INF/resources</targetPath>
+                <directory>src/main/webapp/dist</directory>
             </resource>
         </resources>
         <plugins>
@@ -81,7 +94,7 @@
                         </goals>
                         <configuration>
                             <workingDirectory>src/main/webapp</workingDirectory>
-                            <executable>npm</executable>
+                            <executable>yarn</executable>
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
@@ -95,7 +108,7 @@
                         </goals>
                         <configuration>
                             <workingDirectory>src/main/webapp</workingDirectory>
-                            <executable>npm</executable>
+                            <executable>yarn</executable>
                             <arguments>
                                 <argument>run</argument>
                                 <argument>build</argument>
@@ -122,30 +135,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <!--                <execution>-->
-                    <!--                    <id>copy-webapp</id>-->
-                    <!--                    <phase>validate</phase>-->
-                    <!--                    <goals>-->
-                    <!--                        <goal>copy-resources</goal>-->
-                    <!--                    </goals>-->
-                    <!--                    <configuration>-->
-                    <!--                        <outputDirectory>${basedir}/src/main/resources</outputDirectory>-->
-                    <!--                        <resources>-->
-                    <!--                            <resource>-->
-                    <!--                                <directory>${basedir}/src/main/webapp</directory>-->
-                    <!--                                <excludes>-->
-                    <!--                                    <exclude>**/node_modules/**</exclude>-->
-                    <!--                                    <exclude>**/node/**</exclude>-->
-                    <!--                                    <exclude>**/.idea/**</exclude>-->
-                    <!--                                    <exclude>**/WEB-INF/**</exclude>-->
-                    <!--                                    <exclude>webpack.config.js</exclude>-->
-                    <!--                                    <exclude>package.json</exclude>-->
-                    <!--                                    <exclude>package-lock.json</exclude>-->
-                    <!--                                </excludes>-->
-                    <!--                            </resource>-->
-                    <!--                        </resources>-->
-                    <!--                    </configuration>-->
-                    <!--                </execution>-->
                 </executions>
             </plugin>
             <plugin>

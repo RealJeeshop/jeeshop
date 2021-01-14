@@ -133,7 +133,7 @@ public class Products implements CatalogItemService<Product> {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{productId}/discounts")
     public Product attachDiscounts(@PathParam("productId") Long productId, List<Long> discountsIds) {
 

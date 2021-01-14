@@ -3,6 +3,7 @@ package org.rembx.jeeshop.user;
 import com.google.common.collect.Sets;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
-import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 /**
  * Customer resource
@@ -88,7 +88,7 @@ public class Users {
         Role userRole = roleFinder.findByName(RoleName.user);
         user.setRoles(Sets.newHashSet(userRole));
 
-        user.setPassword(hashSha256Base64(user.getPassword()));
+        user.setPassword(BcryptUtil.bcryptHash(user.getPassword()));
 
           if (!securityContext.isUserInRole(ADMIN)) {
 
@@ -156,7 +156,7 @@ public class Users {
             user.setActionToken(null);
         }
 
-        user.setPassword(hashSha256Base64(newPassword));
+        user.setPassword(BcryptUtil.bcryptHash(newPassword));
         user.setActivated(true);
         sendMail(user, Mails.userChangePassword);
 
@@ -206,18 +206,21 @@ public class Users {
         return entityManager.merge(user);
     }
 
+
     @HEAD
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Boolean authenticate() {
+
+        System.out.println(BcryptUtil.bcryptHash("jeeshop"));
         return true;
     }
 
     @HEAD
     @Path("/administrators")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({ADMIN, ADMIN_READONLY})
+    @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
     public Boolean authenticateAdminUser() {
         return true;
     }

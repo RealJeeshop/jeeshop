@@ -15,11 +15,12 @@ const actions = {
     login({commit}, data) {
         commit('setError', null)
         commit('setLoading', true)
-        UserService.login(data.email, data.password, loggedIn => {
+        UserService.login(data.email, data.password).then(loggedIn => {
             commit('setLoading', false)
             if (loggedIn) commit('setLoggedIn', true)
             else commit('setError', "Mauvais login / mot de passe")
-        })
+
+        }).catch(e => console.log('e : ' + JSON.stringify(e))  )
     },
 
     logOut({commit}) {

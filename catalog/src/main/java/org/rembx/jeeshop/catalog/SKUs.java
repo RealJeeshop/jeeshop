@@ -123,7 +123,7 @@ public class SKUs implements CatalogItemService<SKU> {
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{skuId}/discounts")
     public SKU attachDiscounts(@PathParam("skuId") Long skuId, List<Long> discountsIds) {
 

@@ -1,4 +1,4 @@
-package admin.org.rembx.jeeshop.admin;
+package org.rembx.jeeshop.admin;
 
 import org.rembx.jeeshop.catalog.*;
 import org.rembx.jeeshop.media.Medias;
