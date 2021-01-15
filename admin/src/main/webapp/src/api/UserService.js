@@ -17,10 +17,10 @@ export default {
                             roles: result.data.roles.map(r => r.name),
                             token: result.config.headers['Authorization']
                         })
-                        success(true)
+                        success(result.data)
                     } else {
                         delete localStorage.payload
-                        success(false)
+                        success(null)
                     }
                 }).catch(die)
         })
