@@ -49,9 +49,11 @@ INSERT INTO Store (id, name, description, startDate, endDate, disabled, owner) V
 
 SELECT setval('store_id_seq', (SELECT MAX(id) from store));
 
-INSERT INTO premises (address_id, store_id)
+INSERT INTO store_premises (address_id, store_id)
 VALUES ((SELECT MAX(id) from premises_address), (SELECT MAX(id) from store));
 
+INSERT INTO store_catalog (store_id, catalog_id, orderIdx)
+VALUES ((SELECT MAX(id) from store), (SELECT MAX(id) from catalog), 0);
 
 --
 -- data for table Presentation

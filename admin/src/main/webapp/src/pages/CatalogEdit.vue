@@ -23,6 +23,12 @@
 
           </div>
 
+          <div v-if="itemType === 'stores'">
+            <RelationshipsTable label="Catalogs" itemType="catalogs"
+                                :values="item.catalogsIds"
+                                @open-edition="openRelationshipEdition" />
+          </div>
+
           <div v-if="itemType === 'catalogs'">
             <RelationshipsTable label="Root categories" itemType="categories"
                                 :values="item.rootCategoriesIds"

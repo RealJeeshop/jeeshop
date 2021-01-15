@@ -28,7 +28,7 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
-@Path("/rs/stores")
+@Path("/stores")
 @ApplicationScoped
 public class Stores implements CatalogItemService<Store> {
 
@@ -132,6 +132,29 @@ public class Stores implements CatalogItemService<Store> {
         }
 
         store.setPresentationByLocale(originalCatalog.getPresentationByLocale());
+        return entityManager.merge(store);
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{storeId}/categories")
+    public Store attachCatalogs(@PathParam("storeId") Long storeId, List<Long> catalogsIds) {
+
+        Store store = entityManager.find(Store.class, storeId);
+        checkNotNull(store);
+
+        List<Catalog> newCatalogs = new ArrayList<>();
+        catalogsIds.forEach(catalogId -> newCatalogs.add(entityManager.find(Catalog.class, catalogId)));
+
+        if (store.getCatalogs() != null) {
+            store.getCatalogs().addAll(newCatalogs);
+        } else {
+            store.setCatalogs(newCatalogs);
+        }
+
         return entityManager.merge(store);
     }
 

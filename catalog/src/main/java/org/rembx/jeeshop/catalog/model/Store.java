@@ -14,15 +14,15 @@ import java.util.Objects;
 public class Store extends CatalogItem {
 
     @ManyToMany(cascade = {CascadeType.PERSIST})
-    @JoinTable(joinColumns = @JoinColumn(name = "storeId"),
-            inverseJoinColumns = @JoinColumn(name = "catalogId"))
-    @OrderColumn(name="orderIdx")
+    @JoinTable(joinColumns = @JoinColumn(name = "store_id"),
+            inverseJoinColumns = @JoinColumn(name = "catalog_id"))
+    @OrderColumn(name = "orderIdx")
     List<Catalog> catalogs;
 
     @Transient
     List<Long> catalogsIds;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "store")
     List<Premises> premisses;
 
     public Store() {

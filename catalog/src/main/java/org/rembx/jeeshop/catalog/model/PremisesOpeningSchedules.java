@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -7,29 +8,32 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
 @Cacheable
+@Table(name = "premises_schedules")
 public class PremisesOpeningSchedules {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private Store store;
+    @ManyToOne
+    @JsonbTransient
+    private Premises premises;
 
     @Enumerated(EnumType.ORDINAL)
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "dayoftheweek", nullable = false)
     DayOfWeek dayOfWeek;
 
-    @Column
+    @Column(name = "time_open")
     LocalTime timeOpen;
 
-    @Column
+    @Column(name = "time_close")
     LocalTime timeClose;
 
     public PremisesOpeningSchedules() {
@@ -40,18 +44,9 @@ public class PremisesOpeningSchedules {
     }
 
     public PremisesOpeningSchedules(Store store, DayOfWeek dayOfWeek, LocalTime timeOpen, LocalTime timeClose) {
-        this.store = store;
         this.dayOfWeek = dayOfWeek;
         this.timeOpen = timeOpen;
         this.timeClose = timeClose;
-    }
-
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
     }
 
     public DayOfWeek getDayOfWeek() {
@@ -76,5 +71,28 @@ public class PremisesOpeningSchedules {
 
     public void setTimeClose(LocalTime timeClose) {
         this.timeClose = timeClose;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PremisesOpeningSchedules that = (PremisesOpeningSchedules) o;
+        return Objects.equals(id, that.id) && dayOfWeek == that.dayOfWeek && Objects.equals(timeOpen, that.timeOpen) && Objects.equals(timeClose, that.timeClose);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dayOfWeek, timeOpen, timeClose);
+    }
+
+    @Override
+    public String toString() {
+        return "PremisesOpeningSchedules{" +
+                "id=" + id +
+                ", dayOfWeek=" + dayOfWeek +
+                ", timeOpen=" + timeOpen +
+                ", timeClose=" + timeClose +
+                '}';
     }
 }

@@ -9,6 +9,13 @@ const state = () => ({
 
 const getters = {
     isLoggedIn: () => UserService.loggedIn(),
+    isUserInRole: (state) => (role) => {
+        if (state.user) {
+            return state.user.roles.findIndex((r) => r.name === role) !== -1
+        } else {
+            return false
+        }
+    }
 }
 
 const actions = {

@@ -52,6 +52,10 @@ const CatalogAPI = {
         })
     },
 
+    getCatalogs(itemType, id) {
+      return axios.get(`/rs/${itemType}/${id}/catalogs`)
+    },
+
     getCategories(itemType, id) {
         return axios.get(`/rs/${itemType}/${id}/categories`)
     },
@@ -76,6 +80,7 @@ const CatalogAPI = {
                 this.getAll('products'),
                 this.getAll('skus'),
                 this.getAll('discounts'),
+                this.getAll('stores'),
             ]).then(axios.spread((...responses) => {
 
                 success(Object.assign({}, {
@@ -84,6 +89,7 @@ const CatalogAPI = {
                     products: responses[2].data,
                     skus: responses[3].data,
                     discounts: responses[4].data,
+                    stores: responses[5].data,
                 }))
 
             })).catch(die)
@@ -127,7 +133,11 @@ const CatalogAPI = {
 
 function prepareRequestByItemType(itemType, id) {
 
-    if (itemType === 'catalogs') {
+    if (itemType === 'stores') {
+        return [
+            CatalogAPI.getCatalogs(itemType, id)
+        ]
+    } else if (itemType === 'catalogs') {
         return [
             CatalogAPI.getCategories(itemType, id)
         ]
@@ -151,7 +161,10 @@ function prepareRequestByItemType(itemType, id) {
 function handleResponseByItemType(itemType, item, responses) {
 
     let newItem = _.cloneDeep(item)
-    if (itemType === 'catalogs') {
+    if (itemType === 'stores') {
+        newItem.catalogsIds = responses[2].data
+
+    } else if (itemType === 'catalogs') {
         newItem.rootCategoriesIds = responses[2].data
 
     } else if (itemType === 'categories') {

@@ -57,7 +57,9 @@
                     //FIXME duplicate with catalogs.vue
                     let path = this.itemType
                     let tmp = _.cloneDeep(state)
-                    if (path === 'catalogs') {
+                  if (path === 'stores') {
+                    return tmp.catalogs.stores
+                  } else if (path === 'catalogs') {
                         return tmp.catalogs.catalogs
                     } else if (path === 'products') {
                         return tmp.catalogs.products

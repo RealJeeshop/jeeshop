@@ -26,6 +26,12 @@ create table if not exists store (
     startdate date null,
     owner varchar(100) not null);
 
+create table if not exists store_catalog (
+  store_id bigint not null,
+  catalog_id bigint not null,
+  orderidx int not null,
+  primary key (store_id,orderidx));
+
 create table if not exists premises_address (
   id serial not null primary key,
   city varchar(255) not null,
@@ -33,13 +39,13 @@ create table if not exists premises_address (
   zipcode varchar (10) not null,
   countryiso3code varchar (3) not null);
 
-create table if not exists premises (
+create table if not exists store_premises (
     id serial not null primary key,
     store_id bigint not null,
     address_id bigint not null
 );
 
-create table if not exists schedules (
+create table if not exists premises_schedules (
     id serial not null primary key,
     premises_id bigint not null,
     dayoftheweek integer not null,
@@ -51,11 +57,15 @@ create table if not exists store_presentation (
     presentationid bigint not null,
     primary key (catalogitemid,presentationid));
 
-alter table premises
+alter table store_catalog
+  add constraint fk_store_catalog_store foreign key (store_id) references store (id),
+  add constraint fk_store_catalog_catalog foreign key (catalog_id) references catalog (id);
+
+alter table store_premises
     add constraint fk_premises_address foreign key (address_id) references premises_address (id),
     add constraint fk_premises_store foreign key (store_id) references store (id);
 
-alter table schedules
-     add constraint fk_schedules_premises foreign key (premises_id) references premises (id);
+alter table premises_schedules
+     add constraint fk_schedules_premises foreign key (premises_id) references store_premises (id);
 
 insert into "role" (id, name) values (4, 'store_admin');

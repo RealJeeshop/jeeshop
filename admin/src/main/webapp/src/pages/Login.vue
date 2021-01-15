@@ -1,10 +1,11 @@
 <template>
     <div class="login-container">
         <h1>{{ $t("login.title") }}</h1>
+        <div class="error-block">{{error}}</div>
         <div class="login-form-container">
             <v-text-field v-model="email" placeholder="email" :hide-details="true" />
             <v-text-field v-model="password" placeholder="password" type="password" :hide-details="true" />
-            <v-btn color="primary" @click="login({email, password})">Login</v-btn>
+            <v-btn color="primary" @click="login">Login</v-btn>
             <!--<p v-if="error" class="error">Bad login information</p>-->
         </div>
     </div>
@@ -12,7 +13,8 @@
 </template>
 
 <script>
-    import {mapActions} from "vuex";
+
+    import {mapState} from "vuex";
 
     export default {
         name: 'Login',
@@ -22,9 +24,25 @@
                 password: ""
             }
         },
-
+      computed: mapState({
+        error: state => state.session.error,
+        loading: state => state.session.loading,
+        loggedIn: state => state.session.loggedIn
+      }),
+      watch: {
+        loggedIn(logged) {
+          if (logged) {
+            this.$emit("on-logged")
+          }
+        }
+      },
         methods: {
-            ...mapActions('session', ['login']),
+            login() {
+              this.$store.dispatch("session/login", {
+                email: this.email,
+                password: this.password
+              })
+            }
         }
     }
 </script>

@@ -3,6 +3,7 @@ import { CatalogAPI } from "../../api";
 
 const state = () => ({
     initialized: false,
+    stores: [],
     catalogs: [],
     products: [],
     categories: [],
@@ -17,7 +18,9 @@ const getters = {
     getById: (state) => (id, itemType) => {
 
         let items = state.catalogs
-        if (itemType === 'categories') {
+        if (itemType === 'stores') {
+            items = state.stores
+        } else if (itemType === 'categories') {
             items = state.categories
         } else if (itemType === 'products') {
             items = state.products
@@ -132,7 +135,11 @@ const actions = {
             commit('addItem', {itemType: itemType, item: insertedItem.data})
             let insertedItemId = insertedItem.data.id;
 
-            if (itemType === 'catalogs' && payload.rootCategoriesIds && payload.rootCategoriesIds.length > 0) {
+            if (itemType === 'stores' && payload.catalogsIds && payload.catalogsIds.length > 0) {
+
+                await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, "catalogs", payload.catalogsIds)
+
+            } else if (itemType === 'catalogs' && payload.rootCategoriesIds && payload.rootCategoriesIds.length > 0) {
 
                 await CatalogAPI.attachAssociatedItems(insertedItemId, itemType, "categories", payload.rootCategoriesIds)
 
@@ -192,6 +199,7 @@ const actions = {
 const mutations = {
 
     setCatalog(state, payload) {
+        state.stores = payload.stores
         state.catalogs = payload.catalogs
         state.categories = payload.categories
         state.products = payload.products
