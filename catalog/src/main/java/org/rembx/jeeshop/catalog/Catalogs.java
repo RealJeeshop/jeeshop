@@ -56,6 +56,14 @@ public class Catalogs implements CatalogItemService<Catalog> {
     }
 
     @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Catalog> findManagedCatalogs(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(catalog, context.getUserPrincipal().getName());
+    }
+
+    @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})

@@ -35,6 +35,7 @@ Vue.config.productionTip = false
 
 import EnglishTrad from './assets/english'
 import FrenchTrad from './assets/french'
+import LoginPage from "@/pages/LoginPage";
 const messages = {
   en: EnglishTrad,
   fr: FrenchTrad
@@ -50,7 +51,8 @@ const i18n = new VueI18n({
 const router = new VueRouter({
   base: __dirname,
   routes: [
-    { path: '/', component: HomePage },
+    { path: '/', component: HomePage, meta: { protected: true } },
+    { path: '/login', component: LoginPage },
     { path: '/settings', component: Settings, meta: { protected: true } },
     { path: '/help', component: Help},
     { path: '/orders', component: Orders, meta: { protected: true },
@@ -108,34 +110,6 @@ const router = new VueRouter({
         }
       ]
     },
-    // { path: '/products', component: Catalogs, meta: { protected: true},
-    //   children: [
-    //     {
-    //       path: 'create',
-    //       components: {
-    //         edit: CreateProduct
-    //       }
-    //     },
-    //     {
-    //       path: 'create/presentation',
-    //       components: {
-    //         edit: AddPresentation
-    //       }
-    //     },
-    //     {
-    //       path: 'create/link',
-    //       components: {
-    //         edit: LinkProduct
-    //       }
-    //     },
-    //     {
-    //       path: ':id',
-    //       components: {
-    //         edit: CatalogEdit
-    //       }
-    //     }
-    //   ]
-    // },
     { path: '/:itemType', component: Catalogs, meta: { protected: true},
       children: [
         {
@@ -161,7 +135,7 @@ router.beforeEach((to, from, next) => {
       next()
       return
     }
-    next('/')
+    next('/login')
   } else {
     next()
   }

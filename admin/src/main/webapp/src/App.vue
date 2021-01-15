@@ -5,7 +5,7 @@
                     <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
                     <v-toolbar-title>Jeeshop Admin</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <Login />
+                    <LoggedMenu />
                     <template v-if="loggedIn" v-slot:extension>
                         <v-tabs  align-with-title>
                             <v-tabs-slider color="yellow"></v-tabs-slider>
@@ -31,7 +31,7 @@
 
     import SideNavItem from "./components/NavItem";
     import { mapState } from 'vuex'
-    import Login from "./components/Login";
+    import LoggedMenu from "./components/LoggedMenu";
     import './App.scss'
 
     export default {
@@ -40,13 +40,12 @@
         name: 'App',
         components: {
             SideNavItem,
-            Login
+          LoggedMenu
         },
         computed: mapState({
             loggedIn: state => state.session.loggedIn
         }),
         created() {
-            this.$store.dispatch('catalogs/init')
         }
     }
 </script>

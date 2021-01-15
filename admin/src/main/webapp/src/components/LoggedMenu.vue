@@ -24,7 +24,7 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex'
+    import { mapState } from 'vuex'
 
     export default {
         data() { return {
@@ -37,10 +37,9 @@
             loggedIn: state => state.session.loggedIn
         }),
         methods: {
-            ...mapActions('session', ['login']),
             logOut() {
                 this.$store.dispatch('session/logOut')
-                this.$router.replace('/')
+              this.$router.replace('/login')
             }
         },
     }

@@ -191,6 +191,13 @@ public class Categories implements CatalogItemService<Category> {
             return catalogItemFinder.findAll(category, start, size, orderBy, isDesc, locale);
     }
 
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Category> findManagedCategories(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(category, context.getUserPrincipal().getName());
+    }
 
     @GET
     @Path("/count")

@@ -112,6 +112,13 @@ public class Discounts implements CatalogItemService<Discount> {
             return catalogItemFinder.findAll(discount, start, size, orderBy, isDesc, locale);
     }
 
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Discount> findManagedDiscounts(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(discount, context.getUserPrincipal().getName());
+    }
 
     @GET
     @Path("/visible")

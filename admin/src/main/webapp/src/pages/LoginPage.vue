@@ -1,4 +1,5 @@
 <template>
+  <div class="page-content padded-xl flex column x-centered">
     <div class="login-container">
         <h1>{{ $t("login.title") }}</h1>
         <div class="error-block">{{error}}</div>
@@ -9,7 +10,7 @@
             <!--<p v-if="error" class="error">Bad login information</p>-->
         </div>
     </div>
-
+  </div>
 </template>
 
 <script>
@@ -17,7 +18,6 @@
     import {mapState} from "vuex";
 
     export default {
-        name: 'Login',
         data() {
             return {
                 email: "",
@@ -30,9 +30,10 @@
         loggedIn: state => state.session.loggedIn
       }),
       watch: {
-        loggedIn(logged) {
-          if (logged) {
+        loggedIn(newValue) {
+          if (newValue) {
             this.$emit("on-logged")
+            this.$router.replace("/")
           }
         }
       },

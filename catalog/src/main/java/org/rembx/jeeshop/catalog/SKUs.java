@@ -155,6 +155,14 @@ public class SKUs implements CatalogItemService<SKU> {
     }
 
     @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<SKU> findManagedSKUs(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(sKU, context.getUserPrincipal().getName());
+    }
+
+    @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})

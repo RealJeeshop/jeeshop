@@ -46,9 +46,9 @@ const getters = {
 
 const actions = {
 
-    init({ state, commit }) {
+    init({ state, commit }, role) {
         if (!state.initialized) {
-            CatalogAPI.loadAllCatalog()
+            CatalogAPI.loadAllCatalog(role)
                 .then(payload => {
                     commit('setCatalog', payload)
 
@@ -60,6 +60,16 @@ const actions = {
 
     getItems ({ commit }, itemType) {
         CatalogAPI.getAll(itemType)
+            .then(response => {
+                commit('setItems', {itemType: itemType, items: response.data})
+            })
+            .catch(error => {
+                console.log('error : ' + JSON.stringify(error))
+            });
+    },
+
+    getManagedItems ({ commit }, itemType) {
+        CatalogAPI.getManagedItem(itemType)
             .then(response => {
                 commit('setItems', {itemType: itemType, items: response.data})
             })

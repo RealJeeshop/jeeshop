@@ -58,6 +58,14 @@ public class CatalogItemFinder {
 
     }
 
+    public <T extends CatalogItem> List<T> findByOwner(EntityPath<T> entityPath, String owner) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(entityPath)
+                .where(qCatalogItem.owner.eq(owner))
+                .fetch();
+    }
+
     public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {
         QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
 

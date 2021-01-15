@@ -7,6 +7,10 @@ const CatalogAPI = {
         return axios.get(`/rs/${itemType}`)
     },
 
+    async getManagedItem(itemType) {
+        return axios.get(`/rs/${itemType}/managed`)
+    },
+
     async getById(itemType, id) {
 
         let additionalRequests = prepareRequestByItemType(itemType, id)

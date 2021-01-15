@@ -63,6 +63,9 @@
                         return tmp.catalogs.discounts
                     }
                 },
+                isAdmin(state) {
+                  return state.session.user.roles.filter(r => r.name === "admin").length === 1
+                },
                 item(state) {
                     return _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
                 }
@@ -114,7 +117,10 @@
         created () {
             this.itemType = this.$route.params.itemType
             this.showEditPanel = !!this.$route.params.id || this.$route.path.indexOf("create") !== -1;
-            if (!this.showEditPanel) this.$store.dispatch('catalogs/getItems', this.itemType)
+            if (!this.showEditPanel) {
+              if (this.isAdmin) this.$store.dispatch('catalogs/getItems', this.itemType)
+              else this.$store.dispatch('catalogs/getManagedItems', this.itemType)
+            }
         },
 
         updated() {

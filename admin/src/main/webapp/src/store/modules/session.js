@@ -30,7 +30,16 @@ const actions = {
                 commit('setError', "Mauvais login / mot de passe")
             }
 
-        }).catch(e => console.log('e : ' + JSON.stringify(e))  )
+        }).catch(e => {
+
+            if (e.message.indexOf("401") !== -1) {
+                commit('setError', "Mauvais login / mot de passe")
+            } else {
+                commit('setError', "Une erreur est survenue, veuillez réessayer !")
+            }
+
+            console.log('e : ' + JSON.stringify(e))
+        }  )
     },
 
     logOut({commit}) {

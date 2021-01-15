@@ -165,6 +165,14 @@ public class Products implements CatalogItemService<Product> {
     }
 
     @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Product> findManagedProducts(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(product, context.getUserPrincipal().getName());
+    }
+
+    @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
