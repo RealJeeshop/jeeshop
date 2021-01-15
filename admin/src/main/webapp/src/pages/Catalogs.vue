@@ -64,7 +64,9 @@
                     }
                 },
                 isAdmin(state) {
-                  return state.session.user.roles.filter(r => r.name === "admin").length === 1
+                  return state.session.user
+                      ? state.session.user.roles.filter(r => r.name === "admin").length === 1
+                      : false
                 },
                 item(state) {
                     return _.find(state.catalogs[this.itemType], item => item.id === this.itemId);

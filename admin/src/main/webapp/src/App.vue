@@ -13,7 +13,7 @@
                             <SideNavItem icon="fas fa-book" text="Catalog" to="/catalogs" />
                             <SideNavItem icon="fas fa-shopping-cart" text="Orders" to="/orders" />
                             <SideNavItem icon="fas fa-chart-bar" text="Stats" to="/stats" />
-                            <SideNavItem icon="fas fa-user" text="Users" to="/users" />
+                            <SideNavItem v-if="isAdmin" icon="fas fa-user" text="Users" to="/users" />
                             <SideNavItem icon="fas fa-envelope" text="Emails, Newsletters" to="/emails" />
                         </v-tabs>
                     </template>
@@ -42,9 +42,14 @@
             SideNavItem,
           LoggedMenu
         },
-        computed: mapState({
-            loggedIn: state => state.session.loggedIn
-        }),
+        computed: {
+          ...mapState({
+            loggedIn: state => state.session.loggedIn,
+          }),
+          isAdmin() {
+            return this.$store.getters['session/isUserInRole']('admin')
+          }
+        },
         created() {
         }
     }

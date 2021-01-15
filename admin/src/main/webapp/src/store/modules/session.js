@@ -10,11 +10,12 @@ const state = () => ({
 const getters = {
     isLoggedIn: () => UserService.loggedIn(),
     isUserInRole: (state) => (role) => {
-        if (state.user) {
-            return state.user.roles.findIndex((r) => r.name === role) !== -1
-        } else {
+
+        let roles = state.user ? state.user.roles.map(r => r.name) : JSON.parse(localStorage.getItem("payload")).roles
+        if (roles)
+            return roles.findIndex((r) => r === role) !== -1
+        else
             return false
-        }
     }
 }
 
