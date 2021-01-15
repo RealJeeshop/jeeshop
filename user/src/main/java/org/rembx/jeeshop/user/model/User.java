@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Created by remi on 21/05/14.
@@ -32,12 +31,14 @@ public class User {
 
     @Column(nullable = false, length = 100)
     @NotNull
+    @JsonbTransient
     public String password;
 
     @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String firstname;
+
     @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
@@ -52,6 +53,7 @@ public class User {
 
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
+
     @OneToOne
     private Address deliveryAddress;
 
@@ -82,10 +84,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
-    @JsonbTransient
     public Set<Role> roles;
-
-    private String rolesAsString;
 
     public User() {
     }
@@ -119,11 +118,6 @@ public class User {
     public void prePersist() {
         this.creationDate = new Date();
         this.activated = false;
-    }
-
-    @PostLoad
-    public void postFetch() {
-        this.rolesAsString = this.roles.stream().map(r -> r.getName().name()).collect(Collectors.joining(","));
     }
 
     @PreUpdate
@@ -281,14 +275,6 @@ public class User {
 
     public void setNewslettersSubscribed(Boolean newslettersSubscribed) {
         this.newslettersSubscribed = newslettersSubscribed;
-    }
-
-    public String getRolesAsString() {
-        return rolesAsString;
-    }
-
-    public void setRolesAsString(String rolesAsString) {
-        this.rolesAsString = rolesAsString;
     }
 
     @Override

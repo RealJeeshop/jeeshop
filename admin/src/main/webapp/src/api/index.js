@@ -10,9 +10,10 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.timeout = 10000
 
 axios.interceptors.request.use(function (config) {
-    const token = localStorage.getItem('token')
-    config.headers.Authorization = 'Basic ' + token
-
+    const payload = localStorage.getItem('payload')
+    if (payload) {
+        config.headers.Authorization = JSON.parse(payload).token
+    }
     return config;
 });
 

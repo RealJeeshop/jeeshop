@@ -217,14 +217,14 @@ public class Users {
         return true;
     }
 
-    @HEAD
+    @POST
     @Path("/administrators")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, STORE_ADMIN, ADMIN_READONLY})
-    public Boolean authenticateAdminUser() {
-        return true;
+    public User authenticateAdminUser(@Context SecurityContext context) {
+        return userFinder.findByLogin(context.getUserPrincipal().getName());
     }
-
 
     @GET
     @Path("/")

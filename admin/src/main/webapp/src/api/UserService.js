@@ -6,17 +6,20 @@ export default {
 
         return new Promise((success, die) => {
 
-                axios.head('/rs/users/administrators', {
+                axios.post('/rs/users/administrators', {}, {
                     auth: {
                         username: email,
                         password: pass
                     }
                 }).then(result => {
                     if (result) {
-                        localStorage.token = btoa(`${email}:${pass}`)
+                        localStorage.payload = JSON.stringify({
+                            roles: result.data.roles.map(r => r.name),
+                            token: result.config.headers['Authorization']
+                        })
                         success(true)
                     } else {
-                        delete localStorage.token
+                        delete localStorage.payload
                         success(false)
                     }
                 }).catch(die)
@@ -27,17 +30,17 @@ export default {
     },
 
     getToken () {
-        return localStorage.token
+        return localStorage.payload
     },
 
     logout (cb) {
-        delete localStorage.token
+        delete localStorage.payload
         if (cb) cb()
         this.onChange(false)
     },
 
     loggedIn () {
-        return !!localStorage.token
+        return !!localStorage.payload
     },
 
 
