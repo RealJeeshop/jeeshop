@@ -36,9 +36,9 @@ public class Categories implements CatalogItemService<Category> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Category> presentationResource;
 
-    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Category> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -240,11 +240,11 @@ public class Categories implements CatalogItemService<Category> {
 
     @Path("/{categoryId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Category> findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return presentationResource.init(category, locale, presentation);
+        return presentationResource.init(Category.class, category, locale, presentation);
     }
 
     @GET

@@ -83,13 +83,21 @@ const actions = {
         commit('addItem', {itemType, item})
     },
 
-    attachPresentation({commit}, {itemType, itemId, presentation}) {
-        commit('setLocale', {
-            itemType: itemType,
-            itemId: itemId,
-            locale: presentation.locale,
-            presentation: presentation
-        })
+    attachPresentation({commit}, {itemType, itemId, locale, presentation}) {
+
+        CatalogAPI.createLocalizedPresentation(itemType, itemId, presentation.locale, presentation)
+            .then(response => {
+                commit('setLocale', {
+                    itemType: itemType,
+                    itemId: itemId,
+                    locale: locale,
+                    presentation: response
+                })
+            }).catch(error => {
+                console.log('error attaching new presentation : ' + JSON.stringify(error))
+            })
+
+
     },
 
     getPresentation({ getters, commit }, {itemType, itemId, locale}) {
@@ -223,19 +231,20 @@ const mutations = {
     },
 
     setLocale(state, payload) {
-        let existingId = state[payload.itemType].findIndex(item => item.id === payload.itemId)
-        if (existingId !== -1) {
+        let existingItems = state[payload.itemType]
+        let existingIndex = existingItems.findIndex(item => item.id === payload.itemId)
+        if (existingIndex !== -1) {
             let newLocale = payload.locale
             //newLocale[payload.locale] = payload.presentation
 
-
-            let item = _.cloneDeep(state[payload.itemType][existingId])
+            let item = _.cloneDeep(existingItems[existingIndex])
             item.localizedPresentation = _.union(item.localizedPresentation, [newLocale])
 
             let newAvailableLocale = {}
-            newAvailableLocale[payload.locale] = payload.presentation;
+            newAvailableLocale[payload.presentation.locale] = payload.presentation;
             item.availableLocales = Object.assign({}, item.availableLocales ? item.availableLocales : {}, newAvailableLocale)
-            state[payload.itemType][existingId] = _.cloneDeep(item)
+            existingItems[existingIndex] = item
+            state[this.itemType] = _.cloneDeep(existingItems)
         }
     },
 

@@ -34,9 +34,9 @@ public class Stores implements CatalogItemService<Store> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Store> presentationResource;
 
-    Stores(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Stores(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Store> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -182,11 +182,11 @@ public class Stores implements CatalogItemService<Store> {
 
     @Path("/{storeId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("storedId") @NotNull Long storeId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Store> findPresentationByLocale(@NotNull @PathParam("storeId") Long storeId, @NotNull @PathParam("locale") String locale) {
         Store store = entityManager.find(Store.class, storeId);
         checkNotNull(store);
         Presentation presentation = store.getPresentationByLocale().get(locale);
-        return presentationResource.init(store, locale, presentation);
+        return presentationResource.init(Store.class, store, locale, presentation);
     }
 
     @GET

@@ -36,9 +36,9 @@ public class SKUs implements CatalogItemService<SKU> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<SKU> presentationResource;
 
-    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<SKU> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -204,11 +204,11 @@ public class SKUs implements CatalogItemService<SKU> {
 
     @Path("/{skuId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<SKU> findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return presentationResource.init(sku, locale, presentation);
+        return presentationResource.init(SKU.class, sku, locale, presentation);
     }
 
     @GET

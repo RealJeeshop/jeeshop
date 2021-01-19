@@ -32,9 +32,9 @@ public class Products implements CatalogItemService<Product> {
 
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private PresentationResource<Product> presentationResource;
 
-    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Product> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -212,11 +212,11 @@ public class Products implements CatalogItemService<Product> {
 
     @Path("/{productId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Product> findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return presentationResource.init(product, locale, presentation);
+        return presentationResource.init(Product.class, product, locale, presentation);
     }
 
     @GET

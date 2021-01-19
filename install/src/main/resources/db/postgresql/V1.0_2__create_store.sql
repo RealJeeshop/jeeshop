@@ -57,6 +57,10 @@ create table if not exists store_presentation (
     presentationid bigint not null,
     primary key (catalogitemid,presentationid));
 
+alter table store_presentation
+  add constraint fk_store_presentation_catalog foreign key (catalogitemid) references store (id),
+  add constraint fk_store_presentation_presentation foreign key (presentationid) references presentation (id);
+
 alter table store_catalog
   add constraint fk_store_catalog_store foreign key (store_id) references store (id),
   add constraint fk_store_catalog_catalog foreign key (catalog_id) references catalog (id);

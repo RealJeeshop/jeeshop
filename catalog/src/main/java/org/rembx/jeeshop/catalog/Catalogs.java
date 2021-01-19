@@ -34,9 +34,9 @@ public class Catalogs implements CatalogItemService<Catalog> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Catalog> presentationResource;
 
-    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Catalog> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -192,7 +192,7 @@ public class Catalogs implements CatalogItemService<Catalog> {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         Presentation presentation = catalog.getPresentationByLocale().get(locale);
-        return presentationResource.init(catalog, locale, presentation);
+        return presentationResource.init(Catalog.class, catalog, locale, presentation);
     }
 
     @GET

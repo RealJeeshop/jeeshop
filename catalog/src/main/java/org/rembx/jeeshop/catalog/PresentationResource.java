@@ -8,16 +8,13 @@ import org.rembx.jeeshop.rest.WebApplicationException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.*;
-import javax.transaction.NotSupportedException;
+import javax.transaction.Transactional;
+import javax.transaction.UserTransaction;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static javax.transaction.Transactional.TxType.REQUIRED;
 import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.STORE_ADMIN;
@@ -28,13 +25,14 @@ import static org.rembx.jeeshop.role.JeeshopRoles.STORE_ADMIN;
  * @author remi
  */
 @ApplicationScoped
-public class PresentationResource {
+public class PresentationResource<T extends CatalogItem> {
 
     private Presentation presentation;
     private CatalogItem parentCatalogItem;
     private String locale;
     private EntityManager entityManager;
     private UserTransaction transaction;
+    private Class<T> clazz;
 
     PresentationResource(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, UserTransaction userTransaction) {
         this.entityManager = entityManager;
@@ -54,15 +52,20 @@ public class PresentationResource {
     @RolesAllowed({STORE_ADMIN, ADMIN})
     public void delete() {
         checkEntityNotNull();
+        refreshCatalogItem();
         parentCatalogItem.getPresentationByLocale().remove(presentation.getLocale());
         entityManager.merge(parentCatalogItem);
         entityManager.remove(entityManager.merge(presentation));
     }
 
+    private void refreshCatalogItem() {
+        parentCatalogItem = entityManager.find(this.clazz, parentCatalogItem.getId());
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional(value = REQUIRES_NEW)
+    @Transactional
     @RolesAllowed({STORE_ADMIN, ADMIN})
     public Presentation createLocalizedPresentation(Presentation presentation) {
 
@@ -73,8 +76,9 @@ public class PresentationResource {
         presentation.setLocale(locale);
         entityManager.persist(presentation);
 
+        refreshCatalogItem();
         parentCatalogItem.getPresentationByLocale().put(locale, presentation);
-        entityManager.merge(parentCatalogItem);
+        CatalogItem c = entityManager.merge(parentCatalogItem);
 
         return presentation;
     }
@@ -102,7 +106,8 @@ public class PresentationResource {
         }
     }
 
-    public PresentationResource init(CatalogItem parentCatalogItem, String locale, Presentation presentation) {
+    public PresentationResource<T> init(Class<T> clazz, CatalogItem parentCatalogItem, String locale, Presentation presentation) {
+        this.clazz = clazz;
         this.presentation = presentation;
         this.locale = locale;
         this.parentCatalogItem = parentCatalogItem;
