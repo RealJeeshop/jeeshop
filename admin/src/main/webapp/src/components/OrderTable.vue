@@ -1,7 +1,7 @@
 <template>
     <div class="table-container">
         <v-data-table :search="search" :headers="headers" :items="items.map(item => {
-            item.login = item.user.login
+            item.login = item.customer.login
             item.reference = 'itemref'
             item.creationDate = formatDate(item.creationDate)
             item.updateDate = formatDate(item.updateDate)

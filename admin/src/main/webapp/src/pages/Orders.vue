@@ -37,9 +37,7 @@
         computed: {
             ...mapState({
                 orders(state) {
-                    let cloneDeep = _.cloneDeep(state.orders.orders);
-                    console.log('cloneDeep : ' + JSON.stringify(cloneDeep))
-                    return cloneDeep
+                    return _.cloneDeep(state.orders.orders);
                 }
             }),
             headers() {
@@ -61,14 +59,17 @@
         },
         methods: {
             handleItemSelection(id) {
-                console.log('selected order id : ' + JSON.stringify(id))
                 this.$router.push(`/orders/${id}`)
             }
         },
         created () {
 
             this.showEditPanel = !!this.$route.params.id;
-            if (!this.showEditPanel) this.$store.dispatch('orders/getAll')
+            if (!this.showEditPanel) {
+              if (this.isAdmin) this.$store.dispatch('orders/getAll')
+              else this.$store.dispatch('orders/getManaged')
+
+            }
         },
 
         updated() {

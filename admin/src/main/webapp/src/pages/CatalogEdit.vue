@@ -25,13 +25,13 @@
 
           <div v-if="itemType === 'stores'">
             <RelationshipsTable label="Catalogs" itemType="catalogs"
-                                :values="item.catalogsIds"
+                                :values="item.catalogs"
                                 @open-edition="openRelationshipEdition" />
           </div>
 
           <div v-if="itemType === 'catalogs'">
             <RelationshipsTable label="Root categories" itemType="categories"
-                                :values="item.rootCategoriesIds"
+                                :values="item.rootCategories"
                                 @open-edition="openRelationshipEdition" />
           </div>
 
@@ -49,30 +49,30 @@
             </div>
             <RelationshipsTable label="SKU discounts" itemType="discounts"
                                 @open-edition="openRelationshipEdition"
-                                :values="item.discountsIds"/>
+                                :values="item.discounts"/>
 
           </div>
 
           <div v-else-if="itemType === 'products'">
             <RelationshipsTable label="Child SKUs" itemType="skus"
                                 @open-edition="openRelationshipEdition"
-                                :values="item.childSKUsIds"/>
+                                :values="item.childSKUs"/>
 
             <RelationshipsTable label="Product discounts" itemType="discounts"
                                 @open-edition="openRelationshipEdition"
-                                :values="item.discountsIds"/>
+                                :values="item.discounts"/>
           </div>
 
           <div v-else-if="itemType === 'categories'">
             <RelationshipsTable itemType="categories"
                                 label="Child Categories"
                                 @open-edition="openRelationshipEdition"
-                                :values="item.childCategoriesIds" />
+                                :values="item.childCategories" />
 
             <RelationshipsTable label="Child products"
                                 itemType="products"
                                 @open-edition="openRelationshipEdition"
-                                :values="item.childProductsIds"/>
+                                :values="item.childProducts"/>
           </div>
 
           <div v-else-if="itemType === 'discounts'">
@@ -166,17 +166,11 @@ export default {
                       itemId: this.itemId,
                       availableLocales: find.localizedPresentation
                     }
+
                     return _.cloneDeep(find)
+
                   } else return {}
                 },
-                // presentation(state) {
-                //
-                //     let item = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
-                //     return item && item.availableLocales && item.availableLocales[this.locale]
-                //         ? _.cloneDeep(item.availableLocales[this.locale])
-                //         : {}
-                //
-                // }
             }),
             localizedPresentation() {
                 return {
@@ -196,6 +190,7 @@ export default {
             saveItem() {
 
                 if (this.$refs.form.validate()) {
+
                   this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
                   this.close()
                 }

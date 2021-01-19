@@ -42,6 +42,7 @@ public class TestOrder {
         entityManager.persist(billingAddress);
 
         order1 = new Order(testUser.firstUser(), null, deliveryAddress, billingAddress, OrderStatus.PAYMENT_VALIDATED);
+        order1.setStoreId(1L);
         orderItem1 = new OrderItem(1L, 1L, 2);
         orderItem1.setOrder(order1);
 
@@ -49,6 +50,7 @@ public class TestOrder {
         entityManager.persist(order1);
 
         order2 = new Order(testUser.firstUser(), null, null, null, OrderStatus.CREATED);
+        order2.setStoreId(1L);
         entityManager.persist(order2);
 
         entityManager.getTransaction().commit();
@@ -68,7 +70,7 @@ public class TestOrder {
     }
 
     public User firstOrdersUser() {
-        return order1.getUser();
+        return order1.getCustomer();
     }
 
 }

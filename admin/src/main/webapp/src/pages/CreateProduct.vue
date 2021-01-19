@@ -251,7 +251,10 @@ export default {
         presentation: this.addPresentation ? this.presentation : null
       }
 
-      if (this.itemType === 'catalogs') {
+      if (this.itemType === 'stores') {
+        return defaultPayload
+
+      } else if (this.itemType === 'catalogs') {
         return Object.assign(defaultPayload, {
           rootCategoriesIds: this.selectedCategories
         })

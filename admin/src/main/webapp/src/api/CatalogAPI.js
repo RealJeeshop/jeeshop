@@ -101,6 +101,16 @@ const CatalogAPI = {
     },
 
     upsert(itemType, item) {
+
+        delete item.rootCategories
+        delete item.discounts
+        delete item.childSKUs
+        delete item.childProducts
+        delete item.childCategories
+        delete item.localizedPresentation
+
+        console.log('item : ' + JSON.stringify(item))
+
         if (item.id) {
             return axios.put(`/rs/${itemType}`, item)
         } else {
@@ -166,21 +176,21 @@ function handleResponseByItemType(itemType, item, responses) {
 
     let newItem = _.cloneDeep(item)
     if (itemType === 'stores') {
-        newItem.catalogsIds = responses[2].data
+        newItem.catalogs = responses[2].data
 
     } else if (itemType === 'catalogs') {
-        newItem.rootCategoriesIds = responses[2].data
+        newItem.rootCategories = responses[2].data
 
     } else if (itemType === 'categories') {
-        newItem.childCategoriesIds = responses[2].data
-        newItem.childProductsIds = responses[3].data
+        newItem.childCategories = responses[2].data
+        newItem.childProducts = responses[3].data
 
     } else if (itemType === 'products') {
-        newItem.discountsIds = responses[2].data
-        newItem.childSKUsIds = responses[3].data
+        newItem.discounts = responses[2].data
+        newItem.childSKUs = responses[3].data
 
     } else if (itemType === 'skus') {
-        newItem.discountsIds = responses[2].data
+        newItem.discounts = responses[2].data
     }
 
     return newItem

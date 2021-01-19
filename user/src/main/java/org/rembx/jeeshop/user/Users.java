@@ -5,6 +5,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.PersistenceUnit;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.user.mail.Mails;
@@ -45,6 +46,9 @@ public class Users {
     private CountryChecker countryChecker;
     private Mailer mailer;
     private MailTemplateFinder mailTemplateFinder;
+
+    @ConfigProperty(name = "security.salt")
+    String salt;
 
     Users(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManager entityManager, UserFinder userFinder, RoleFinder roleFinder, CountryChecker countryChecker,
                  MailTemplateFinder mailTemplateFinder, Mailer mailer) {
@@ -156,7 +160,7 @@ public class Users {
             user.setActionToken(null);
         }
 
-        user.setPassword(BcryptUtil.bcryptHash(newPassword));
+        user.setPassword(BcryptUtil.bcryptHash(newPassword, 10, salt.getBytes()));
         user.setActivated(true);
         sendMail(user, Mails.userChangePassword);
 
@@ -212,8 +216,6 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Boolean authenticate() {
-
-        System.out.println(BcryptUtil.bcryptHash("jeeshop"));
         return true;
     }
 
@@ -310,4 +312,7 @@ public class Users {
         return;
     }
 
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 }

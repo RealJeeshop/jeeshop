@@ -5,10 +5,15 @@ const OrderAPI = {
     async getAll() {
         return new Promise((success, die) => {
             axios.get('/rs/orders')
-                .then(response => {
-                    console.log('response.data : ' + JSON.stringify(response))
-                    success(response.data)
-                })
+                .then(response => success(response.data))
+                .catch(die)
+        })
+    },
+
+    async getManaged() {
+        return new Promise((success, die) => {
+            axios.get('/rs/orders/managed')
+                .then(response => success(response.data))
                 .catch(die)
         })
     },

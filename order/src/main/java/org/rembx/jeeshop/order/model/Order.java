@@ -16,7 +16,7 @@ import java.util.Set;
  * Order entity
  */
 @Entity
-@Table(name = "Orders")
+@Table(name = "orders")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Order {
@@ -26,9 +26,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @NotNull
-    User user;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn( name="user_id" )
+    User customer;
+
+    @NotNull
+    @Column(name = "store_id")
+    Long storeId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", fetch = FetchType.EAGER)
     Set<OrderItem> items;
@@ -91,7 +96,7 @@ public class Order {
     }
 
     public Order(User user, Set<OrderItem> items, Address deliveryAddress, Address billingAddress, OrderStatus status) {
-        this.user = user;
+        this.customer = user;
         this.items = items;
         this.deliveryAddress = deliveryAddress;
         this.billingAddress = billingAddress;
@@ -129,12 +134,12 @@ public class Order {
         this.paymentInfo = paymentInfo;
     }
 
-    public User getUser() {
-        return user;
+    public User getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 
     public Address getDeliveryAddress() {
@@ -263,6 +268,14 @@ public class Order {
 
     public void setVat(Double vat) {
         this.vat = vat;
+    }
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
     }
 
     @Override

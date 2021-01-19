@@ -40,7 +40,7 @@ INSERT INTO premises_address (city, street, zipcode, countryiso3code)
 VALUES ('Paris', '7, Rue du vélodrome', '75001', 'FRA');
 
 insert into "user" (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
-values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', true, 'm.' , 'Paul', 'Smith', 'admin@hyperbike.com', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', null, null);
+values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', true, 'm.' , 'Paul', 'Smith', 'admin@hyperbike.com', '$2a$10$2yACdyyMXZfEJtsfP8MLKu63a0kKZa8gUSrWJkYDNqMQyKax3geLC', '', null, null);
 
 insert into user_role (userid , roleid) values ((SELECT MAX(id) from "user"), '4');
 

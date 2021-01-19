@@ -1,5 +1,4 @@
 package org.rembx.jeeshop.user.model;
-
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
