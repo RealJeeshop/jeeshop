@@ -217,23 +217,37 @@ export default {
     },
     saveLocale(presentation) {
       this.showLocaleEdition = false
-      this.$store.dispatch("catalogs/attachPresentation", {
-        itemType: this.itemType,
-        itemId: this.itemId,
-        locale: this.locale,
-        presentation: presentation
-      })
 
       let existingLocales = this.presentations.availableLocales ? this.presentations.availableLocales : []
-      this.presentations = {
-        itemType: this.itemType,
-        itemId: this.itemId,
-        availableLocales: [presentation.locale].concat(existingLocales)
-      }
+      console.log('existingLocales : ' + JSON.stringify(existingLocales))
+      console.log("hey")
+      console.log('existingLocales.findIndex(l => l === presentation.locale) : ' + JSON.stringify(existingLocales.findIndex(l => l === presentation.locale)))
+      if (existingLocales.findIndex(l => l === presentation.locale) === -1 ) {
+        this.$store.dispatch("catalogs/attachPresentation", {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          locale: this.locale,
+          presentation: presentation
+        })
 
-      let newAvailableLocale = {}
-      newAvailableLocale[presentation.locale] = presentation;
-      this.item.availableLocales = Object.assign({}, this.item.availableLocales ? this.item.availableLocales : {}, newAvailableLocale)
+        this.presentations = {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          availableLocales: [presentation.locale].concat(existingLocales)
+        }
+
+        let newAvailableLocale = {}
+        newAvailableLocale[presentation.locale] = presentation;
+        this.item.availableLocales = Object.assign({}, this.item.availableLocales ? this.item.availableLocales : {}, newAvailableLocale)
+      } else {
+
+        this.$store.dispatch("catalogs/updatePresentation", {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          locale: this.locale,
+          presentation: presentation
+        })
+      }
     },
     saveRelationship() {
       this.selectedRelationships = []

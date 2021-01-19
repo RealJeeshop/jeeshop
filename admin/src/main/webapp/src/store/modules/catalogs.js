@@ -115,6 +115,18 @@ const actions = {
             })).catch(error => console.log('error : ' + JSON.stringify(error)));
     },
 
+    updatePresentation({commit}, {itemType, itemId, locale, presentation}) {
+
+        CatalogAPI.updatePresentation(itemType, itemId, locale, presentation)
+            .then(presentation => commit('setLocale', {
+                itemType: itemType,
+                itemId: itemId,
+                locale: locale,
+                presentation: presentation
+
+            })).catch(error => console.log('error : ' + JSON.stringify(error)));
+    },
+
 
     upsert ({ commit, state }, { itemType, item }) {
         const existingItems = [...state[itemType]]

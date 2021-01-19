@@ -56,6 +56,14 @@ const CatalogAPI = {
         })
     },
 
+    updatePresentation(itemType, id, locale, presentation) {
+        return new Promise((success, die) => {
+            axios.put(`/rs/${itemType}/${id}/presentations/${locale}`, presentation)
+                .then(response => success(response.data))
+                .catch(die)
+        })
+    },
+
     getCatalogs(itemType, id) {
       return axios.get(`/rs/${itemType}/${id}/catalogs`)
     },

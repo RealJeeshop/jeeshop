@@ -80,7 +80,6 @@ public class Catalogs implements CatalogItemService<Catalog> {
     public Catalog find(@Context SecurityContext securityContext, @PathParam("catalogId") @NotNull Long catalogId, @QueryParam("locale") String locale) {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
 
-        String name = securityContext.getUserPrincipal().getName();
         if (isAdminUser(securityContext) || isOwner(securityContext, catalog.getOwner()))
             return catalog;
         else
