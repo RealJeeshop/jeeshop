@@ -31,6 +31,7 @@
       }),
       watch: {
         loggedIn(newValue) {
+          console.log('newValue : ' + JSON.stringify(newValue))
           if (newValue) {
             this.$emit("on-logged")
             this.$router.replace("/")

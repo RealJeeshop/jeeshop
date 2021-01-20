@@ -1,17 +1,20 @@
-import UserService from "../../api/UserService";
+import { UserAPI } from "../../api";
 
 const state = () => ({
-    loggedIn: UserService.loggedIn(),
+    loggedIn: UserAPI.loggedIn(),
     user: null,
     loading: false,
     error: null
 })
 
 const getters = {
-    isLoggedIn: () => UserService.loggedIn(),
+    isLoggedIn: () => UserAPI.loggedIn(),
     isUserInRole: (state) => (role) => {
 
-        let roles = state.user ? state.user.roles.map(r => r.name) : JSON.parse(localStorage.getItem("payload")).roles
+        let roles = state.user
+            ? state.user.roles.map(r => r.name)
+            : JSON.parse(localStorage.getItem("payload")).roles
+
         if (roles)
             return roles.findIndex((r) => r === role) !== -1
         else
@@ -21,9 +24,15 @@ const getters = {
 
 const actions = {
 
+    getUserInfo({commit}) {
+        UserAPI.getUserInfo().then(response => {
+            commit('login', response)
+        }).catch(error => console.log('error : ' + JSON.stringify(error))  )
+    },
+
     login({commit}, data) {
         commit('setLoading', true)
-        UserService.login(data.email, data.password).then(user => {
+        UserAPI.login(data.email, data.password).then(user => {
             commit('setLoading', false)
             if (user) commit('login', user)
             else {
@@ -44,7 +53,7 @@ const actions = {
     },
 
     logOut({commit}) {
-        UserService.logout(() => {
+        UserAPI.logout(() => {
             commit('logout')
         })
     }

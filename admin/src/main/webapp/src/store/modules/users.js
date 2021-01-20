@@ -1,4 +1,4 @@
-import UserAPI from "../../api/UserAPI";
+import {UserAPI} from "../../api";
 import _ from "lodash";
 
 const state = () => ({

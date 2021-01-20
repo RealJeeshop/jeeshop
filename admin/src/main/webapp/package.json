@@ -16,6 +16,7 @@
     "vue-i18n": "^8.22.2",
     "vue-router": "^3.4.5",
     "vuetify": "^2.3.13",
+    "vuex-persistedstate": "^4.0.0-beta.3",
     "weekstart": "^1.0.1"
   },
   "devDependencies": {

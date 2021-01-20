@@ -1,6 +1,8 @@
 import axios from 'axios'
 import CatalogAPI from "./CatalogAPI";
-import UserService from "./UserService";
+import MailsAPI from "./MailsAPI";
+import OrderAPI from "./OrderAPI";
+import UserAPI from "./UserAPI";
 
 axios.defaults.baseURL = process.env.NODE_ENV !== 'production'
                             ? 'http://localhost:8000'
@@ -12,6 +14,7 @@ axios.defaults.timeout = 10000
 axios.interceptors.request.use(function (config) {
     const payload = localStorage.getItem('payload')
     if (payload) {
+        console.log(' JSON.parse(payload).token : ' + JSON.stringify( JSON.parse(payload).token))
         config.headers.Authorization = JSON.parse(payload).token
     }
     return config;
@@ -19,6 +22,8 @@ axios.interceptors.request.use(function (config) {
 
 export {
     CatalogAPI,
-    UserService
+    MailsAPI,
+    OrderAPI,
+    UserAPI
 
 }

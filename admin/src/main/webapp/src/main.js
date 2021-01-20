@@ -30,12 +30,15 @@ import './styles/forms.scss'
 import './styles/flex.scss'
 import CatalogEdit from "./pages/CatalogEdit";
 import CreateProduct from "./pages/CreateProduct";
+import StoreAdmin from "./pages/StoreAdmin";
+import StoreAdminSettings from "./pages/StoreAdminSettings";
 
 Vue.config.productionTip = false
 
 import EnglishTrad from './assets/english'
 import FrenchTrad from './assets/french'
 import LoginPage from "@/pages/LoginPage";
+import StoreAdminInfo from "@/pages/StoreAdminInfo";
 const messages = {
   en: EnglishTrad,
   fr: FrenchTrad
@@ -55,6 +58,21 @@ const router = new VueRouter({
     { path: '/login', component: LoginPage },
     { path: '/settings', component: Settings, meta: { protected: true } },
     { path: '/help', component: Help},
+    { path: '/store', component: StoreAdmin, meta: { protected: true },
+    children: [
+      {
+        path: 'info',
+        components: {
+          default: StoreAdminInfo
+        }
+      },
+      {
+        path: 'settings',
+        components: {
+          default: StoreAdminSettings
+        }
+      },
+    ]},
     { path: '/orders', component: Orders, meta: { protected: true },
       children: [
         {

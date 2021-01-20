@@ -207,6 +207,7 @@ export default {
     },
     onSelectLocale(locale) {
       this.locale = locale
+      console.log('this.item.availableLocales[locale] : ' + JSON.stringify(this.item.availableLocales[locale]))
       this.$store.dispatch("catalogs/getPresentation", {
         itemType: this.itemType,
         itemId: this.itemId,
@@ -219,9 +220,6 @@ export default {
       this.showLocaleEdition = false
 
       let existingLocales = this.presentations.availableLocales ? this.presentations.availableLocales : []
-      console.log('existingLocales : ' + JSON.stringify(existingLocales))
-      console.log("hey")
-      console.log('existingLocales.findIndex(l => l === presentation.locale) : ' + JSON.stringify(existingLocales.findIndex(l => l === presentation.locale)))
       if (existingLocales.findIndex(l => l === presentation.locale) === -1 ) {
         this.$store.dispatch("catalogs/attachPresentation", {
           itemType: this.itemType,

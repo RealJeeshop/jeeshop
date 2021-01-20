@@ -92,7 +92,7 @@ public class Users {
         Role userRole = roleFinder.findByName(RoleName.user);
         user.setRoles(Sets.newHashSet(userRole));
 
-        user.setPassword(BcryptUtil.bcryptHash(user.getPassword()));
+        user.setPassword(BcryptUtil.bcryptHash(user.getPassword(), 10, this.salt.getBytes()));
 
           if (!securityContext.isUserInRole(ADMIN)) {
 
@@ -216,6 +216,7 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
     public Boolean authenticate() {
+        System.out.println(BcryptUtil.bcryptHash("jeeshop"));
         return true;
     }
 

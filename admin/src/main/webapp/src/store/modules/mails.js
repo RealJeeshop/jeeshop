@@ -1,4 +1,4 @@
-import MailsAPI from "../../api/MailsAPI";
+import {MailsAPI} from "../../api";
 import _ from "lodash";
 
 const state = () => ({

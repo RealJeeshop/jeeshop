@@ -1,4 +1,4 @@
-import OrderAPI from "../../api/OrderAPI";
+import {OrderAPI} from "../../api";
 import _ from "lodash";
 
 const state = () => ({

@@ -103,16 +103,27 @@ const actions = {
     getPresentation({ getters, commit }, {itemType, itemId, locale}) {
 
        let cachedPresentation = getters.getPresentation(itemType, itemId, locale)
-       if (cachedPresentation) return;
+       if (cachedPresentation) {
+           // FIXME beurk
+           commit('setLocale', {
+               itemType: itemType,
+               itemId: itemId,
+               locale: locale,
+               presentation: cachedPresentation
 
-        CatalogAPI.getPresentation(itemType, itemId, locale)
-            .then(presentation => commit('setLocale', {
-                itemType: itemType,
-                itemId: itemId,
-                locale: locale,
-                presentation: presentation
+           })
+       } else {
+           CatalogAPI.getPresentation(itemType, itemId, locale)
+               .then(presentation => commit('setLocale', {
+                   itemType: itemType,
+                   itemId: itemId,
+                   locale: locale,
+                   presentation: presentation
 
-            })).catch(error => console.log('error : ' + JSON.stringify(error)));
+               })).catch(error => console.log('error : ' + JSON.stringify(error)));
+       }
+
+
     },
 
     updatePresentation({commit}, {itemType, itemId, locale, presentation}) {
@@ -255,8 +266,11 @@ const mutations = {
             let newAvailableLocale = {}
             newAvailableLocale[payload.presentation.locale] = payload.presentation;
             item.availableLocales = Object.assign({}, item.availableLocales ? item.availableLocales : {}, newAvailableLocale)
-            existingItems[existingIndex] = item
-            state[this.itemType] = _.cloneDeep(existingItems)
+
+            state[payload.itemType] = [
+                ...state[payload.itemType].filter(element => element.id !== payload.itemId),
+                item
+            ]
         }
     },
 
