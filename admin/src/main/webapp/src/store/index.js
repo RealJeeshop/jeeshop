@@ -5,6 +5,7 @@ import orders from './modules/orders'
 import users from './modules/users'
 import mails from './modules/mails'
 import session from './modules/session'
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)
 
@@ -19,5 +20,5 @@ export default new Vuex.Store({
         users
     },
     strict: debug,
-    plugins: debug ? [createLogger()] : []
+    plugins: debug ? [createLogger(), createPersistedState()] : []
 })
