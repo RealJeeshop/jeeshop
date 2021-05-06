@@ -15,3 +15,7 @@ app_bundle.js
 /admin/src/main/webapp/app_bundle.js
 
 .env
+*-data/
+
+testMedias.test
+server.log
