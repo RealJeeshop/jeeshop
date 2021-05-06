@@ -1,4 +1,4 @@
-import { UserAPI } from "../../api";
+import {UserAPI} from "../../api";
 
 const state = () => ({
     loggedIn: UserAPI.loggedIn(),
@@ -9,6 +9,7 @@ const state = () => ({
 
 const getters = {
     isLoggedIn: () => UserAPI.loggedIn(),
+    getStoreId: (state) => state.user ? state.user.storeId : null,
     isUserInRole: (state) => (role) => {
 
         let roles = state.user
@@ -32,9 +33,9 @@ const actions = {
 
     login({commit}, data) {
         commit('setLoading', true)
-        UserAPI.login(data.email, data.password).then(user => {
+        UserAPI.login(data.email, data.password).then(payload => {
             commit('setLoading', false)
-            if (user) commit('login', user)
+            if (payload) commit('login', payload)
             else {
                 commit('logout')
                 commit('setError', "Mauvais login / mot de passe")

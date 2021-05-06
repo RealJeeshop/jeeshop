@@ -163,8 +163,6 @@ export default {
         let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
 
         if (find) {
-
-          console.log('find : ' + JSON.stringify(find))
           this.presentations = {
             itemType: this.itemType,
             itemId: this.itemId,
@@ -206,13 +204,17 @@ export default {
       return DateUtils.formatDate(date)
     },
     onSelectLocale(locale) {
-      this.locale = locale
-      console.log('this.item.availableLocales[locale] : ' + JSON.stringify(this.item.availableLocales[locale]))
-      this.$store.dispatch("catalogs/getPresentation", {
-        itemType: this.itemType,
-        itemId: this.itemId,
-        locale: locale
-      })
+
+      if (locale) {
+        this.locale = locale
+        this.$store.dispatch("catalogs/getPresentation", {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          locale: locale
+        })
+      } else {
+        this.locale = null
+      }
 
       this.showLocaleEdition = true
     },

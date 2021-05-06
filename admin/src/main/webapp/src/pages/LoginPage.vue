@@ -15,23 +15,22 @@
 
 <script>
 
-    import {mapState} from "vuex";
+import {mapState} from "vuex";
 
-    export default {
-        data() {
-            return {
-                email: "",
-                password: ""
-            }
-        },
-      computed: mapState({
-        error: state => state.session.error,
-        loading: state => state.session.loading,
-        loggedIn: state => state.session.loggedIn
+export default {
+  data() {
+    return {
+      email: "",
+      password: ""
+    }
+  },
+  computed: mapState({
+    error: state => state.session.error,
+    loading: state => state.session.loading,
+    loggedIn: state => state.session.loggedIn
       }),
       watch: {
         loggedIn(newValue) {
-          console.log('newValue : ' + JSON.stringify(newValue))
           if (newValue) {
             this.$emit("on-logged")
             this.$router.replace("/")

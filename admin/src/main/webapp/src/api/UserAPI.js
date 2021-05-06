@@ -6,7 +6,6 @@ const UserAPI = {
         return new Promise((success, die) => {
             axios.get('/rs/users')
                 .then(response => {
-                    console.log('response.data : ' + JSON.stringify(response))
                     success(response.data)
                 })
                 .catch(die)
@@ -42,7 +41,6 @@ const UserAPI = {
                 if (result) {
                     localStorage.payload = JSON.stringify({
                         roles: result.data.roles.map(r => r.name),
-
                         token: result.config.headers['Authorization']
                     })
                     success(result.data)

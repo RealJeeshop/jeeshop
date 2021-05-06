@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { CatalogAPI } from "../../api";
+import {CatalogAPI} from "../../api";
 
 const state = () => ({
     initialized: false,
@@ -46,19 +46,19 @@ const getters = {
 
 const actions = {
 
-    init({ state, commit }, role) {
+    init({state, commit}, storeId) {
         if (!state.initialized) {
-            CatalogAPI.loadAllCatalog(role)
+            CatalogAPI.loadAllCatalog(storeId)
                 .then(payload => {
                     commit('setCatalog', payload)
 
                 }).catch(error => {
-                    console.log('error : ' + JSON.stringify(error))
-                })
+                console.log('error : ' + JSON.stringify(error))
+            })
         }
     },
 
-    getItems ({ commit }, itemType) {
+    getItems({commit}, itemType) {
         CatalogAPI.getAll(itemType)
             .then(response => {
                 commit('setItems', {itemType: itemType, items: response.data})
@@ -68,9 +68,18 @@ const actions = {
             });
     },
 
-    getManagedItems ({ commit }, itemType) {
-        CatalogAPI.getManagedItem(itemType)
+    async getManagedStore({commit}, storeId) {
+        let store = await CatalogAPI.getById("stores", storeId)
+        commit('addItem', {
+            itemType: "stores",
+            item: store
+        })
+    },
+
+    getManagedItems({commit}, {itemType, storeId}) {
+        CatalogAPI.getManagedItem(itemType, storeId)
             .then(response => {
+
                 commit('setItems', {itemType: itemType, items: response.data})
             })
             .catch(error => {
@@ -78,7 +87,7 @@ const actions = {
             });
     },
 
-    async getItemById({ commit }, {itemType, itemId}) {
+    async getItemById({commit}, {itemType, itemId}) {
         let item = await CatalogAPI.getById(itemType, itemId)
         commit('addItem', {itemType, item})
     },
@@ -276,9 +285,9 @@ const mutations = {
 
 
     addItem (state, payload) {
-        let existingId = state[payload.itemType].findIndex(item => item.id === payload.item.id)
+        let clonedState = _.cloneDeep(state[payload.itemType].filter(e => e !== null)) // FIXME ???
+        let existingId = clonedState.findIndex(item => item.id === payload.item.id)
 
-        let clonedState = _.cloneDeep(state[payload.itemType])
         if (existingId === -1) {
             clonedState.push(payload.item)
         } else {

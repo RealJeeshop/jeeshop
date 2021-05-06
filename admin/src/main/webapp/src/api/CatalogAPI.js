@@ -7,7 +7,7 @@ const CatalogAPI = {
         return axios.get(`/rs/${itemType}`)
     },
 
-    async getManagedItem(itemType) {
+    async getManagedItem(itemType, storeId) {
         return axios.get(`/rs/${itemType}/managed`)
     },
 
@@ -84,7 +84,8 @@ const CatalogAPI = {
         return axios.get(`/rs/${itemType}/${id}/products`)
     },
 
-    loadAllCatalog() {
+    loadAllCatalog(storeId) {
+        console.log('[IMPLEMENT ME] storeId : ' + JSON.stringify(storeId))
         return new Promise((success, die) => {
             axios.all([
                 this.getAll('catalogs'),
@@ -116,8 +117,6 @@ const CatalogAPI = {
         delete item.childProducts
         delete item.childCategories
         delete item.localizedPresentation
-
-        console.log('item : ' + JSON.stringify(item))
 
         if (item.id) {
             return axios.put(`/rs/${itemType}`, item)

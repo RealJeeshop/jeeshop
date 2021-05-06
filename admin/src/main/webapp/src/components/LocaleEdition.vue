@@ -32,27 +32,28 @@
 </template>
 
 <script>
-    import Input from "./inputs/Input";
-    import Select from "./inputs/Select";
-    import Textarea from "./inputs/Textarea";
-    import FileInput from "./inputs/FileInput";
-    export default {
-        name: 'LocaleEdition',
-        components: {FileInput, Textarea, Select, Input},
-        data() {
-            return {
-                presentation: this.data ? this.data : {},
-                availableLocales: [{value: "en", text: "English"}, {text: "French", value: "fr"}, {text: "Chinese", value: "zh" }]
-            }
-        },
-        props: {
-            open: Boolean,
-            data: Object
-        },
-        watch: {
-          data() {
-              this.presentation = this.data ? this.data : {}
-          }
+import Input from "./inputs/Input";
+import Select from "./inputs/Select";
+import Textarea from "./inputs/Textarea";
+import FileInput from "./inputs/FileInput";
+
+export default {
+  name: 'LocaleEdition',
+  components: {FileInput, Textarea, Select, Input},
+  props: {
+    open: Boolean,
+    data: Object
+  },
+  data() {
+    return {
+      presentation: this.data ? this.data : {},
+      availableLocales: [{value: "en", text: "English"}, {text: "French", value: "fr"}, {text: "Chinese", value: "zh"}]
+    }
+  },
+  watch: {
+    data() {
+      this.presentation = this.data ? this.data : {}
+    }
         },
         methods: {
             cancel() {

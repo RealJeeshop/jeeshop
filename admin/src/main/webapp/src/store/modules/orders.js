@@ -22,7 +22,6 @@ const actions = {
     getManaged({commit}) {
         OrderAPI.getManaged()
             .then(response => {
-                console.log('response : ' + JSON.stringify(response))
                 commit('setOrders', response)
             }).catch(error => {
             console.log('error fetching orders: ' + JSON.stringify(error))

@@ -82,6 +82,7 @@ public class Stores implements CatalogItemService<Store> {
     @PermitAll
     public Store find(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long itemId, @QueryParam("locale") String locale) {
         Store store = entityManager.find(Store.class, itemId);
+        store.getPremisses();
 
         if (isAdminUser(securityContext) || isOwner(securityContext, store.getOwner()))
             return store;

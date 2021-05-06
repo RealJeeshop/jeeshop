@@ -6,9 +6,10 @@
         </div>
         <v-simple-table class="presentation-table">
             <tbody>
-                <tr v-for="presentation in presentations" :key="presentation.id" class="clickable" @click="editLocale(presentation)">
-                    <td class="full-width">{{presentation}}</td>
-                    <td class="clickable"><i class="fa fa-trash"/></td>
+                <tr v-for="(presentation, i) in presentations" :key="`presentation-${i}`" class="clickable"
+                    @click="editLocale(presentation)">
+                  <td class="full-width">{{ presentation }}</td>
+                  <td class="clickable"><i class="fa fa-trash"/></td>
                 </tr>
             </tbody>
         </v-simple-table>

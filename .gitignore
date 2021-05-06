@@ -13,3 +13,5 @@ dist
 app_bundle.js
 
 /admin/src/main/webapp/app_bundle.js
+
+.env

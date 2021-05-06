@@ -6,7 +6,6 @@ const MailsAPI = {
         return new Promise((success, die) => {
             axios.get('/rs/mailtemplates')
                 .then(response => {
-                    console.log('response.data : ' + JSON.stringify(response))
                     success(response.data)
                 })
                 .catch(die)

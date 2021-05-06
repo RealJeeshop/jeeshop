@@ -33,6 +33,9 @@ public class TestCatalog {
 
     private static Store store;
     private static Store hiddenStore;
+    private static Premises premises;
+    private static PremisesAddress premisesAddress;
+    private static PremisesOpeningSchedules premisesOpeningSchedules;
 
     private static Catalog catalog;
     private static Catalog emptyCatalog;
@@ -121,12 +124,13 @@ public class TestCatalog {
         store = new Store("Shop");
         store.setOwner(OWNER);
 
-        PremisesOpeningSchedules schedules = new PremisesOpeningSchedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
-        PremisesAddress address = new PremisesAddress("10, rue des lilas", "Paris", "75001", "FRA");
+        premisesOpeningSchedules = new PremisesOpeningSchedules(store, DayOfWeek.MONDAY, LocalTime.MIN, LocalTime.MAX);
 
-        Premises premises = new Premises();
-        premises.setAddress(address);
-        premises.setSchedules(Lists.newArrayList(schedules));
+        premisesAddress = new PremisesAddress("10, rue des lilas", "Paris", "75001", "FRA");
+
+        premises = new Premises();
+        premises.setAddress(premisesAddress);
+        premises.setSchedules(Lists.newArrayList(premisesOpeningSchedules));
 
         store.setPremisses(Lists.newArrayList(premises));
         store.setCatalogs(Lists.newArrayList(catalog));

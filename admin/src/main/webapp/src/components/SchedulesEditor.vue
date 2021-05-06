@@ -1,19 +1,24 @@
 <template>
-  <v-flex justify-space-around>
+  <v-flex justify-space-around flex-wrap>
     <div v-for="day in dayOfWeek" :key="`day-${day.value}`" class="schedule-day-container">
-      <div>{{day.text}}</div>
+      <div>{{ day.text }}</div>
       <div class="schedule-time-container">
-        <div v-for="(schedule, i) in schedules[day.value] ? schedules[day.value] : []" :key="`schedule-${day.value}-${i}`" class="schedule-time-item">
-          <Input name="timeOpen" :value="schedule.timeOpen" label="Ouvre à" placeholder="Ouvre à" @on-update="update"/>
-          <Input name="timeClose" :value="schedule.timeClose" label="Ferme à" placeholder="Ferme à" @on-update="update" />
+        <div v-for="(schedule, i) in schedules[day.value] ? schedules[day.value] : []"
+             :key="`schedule-${day.value}-${i}`" class="schedule-time-item">
+          <Input type="time" name="timeOpen" :value="{id: day.value, value: schedule.timeOpen}" label="Ouvre à"
+                 placeholder="Ouvre à" min="00:00" max="23:59" @on-update="update"/>
+          <Input type="time" name="timeClose" :value="{id: day.value, value: schedule.timeOpen}" label="Ferme à"
+                 placeholder="Ferme à" min="00:00" max="23:59" @on-update="update"/>
         </div>
-        <i @click="addScheduleFor(day.value)" class="fas fa-plus clickable add-button" />
+        <a class="add-button" @click="addScheduleFor(day.value)">Ajouter une horaire</a>
       </div>
     </div>
+    <v-btn color="primary" @click="save">Save</v-btn>
   </v-flex>
 </template>
 
 <script>
+
 import Input from "@/components/inputs/Input";
 
 export default {
@@ -23,6 +28,7 @@ export default {
   components: {Input},
   data() {
     return {
+      menu2: false,
       schedules: this.value,
       modify: false,
       dayOfWeek: [{value: 1, text: "Lundi"}, {value: 2, text: "Mardi"},
@@ -32,9 +38,8 @@ export default {
     }
   },
   methods: {
-    update(a, b) {
-      console.log('a : ' + JSON.stringify(a))
-      console.log('b : ' + JSON.stringify(b))
+    update(a) {
+      this.schedules[a.id][a.key] = a.value
     },
     addScheduleFor(dayOfWeek) {
       let schedules = this.schedules ? this.schedules : {}
@@ -50,6 +55,9 @@ export default {
 
       this.schedules = Object.assign({}, schedules)
 
+    },
+    save() {
+      console.log('this.schedules : ' + JSON.stringify(this.schedules))
     }
   }
 }
@@ -63,9 +71,18 @@ export default {
   background-color: #F2F2F2;
   border: 1px solid #e0e0e0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+
 
   .schedule-time-container {
 
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 2;
 
     .schedule-time-item {
 
@@ -73,13 +90,8 @@ export default {
     }
   }
 
-  .schedule-time-container.i {
-      margin: 0.4em;
-      text-align: center;
-    width: 100%;
-  }
-
   .add-button {
+    display: block;
     text-align: center;
     width: 100%;
   }

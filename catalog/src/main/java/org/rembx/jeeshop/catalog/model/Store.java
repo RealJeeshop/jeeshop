@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,12 +18,13 @@ public class Store extends CatalogItem {
     @JoinTable(joinColumns = @JoinColumn(name = "store_id"),
             inverseJoinColumns = @JoinColumn(name = "catalog_id"))
     @OrderColumn(name = "orderIdx")
+    @JsonbTransient
     List<Catalog> catalogs;
 
     @Transient
     List<Long> catalogsIds;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "store")
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "store")
     List<Premises> premisses;
 
     public Store() {

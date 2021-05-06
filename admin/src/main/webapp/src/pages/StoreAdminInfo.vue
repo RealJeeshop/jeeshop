@@ -36,12 +36,18 @@
             <strong>Horaires du magasin</strong>
           </v-flex>
           <div>
-            <SchedulesEditor :value="schedules" />
+            <SchedulesEditor :value="schedules"/>
           </div>
         </v-flex>
 
       </div>
     </v-form>
+
+    <LocaleEdition v-if="showLocaleEdition"
+                   :open="showLocaleEdition"
+                   :data="store.availableLocales ? store.availableLocales[this.locale] : null"
+                   @on-cancel="showLocaleEdition = false"
+                   @on-save="saveLocale"/>
   </div>
 </template>
 
@@ -52,12 +58,14 @@ import PresentationTable from "@/components/PresentationsTable";
 import DateField from "@/components/inputs/DateField";
 import _ from 'lodash'
 import SchedulesEditor from "@/components/SchedulesEditor";
+import LocaleEdition from "@/components/LocaleEdition";
 
 export default {
-  components: {SchedulesEditor, DateField, Input, PresentationTable, },
+  components: {SchedulesEditor, DateField, Input, PresentationTable, LocaleEdition},
   data() {
     return {
       presentations: {},
+      showLocaleEdition: false,
       addressModification: false,
       required: [
         value => !!value || this.$t("common.required"),
@@ -67,17 +75,22 @@ export default {
   computed: {
     ...mapState({
       store(state) {
-        console.log('state.sessions.user : ' + JSON.stringify(state.session.user))
-        let login = state.session.user
-            ? state.session.user.login
+        let storeId = state.session.user
+            ? state.session.user.storeId
             : null
 
-        let store =  state.catalogs.stores.filter(s => {
-          console.log('s : ' + JSON.stringify(s.owner))
-          return s.owner === login
+        let store = state.catalogs.stores.filter(s => {
+          return s !== null && s.storeId === storeId
         })[0] // FIXME
 
-        console.log('store : ' + JSON.stringify(store))
+        if (store) {
+          this.presentations = {
+            itemType: this.itemType,
+            itemId: this.itemId,
+            availableLocales: store.localizedPresentation
+          }
+        }
+
         return store ? store : {}
       },
       user(state) {
@@ -98,9 +111,7 @@ export default {
     schedules() {
 
       let schedules = this.premisses ? this.premisses.schedules : []
-      let groupedBy = _.groupBy(schedules, s => s.dayOfWeek)
-      console.log('groupedBy : ' + JSON.stringify(groupedBy))
-      return groupedBy
+      return _.groupBy(schedules, s => s.dayOfWeek)
     }
   },
   methods: {
@@ -117,11 +128,51 @@ export default {
     modifyAddress() {
       this.addressModification = true
     },
-    onSelectLocale() {
+    onSelectLocale(locale) {
+      this.locale = locale
+      this.$store.dispatch("catalogs/getPresentation", {
+        itemType: "stores",
+        itemId: this.$store.getters["session/getStoreId"],
+        locale: locale
+      })
 
+      this.showLocaleEdition = true
+    },
+    saveLocale(presentation) {
+      this.showLocaleEdition = false
+
+      let existingLocales = this.presentations.availableLocales ? this.presentations.availableLocales : []
+      if (existingLocales.findIndex(l => l === presentation.locale) === -1) {
+        this.$store.dispatch("catalogs/attachPresentation", {
+          itemType: "stores",
+          itemId: this.$store.getters["session/getStoreId"],
+          locale: this.locale,
+          presentation: presentation
+        })
+
+        this.presentations = {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          availableLocales: [presentation.locale].concat(existingLocales)
+        }
+
+        let newAvailableLocale = {}
+        newAvailableLocale[presentation.locale] = presentation;
+        this.item.availableLocales = Object.assign({}, this.item.availableLocales ? this.item.availableLocales : {}, newAvailableLocale)
+      } else {
+
+        this.$store.dispatch("catalogs/updatePresentation", {
+          itemType: this.itemType,
+          itemId: this.itemId,
+          locale: this.locale,
+          presentation: presentation
+        })
+      }
     },
     fetchStore() {
-      this.$store.dispatch("catalogs/getManagedItems", "stores")
+      let storeId = this.$store.getters["session/getStoreId"]
+      console.log('storeId : ' + JSON.stringify(storeId)) // FIXME
+      this.$store.dispatch("catalogs/getManagedStore", 1)
     }
   },
   created() {

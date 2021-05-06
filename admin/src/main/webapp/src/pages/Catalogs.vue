@@ -25,22 +25,22 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
-    import CatalogItemTable from '../components/CatalogItemTable'
-    import Dialog from "../components/Dialog";
-    import _ from  'lodash'
+import {mapState} from 'vuex'
+import CatalogItemTable from '../components/CatalogItemTable'
+import Dialog from "../components/Dialog";
+import _ from 'lodash'
 
-    export default {
-        name: 'Catalogs',
-        components: {
-            CatalogItemTable,
-            Dialog
-        },
-        data: () => {
-            return {
-                itemType: 'catalogs',
-                showEditPanel: false,
-                showWarningDialog: false,
+export default {
+  name: 'Catalogs',
+  components: {
+    CatalogItemTable,
+    Dialog
+  },
+  data: () => {
+    return {
+      itemType: 'catalogs',
+      showEditPanel: false,
+      showWarningDialog: false,
                 itemId: null
             }
         },
@@ -119,9 +119,15 @@
         created () {
             this.itemType = this.$route.params.itemType
             this.showEditPanel = !!this.$route.params.id || this.$route.path.indexOf("create") !== -1;
+
             if (!this.showEditPanel) {
-              if (this.isAdmin) this.$store.dispatch('catalogs/getItems', this.itemType)
-              else this.$store.dispatch('catalogs/getManagedItems', this.itemType)
+              if (this.isAdmin) {
+                this.$store.dispatch('catalogs/getItems', this.itemType)
+
+              } else this.$store.dispatch('catalogs/getManagedItems', {
+                itemType: this.itemType,
+                storeId: this.$store.getters["session/getStoreId"]
+              })
             }
         },
 
