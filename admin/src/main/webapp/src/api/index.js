@@ -3,6 +3,7 @@ import CatalogAPI from "./CatalogAPI";
 import MailsAPI from "./MailsAPI";
 import OrderAPI from "./OrderAPI";
 import UserAPI from "./UserAPI";
+import MediasAPI from "./MediasService"
 
 axios.defaults.baseURL = process.env.NODE_ENV !== 'production'
                             ? 'http://localhost:8000'
@@ -23,6 +24,7 @@ export {
     CatalogAPI,
     MailsAPI,
     OrderAPI,
-    UserAPI
+    UserAPI,
+    MediasAPI
 
 }

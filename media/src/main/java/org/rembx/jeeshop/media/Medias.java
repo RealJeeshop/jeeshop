@@ -22,8 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * TODO file location base folder to be accessible by web server
@@ -39,7 +38,7 @@ public class Medias {
     @POST
     @Consumes("multipart/form-data")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{type}/{id}/{locale}/upload")
     public void upload(@Context HttpServletRequest request,
                        @NotNull @PathParam("type") String itemType,

@@ -8,6 +8,7 @@ const CatalogAPI = {
     },
 
     async getManagedItem(itemType, storeId) {
+        console.log("[IMPLEMENT ME] storeId : " + JSON.stringify(storeId))
         return axios.get(`/rs/${itemType}/managed`)
     },
 
@@ -29,8 +30,9 @@ const CatalogAPI = {
                         for(let i=0; i < item.localizedPresentation.length; i++) {
                             let newObject = {}
                             newObject[responses[i].locale] = responses[i]
-                            let availableLocales = Object.assign(item.availableLocales ? item.availableLocales : {}, newObject);
-                            item.availableLocales = availableLocales
+                            item.availableLocales = Object.assign(item.availableLocales
+                                ? item.availableLocales
+                                : {}, newObject)
                         }
 
                         success(item)
@@ -148,7 +150,7 @@ const CatalogAPI = {
                 .then(response => success(response.data))
                 .catch(die)
         })
-    }
+    },
 
 }
 

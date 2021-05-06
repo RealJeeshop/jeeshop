@@ -97,7 +97,10 @@
 
     <LocaleEdition v-if="showLocaleEdition"
                    :open="showLocaleEdition"
+                   :item-id="itemId"
+                   :item-type="itemType"
                    :data="item.availableLocales ? item.availableLocales[this.locale] : null"
+                   @on-file-selected="uploadFile"
                    @on-cancel="showLocaleEdition = false"
                    @on-save="saveLocale"/>
 
@@ -105,6 +108,7 @@
                           :open="showRelationshipEdition"
                           :itemType="editedRelationshipType"
                           :selectedRelationships="selectedRelationships"
+
                           @on-cancel="showRelationshipEdition = false"
                           @on-save="saveRelationship"/>
 
@@ -163,6 +167,7 @@ export default {
         let find = _.find(state.catalogs[this.itemType], item => item.id === this.itemId);
 
         if (find) {
+          console.log("find : " + JSON.stringify(find))
           this.presentations = {
             itemType: this.itemType,
             itemId: this.itemId,
@@ -188,6 +193,9 @@ export default {
   methods: {
     close() {
       this.$router.back()
+    },
+    uploadFile() {
+
     },
     saveItem() {
 

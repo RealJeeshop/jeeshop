@@ -10,7 +10,8 @@ const state = () => ({
     skus: [],
     discounts: [],
     addCatalogStatus: null,
-    error: null
+    error: null,
+    isLoading: false
 })
 
 const getters = {
@@ -243,10 +244,32 @@ const actions = {
 
     setCatalogActionStatus({commit}, status) {
         commit('setAddCatalogStatus', status)
+    },
+
+    uploadCatalogMedia({commit}, {itemType, itemId, locale, files}) {
+
+        files.forEach(file => {
+            commit('setMedia', {
+                itemType: itemType,
+                itemId: itemId, locale,
+                field: file.field,
+                filename: file.file.name
+            })
+        })
+
     }
 }
 
 const mutations = {
+
+    setLoading(state, status) {
+        if (status) state.error = null
+        state.loading = status
+    },
+
+    setError(state, error) {
+        state.error = error
+    },
 
     setCatalog(state, payload) {
         state.stores = payload.stores
@@ -297,8 +320,20 @@ const mutations = {
         state[payload.itemType] = clonedState
     },
 
-    setAddCatalogStatus (state, status) {
+    setAddCatalogStatus(state, status) {
         state.addCatalogStatus = status
+    },
+
+    setMedia(state, {itemType, itemId, locale, field, filename}) {
+        let item = state[itemType].find(i => i.id === itemId)
+        item.availableLocales[locale][field] = {
+            uri: `http://localhost:8000/rs/medias/${itemType}/${itemId}/${locale}/${filename}`
+        }
+
+        state[itemType] = [
+            ...state[itemType].filter(element => element.id !== itemId),
+            item
+        ]
     }
 }
 
