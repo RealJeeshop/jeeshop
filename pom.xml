@@ -47,7 +47,7 @@
     <version.flyway>7.0.0</version.flyway>
     <version.freemarker>2.3.23</version.freemarker>
     <version.hibernate>4.3.7.Final</version.hibernate>
-    <version.hsqldb>2.3.3</version.hsqldb>
+    <version.hsqldb>2.7.1</version.hsqldb>
     <version.javaee>7.0</version.javaee>
     <version.junit>4.13.1</version.junit>
     <version.maven.war.plugin>2.4</version.maven.war.plugin>
