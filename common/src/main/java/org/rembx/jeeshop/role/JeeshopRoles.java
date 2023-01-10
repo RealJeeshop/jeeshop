@@ -8,5 +8,6 @@ public interface JeeshopRoles {
     String USER = "user";
     String ADMIN = "admin";
     String ADMIN_READONLY = "adminRO";
+    String STORE_ADMIN = "store_admin";
 
 }

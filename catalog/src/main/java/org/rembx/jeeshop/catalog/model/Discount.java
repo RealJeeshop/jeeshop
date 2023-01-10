@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +89,7 @@ public class Discount extends CatalogItem {
         this.id = id;
     }
 
-    public Discount(String name, String description, ApplicableTo applicableTo, Type type, Trigger triggerRule, String voucherCode, Double discountValue, Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled) {
+    public Discount(String name, String description, ApplicableTo applicableTo, Type type, Trigger triggerRule, String voucherCode, Double discountValue, Double triggerValue, Integer usesPerCustomer, Boolean uniqueUse, Date startDate, Date endDate, Boolean disabled, String owner) {
         this.name = name;
         this.description = description;
         this.applicableTo = applicableTo;
@@ -104,6 +103,7 @@ public class Discount extends CatalogItem {
         this.startDate = startDate;
         this.endDate = endDate;
         this.disabled = disabled;
+        this.owner = owner;
     }
 
     public boolean isEligible(Double itemsPrice){ // TODO continue implem  of triggerRule

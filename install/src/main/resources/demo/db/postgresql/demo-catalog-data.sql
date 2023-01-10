@@ -28,10 +28,30 @@ SELECT setval('media_id_seq', (SELECT MAX(id) from media));
 -- data for table Catalog
 --
 
-INSERT INTO catalog (id, description, disabled, endDate, name, startDate) VALUES
-(1, 'Catalog of Hyperbike store', false, NULL, 'Hyperbike catalog', NULL);
+INSERT INTO catalog (id, description, disabled, endDate, name, startDate, owner) VALUES
+(1, 'Catalog of Hyperbike store', false, NULL, 'Hyperbike catalog', NULL, 'admin@hyperbike.com');
 
 SELECT setval('catalog_id_seq', (SELECT MAX(id) from catalog));
+
+
+-- data for Store
+
+INSERT INTO premises_address (city, street, zipcode, countryiso3code)
+VALUES ('Paris', '7, Rue du vélodrome', '75001', 'FRA');
+
+insert into "user" (birthdate, creationdate, activated, gender, firstname, lastname, login, password, phonenumber, address_id, deliveryaddress_id)
+values ('2014-06-18 00:00:00', '2014-07-20 00:00:00', true, 'm.' , 'Paul', 'Smith', 'admin@hyperbike.com', 'DjYu7nlNFk6BdxO+LwxZJ3mBAfxgwytTS2cVRbmnIO8=', '', null, null);
+
+insert into user_role (userid , roleid) values ((SELECT MAX(id) from "user"), '4');
+
+INSERT INTO Store (id, name, description, startDate, endDate, disabled, owner) VALUES
+(1, 'Hyperbike', 'Hyperbike store', NULL, NULL, false, 'admin@hyperbike.com');
+
+SELECT setval('store_id_seq', (SELECT MAX(id) from store));
+
+INSERT INTO premises (address_id, store_id)
+VALUES ((SELECT MAX(id) from premises_address), (SELECT MAX(id) from store));
+
 
 --
 -- data for table Presentation
@@ -64,12 +84,12 @@ SELECT setval('presentation_id_seq', (SELECT MAX(id) from presentation));
 -- data for table Product
 --
 
-INSERT INTO product (id, description, disabled, endDate, name, startDate) VALUES
-(1, 'VTT energy X1', false, NULL, 'Energy X1', NULL),
-(2, 'VTT Energy X2', false, NULL, 'Energy X2', NULL),
-(3, 'VTC Lazer V2', true, NULL, 'Lazer V2', NULL),
-(4, 'VTC Beam 3000', false, '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52'),
-(5, 'Michelin NX01 tire', false, NULL, 'Michelin NX01', NULL);
+INSERT INTO product (id, description, disabled, endDate, name, startDate, owner) VALUES
+(1, 'VTT energy X1', false, NULL, 'Energy X1', NULL, 'admin@hyperbike.com'),
+(2, 'VTT Energy X2', false, NULL, 'Energy X2', NULL, 'admin@hyperbike.com'),
+(3, 'VTC Lazer V2', true, NULL, 'Lazer V2', NULL, 'admin@hyperbike.com'),
+(4, 'VTC Beam 3000', false, '2014-06-17 00:52:52', 'Beam 3000', '2014-06-18 00:52:52', 'admin@hyperbike.com'),
+(5, 'Michelin NX01 tire', false, NULL, 'Michelin NX01', NULL, 'admin@hyperbike.com');
 
 SELECT setval('product_id_seq', (SELECT MAX(id) from product));
 
@@ -77,15 +97,15 @@ SELECT setval('product_id_seq', (SELECT MAX(id) from product));
 -- data for table Category
 --
 
-INSERT INTO category (id, description, disabled, endDate, name, startDate) VALUES
-(1, 'Bikes main category', false, NULL, 'Bikes', NULL),
-(2, 'Accessories main category', false, NULL, 'Accessories', NULL),
-(3, 'Tires rubric', false, NULL, 'Tires', NULL),
-(4, 'Brackets rubric', false, NULL, 'Brackets', NULL),
-(5, 'Handlebar rubric', false, NULL, 'Handlebar', NULL),
-(6, 'Wheels rubric', false, '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52'),
-(7, 'Mountain Bikes category', false, NULL, 'Mountain Bikes', NULL),
-(12, 'Racing Bikes category', false, NULL, 'Racing Bikes', NULL);
+INSERT INTO category (id, description, disabled, endDate, name, startDate, owner) VALUES
+(1, 'Bikes main category', false, NULL, 'Bikes', NULL, 'admin@hyperbike.com'),
+(2, 'Accessories main category', false, NULL, 'Accessories', NULL, 'admin@hyperbike.com'),
+(3, 'Tires rubric', false, NULL, 'Tires', NULL, 'admin@hyperbike.com'),
+(4, 'Brackets rubric', false, NULL, 'Brackets', NULL, 'admin@hyperbike.com'),
+(5, 'Handlebar rubric', false, NULL, 'Handlebar', NULL, 'admin@hyperbike.com'),
+(6, 'Wheels rubric', false, '2014-06-19 00:52:52', 'Wheels', '2014-06-18 00:52:52', 'admin@hyperbike.com'),
+(7, 'Mountain Bikes category', false, NULL, 'Mountain Bikes', NULL, 'admin@hyperbike.com'),
+(12, 'Racing Bikes category', false, NULL, 'Racing Bikes', NULL, 'admin@hyperbike.com');
 
 SELECT setval('category_id_seq', (SELECT MAX(id) from category));
 
@@ -114,9 +134,9 @@ INSERT INTO catalog_category (catalogId, categoryId, orderIdx) VALUES
 -- Contenu de la table Discount
 --
 
-INSERT INTO discount (id, description, disabled, endDate, name, startDate, discountValue, triggerValue, triggerRule, type, applicableTo, uniqueUse, usesPerCustomer, voucherCode) VALUES
-  (2, 'Free delivery fee for first order', false, NULL, 'Order - Free delivery - first order', NULL, 12, 1, 'ORDER_NUMBER', 'SHIPPING_FEE_DISCOUNT_AMOUNT', 'ORDER', true, NULL, NULL),
-  (5, '10 percent off for order amount of 100', false, NULL, '10 percent off', NULL, 10, 100, 'AMOUNT', 'DISCOUNT_RATE', 'ORDER', NULL, NULL, NULL);
+INSERT INTO discount (id, description, disabled, endDate, name, startDate, discountValue, triggerValue, triggerRule, type, applicableTo, uniqueUse, usesPerCustomer, voucherCode, owner) VALUES
+  (2, 'Free delivery fee for first order', false, NULL, 'Order - Free delivery - first order', NULL, 12, 1, 'ORDER_NUMBER', 'SHIPPING_FEE_DISCOUNT_AMOUNT', 'ORDER', true, NULL, NULL, 'admin@hyperbike.com'),
+  (5, '10 percent off for order amount of 100', false, NULL, '10 percent off', NULL, 10, 100, 'AMOUNT', 'DISCOUNT_RATE', 'ORDER', NULL, NULL, NULL, 'admin@hyperbike.com');
 
 SELECT setval('discount_id_seq', (SELECT MAX(id) from discount));
 
@@ -188,13 +208,13 @@ INSERT INTO presentation_feature (presentationId, name, value) VALUES
 -- data for table SKU
 --
 
-INSERT INTO sku (id, description, disabled, endDate, name, startDate, currency, price, quantity, reference, threshold) VALUES
-(1, 'Energy X1 - XL', false, NULL, 'Energy X1 - XL', NULL, 'EUR', 142, 100, 'X1213JJLB-1', 1),
-(2, 'Energy X1 - L', false, NULL, 'Energy X1 - L', NULL, 'EUR', 132, 100, 'X1213JJLB-2', 1),
-(3, 'Energy X2', false, NULL, 'Energy X2', NULL, NULL, 10, 100, 'X1213JJLB-3', 3),
-(4, 'Michelin NX01', false, NULL, 'Michelin NX01', NULL, NULL, 10, 2, 'X1213JJLB-4', 3),
-(5, 'Lazer V2', false, NULL, 'Lazer V2', NULL, NULL, 10, 100, 'X1213JJLB-5', 3),
-(6, 'Beam 3000', false, NULL, 'Beam 3000', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO sku (id, description, disabled, endDate, name, startDate, currency, price, quantity, reference, threshold, owner) VALUES
+(1, 'Energy X1 - XL', false, NULL, 'Energy X1 - XL', NULL, 'EUR', 142, 100, 'X1213JJLB-1', 1, 'admin@hyperbike.com'),
+(2, 'Energy X1 - L', false, NULL, 'Energy X1 - L', NULL, 'EUR', 132, 100, 'X1213JJLB-2', 1, 'admin@hyperbike.com'),
+(3, 'Energy X2', false, NULL, 'Energy X2', NULL, NULL, 10, 100, 'X1213JJLB-3', 3, 'admin@hyperbike.com'),
+(4, 'Michelin NX01', false, NULL, 'Michelin NX01', NULL, NULL, 10, 2, 'X1213JJLB-4', 3, 'admin@hyperbike.com'),
+(5, 'Lazer V2', false, NULL, 'Lazer V2', NULL, NULL, 10, 100, 'X1213JJLB-5', 3, 'admin@hyperbike.com'),
+(6, 'Beam 3000', false, NULL, 'Beam 3000', NULL, NULL, NULL, NULL, NULL, NULL, 'admin@hyperbike.com');
 
 SELECT setval('sku_id_seq', (SELECT MAX(id) from sku));
 

@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.order.test;
 
 import com.google.common.collect.Sets;
-import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderItem;
 import org.rembx.jeeshop.order.model.OrderStatus;
