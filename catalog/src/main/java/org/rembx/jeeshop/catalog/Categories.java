@@ -30,15 +30,15 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
  * @author remi
  */
 
-@Path("/rs/categories")
+@Path("/categories")
 @ApplicationScoped
 public class Categories implements CatalogItemService<Category> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Category> presentationResource;
 
-    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Categories(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Category> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -102,6 +102,52 @@ public class Categories implements CatalogItemService<Category> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{categoryId}/products")
+    public Category attachProducts(@PathParam("categoryId") Long categoryId, List<Long> productsIds) {
+
+        Category originalCategory = entityManager.find(Category.class, categoryId);
+        checkNotNull(originalCategory);
+
+        List<Product> newProduct = new ArrayList<>();
+        productsIds.forEach(productId -> newProduct.add(entityManager.find(Product.class, productId)));
+
+        if (originalCategory.getChildProducts() != null) {
+            originalCategory.getChildProducts().addAll(newProduct);
+        } else {
+            originalCategory.setChildProducts(newProduct);
+        }
+
+        return entityManager.merge(originalCategory);
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{categoryId}/categories")
+    public Category attachCategories(@PathParam("categoryId") Long categoryId, List<Long> categoriesIds) {
+
+        Category category = entityManager.find(Category.class, categoryId);
+        checkNotNull(category);
+
+        List<Category> newCategory = new ArrayList<>();
+        categoriesIds.forEach(id -> newCategory.add(entityManager.find(Category.class, id)));
+
+        if (category.getChildCategories() != null) {
+            category.getChildCategories().addAll(newCategory);
+        } else {
+            category.setChildCategories(newCategory);
+        }
+
+        return entityManager.merge(category);
+    }
+
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     public Category modify(@Context SecurityContext securityContext, Category category) {
         Category originalCategory = entityManager.find(Category.class, category.getId());
         checkNotNull(originalCategory);
@@ -145,6 +191,13 @@ public class Categories implements CatalogItemService<Category> {
             return catalogItemFinder.findAll(category, start, size, orderBy, isDesc, locale);
     }
 
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Category> findManagedCategories(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(category, context.getUserPrincipal().getName());
+    }
 
     @GET
     @Path("/count")
@@ -187,11 +240,11 @@ public class Categories implements CatalogItemService<Category> {
 
     @Path("/{categoryId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Category> findPresentationByLocale(@PathParam("categoryId") @NotNull Long categoryId, @NotNull @PathParam("locale") String locale) {
         Category category = entityManager.find(Category.class, categoryId);
         checkNotNull(category);
         Presentation presentation = category.getPresentationByLocale().get(locale);
-        return presentationResource.init(category, locale, presentation);
+        return presentationResource.init(Category.class, category, locale, presentation);
     }
 
     @GET

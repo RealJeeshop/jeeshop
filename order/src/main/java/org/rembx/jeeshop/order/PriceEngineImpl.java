@@ -1,6 +1,5 @@
 package org.rembx.jeeshop.order;
 
-import io.quarkus.arc.DefaultBean;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.DiscountFinder;
@@ -12,11 +11,8 @@ import org.rembx.jeeshop.order.model.OrderDiscount;
 import org.rembx.jeeshop.order.model.OrderItem;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.List;
 
@@ -74,7 +70,7 @@ public class PriceEngineImpl implements PriceEngine {
 
         double originalPrice = price;
 
-        Long userCompletedOrders = orderFinder.countUserCompletedOrders(order.getUser());
+        Long userCompletedOrders = orderFinder.countUserCompletedOrders(order.getCustomer());
 
         List<Discount> userEligibleOrderDiscounts = discountFinder.findEligibleOrderDiscounts(null,userCompletedOrders);
 

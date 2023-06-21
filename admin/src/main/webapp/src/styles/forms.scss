@@ -1,0 +1,51 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  padding: 3em;
+  margin-right: 4em;
+  margin-left: 4em;
+
+  box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+}
+
+.default-fields-container, .fields-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.field-container {
+  flex: 1;
+  margin-right: 1em;
+  min-width: 40%;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  span {
+
+    display: block;
+    margin-bottom: 22px;
+  }
+}
+
+.field-container:last-child {
+  border-radius: 4px;
+}
+
+@media only screen and (min-width: 2000px) {
+
+  .form-container {
+    margin-right: 8em;
+    margin-left: 8em;
+    padding: 6em;
+  }
+
+}

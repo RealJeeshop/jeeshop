@@ -3,15 +3,12 @@ package org.rembx.jeeshop.catalog;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Presentation;
+import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -39,7 +36,7 @@ public class PresentationResourceCT {
     @Test
     public void find_shouldReturnPresentation() {
         Presentation presentation = new Presentation("en_GB", "presentation1", "short description", "long description");
-        service = new PresentationResource(entityManager, null).init(null, null, presentation);
+        service = new PresentationResource(entityManager, null).init(Store.class, null, "fr_FR", presentation);
 
         assertThat(service.find()).isEqualTo(presentation);
     }
@@ -48,17 +45,20 @@ public class PresentationResourceCT {
     public void createLocalizedPresentation_shouldPersistGivenPresentationAndLinkItToParentCatalogItem() {
         CatalogItem parentCatalogItem = testCatalog.aCategoryWithoutPresentation();
 
-        Presentation presentation = new Presentation(null, "presentation test", "testShortDesc", "testLongDesc");
-        service = new PresentationResource(entityManager, null).init(parentCatalogItem, "fr_FR", null);
+        service = new PresentationResource(entityManager, null).init(Category.class, parentCatalogItem, "fr_FR", null);
 
         entityManager.getTransaction().begin(); // wrap call in transaction as method is transactional
+        Presentation presentation = new Presentation("fr_FR", "presentation test", "testShortDesc", "testLongDesc");
         service.createLocalizedPresentation(presentation);
         entityManager.getTransaction().commit();
 
         assertThat(presentation.getId()).isNotNull();
         assertThat(entityManager.find(Presentation.class, presentation.getId())).isNotNull();
-        assertThat(parentCatalogItem.getPresentationByLocale().get("fr_FR")).isNotNull();
-        assertThat(parentCatalogItem.getPresentationByLocale().get("fr_FR").getLocale()).isEqualTo("fr_FR");
+
+        CatalogItem updatedItem = entityManager.find(Category.class, parentCatalogItem.getId());
+        assertThat(updatedItem).isNotNull();
+        assertThat(updatedItem.getPresentationByLocale().get("fr_FR")).isNotNull();
+        assertThat(updatedItem.getPresentationByLocale().get("fr_FR").getLocale()).isEqualTo("fr_FR");
 
         // cleanup
         removePersistedTestData(parentCatalogItem, presentation);
@@ -69,7 +69,7 @@ public class PresentationResourceCT {
 
         Presentation presentation = createTestPresentation();
 
-        service = new PresentationResource(entityManager, null).init(null, "fr_FR", presentation);
+        service = new PresentationResource(entityManager, null).init(Store.class, null, "fr_FR", presentation);
 
         UUID uuid = UUID.randomUUID();
         presentation.setShortDescription(uuid.toString());
@@ -90,16 +90,19 @@ public class PresentationResourceCT {
         CatalogItem parentCatalogItem = testCatalog.aCategoryWithoutPresentation();
 
         Presentation presentation = createTestPresentation();
-        parentCatalogItem.getPresentationByLocale().put("fr_FR",presentation);
+        parentCatalogItem.getPresentationByLocale().put("fr_FR", presentation);
 
-        service = new PresentationResource(entityManager, null).init(parentCatalogItem, "fr_FR", presentation);
+        service = new PresentationResource(entityManager, null)
+                .init(Category.class, parentCatalogItem, "fr_FR", presentation);
 
         entityManager.getTransaction().begin(); // wrap call in transaction as method is transactional
         service.delete();
         entityManager.getTransaction().commit();
 
         assertThat(entityManager.find(Presentation.class, presentation.getId())).isNull();
-        assertThat(parentCatalogItem.getPresentationByLocale().get("fr_FR")).isNull();
+
+        CatalogItem updatedItem = entityManager.find(Category.class, parentCatalogItem.getId());
+        assertThat(updatedItem.getPresentationByLocale().get("fr_FR")).isNull();
     }
 
 

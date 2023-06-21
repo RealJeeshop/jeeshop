@@ -30,15 +30,15 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
  * @author remi
  */
 
-@Path("/rs/skus")
+@Path("/skus")
 @ApplicationScoped
 public class SKUs implements CatalogItemService<SKU> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<SKU> presentationResource;
 
-    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    SKUs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<SKU> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -119,6 +119,29 @@ public class SKUs implements CatalogItemService<SKU> {
         }
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{skuId}/discounts")
+    public SKU attachDiscounts(@PathParam("skuId") Long skuId, List<Long> discountsIds) {
+
+        SKU sku = entityManager.find(SKU.class, skuId);
+        checkNotNull(sku);
+
+        List<Discount> newDiscounts = new ArrayList<>();
+        discountsIds.forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+
+        if (sku.getDiscounts() != null) {
+            sku.getDiscounts().addAll(newDiscounts);
+        } else {
+            sku.setDiscounts(newDiscounts);
+        }
+
+        return entityManager.merge(sku);
+    }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -129,6 +152,14 @@ public class SKUs implements CatalogItemService<SKU> {
             return catalogItemFinder.findBySearchCriteria(sKU, search, start, size, orderBy, isDesc, locale);
         else
             return catalogItemFinder.findAll(sKU, start, size, orderBy, isDesc, locale);
+    }
+
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<SKU> findManagedSKUs(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(sKU, context.getUserPrincipal().getName());
     }
 
     @GET
@@ -173,11 +204,11 @@ public class SKUs implements CatalogItemService<SKU> {
 
     @Path("/{skuId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<SKU> findPresentationByLocale(@PathParam("skuId") @NotNull Long skuId, @NotNull @PathParam("locale") String locale) {
         SKU sku = entityManager.find(SKU.class, skuId);
         checkNotNull(sku);
         Presentation presentation = sku.getPresentationByLocale().get(locale);
-        return presentationResource.init(sku, locale, presentation);
+        return presentationResource.init(SKU.class, sku, locale, presentation);
     }
 
     @GET

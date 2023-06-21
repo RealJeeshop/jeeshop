@@ -1,15 +1,18 @@
 package org.rembx.jeeshop.catalog.model;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Cacheable
+@Table(name = "store_premises")
 public class Premises {
 
     @Id
@@ -19,8 +22,12 @@ public class Premises {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     PremisesAddress address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "premises")
     List<PremisesOpeningSchedules> schedules;
+
+    @ManyToOne
+    @JsonbTransient
+    Store store;
 
     public Premises() {
     }
@@ -57,5 +64,34 @@ public class Premises {
 
     public void setSchedules(List<PremisesOpeningSchedules> schedules) {
         this.schedules = schedules;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Premises premises = (Premises) o;
+        return Objects.equals(id, premises.id) && Objects.equals(address, premises.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, address);
+    }
+
+    @Override
+    public String toString() {
+        return "Premises{" +
+                "id=" + id +
+                ", address=" + address +
+                '}';
     }
 }

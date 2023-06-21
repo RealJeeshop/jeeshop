@@ -2,7 +2,6 @@ package org.rembx.jeeshop.user.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * Created by remi on 03/06/14.
@@ -18,7 +17,8 @@ public class Role {
     @NotNull
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleName name;
+
+    public RoleName name;
 
     public Role() {
     }

@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.user;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
-import static org.rembx.jeeshop.user.tools.CryptTools.hashSha256Base64;
 
 
 public class UsersCT {
@@ -53,6 +53,7 @@ public class UsersCT {
         sessionContextMock = mock(SecurityContext.class);
         service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
                 new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock);
+        service.setSalt("jeeshopisgoooood");
     }
 
     @Test
@@ -322,7 +323,7 @@ public class UsersCT {
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
+        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
         assertThat(updatedUser.getActionToken()).isNull();
 
         verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
@@ -342,7 +343,7 @@ public class UsersCT {
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
+        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
 
         verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
 
@@ -359,7 +360,7 @@ public class UsersCT {
 
         final User updatedUser = entityManager.find(User.class, user.getId());
         assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(hashSha256Base64("newPassword"));
+        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
 
         verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
 

@@ -26,15 +26,15 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
-@Path("/rs/products")
+@Path("/products")
 @ApplicationScoped
 public class Products implements CatalogItemService<Product> {
 
     private EntityManager entityManager;
     private CatalogItemFinder catalogItemFinder;
-    private PresentationResource presentationResource;
+    private PresentationResource<Product> presentationResource;
 
-    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Products(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Product> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -129,6 +129,29 @@ public class Products implements CatalogItemService<Product> {
         }
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{productId}/discounts")
+    public Product attachDiscounts(@PathParam("productId") Long productId, List<Long> discountsIds) {
+
+        Product product = entityManager.find(Product.class, productId);
+        checkNotNull(product);
+
+        List<Discount> newDiscounts = new ArrayList<>();
+        discountsIds.forEach(discountId -> newDiscounts.add(entityManager.find(Discount.class, discountId)));
+
+        if (product.getDiscounts() != null) {
+            product.getDiscounts().addAll(newDiscounts);
+        } else {
+            product.setDiscounts(newDiscounts);
+        }
+
+        return entityManager.merge(product);
+    }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,6 +162,14 @@ public class Products implements CatalogItemService<Product> {
             return catalogItemFinder.findBySearchCriteria(product, search, start, size, orderBy, isDesc, locale);
         else
             return catalogItemFinder.findAll(product, start, size, orderBy, isDesc, locale);
+    }
+
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Product> findManagedProducts(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(product, context.getUserPrincipal().getName());
     }
 
     @GET
@@ -181,11 +212,11 @@ public class Products implements CatalogItemService<Product> {
 
     @Path("/{productId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Product> findPresentationByLocale(@PathParam("productId") @NotNull Long productId, @NotNull @PathParam("locale") String locale) {
         Product product = entityManager.find(Product.class, productId);
         checkNotNull(product);
         Presentation presentation = product.getPresentationByLocale().get(locale);
-        return presentationResource.init(product, locale, presentation);
+        return presentationResource.init(Product.class, product, locale, presentation);
     }
 
     @GET

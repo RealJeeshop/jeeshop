@@ -29,7 +29,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
  * Mail template resource
  */
 
-@Path("/rs/mailtemplates")
+@Path("/mailtemplates")
 @ApplicationScoped
 public class MailTemplates {
 

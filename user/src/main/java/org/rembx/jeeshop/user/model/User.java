@@ -1,5 +1,4 @@
 package org.rembx.jeeshop.user.model;
-
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,9 +13,9 @@ import java.util.UUID;
 /**
  * Created by remi on 21/05/14.
  */
-@Entity
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
 @Table(name = "`user`")
 public class User {
 
@@ -27,14 +26,18 @@ public class User {
     @Column(unique = true, nullable = false, length = 100)
     @NotNull
     @Email
-    private String login;
+    public String login;
+
     @Column(nullable = false, length = 100)
     @NotNull
-    private String password;
+    @JsonbTransient
+    public String password;
+
     @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     private String firstname;
+
     @Column(nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
@@ -49,6 +52,7 @@ public class User {
 
     @OneToOne(cascade = {CascadeType.ALL})
     private Address address;
+
     @OneToOne
     private Address deliveryAddress;
 
@@ -79,8 +83,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = "User_Role", joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
-    @JsonbTransient
-    private Set<Role> roles;
+    public Set<Role> roles;
 
     public User() {
     }
@@ -117,7 +120,7 @@ public class User {
     }
 
     @PreUpdate
-    public void preUpdate(){
+    public void preUpdate() {
         this.updateDate = new Date();
     }
 
@@ -272,7 +275,6 @@ public class User {
     public void setNewslettersSubscribed(Boolean newslettersSubscribed) {
         this.newslettersSubscribed = newslettersSubscribed;
     }
-
 
     @Override
     public String toString() {

@@ -1,25 +1,36 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.rembx.jeeshop</groupId>
-    <artifactId>jeeshop</artifactId>
-    <version>0.9-SNAPSHOT</version>
-  </parent>
-  <artifactId>user</artifactId>
-  <name>user</name>
-  <description>user domain</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.rembx.jeeshop</groupId>
-      <artifactId>common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.rembx.jeeshop</groupId>
-      <artifactId>media</artifactId>
-      <version>${project.version}</version>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.rembx.jeeshop</groupId>
+        <artifactId>jeeshop</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+    <artifactId>user</artifactId>
+    <name>user</name>
+    <description>user domain</description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>1.10.5.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>media</artifactId>
+            <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -48,18 +59,22 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${version.hibernate}</version>
-      <scope>test</scope>
+        <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-multipart</artifactId>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-multipart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-elytron-security-jdbc</artifactId>
+        </dependency>
+    </dependencies>
   <build>
     <plugins>
       <plugin>

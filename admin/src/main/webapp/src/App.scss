@@ -1,0 +1,96 @@
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #212121;
+  border-color: #212121;
+  color: #9d9d9d;
+  height: 70px;
+
+  padding-right: 1em;
+  padding-left: 1em;
+
+  a {
+    color: #9d9d9d;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: white;
+  }
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+
+  a {
+    padding: 1em;
+  }
+}
+
+.app-name {
+  padding: 1em;
+  font-size: 18px;
+  line-height: 20px;
+  color: white;
+}
+
+
+.page-content {
+
+  height: 100%;
+
+  .content {
+    display: flex;
+    height: 100%;
+  }
+
+  .sub-header-menu {
+    display: flex;
+
+    a {
+      text-decoration: none;
+      color: #fff;
+
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    a.router-link-exact-active {
+      color: #fff;
+    }
+  }
+}
+
+.column {
+  flex-direction: column;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.not-clickable {
+  cursor: auto !important;
+}
+
+.padded-xl {
+  padding-top: 3em;
+  padding-right: 6em;
+  padding-left: 6em;
+}
+
+.half-width {
+  width: 50% !important;
+}

@@ -12,7 +12,6 @@
     <module>install</module>
     <module>catalog</module>
     <module>user</module>
-<!--    <module>store</module>-->
     <module>admin</module>
     <module>common</module>
     <module>media</module>
@@ -27,15 +26,16 @@
   </distributionManagement>
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <io.quarkus.version>1.9.2.Final</io.quarkus.version>
+    <io.quarkus.version>1.10.5.Final</io.quarkus.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+      <maven.resources.plugin.version>3.2.0</maven.resources.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus-plugin.version>1.9.2.Final</quarkus-plugin.version>
+      <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.version>1.9.2.Final</quarkus.platform.version>
+      <quarkus.platform.version>1.10.5.2.Final</quarkus.platform.version>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
     <version.asciidoctor>1.5.2.1</version.asciidoctor>
     <version.assertj>3.2.0</version.assertj>
@@ -56,7 +56,6 @@
     <version.slf4j>1.7.7</version.slf4j>
     <version.weld-se>2.1.2.Final</version.weld-se>
     <version.wildfly.plugin>1.0.2.Final</version.wildfly.plugin>
-    <maven.resources.plugin.version>3.2.0</maven.resources.plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -170,16 +169,20 @@
       <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${version.slf4j}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-multipart</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <version>${version.slf4j}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-resteasy-multipart</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-security-jpa</artifactId>
+      </dependency>
   </dependencies>
   <build>
     <pluginManagement>

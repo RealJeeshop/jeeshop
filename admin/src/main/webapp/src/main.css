@@ -1,0 +1,14 @@
+body {
+    height: 100%;
+    margin: 0;
+}
+
+html, body, #app {
+
+    background: #f2f2f2f2;
+}
+
+html {
+    height: 100%;
+    overflow-y: auto;
+}

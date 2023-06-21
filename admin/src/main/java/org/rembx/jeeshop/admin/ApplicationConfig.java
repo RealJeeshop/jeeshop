@@ -12,12 +12,16 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("/")
-public class ApplicationConfig extends Application {
+@ApplicationPath("/rs")
+public class
+ApplicationConfig extends Application {
+
+    // ======================================
+    // =          Business methods          =
+    // ======================================
 
     @Override
     public Set<Class<?>> getClasses() {
-
         Set<Class<?>> classes = new HashSet<>();
         classes.add(Stores.class);
         classes.add(Catalogs.class);

@@ -1,25 +1,36 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.rembx.jeeshop</groupId>
-    <artifactId>jeeshop</artifactId>
-    <version>0.9-SNAPSHOT</version>
-  </parent>
-  <artifactId>order</artifactId>
-  <name>order</name>
-  <description>order domain</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.rembx.jeeshop</groupId>
-      <artifactId>user</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.rembx.jeeshop</groupId>
-      <artifactId>user</artifactId>
-      <version>${project.version}</version>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.rembx.jeeshop</groupId>
+        <artifactId>jeeshop</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+    <artifactId>order</artifactId>
+    <name>order</name>
+    <description>order domain</description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>1.10.5.Final</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>user</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rembx.jeeshop</groupId>
+            <artifactId>user</artifactId>
+            <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -61,7 +72,8 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-multipart</artifactId>
     </dependency>
-  </dependencies>
+
+    </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -77,6 +89,22 @@
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>com.mysema.maven</groupId>
+            <artifactId>apt-maven-plugin</artifactId>
+            <version>1.1.3</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>process</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>target/generated-sources/java</outputDirectory>
+                        <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
