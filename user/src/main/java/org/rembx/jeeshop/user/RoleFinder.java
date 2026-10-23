@@ -6,9 +6,9 @@ import org.rembx.jeeshop.user.model.Role;
 import org.rembx.jeeshop.user.model.RoleName;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.persistence.EntityManager;
 
 import static org.rembx.jeeshop.user.model.QRole.role;
 

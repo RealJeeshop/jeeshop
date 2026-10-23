@@ -1,11 +1,11 @@
 package org.rembx.jeeshop.catalog.model;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -19,7 +19,6 @@ import static org.rembx.jeeshop.util.LocaleUtil.getLocaleCode;
  * Group common properties used by catalog node elements
  */
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class CatalogItem {
 
     @Id

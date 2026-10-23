@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.role;
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
 
 
 /**

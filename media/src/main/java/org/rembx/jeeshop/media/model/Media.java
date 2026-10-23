@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.media.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 /**
  * Created by remi on 20/05/14.

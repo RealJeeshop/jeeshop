@@ -2,8 +2,8 @@ package org.rembx.jeeshop.order;
 
 import org.rembx.jeeshop.configuration.NamedConfiguration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class OrderConfiguration {

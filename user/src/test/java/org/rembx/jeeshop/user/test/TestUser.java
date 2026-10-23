@@ -2,8 +2,8 @@ package org.rembx.jeeshop.user.test;
 
 import org.rembx.jeeshop.user.model.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -19,7 +19,13 @@ public class TestUser {
 
     // Date are initialized with java.sql.Timestamp as JPA get a Timestamp instance
     private final static Date now = Timestamp.from(ZonedDateTime.now().toInstant());
-    private final static Date yesterday = Timestamp.from(ZonedDateTime.now().minusDays(1).toInstant());
+    private final static Date yesterday = toDatabaseTimestamp(ZonedDateTime.now().minusDays(1));
+
+    private static Timestamp toDatabaseTimestamp(ZonedDateTime dateTime) {
+        Timestamp timestamp = Timestamp.from(dateTime.toInstant());
+        timestamp.setNanos(timestamp.getNanos() / 1_000 * 1_000);
+        return timestamp;
+    }
 
     public static TestUser getInstance() {
         if (instance != null)
