@@ -1,2 +1,1 @@
-package org.rembx.jeeshop.catalog;
-
+package org.rembx.jeeshop.catalog

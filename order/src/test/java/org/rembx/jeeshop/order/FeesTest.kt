@@ -1,42 +1,27 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-
-public class FeesTest {
-
+class FeesTest {
     @Test
-    public void getShippingFeesShouldReturnConfiguredShippingFeeAsDouble() throws Exception {
-        OrderConfiguration orderConfiguration = orderConfiguration();
-
-        Fees fees = new Fees(orderConfiguration);
-        assertThat(fees.getShippingFee()).isEqualTo(11.0);
+    fun getShippingFeesShouldReturnConfiguredShippingFeeAsDouble() {
+        val fees = Fees(orderConfiguration())
+        assertThat(fees.getShippingFee()).isEqualTo(11.0)
     }
 
     @Test
-    public void getVATShouldReturnConfiguredVATAsDouble() throws Exception {
-
-        OrderConfiguration orderConfiguration = orderConfiguration();
-
-        Fees fees = new Fees(orderConfiguration);
-
-        assertThat(fees.getShippingFee()).isEqualTo(11);
-
+    fun getVATShouldReturnConfiguredVATAsDouble() {
+        val fees = Fees(orderConfiguration())
+        assertThat(fees.getVAT()).isEqualTo(19.6)
     }
-
 
     @Test
-    public void getVATOrShippingFeeShouldReturnNullWhenNoMatchingOrderConfiguration() throws Exception {
-
-        Fees fees = new Fees(null);
-
-        assertThat(fees.getShippingFee()).isEqualTo(null);
-        assertThat(fees.getVAT()).isEqualTo(null);
+    fun getVATOrShippingFeeShouldReturnNullWhenNoMatchingOrderConfiguration() {
+        val fees = Fees(null)
+        assertThat(fees.getShippingFee()).isEqualTo(null)
+        assertThat(fees.getVAT()).isEqualTo(null)
     }
 
-    private OrderConfiguration orderConfiguration() {
-        return new OrderConfiguration("11.0", "19.6");
-    }
+    private fun orderConfiguration() = OrderConfiguration("11.0", "19.6")
 }

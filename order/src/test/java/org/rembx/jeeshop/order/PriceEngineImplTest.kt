@@ -1,114 +1,82 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.catalog.DiscountFinder;
-import org.rembx.jeeshop.catalog.model.SKU;
-import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.OrderItem;
+import jakarta.persistence.EntityManager
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.rembx.jeeshop.catalog.infrastructure.repository.DiscountRepositoryImpl
+import org.rembx.jeeshop.catalog.domain.SKU
+import org.rembx.jeeshop.order.domain.Order
+import org.rembx.jeeshop.order.domain.OrderItem
+import org.rembx.jeeshop.order.domain.OrderRepository
 
-import jakarta.persistence.EntityManager;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.*;
-
-public class PriceEngineImplTest { // TODO complete discounts application test
-
-    EntityManager entityManager;
-    private OrderConfiguration orderConfiguration;
-    private OrderFinder orderFinder;
-    private DiscountFinder discountFinder;
-
-    private PriceEngineImpl orderPriceEngine;
-
+class PriceEngineImplTest {
+    private lateinit var entityManager: EntityManager
+    private lateinit var orderConfiguration: OrderConfiguration
+    private lateinit var orderRepository: OrderRepository
+    private lateinit var discountFinder: DiscountRepositoryImpl
+    private lateinit var orderPriceEngine: PriceEngineImpl
 
     @BeforeEach
-    public void setup() {
-        entityManager = mock(EntityManager.class);
-        orderConfiguration = mock(OrderConfiguration.class);
-        orderFinder = mock(OrderFinder.class);
-        discountFinder = mock(DiscountFinder.class);
-
-        orderPriceEngine = new PriceEngineImpl(entityManager, orderConfiguration, orderFinder, discountFinder);
+    fun setup() {
+        entityManager = mock(EntityManager::class.java)
+        orderConfiguration = mock(OrderConfiguration::class.java)
+        orderRepository = mock(OrderRepository::class.java)
+        discountFinder = mock(DiscountRepositoryImpl::class.java)
+        orderPriceEngine = PriceEngineImpl(entityManager, orderConfiguration,         orderRepository, discountFinder)
     }
 
-
     @Test
-    public void computePrice_ShouldAddPriceOfEachOrderItemsMultipliedByQuantityWithFixedDeliveryFee() {
-        SKU sku = new SKU();
-        sku.setPrice(10.0);
+    fun computePrice_ShouldAddPriceOfEachOrderItemsMultipliedByQuantityWithFixedDeliveryFee() {
+        val sku = SKU().apply { price = 10.0 }
+        val sku2 = SKU().apply { price = 20.0 }
+        `when`(entityManager.find(SKU::class.java, 1L)).thenReturn(sku)
+        `when`(entityManager.find(SKU::class.java, 2L)).thenReturn(sku2)
+        `when`(orderConfiguration.getFixedDeliveryFee()).thenReturn(11.0)
+        val order = Order().apply {
+            items = hashSetOf(OrderItem(1L, 1L, 1), OrderItem(2L, 2L, 2))
+        }
 
-        SKU sku2 = new SKU();
-        sku2.setPrice(20.0);
+        orderPriceEngine.computePrice(order)
 
-        when(entityManager.find(SKU.class, 1L)).thenReturn(sku);
-        when(entityManager.find(SKU.class, 2L)).thenReturn(sku2);
-        when(orderConfiguration.getFixedDeliveryFee()).thenReturn(11.0);
-
-        Order order = new Order();
-        Set<OrderItem> items = new HashSet<>();
-        items.add(new OrderItem(1L, 1L, 1));
-        items.add(new OrderItem(2L, 2L, 2));
-        order.setItems(items);
-
-        orderPriceEngine.computePrice(order);
-
-        verify(entityManager).find(SKU.class, 1L);
-        verify(entityManager).find(SKU.class, 2L);
-
-        verify(orderConfiguration).getFixedDeliveryFee();
-
-
-        assertThat(order.getPrice()).isEqualTo(61.0);
+        verify(entityManager).find(SKU::class.java, 1L)
+        verify(entityManager).find(SKU::class.java, 2L)
+        verify(orderConfiguration).getFixedDeliveryFee()
+        assertThat(order.price).isEqualTo(61.0)
     }
 
-
     @Test
-    public void computePrice_ShouldAddPriceOfEachOrderItemsMultipliedByQuantity() {
-        SKU sku = new SKU();
-        sku.setPrice(10.0);
+    fun computePrice_ShouldAddPriceOfEachOrderItemsMultipliedByQuantity() {
+        val sku = SKU().apply { price = 10.0 }
+        val sku2 = SKU().apply { price = 20.0 }
+        `when`(entityManager.find(SKU::class.java, 1L)).thenReturn(sku)
+        `when`(entityManager.find(SKU::class.java, 2L)).thenReturn(sku2)
+        doReturn(null).`when`(orderConfiguration).getFixedDeliveryFee()
+        val order = Order().apply {
+            items = hashSetOf(OrderItem(1L, 1L, 1), OrderItem(2L, 2L, 2))
+        }
 
-        SKU sku2 = new SKU();
-        sku2.setPrice(20.0);
+        orderPriceEngine.computePrice(order)
 
-        when(entityManager.find(SKU.class, 1L)).thenReturn(sku);
-        when(entityManager.find(SKU.class, 2L)).thenReturn(sku2);
-        when(orderConfiguration.getFixedDeliveryFee()).thenReturn(null);
-
-        Order order = new Order();
-        Set<OrderItem> items = new HashSet<>();
-        items.add(new OrderItem(1L, 1L, 1));
-        items.add(new OrderItem(2L, 2L, 2));
-        order.setItems(items);
-
-        orderPriceEngine.computePrice(order);
-
-        verify(entityManager).find(SKU.class, 1L);
-        verify(entityManager).find(SKU.class, 2L);
-
-        verify(orderConfiguration).getFixedDeliveryFee();
-
-        assertThat(order.getPrice()).isEqualTo(50.0);
-        for (OrderItem item : order.getItems()) {
-            if (item.getSkuId().equals(1L))
-                assertThat(item.getPrice()).isEqualTo(10.0);
-            else
-                assertThat(item.getPrice()).isEqualTo(20.0);
+        verify(entityManager).find(SKU::class.java, 1L)
+        verify(entityManager).find(SKU::class.java, 2L)
+        verify(orderConfiguration).getFixedDeliveryFee()
+        assertThat(order.price).isEqualTo(50.0)
+        for (item in order.items!!) {
+            if (item.skuId == 1L) assertThat(item.price).isEqualTo(10.0)
+            else assertThat(item.price).isEqualTo(20.0)
         }
     }
 
     @Test
-    public void computePrice_ShouldThrowEx_whenOrderHasNoItems() {
-
-        Order order = new Order();
-
-        try {
-            orderPriceEngine.computePrice(order);
-            fail("Should have thrown ex");
-        } catch (IllegalStateException e) {
+    fun computePrice_ShouldThrowEx_whenOrderHasNoItems() {
+        val order = Order()
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException::class.java) {
+            orderPriceEngine.computePrice(order)
         }
     }
 }

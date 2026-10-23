@@ -1,11 +1,7 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.PaymentInfo;
+import org.rembx.jeeshop.order.domain.Order
 
-/**
- * Created by remi on 07/12/14.
- */
-public interface PaymentTransactionEngine {
-    public void processPayment(Order order);
+interface PaymentTransactionEngine {
+    fun processPayment(order: Order)
 }

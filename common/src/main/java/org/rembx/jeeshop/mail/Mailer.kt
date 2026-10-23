@@ -1,98 +1,88 @@
-package org.rembx.jeeshop.mail;
+package org.rembx.jeeshop.mail
 
-import org.apache.commons.lang3.StringUtils;
-import org.rembx.jeeshop.configuration.NamedConfiguration;
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.mail.Authenticator
+import jakarta.mail.Message
+import jakarta.mail.MessagingException
+import jakarta.mail.PasswordAuthentication
+import jakarta.mail.Session
+import jakarta.mail.Transport
+import jakarta.mail.internet.InternetAddress
+import jakarta.mail.internet.MimeBodyPart
+import jakarta.mail.internet.MimeMessage
+import jakarta.mail.internet.MimeMultipart
+import org.apache.commons.lang3.StringUtils
+import org.rembx.jeeshop.configuration.NamedConfiguration
+import java.util.Date
+import java.util.Properties
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.mail.*;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-import java.util.Date;
-import java.util.Properties;
-
-/**
- */
 @ApplicationScoped
-public class Mailer {
+class Mailer {
+    @Inject
+    @field:NamedConfiguration("mail.smtp.host")
+    private lateinit var host: String
 
     @Inject
-    @NamedConfiguration("mail.smtp.host")
-    private String host;
+    @field:NamedConfiguration("mail.smtp.port")
+    private lateinit var port: String
 
     @Inject
-    @NamedConfiguration("mail.smtp.port")
-    private String port;
+    @field:NamedConfiguration("mail.auth.user")
+    private lateinit var user: String
 
     @Inject
-    @NamedConfiguration("mail.auth.user")
-    private String user;
+    @field:NamedConfiguration("mail.auth.password")
+    private lateinit var password: String
 
     @Inject
-    @NamedConfiguration("mail.auth.password")
-    private String password;
+    @field:NamedConfiguration("mail.from")
+    private lateinit var sender: String
 
     @Inject
-    @NamedConfiguration("mail.from")
-    private String sender;
+    @field:NamedConfiguration("mail.smtp.timeout")
+    private lateinit var readTimeout: String
 
     @Inject
-    @NamedConfiguration("mail.smtp.timeout")
-    private String readTimeout;
+    @field:NamedConfiguration("mail.smtp.connectiontimeout")
+    private lateinit var connectTimeout: String
 
     @Inject
-    @NamedConfiguration("mail.smtp.connectiontimeout")
-    private String connectTimeout;
+    @field:NamedConfiguration("debug")
+    private lateinit var debug: String
 
-    @Inject
-    @NamedConfiguration("debug")
-    private String debug;
-
-    public void sendMail(String subject, String to, String content) throws MessagingException {
-        Properties props = new Properties();
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", port);
-        props.put("mail.smtp.socketFactory.port", port);
-        props.put("mail.smtp.socketFactory.class",
-                "jakarta.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.connectiontimeout",connectTimeout);
-        props.put("mail.smtp.timeout",readTimeout);
-
-        Authenticator authenticator = null;
-        if (StringUtils.isNotEmpty(user)) {
-            props.put("mail.smtp.auth", "true");
-            authenticator = new Authenticator() {
-                private PasswordAuthentication pa = new PasswordAuthentication(user, password);
-
-                @Override
-                public PasswordAuthentication getPasswordAuthentication() {
-                    return pa;
-                }
-            };
+    @Throws(MessagingException::class)
+    fun sendMail(subject: String, to: String, content: String) {
+        val props = Properties().apply {
+            put("mail.smtp.host", host)
+            put("mail.smtp.port", port)
+            put("mail.smtp.socketFactory.port", port)
+            put("mail.smtp.socketFactory.class", "jakarta.net.ssl.SSLSocketFactory")
+            put("mail.smtp.connectiontimeout", connectTimeout)
+            put("mail.smtp.timeout", readTimeout)
         }
 
-        Session session = Session.getInstance(props, authenticator);
-        session.setDebug(Boolean.parseBoolean(debug));
+        val authenticator = if (StringUtils.isNotEmpty(user)) {
+            props["mail.smtp.auth"] = "true"
+            object : Authenticator() {
+                override fun getPasswordAuthentication() = PasswordAuthentication(user, password)
+            }
+        } else {
+            null
+        }
 
-        MimeMessage message = new MimeMessage(session);
-
-        message.setFrom(new InternetAddress(sender));
-        InternetAddress[] address = {new InternetAddress(to)};
-        message.setRecipients(Message.RecipientType.TO, address);
-        message.setSubject(subject,"UTF-8");
-        message.setSentDate(new Date());
-
-        Multipart multipart = new MimeMultipart("alternative");
-        MimeBodyPart htmlPart = new MimeBodyPart();
-        htmlPart.setContent(content, "text/html; charset=utf-8");
-        multipart.addBodyPart(htmlPart);
-
-        message.setContent(multipart);
-
-        Transport.send(message);
-
+        val session = Session.getInstance(props, authenticator)
+        session.setDebug(java.lang.Boolean.parseBoolean(this.debug))
+        val message = MimeMessage(session)
+        message.setFrom(InternetAddress(this.sender))
+        message.setRecipients(Message.RecipientType.TO, arrayOf(InternetAddress(to)))
+        message.setSubject(subject, "UTF-8")
+        message.sentDate = Date()
+        val multipart = MimeMultipart("alternative")
+        val htmlPart = MimeBodyPart()
+        htmlPart.setContent(content, "text/html; charset=utf-8")
+        multipart.addBodyPart(htmlPart)
+        message.setContent(multipart)
+        Transport.send(message)
     }
-
 }

@@ -1,34 +1,27 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import org.rembx.jeeshop.configuration.NamedConfiguration;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import org.rembx.jeeshop.configuration.NamedConfiguration
 
 @ApplicationScoped
-public class OrderConfiguration {
+class OrderConfiguration {
+    @Inject
+    @field:NamedConfiguration("fixed.delivery.fee")
+    private lateinit var fixedDeliveryFee: String
 
     @Inject
-    @NamedConfiguration("fixed.delivery.fee")
-    private String fixedDeliveryFee;
+    @field:NamedConfiguration("vat")
+    private lateinit var vat: String
 
-    @Inject
-    @NamedConfiguration("vat")
-    private String vat;
+    constructor()
 
-    public OrderConfiguration() {
+    constructor(fixedDeliveryFee: String, vat: String) {
+        this.fixedDeliveryFee = fixedDeliveryFee
+        this.vat = vat
     }
 
-    public OrderConfiguration(String fixedDeliveryFee, String vat) {
-        this.fixedDeliveryFee = fixedDeliveryFee;
-        this.vat = vat;
-    }
+    fun getFixedDeliveryFee(): Double? = java.lang.Double.parseDouble(fixedDeliveryFee)
 
-    public Double getFixedDeliveryFee() {
-        return Double.parseDouble(fixedDeliveryFee);
-    }
-
-    public Double getVAT() {
-        return Double.parseDouble(vat);
-    }
+    fun getVAT(): Double = java.lang.Double.parseDouble(vat)
 }

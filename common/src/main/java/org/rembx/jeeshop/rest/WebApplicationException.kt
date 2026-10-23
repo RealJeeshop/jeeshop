@@ -1,11 +1,5 @@
-package org.rembx.jeeshop.rest;
+package org.rembx.jeeshop.rest
 
+import jakarta.ws.rs.core.Response
 
-import jakarta.ws.rs.core.Response;
-
-// FIXME ? @ApplicationException
-public class WebApplicationException extends jakarta.ws.rs.WebApplicationException{
-    public WebApplicationException(Response.Status status) {
-        super(status);
-    }
-}
+class WebApplicationException(status: Response.Status) : jakarta.ws.rs.WebApplicationException(status)

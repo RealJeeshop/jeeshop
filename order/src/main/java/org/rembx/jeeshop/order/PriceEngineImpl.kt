@@ -1,94 +1,58 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.apache.commons.collections4.CollectionUtils;
-import org.rembx.jeeshop.catalog.DiscountFinder;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.catalog.model.Discount;
-import org.rembx.jeeshop.catalog.model.SKU;
-import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.OrderDiscount;
-import org.rembx.jeeshop.order.model.OrderItem;
+import io.quarkus.hibernate.orm.PersistenceUnit
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.inject.Default
+import jakarta.persistence.EntityManager
+import org.apache.commons.collections4.CollectionUtils
+import org.rembx.jeeshop.catalog.infrastructure.repository.DiscountRepositoryImpl
+import org.rembx.jeeshop.catalog.infrastructure.repository.CatalogPersistenceUnit
+import org.rembx.jeeshop.catalog.domain.Discount
+import org.rembx.jeeshop.catalog.domain.SKU
+import org.rembx.jeeshop.order.domain.Order
+import org.rembx.jeeshop.order.domain.OrderDiscount
+import org.rembx.jeeshop.order.domain.OrderRepository
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
-import jakarta.persistence.EntityManager;
-import java.util.HashSet;
-import java.util.List;
-
-/**
- * Order price engine
- * Computes order's price and updates Order's properties
- */
 @ApplicationScoped
 @Default
-public class PriceEngineImpl implements PriceEngine {
+class PriceEngineImpl(
+    @PersistenceUnit(CatalogPersistenceUnit.NAME) private val entityManager: EntityManager,
+    private val orderConfiguration: OrderConfiguration,
+    private val orderRepository: OrderRepository,
+    private val discountFinder: DiscountRepositoryImpl,
+) : PriceEngine {
+    override fun computePrice(order: Order) {
+        if (CollectionUtils.isEmpty(order.items)) {
+            throw IllegalStateException("Order items list is empty $order")
+        }
 
-    private EntityManager entityManager;
-    private OrderConfiguration orderConfiguration;
-    private DiscountFinder discountFinder;
-    private OrderFinder orderFinder;
+        var price = 0.0
+        for (orderItem in order.items!!) {
+            val sku = entityManager.find(SKU::class.java, orderItem.skuId)
+            val skuPrice = checkNotNull(sku.price)
+            price += skuPrice * orderItem.quantity!!
+            orderItem.price = skuPrice
+        }
 
-    PriceEngineImpl(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, OrderConfiguration orderConfiguration,
-                           OrderFinder orderFinder, DiscountFinder discountFinder) {
-        this.entityManager = entityManager;
-        this.orderConfiguration = orderConfiguration;
-        this.orderFinder = orderFinder;
-        this.discountFinder = discountFinder;
+        val fixedDeliveryFee = orderConfiguration.getFixedDeliveryFee()
+        price = applyEligibleDiscounts(order, price)
+        if (fixedDeliveryFee != null) price += fixedDeliveryFee
+        order.deliveryFee = fixedDeliveryFee
+        order.price = price
     }
 
-    @Override
-    public void computePrice(Order order) {
+    private fun applyEligibleDiscounts(order: Order, originalPrice: Double): Double {
+        var price = originalPrice
+        val userCompletedOrders = orderRepository.countUserCompletedOrders(order.customer)
+        val eligibleDiscounts = discountFinder.findEligibleOrderDiscounts(null, userCompletedOrders) ?: return price
+        val orderDiscounts = order.orderDiscounts ?: HashSet<OrderDiscount>().also { order.orderDiscounts = it }
 
-        if (CollectionUtils.isEmpty(order.getItems())){
-            throw new IllegalStateException("Order items list is empty "+order);
-        }
-
-        Double price = 0.0;
-
-        for (OrderItem orderItem : order.getItems()){
-
-            SKU sku = entityManager.find(SKU.class,(orderItem).getSkuId());
-            price += (sku.getPrice()*(orderItem).getQuantity());
-            orderItem.setPrice(sku.getPrice());
-        }
-
-        final Double fixedDeliveryFee = orderConfiguration.getFixedDeliveryFee();
-
-        price = applyEligibleDiscounts(order, price);
-
-        if (fixedDeliveryFee != null){
-            price += fixedDeliveryFee;
-            order.setDeliveryFee(fixedDeliveryFee);
-        }
-
-        order.setPrice(price);
-
-    }
-
-    private Double applyEligibleDiscounts(Order order, Double price) {
-
-        double originalPrice = price;
-
-        Long userCompletedOrders = orderFinder.countUserCompletedOrders(order.getCustomer());
-
-        List<Discount> userEligibleOrderDiscounts = discountFinder.findEligibleOrderDiscounts(null,userCompletedOrders);
-
-        if (userEligibleOrderDiscounts == null) {
-            return price;
-        }
-
-        if (order.getOrderDiscounts() == null){
-            order.setOrderDiscounts(new HashSet<>());
-        }
-
-        for (Discount discount : userEligibleOrderDiscounts){
-            if (discount.isEligible(originalPrice)){
-                price = discount.processDiscount(price, originalPrice);
-                order.getOrderDiscounts().add(new OrderDiscount(discount.getId(),discount.getDiscountValue()));
+        for (discount: Discount in eligibleDiscounts) {
+            if (discount.isEligible(originalPrice)) {
+                price = checkNotNull(discount.processDiscount(price, originalPrice))
+                orderDiscounts.add(OrderDiscount(discount.id, discount.discountValue))
             }
         }
-
-        return price;
+        return price
     }
 }

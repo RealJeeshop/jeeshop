@@ -1,15 +1,9 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
-import org.rembx.jeeshop.order.model.Order;
-import org.rembx.jeeshop.order.model.PaymentInfo;
+import jakarta.enterprise.context.ApplicationScoped
+import org.rembx.jeeshop.order.domain.Order
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
-
-/**
- * Created by remi on 07/12/14.
- */
 @ApplicationScoped
-public interface PriceEngine {
-    public void computePrice(Order order);
+interface PriceEngine {
+    fun computePrice(order: Order)
 }

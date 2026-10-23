@@ -1,97 +1,78 @@
-package org.rembx.jeeshop.configuration;
+package org.rembx.jeeshop.configuration
 
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import jakarta.inject.Inject
+import org.jboss.weld.environment.se.Weld
+import org.jboss.weld.environment.se.WeldContainer
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
-import jakarta.inject.Inject;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * Injection test using weld container
- */
-public class ConfigurationProducerCT {
-
-    protected static Weld weld;
-    protected static WeldContainer container;
-
-    @BeforeAll
-    public static void init() {
-        weld = new Weld().disableDiscovery().addBeanClasses(
-                ConfigurationProducer.class,
-                NamedConfigurationUse.class,
-                NamedConfigurationWithoutConfigurationFile.class);
-        container = weld.initialize();
-    }
-
-    @AfterAll
-    public static void close() {
-        weld.shutdown();
+class ConfigurationProducerCT {
+    @Test
+    fun withConfiguredFileProperty_shouldBeInjectedAsConfiguredValue() {
+        val injected = container.select(NamedConfigurationUse::class.java).get()
+        assertNotNull(injected)
+        assertEquals("dummyHost", injected.hostName)
+        assertEquals("dummyTimeout", injected.timeout)
     }
 
     @Test
-    public void withConfiguredFileProperty_shouldBeInjectedAsConfiguredValue() throws Exception {
-        NamedConfigurationUse injected = container.select(NamedConfigurationUse.class).get();
-        assertNotNull(injected);
-        assertEquals("dummyHost", injected.getHostName());
-        assertEquals("dummyTimeout", injected.getTimeout());
+    fun withNotConfiguredFileProperty_shouldBeInjectedAsNull() {
+        val injected = container.select(NamedConfigurationUse::class.java).get()
+        assertNotNull(injected)
+        assertNull(injected.port)
     }
 
     @Test
-    public void withNotConfiguredFileProperty_shouldBeInjectedAsNull() throws Exception {
-        NamedConfigurationUse injected = container.select(NamedConfigurationUse.class).get();
-        assertNotNull(injected);
-        assertNull(injected.getPort());
+    fun withUnknownFile_shouldThrowException() {
+        assertThrows(IllegalStateException::class.java) {
+            container.select(NamedConfigurationWithoutConfigurationFile::class.java).get()
+        }
     }
 
-    @Test
-    public void withUnknownFile_shouldThrowException() throws Exception {
+    companion object {
+        private lateinit var weld: Weld
+        private lateinit var container: WeldContainer
 
-        assertThrows(IllegalStateException.class,
-                () -> container.select(NamedConfigurationWithoutConfigurationFile.class).get());
+        @BeforeAll
+        @JvmStatic
+        fun init() {
+            weld = Weld().disableDiscovery().addBeanClasses(
+                ConfigurationProducer::class.java,
+                NamedConfigurationUse::class.java,
+                NamedConfigurationWithoutConfigurationFile::class.java,
+            )
+            container = weld.initialize()
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun close() {
+            weld.shutdown()
+        }
     }
-
 }
 
 class NamedConfigurationUse {
+    @Inject
+    @field:NamedConfiguration("host.name")
+    lateinit var hostName: String
 
     @Inject
-    @NamedConfiguration("host.name")
-    private String hostName;
+    @field:NamedConfiguration("toto.toto")
+    var port: String? = null
 
     @Inject
-    @NamedConfiguration("toto.toto")
-    private String port;
-
-    @Inject
-    @NamedConfiguration(value = "timeout", configurationFile = "/namedconfigurationcustom.properties")
-    private String timeout;
-
-    String getTimeout() {
-        return timeout;
-    }
-
-    String getPort() {
-        return port;
-    }
-
-    public String getHostName() {
-        return hostName;
-    }
-
+    @field:NamedConfiguration(value = "timeout", configurationFile = "/namedconfigurationcustom.properties")
+    lateinit var timeout: String
 }
 
 class NamedConfigurationWithoutConfigurationFile {
-
     @Inject
-    @NamedConfiguration("toto.unknown")
-    private String hostName;
-
-    public String getHostName() {
-        return hostName;
-    }
-
+    @field:NamedConfiguration("toto.unknown")
+    lateinit var hostName: String
 }

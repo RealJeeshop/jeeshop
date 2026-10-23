@@ -7,17 +7,17 @@
     <!-- Catalog persistence unit-->
     <persistence-unit name="Catalog">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>org.rembx.jeeshop.catalog.model.Store</class>
-        <class>org.rembx.jeeshop.catalog.model.Premises</class>
-        <class>org.rembx.jeeshop.catalog.model.PremisesAddress</class>
-        <class>org.rembx.jeeshop.catalog.model.PremisesOpeningSchedules</class>
-        <class>org.rembx.jeeshop.catalog.model.Catalog</class>
-        <class>org.rembx.jeeshop.catalog.model.Category</class>
-        <class>org.rembx.jeeshop.catalog.model.Product</class>
-        <class>org.rembx.jeeshop.catalog.model.SKU</class>
-        <class>org.rembx.jeeshop.media.model.Media</class>
-        <class>org.rembx.jeeshop.catalog.model.Presentation</class>
-        <class>org.rembx.jeeshop.catalog.model.Discount</class>
+        <class>org.rembx.jeeshop.catalog.domain.Store</class>
+        <class>org.rembx.jeeshop.catalog.domain.Premises</class>
+        <class>org.rembx.jeeshop.catalog.domain.PremisesAddress</class>
+        <class>org.rembx.jeeshop.catalog.domain.PremisesOpeningSchedules</class>
+        <class>org.rembx.jeeshop.catalog.domain.Catalog</class>
+        <class>org.rembx.jeeshop.catalog.domain.Category</class>
+        <class>org.rembx.jeeshop.catalog.domain.Product</class>
+        <class>org.rembx.jeeshop.catalog.domain.SKU</class>
+        <class>org.rembx.jeeshop.media.domain.Media</class>
+        <class>org.rembx.jeeshop.catalog.domain.Presentation</class>
+        <class>org.rembx.jeeshop.catalog.domain.Discount</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>

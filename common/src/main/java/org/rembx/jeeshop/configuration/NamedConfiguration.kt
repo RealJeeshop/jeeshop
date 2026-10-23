@@ -1,15 +1,17 @@
-package org.rembx.jeeshop.configuration;
+package org.rembx.jeeshop.configuration
 
-
-import jakarta.enterprise.util.Nonbinding;
-import jakarta.inject.Qualifier;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import jakarta.enterprise.util.Nonbinding
+import jakarta.inject.Qualifier
 
 @Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-public @interface NamedConfiguration {
-    @Nonbinding String value() default "";
-
-    @Nonbinding String configurationFile() default "";
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(
+    AnnotationTarget.FIELD,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.ANNOTATION_CLASS,
+)
+annotation class NamedConfiguration(
+    @get:Nonbinding val value: String = "",
+    @get:Nonbinding val configurationFile: String = "",
+)

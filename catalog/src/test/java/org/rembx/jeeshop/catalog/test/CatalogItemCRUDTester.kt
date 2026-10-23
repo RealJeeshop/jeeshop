@@ -1,105 +1,80 @@
-package org.rembx.jeeshop.catalog.test;
+package org.rembx.jeeshop.catalog.test
 
-import org.apache.http.auth.BasicUserPrincipal;
-import org.rembx.jeeshop.catalog.CatalogItemService;
-import org.rembx.jeeshop.catalog.model.CatalogItem;
-import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
-import org.rembx.jeeshop.role.JeeshopRoles;
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityManagerFactory
+import jakarta.persistence.Persistence
+import jakarta.ws.rs.core.SecurityContext
+import org.apache.http.auth.BasicUserPrincipal
+import org.rembx.jeeshop.catalog.infrastructure.api.CatalogItemService
+import org.rembx.jeeshop.catalog.domain.CatalogItem
+import org.rembx.jeeshop.catalog.infrastructure.repository.CatalogPersistenceUnit
+import org.rembx.jeeshop.role.JeeshopRoles
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.ws.rs.core.SecurityContext;
+class CatalogItemCRUDTester<T : CatalogItem>(private val itemClass: Class<T>) {
+    private val entityManagerFactory: EntityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME)
+    private val entityManagerInternal: EntityManager = entityManagerFactory.createEntityManager()
+    private var securityContextInternal: SecurityContext = mock(SecurityContext::class.java)
+    private var testCatalogInternal: TestCatalog = TestCatalog.getInstance()
+    private var serviceInternal: CatalogItemService<T>? = null
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+    fun getService(): CatalogItemService<T>? = serviceInternal
 
-public class CatalogItemCRUDTester<T extends CatalogItem> {
-
-    private static EntityManagerFactory entityManagerFactory;
-    protected EntityManager entityManager;
-    protected SecurityContext securityContext;
-    protected TestCatalog testCatalog;
-    private Class<T> itemClass;
-    protected CatalogItemService<T> service;
-
-    public CatalogItemService<T> getService() {
-        return service;
+    fun setService(service: CatalogItemService<T>) {
+        this.serviceInternal = service
     }
 
-    public void setService(CatalogItemService<T> service) {
-        this.service = service;
+    fun test_create(catalogItem: T): T {
+        entityManagerInternal.transaction.begin()
+        serviceInternal!!.create(securityContextInternal, catalogItem)
+        entityManagerInternal.transaction.commit()
+        return refreshCatalogItem(catalogItem)
     }
 
-    public CatalogItemCRUDTester(Class<T> itemClass) {
-        this.itemClass = itemClass;
-        entityManagerFactory = Persistence.createEntityManagerFactory(CatalogPersistenceUnit.NAME);
-        testCatalog = TestCatalog.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        securityContext = mock(SecurityContext.class);
+    fun test_delete(catalogItem: T) {
+        entityManagerInternal.transaction.begin()
+        entityManagerInternal.persist(catalogItem)
+        entityManagerInternal.transaction.commit()
+
+        entityManagerInternal.transaction.begin()
+        serviceInternal!!.delete(securityContextInternal, catalogItem.id)
+        entityManagerInternal.transaction.commit()
     }
 
-    public T test_create(T catalogItem) {
-
-        entityManager.getTransaction().begin();
-        service.create(securityContext, catalogItem);
-        entityManager.getTransaction().commit();
-
-        return refreshCatalogItem(catalogItem);
+    fun test_modify(catalogItem: T) {
+        serviceInternal!!.modify(securityContextInternal, catalogItem)
     }
 
-    public void test_delete(T catalogItem) {
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(catalogItem);
-        entityManager.getTransaction().commit();
-
-        entityManager.getTransaction().begin();
-        service.delete(securityContext, catalogItem.getId());
-        entityManager.getTransaction().commit();
+    private fun refreshCatalogItem(store: T): T {
+        val actualStore = entityManagerInternal.find(itemClass, store.id)
+        entityManagerInternal.remove(store)
+        return actualStore
     }
 
-    public void test_modify(T catalogItem) {
-        service.modify(securityContext, catalogItem);
+    fun setAdminUser() {
+        `when`(securityContextInternal.userPrincipal).thenReturn(BasicUserPrincipal("admin@jeeshop.org"))
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true)
     }
 
-    private T refreshCatalogItem(T store) {
-        T actualStore = entityManager.find(itemClass, store.getId());
-        entityManager.remove(store);
-        return actualStore;
+    fun setStoreAdminUser() {
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false)
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true)
+        `when`(securityContextInternal.userPrincipal).thenReturn(BasicUserPrincipal(TestCatalog.OWNER))
     }
 
-    public void setAdminUser() {
-        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("admin@jeeshop.org"));
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
+    fun setSAnotherStoreAdminUser() {
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false)
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true)
+        `when`(securityContextInternal.userPrincipal).thenReturn(BasicUserPrincipal("test@test.org"))
     }
 
-    public void setStoreAdminUser() {
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
-        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal(TestCatalog.OWNER));
+    fun setPublicUser() {
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false)
+        `when`(securityContextInternal.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false)
     }
 
-    public void setSAnotherStoreAdminUser() {
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(true);
-        when(securityContext.getUserPrincipal()).thenReturn(new BasicUserPrincipal("test@test.org"));
-    }
-
-    public void setPublicUser() {
-        when(securityContext.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-        when(securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)).thenReturn(false);
-    }
-
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
-
-    public SecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    public TestCatalog getFixtures() {
-        return testCatalog;
-    }
+    fun getEntityManager(): EntityManager = entityManagerInternal
+    fun getSecurityContext(): SecurityContext = securityContextInternal
+    fun getFixtures(): TestCatalog = testCatalogInternal
 }

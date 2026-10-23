@@ -1,14 +1,9 @@
-package org.rembx.jeeshop.rest;
+package org.rembx.jeeshop.rest
 
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.ext.ExceptionMapper
 
-import jakarta.ws.rs.core.Response;
-
-/**
- * Avoid logging of stack trace for WebApplicationException instances thrown by application
- */
-public class WebApplicationExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<WebApplicationException> {
-    @Override
-    public Response toResponse(WebApplicationException e) {
-        return e.getResponse();
-    }
+/** Avoid logging stack traces for application WebApplicationException instances. */
+class WebApplicationExceptionMapper : ExceptionMapper<WebApplicationException> {
+    override fun toResponse(exception: WebApplicationException): Response = exception.response
 }

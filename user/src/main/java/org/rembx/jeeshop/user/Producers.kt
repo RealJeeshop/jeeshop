@@ -1,20 +1,17 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user
 
-import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import io.quarkus.hibernate.orm.PersistenceUnit
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.inject.Default
+import jakarta.enterprise.inject.Produces
+import jakarta.persistence.EntityManagerFactory
+import org.rembx.jeeshop.user.infrastructure.repository.UserPersistenceUnit
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Produces;
-import jakarta.persistence.EntityManagerFactory;
-
-public class Producers {
-
+class Producers {
     @Produces
     @ApplicationScoped
     @Default
-    EntityManagerFactory produceService(@PersistenceUnit(UserPersistenceUnit.NAME) EntityManagerFactory entityManagerFactory) {
-        return entityManagerFactory;
-    }
-
+    fun produceService(
+        @PersistenceUnit(UserPersistenceUnit.NAME) entityManagerFactory: EntityManagerFactory,
+    ): EntityManagerFactory = entityManagerFactory
 }

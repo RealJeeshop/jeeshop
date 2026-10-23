@@ -1,87 +1,49 @@
-package org.rembx.jeeshop.configuration;
+package org.rembx.jeeshop.configuration
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.inject.Produces
+import jakarta.enterprise.inject.spi.InjectionPoint
+import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
+import java.io.IOException
+import java.io.InputStream
+import java.util.Properties
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-
-/**
- * Configuration Producer
- * <p/>
- * Produces a value for a given @NamedConfiguration annotated property.
- * This value is retrieved from a property file named with the lower case class name where this property is declared
- * <p/>
- * User: remi
- */
 @ApplicationScoped
-public class ConfigurationProducer {
-
-    private final static Logger logger = LoggerFactory.getLogger(ConfigurationProducer.class);
-
-    private final static String CONFIGURATION_FILE_SUFFIX = ".properties";
-
-    /**
-     * Stores every property files associated to classes using NamedConfiguration annotation
-     */
-    private static final Map<String, Properties> configurations = new HashMap<>();
-
+class ConfigurationProducer {
     @Produces
     @NamedConfiguration
-    String retrieveNamedConfiguration(InjectionPoint injectionPoint) {
+    fun retrieveNamedConfiguration(injectionPoint: InjectionPoint): String? {
+        val namedConfiguration = injectionPoint.annotated.getAnnotation(NamedConfiguration::class.java)
+        if (StringUtils.isEmpty(namedConfiguration.value)) return null
 
-        String configurationFilePath;
-
-        NamedConfiguration namedConfiguration = injectionPoint.getAnnotated().getAnnotation(NamedConfiguration.class);
-        if (namedConfiguration.value() == null || StringUtils.isEmpty(namedConfiguration.value())) {
-            return null;
+        val configurationFilePath = namedConfiguration.configurationFile.ifEmpty {
+            "/${injectionPoint.member.declaringClass.simpleName.lowercase()}$CONFIGURATION_FILE_SUFFIX"
         }
-
-        if (namedConfiguration.configurationFile() == null || StringUtils.isEmpty(namedConfiguration.configurationFile())) {
-            configurationFilePath = "/" + injectionPoint.getMember().getDeclaringClass().getSimpleName().toLowerCase()
-                    + CONFIGURATION_FILE_SUFFIX;
-        } else {
-            configurationFilePath = namedConfiguration.configurationFile();
-        }
-
-        Properties properties = loadConfigurationFile(configurationFilePath);
-
-        return properties.getProperty(namedConfiguration.value());
-
+        return loadConfigurationFile(configurationFilePath).getProperty(namedConfiguration.value)
     }
 
-    private Properties loadConfigurationFile(String configurationFilePath) {
+    private fun loadConfigurationFile(configurationFilePath: String): Properties {
+        configurations[configurationFilePath]?.let { return it }
 
-
-        if (configurations.get(configurationFilePath) != null) {
-            return configurations.get(configurationFilePath);
+        logger.debug("Loading property file : {}", configurationFilePath)
+        val properties = Properties()
+        try {
+            val configurationFile: InputStream = javaClass.getResourceAsStream(configurationFilePath)
+                ?: throw IllegalStateException("File :$configurationFilePath not found")
+            configurationFile.use { properties.load(it) }
+        } catch (e: IOException) {
+            throw RuntimeException("Failed to load configuration file: $configurationFilePath", e)
         }
 
-        logger.debug("Loading property file : {}", configurationFilePath);
-
-        Properties properties = new Properties();
-
-        try (InputStream configurationFile = getClass().getResourceAsStream(configurationFilePath)) {
-            if (configurationFile == null)
-                throw new IllegalStateException("File :" + configurationFilePath + " not found");
-            properties.load(configurationFile);
-            configurations.put(configurationFilePath,properties);
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load configuration file: " + configurationFilePath, e);
-        }
-
-        logger.debug("Property file load successful");
-        return properties;
+        configurations[configurationFilePath] = properties
+        logger.debug("Property file load successful")
+        return properties
     }
 
-
+    companion object {
+        private val logger = LoggerFactory.getLogger(ConfigurationProducer::class.java)
+        private const val CONFIGURATION_FILE_SUFFIX = ".properties"
+        private val configurations = HashMap<String, Properties>()
+    }
 }

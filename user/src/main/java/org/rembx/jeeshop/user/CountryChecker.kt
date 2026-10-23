@@ -1,36 +1,27 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user
 
-import org.rembx.jeeshop.configuration.NamedConfiguration;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import java.util.Arrays;
-
-/**
- * User finder utility
- */
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import org.rembx.jeeshop.configuration.NamedConfiguration
 
 @ApplicationScoped
-public class CountryChecker {
+class CountryChecker {
     @Inject
-    @NamedConfiguration(value = "countries.available",configurationFile = "/global.properties")
-    private String availableCountriesStr;
+    @field:NamedConfiguration(value = "countries.available", configurationFile = "/global.properties")
+    private lateinit var availableCountriesStr: String
 
-    private String[] availableCountries;
+    private var availableCountries: Array<String>? = null
 
-    public CountryChecker() {
+    constructor()
+
+    constructor(availableCountries: String) {
+        availableCountriesStr = availableCountries
     }
 
-    public CountryChecker(String availableCountries) {
-        this.availableCountriesStr = availableCountries;
-    }
-
-    public boolean isAvailable(String country){
-
-        if (availableCountries == null){
-            availableCountries = availableCountriesStr.split(",");
+    fun isAvailable(country: String?): Boolean {
+        if (availableCountries == null) {
+            availableCountries = availableCountriesStr.split(",").toTypedArray()
         }
-        return Arrays.asList(availableCountries).contains(country);
+        return availableCountries!!.contains(country)
     }
-
 }

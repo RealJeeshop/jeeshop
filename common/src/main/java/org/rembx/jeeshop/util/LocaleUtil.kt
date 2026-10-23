@@ -1,24 +1,23 @@
-package org.rembx.jeeshop.util;
+package org.rembx.jeeshop.util
 
-import org.apache.commons.lang3.LocaleUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.LocaleUtils
+import org.slf4j.LoggerFactory
+import java.util.Locale
 
-import java.util.Locale;
+object LocaleUtil {
+    private val logger = LoggerFactory.getLogger(LocaleUtil::class.java)
 
-public class LocaleUtil {
+    @JvmField
+    val FALLBACK: Locale = Locale.ENGLISH
 
-    private static Logger logger = LoggerFactory.getLogger(LocaleUtil.class);
-
-    public static final Locale FALLBACK = Locale.ENGLISH;
-
-    public static String getLocaleCode(String localeStr) {
-        Locale locale = FALLBACK;
-        try {
-            locale = (localeStr != null)? LocaleUtils.toLocale(localeStr):FALLBACK;
-        } catch (IllegalArgumentException e) {
-            logger.warn("cannot get locale from {}. Returning fallback locale: "+FALLBACK,localeStr);
+    @JvmStatic
+    fun getLocaleCode(localeStr: String?): String {
+        val locale = try {
+            if (localeStr != null) LocaleUtils.toLocale(localeStr) else FALLBACK
+        } catch (e: IllegalArgumentException) {
+            logger.warn("cannot get locale from {}. Returning fallback locale: {}", localeStr, FALLBACK)
+            FALLBACK
         }
-        return locale.toString();
+        return locale.toString()
     }
 }

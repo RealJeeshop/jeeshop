@@ -1,42 +1,36 @@
-package org.rembx.jeeshop.order.test;
+package org.rembx.jeeshop.order.test
 
-import org.rembx.jeeshop.order.mail.Mails;
-import org.rembx.jeeshop.user.model.MailTemplate;
-import org.rembx.jeeshop.user.model.UserPersistenceUnit;
+import jakarta.persistence.Persistence
+import org.rembx.jeeshop.order.domain.Mails
+import org.rembx.jeeshop.user.domain.MailTemplate
+import org.rembx.jeeshop.user.infrastructure.repository.UserPersistenceUnit
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
+class TestMailTemplate private constructor() {
+    fun orderConfirmationMailTemplate(): MailTemplate = orderConfirmationTpl
 
-/**
- * MailTemplate test utility
- */
-public class TestMailTemplate {
+    companion object {
+        private var instance: TestMailTemplate? = null
+        private lateinit var orderConfirmationTpl: MailTemplate
 
-    private static TestMailTemplate instance;
+        @JvmStatic
+        fun getInstance(): TestMailTemplate {
+            instance?.let { return it }
+            val entityManager = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME).createEntityManager()
+            entityManager.transaction.begin()
 
-    private static MailTemplate orderConfirmationTpl;
+            orderConfirmationTpl = MailTemplate(
+                Mails.orderValidated.name,
+                "fr_FR",
+                "<html><body>Hello \${gender} \${firstname} \${lastname}. Your order has been registered...</body></html>",
+                "Order Confirmation",
+            )
+            entityManager.persist(orderConfirmationTpl)
+            entityManager.transaction.commit()
 
-
-    public static TestMailTemplate getInstance() {
-        if (instance != null)
-            return instance;
-
-        EntityManager entityManager = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME).createEntityManager();
-
-        entityManager.getTransaction().begin();
-
-        orderConfirmationTpl = new MailTemplate(Mails.orderValidated.name(), "fr_FR", "<html><body>Hello ${gender} ${firstname} ${lastname}. Your order has been registered...</body></html>", "Order Confirmation");
-
-        entityManager.persist(orderConfirmationTpl);
-
-        entityManager.getTransaction().commit();
-
-        instance = new TestMailTemplate();
-        entityManager.close();
-        return instance;
-    }
-
-    public MailTemplate orderConfirmationMailTemplate(){
-        return orderConfirmationTpl;
+            return TestMailTemplate().also {
+                instance = it
+                entityManager.close()
+            }
+        }
     }
 }

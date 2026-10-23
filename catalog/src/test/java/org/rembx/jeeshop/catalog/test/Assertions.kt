@@ -1,35 +1,13 @@
-package org.rembx.jeeshop.catalog.test;
+package org.rembx.jeeshop.catalog.test
 
-import org.rembx.jeeshop.catalog.model.*;
+import org.rembx.jeeshop.catalog.domain.CatalogItem
+import org.rembx.jeeshop.catalog.domain.Category
+import org.rembx.jeeshop.catalog.domain.Discount
+import org.rembx.jeeshop.catalog.domain.Product
+import org.rembx.jeeshop.catalog.domain.SKU
 
-import java.util.List;
-
-/**
- * Created by remi on 25/05/14.
- */
-public class Assertions extends org.assertj.core.api.Assertions{
-
-    public static TestCatalog.CatalogItemAssert assertThat(CatalogItem catalogItem) {
-        return new TestCatalog.CatalogItemAssert(catalogItem);
-    }
-
-    public static TestCatalog.CategoriesAssert assertThatCategoriesOf(List<Category> categories) {
-        return new TestCatalog.CategoriesAssert(categories);
-    }
-
-    public static TestCatalog.ProductsAssert assertThatProductsOf(List<Product> products) {
-        return new TestCatalog.ProductsAssert(products);
-    }
-
-    public static TestCatalog.SKUsAssert assertThatSKUsOf(List<SKU> skus) {
-        return new TestCatalog.SKUsAssert(skus);
-    }
-
-
-    public static TestCatalog.SKUDiscountsAssert assertThatDiscountsOf(List<Discount> discounts) {
-        return new TestCatalog.SKUDiscountsAssert(discounts);
-    }
-
-
-
-}
+fun assertThat(catalogItem: CatalogItem): TestCatalog.CatalogItemAssert = TestCatalog.CatalogItemAssert(catalogItem)
+fun assertThatCategoriesOf(categories: List<Category>): TestCatalog.CategoriesAssert = TestCatalog.CategoriesAssert(categories)
+fun assertThatProductsOf(products: List<Product>): TestCatalog.ProductsAssert = TestCatalog.ProductsAssert(products)
+fun assertThatSKUsOf(skus: List<SKU>): TestCatalog.SKUsAssert = TestCatalog.SKUsAssert(skus)
+fun assertThatDiscountsOf(discounts: List<Discount>): TestCatalog.SKUDiscountsAssert = TestCatalog.SKUDiscountsAssert(discounts)

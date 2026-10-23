@@ -1,22 +1,16 @@
-package org.rembx.jeeshop.role;
+package org.rembx.jeeshop.role
 
-import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext
 
+object AuthorizationUtils {
+    @JvmStatic
+    fun isAdminUser(sessionContext: SecurityContext?): Boolean =
+        sessionContext?.userPrincipal != null && sessionContext.isUserInRole(JeeshopRoles.ADMIN)
 
-/**
- * Created by remi on 24/06/14.
- */
-public class AuthorizationUtils {
-
-    public static boolean isAdminUser(SecurityContext sessionContext) {
-        return sessionContext != null && sessionContext.getUserPrincipal() != null
-                && sessionContext.isUserInRole(JeeshopRoles.ADMIN);
-    }
-
-    public static  boolean isOwner(SecurityContext securityContext, String owner) {
-        return securityContext != null && securityContext.getUserPrincipal() != null
-                && owner != null && securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN)
-                && owner.equals(securityContext.getUserPrincipal().getName());
-    }
-
+    @JvmStatic
+    fun isOwner(securityContext: SecurityContext?, owner: String?): Boolean =
+        securityContext?.userPrincipal != null &&
+            owner != null &&
+            securityContext.isUserInRole(JeeshopRoles.STORE_ADMIN) &&
+            owner == securityContext.userPrincipal.name
 }

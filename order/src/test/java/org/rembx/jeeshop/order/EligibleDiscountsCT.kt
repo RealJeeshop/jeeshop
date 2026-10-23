@@ -1,13 +1,10 @@
-package org.rembx.jeeshop.order;
+package org.rembx.jeeshop.order
 
+import org.rembx.jeeshop.order.infrastructure.api.EligibleDiscounts
+import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Test;
-
-// TODO!
-public class EligibleDiscountsCT {
-
+class EligibleDiscountsCT {
     @Test
-    public void testFindEligible() throws Exception {
-
+    fun testFindEligible() {
     }
 }

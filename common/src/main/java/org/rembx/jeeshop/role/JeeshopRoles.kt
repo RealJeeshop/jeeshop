@@ -1,13 +1,8 @@
-package org.rembx.jeeshop.role;
+package org.rembx.jeeshop.role
 
-/**
- * Jeeshop roles
- */
-public interface JeeshopRoles {
-
-    String USER = "user";
-    String ADMIN = "admin";
-    String ADMIN_READONLY = "adminRO";
-    String STORE_ADMIN = "store_admin";
-
+object JeeshopRoles {
+    const val USER = "user"
+    const val ADMIN = "admin"
+    const val ADMIN_READONLY = "adminRO"
+    const val STORE_ADMIN = "store_admin"
 }

@@ -1,490 +1,387 @@
-package org.rembx.jeeshop.user;
+package org.rembx.jeeshop.user
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import org.apache.http.auth.BasicUserPrincipal;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.rembx.jeeshop.mail.Mailer;
-import org.rembx.jeeshop.rest.WebApplicationException;
-import org.rembx.jeeshop.role.JeeshopRoles;
-import org.rembx.jeeshop.user.model.Address;
-import org.rembx.jeeshop.user.model.User;
-import org.rembx.jeeshop.user.model.UserPersistenceUnit;
-import org.rembx.jeeshop.user.test.TestMailTemplate;
-import org.rembx.jeeshop.user.test.TestUser;
+import io.quarkus.elytron.security.common.BcryptUtil
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityManagerFactory
+import jakarta.persistence.Persistence
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.SecurityContext
+import org.apache.http.auth.BasicUserPrincipal
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.doThrow
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.rembx.jeeshop.mail.Mailer
+import org.rembx.jeeshop.rest.WebApplicationException
+import org.rembx.jeeshop.role.JeeshopRoles
+import org.rembx.jeeshop.user.infrastructure.api.Users
+import org.rembx.jeeshop.user.infrastructure.repository.MailTemplateRepositoryImpl
+import org.rembx.jeeshop.user.infrastructure.repository.RoleRepositoryImpl
+import org.rembx.jeeshop.user.infrastructure.repository.UserRepositoryImpl
+import org.rembx.jeeshop.user.domain.Address
+import org.rembx.jeeshop.user.domain.User
+import org.rembx.jeeshop.user.infrastructure.repository.UserPersistenceUnit
+import org.rembx.jeeshop.user.test.TestMailTemplate
+import org.rembx.jeeshop.user.test.TestUser
+import java.util.Date
+import java.util.UUID
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+class UsersCT {
+    private lateinit var service: Users
+    private lateinit var testUser: TestUser
+    private lateinit var testMailTemplate: TestMailTemplate
+    private lateinit var entityManager: EntityManager
+    private lateinit var mailerMock: Mailer
+    private lateinit var sessionContextMock: SecurityContext
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.*;
+    companion object {
+        private lateinit var entityManagerFactory: EntityManagerFactory
 
-
-public class UsersCT {
-
-    private Users service;
-
-    private TestUser testUser;
-    private TestMailTemplate testMailTemplate;
-    private static EntityManagerFactory entityManagerFactory;
-    EntityManager entityManager;
-    private Mailer mailerMock;
-    private SecurityContext sessionContextMock;
-
-    @BeforeAll
-    public static void beforeClass() {
-        entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME);
+        @JvmStatic
+        @org.junit.jupiter.api.BeforeAll
+        fun beforeClass() {
+            entityManagerFactory = Persistence.createEntityManagerFactory(UserPersistenceUnit.NAME)
+        }
     }
 
     @BeforeEach
-    public void setup() {
-        testUser = TestUser.getInstance();
-        testMailTemplate = TestMailTemplate.getInstance();
-        entityManager = entityManagerFactory.createEntityManager();
-        mailerMock = mock(Mailer.class);
-        sessionContextMock = mock(SecurityContext.class);
-        service = new Users(entityManager, new UserFinder(entityManager), new RoleFinder(entityManager),
-                new CountryChecker("FRA,GBR"), new MailTemplateFinder(entityManager), mailerMock);
-        service.setSalt("jeeshopisgoooood");
+    fun setup() {
+        testUser = TestUser.getInstance()
+        testMailTemplate = TestMailTemplate.getInstance()
+        entityManager = entityManagerFactory.createEntityManager()
+        mailerMock = mock(Mailer::class.java)
+        sessionContextMock = mock(SecurityContext::class.java)
+        service = Users(
+            entityManager,
+            UserRepositoryImpl(entityManager),
+            RoleRepositoryImpl(entityManager),
+            CountryChecker("FRA,GBR"),
+            MailTemplateRepositoryImpl(entityManager),
+            mailerMock,
+        )
+        service.setSalt("jeeshopisgoooood")
     }
 
     @Test
-    public void findAll_shouldReturnNoneEmptyList() {
-        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty();
+    fun findAll_shouldReturnNoneEmptyList() {
+        assertThat(service.findAll(null, null, null, null, null)).isNotEmpty
     }
 
     @Test
-    public void findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
-        List<User> users = service.findAll(null, 0, 1, null, null);
-        assertThat(users).isNotEmpty();
-        assertThat(users).containsExactly(testUser.firstUser());
+    fun findAll_withPagination_shouldReturnNoneEmptyListPaginated() {
+        val users = service.findAll(null, 0, 1, null, null)
+        assertThat(users).isNotEmpty
+        assertThat(users).containsExactly(testUser.firstUser())
     }
 
     @Test
-    public void findAll_ByLogin_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLogin(), 0, 1, null, null);
-        assertThat(users).isNotEmpty();
-        assertThat(users).containsExactly(testUser.firstUser());
-    }
-
-
-    @Test
-    public void findAll_ByFirstName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getFirstname(), 0, 1, null, null);
-        assertThat(users).isNotEmpty();
-        assertThat(users).containsExactly(testUser.firstUser());
+    fun findAll_ByLogin_shouldReturnSearchedUser() {
+        val users = service.findAll(testUser.firstUser().login, 0, 1, null, null)
+        assertThat(users).containsExactly(testUser.firstUser())
     }
 
     @Test
-    public void findAll_ByLastName_shouldReturnSearchedUser() {
-        List<User> users = service.findAll(testUser.firstUser().getLastname(), 0, 1, null, null);
-        assertThat(users).isNotEmpty();
-        assertThat(users).containsExactly(testUser.firstUser());
+    fun findAll_ByFirstName_shouldReturnSearchedUser() {
+        val users = service.findAll(testUser.firstUser().firstname, 0, 1, null, null)
+        assertThat(users).containsExactly(testUser.firstUser())
     }
 
     @Test
-    public void find() throws Exception {
-        assertThat(service.find(1L)).isNotNull();
+    fun findAll_ByLastName_shouldReturnSearchedUser() {
+        val users = service.findAll(testUser.firstUser().lastname, 0, 1, null, null)
+        assertThat(users).containsExactly(testUser.firstUser())
     }
 
     @Test
-    public void find_withUnknownId_ShouldThrowException() throws Exception {
-        try {
-            service.find(999L);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
+    fun find() {
+        assertThat(service.find(1L)).isNotNull
+    }
+
+    @Test
+    fun find_withUnknownId_ShouldThrowException() =
+        assertWebException(Response.Status.NOT_FOUND) { service.find(999L) }
+
+    @Test
+    fun count() {
+        assertThat(service.count(null)).isGreaterThan(0)
+    }
+
+    @Test
+    fun count_withUnknownSearchCriteria() {
+        assertThat(service.count("unknown")).isEqualTo(0)
+    }
+
+    @Test
+    fun create_shouldThrowBadRequestExWhenUserHasAnId() {
+        val user = User().apply { id = 777L }
+        assertWebException(Response.Status.BAD_REQUEST) { service.create(sessionContextMock, user) }
+    }
+
+    @Test
+    fun create_shouldThrowConflictExWhenUserWithGivenLoginAlreadyExists() {
+        val user = User().apply { login = "test@test.com" }
+        assertWebException(Response.Status.CONFLICT) { service.create(sessionContextMock, user) }
+    }
+
+    @Test
+    fun create_shouldThrowBadRequestExceptionExWhenUsersCountryIsNotAvailable() {
+        val user = User().apply {
+            login = "toto@toto.com"
+            address = Address().apply { countryIso3Code = "ZZZ" }
+        }
+        assertWebException(Response.Status.BAD_REQUEST) { service.create(sessionContextMock, user) }
+    }
+
+    @Test
+    fun create_shouldThrowBadRequestExceptionExWhenUserAddressHasAnId() {
+        val user = User().apply {
+            login = "toto@toto.com"
+            address = Address().apply { id = 1L }
+        }
+        assertWebException(Response.Status.BAD_REQUEST) { service.create(sessionContextMock, user) }
+    }
+
+    @Test
+    fun create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() {
+        val user = User("register2@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply { gender = "M." }
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true)
+        entityManager.transaction.begin()
+        service.create(sessionContextMock, user)
+        entityManager.transaction.commit()
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN)
+        assertThat(entityManager.find(User::class.java, user.id!!)).isNotNull
+        removeTestUser(user)
+    }
+
+    @Test
+    fun create_shouldPersistEndUserAndRetrieveUserRegistrationMailTemplateAndSendMail() {
+        val user = User("register3@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply { gender = "M." }
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false)
+        entityManager.transaction.begin()
+        service.create(sessionContextMock, user)
+        entityManager.transaction.commit()
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN)
+        verify(mailerMock).sendMail(
+            testMailTemplate.userRegistrationMailTemplate().subject!!,
+            user.login!!,
+            "<html><body>Welcome M. John Doe</body></html>",
+        )
+        assertThat(entityManager.find(User::class.java, user.id!!)).isNotNull
+        assertThat(user.activated).isFalse
+        assertThat(user.actionToken).isNotNull
+        entityManager.remove(user)
+    }
+
+    @Test
+    fun create_shouldJustPersistEndUserEvenWhenExceptionDuringMailSending() {
+        val user = User("register1@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply {
+                gender = "M."
+                address = Address("7 blue street", "Nowhere", "00001", "John", "Doe", "M.", null, "FRA")
+            }
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false)
+        entityManager.transaction.begin()
+        service.create(sessionContextMock, user)
+        entityManager.transaction.commit()
+        doThrow(IllegalStateException("Test Exception")).`when`(mailerMock).sendMail(
+            testMailTemplate.userRegistrationMailTemplate().subject!!,
+            user.login!!,
+            testMailTemplate.userRegistrationMailTemplate().content!!,
+        )
+        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN)
+        verify(mailerMock).sendMail(
+            testMailTemplate.userRegistrationMailTemplate().subject!!,
+            user.login!!,
+            "<html><body>Welcome M. John Doe</body></html>",
+        )
+        val persistedUser = entityManager.find(User::class.java, user.id!!)
+        assertThat(persistedUser).isNotNull
+        assertThat(persistedUser.address).isEqualTo(user.address)
+        entityManager.remove(user)
+    }
+
+    @Test
+    fun activate_shouldActivateUserAndClearActionToken() {
+        val user = User("activate1@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply {
+                gender = "M."
+                actionToken = UUID.randomUUID()
+                activated = false
+            }
+        entityManager.transaction.begin()
+        entityManager.persist(user)
+        entityManager.transaction.commit()
+        service.activate(user.login!!, user.actionToken.toString())
+        val modifiedUser = entityManager.find(User::class.java, user.id!!)
+        assertThat(modifiedUser).isNotNull
+        assertThat(modifiedUser.activated).isTrue
+        assertThat(modifiedUser.actionToken).isNull()
+    }
+
+    @Test
+    fun activate_shouldThrowNotFoundExWhenUserIsNotFound() =
+        assertWebException(Response.Status.NOT_FOUND) { service.activate("unknown_login", UUID.randomUUID().toString()) }
+
+    @Test
+    fun sendResetPasswordMail_shouldGenerateActionTokenAndSendResetPasswordMail() {
+        entityManager.transaction.begin()
+        service.sendResetPasswordMail(testUser.firstUser().login!!)
+        entityManager.transaction.commit()
+        verify(mailerMock).sendMail(
+            testMailTemplate.resetPasswordMailTemplate().subject!!,
+            testUser.firstUser().login!!,
+            "<html><body>Here is the link to reset your password</body></html>",
+        )
+        val persistedUser = entityManager.find(User::class.java, testUser.firstUser().id!!)
+        assertThat(persistedUser).isNotNull
+        entityManager.transaction.begin()
+        persistedUser.actionToken = null
+        entityManager.transaction.commit()
+    }
+
+    @Test
+    fun sendResetPasswordMail_shouldThrowNotFoundEX_WhenUserIsNotFound() =
+        assertWebException(Response.Status.NOT_FOUND) { service.sendResetPasswordMail("unknown_login") }
+
+    @Test
+    fun resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() {
+        val user = notActivatedTestUser()
+        service.resetPassword(sessionContextMock, user.login!!, user.actionToken.toString(), "newPassword")
+        val updatedUser = entityManager.find(User::class.java, user.id!!)
+        assertThat(updatedUser).isNotNull
+        assertThat(updatedUser.password).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".toByteArray()))
+        assertThat(updatedUser.actionToken).isNull()
+        verify(mailerMock).sendMail(
+            testMailTemplate.changePasswordMailTpl().subject!!,
+            user.login!!,
+            testMailTemplate.changePasswordMailTpl().content!!,
+        )
+        removeTestUser(user)
+    }
+
+    @Test
+    fun resetPassword_shouldUpdateUserPasswordForAuthenticatedUser() {
+        val user = notActivatedTestUser()
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true)
+        `when`(sessionContextMock.userPrincipal).thenReturn(BasicUserPrincipal(user.login!!))
+        service.resetPassword(sessionContextMock, user.login!!, null, "newPassword")
+        val updatedUser = entityManager.find(User::class.java, user.id!!)
+        assertThat(updatedUser).isNotNull
+        assertThat(updatedUser.password).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".toByteArray()))
+        verify(mailerMock).sendMail(
+            testMailTemplate.changePasswordMailTpl().subject!!,
+            user.login!!,
+            testMailTemplate.changePasswordMailTpl().content!!,
+        )
+        removeTestUser(user)
+    }
+
+    @Test
+    fun resetPassword_shouldUpdateUserPasswordForAuthenticatedADMINUser() {
+        val user = notActivatedTestUser()
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true)
+        service.resetPassword(sessionContextMock, user.login!!, null, "newPassword")
+        val updatedUser = entityManager.find(User::class.java, user.id!!)
+        assertThat(updatedUser).isNotNull
+        assertThat(updatedUser.password).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".toByteArray()))
+        verify(mailerMock).sendMail(
+            testMailTemplate.changePasswordMailTpl().subject!!,
+            user.login!!,
+            testMailTemplate.changePasswordMailTpl().content!!,
+        )
+        removeTestUser(user)
+    }
+
+    @Test
+    fun resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() =
+        assertWebException(Response.Status.NOT_FOUND) { service.resetPassword(sessionContextMock, "unknown_login", null, null) }
+
+    @Test
+    fun resetPassword_shouldReturnUnauthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() {
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true)
+        `when`(sessionContextMock.userPrincipal).thenReturn(BasicUserPrincipal(testUser.firstUser().login!!))
+        assertWebException(Response.Status.UNAUTHORIZED) {
+            service.resetPassword(sessionContextMock, "not_matching_login", null, null)
         }
     }
 
     @Test
-    public void count() {
-        assertThat(service.count(null)).isGreaterThan(0);
-    }
-
-
-    @Test
-    public void count_withUnknownSearchCriteria() {
-        assertThat(service.count("unknown")).isEqualTo(0);
+    fun modifyUser_ShouldModifyUser() {
+        val user = User("test2@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply { id = testUser.firstUser().id }
+        service.modify(sessionContextMock, user)
     }
 
     @Test
-    public void create_shouldThrowBadRequestExWhenUserHasAnId() throws Exception {
+    fun modifyUnknownUser_ShouldThrowNotFoundException() {
+        val user = User("test3@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply { id = 9999L }
+        assertWebException(Response.Status.NOT_FOUND) { service.modify(sessionContextMock, user) }
+    }
 
-        User user = new User();
-        user.setId(777L);
+    @Test
+    fun modify_ShouldThrowUnauthorizedError_WhenAuthenticatedUserDoesNotMatchLogin() {
+        val user = User("test2@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+        `when`(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true)
+        `when`(sessionContextMock.userPrincipal).thenReturn(BasicUserPrincipal(testUser.firstUser().login!!))
+        assertWebException(Response.Status.UNAUTHORIZED) { service.modify(sessionContextMock, user) }
+    }
 
+    @Test
+    fun delete_shouldRemove() {
+        val user = User("test4@test.com", "test", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply { gender = "M." }
+        entityManager.transaction.begin()
+        entityManager.persist(user)
+        entityManager.transaction.commit()
+        entityManager.transaction.begin()
+        service.delete(user.id!!)
+        entityManager.transaction.commit()
+        assertThat(entityManager.find(User::class.java, user.id!!)).isNull()
+    }
+
+    @Test
+    fun delete_NotExistingEntry_shouldThrowNotFoundEx() {
+        assertWebException(Response.Status.NOT_FOUND) { service.delete(666L) }
+    }
+
+    @Test
+    fun findCurrentUser_shouldReturnCurrentAuthenticatedUser() {
+        `when`(sessionContextMock.userPrincipal).thenReturn(BasicUserPrincipal(testUser.firstUser().login!!))
+        assertThat(service.findCurrentUser(sessionContextMock)).isEqualTo(testUser.firstUser())
+    }
+
+    private fun notActivatedTestUser(): User {
+        val user = User("reset1@test.com", "password", "John", "Doe", "+33616161616", null, Date(), "fr_FR", null)
+            .apply {
+                gender = "M."
+                actionToken = UUID.randomUUID()
+                activated = false
+            }
+        entityManager.transaction.begin()
+        entityManager.persist(user)
+        entityManager.transaction.commit()
+        return user
+    }
+
+    private fun removeTestUser(user: User) {
+        entityManager.transaction.begin()
+        entityManager.remove(user)
+        entityManager.transaction.commit()
+    }
+
+    private fun assertWebException(status: Response.Status, operation: () -> Unit) {
         try {
-            service.create(sessionContextMock, user);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
+            operation()
+        } catch (e: WebApplicationException) {
+            assertThat(e.response.statusInfo).isEqualTo(status)
+            return
         }
+        throw AssertionError("Expected WebApplicationException with status $status")
     }
-
-    @Test
-    public void create_shouldThrowConflictExWhenUserWithGivenLoginAlreadyExists() throws Exception {
-
-        User user = new User();
-        user.setLogin("test@test.com");
-
-        try {
-            service.create(sessionContextMock, user);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.CONFLICT);
-        }
-    }
-
-    @Test
-    public void create_shouldThrowBadRequestExceptionExWhenUsersCountryIsNotAvailable() throws Exception {
-
-        User user = new User();
-        user.setLogin("toto@toto.com");
-        Address address = new Address();
-        address.setCountryIso3Code("ZZZ");
-        user.setAddress(address);
-
-        try {
-            service.create(sessionContextMock, user);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
-        }
-    }
-
-    @Test
-    public void create_shouldThrowBadRequestExceptionExWhenUserAddressHasAnId() throws Exception {
-
-        User user = new User();
-        user.setLogin("toto@toto.com");
-        Address address = new Address();
-        address.setId(1L);
-        user.setAddress(address);
-
-        try {
-            service.create(sessionContextMock, user);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.BAD_REQUEST);
-        }
-    }
-
-
-    @Test
-    public void create_shouldOnlyPersistUserWhenOperationIsTriggeredByAdminUser() throws Exception {
-
-        User user = new User("register2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
-
-        entityManager.getTransaction().begin();
-        service.create(sessionContextMock, user);
-        entityManager.getTransaction().commit();
-
-        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
-
-        assertThat(entityManager.find(User.class, user.getId())).isNotNull();
-
-        removeTestUser(user);
-    }
-
-    @Test
-    public void create_shouldPersistEndUserAndRetrieveUserRegistrationMailTemplateAndSendMail() throws Exception {
-
-        User user = new User("register3@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-
-        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-
-        entityManager.getTransaction().begin();
-        service.create(sessionContextMock, user);
-        entityManager.getTransaction().commit();
-
-        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
-
-        assertThat(entityManager.find(User.class, user.getId())).isNotNull();
-        assertThat(user.getActivated()).isFalse();
-        assertThat(user.getActionToken()).isNotNull();
-
-        entityManager.remove(user);
-    }
-
-    @Test
-    public void create_shouldJustPersistEndUserEvenWhenExceptionDuringMailSending() throws Exception {
-
-        User user = new User("register1@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-
-        Address address = new Address("7 blue street", "Nowhere", "00001", "John", "Doe", "M.", null, "FRA");
-
-        user.setAddress(address);
-
-        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
-
-        entityManager.getTransaction().begin();
-        service.create(sessionContextMock, user);
-        entityManager.getTransaction().commit();
-
-        doThrow(new IllegalStateException("Test Exception")).when(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), testMailTemplate.userRegistrationMailTemplate().getContent());
-
-        verify(sessionContextMock).isUserInRole(JeeshopRoles.ADMIN);
-        verify(mailerMock).sendMail(testMailTemplate.userRegistrationMailTemplate().getSubject(), user.getLogin(), "<html><body>Welcome M. John Doe</body></html>");
-
-        final User persistedUser = entityManager.find(User.class, user.getId());
-        assertThat(persistedUser).isNotNull();
-        assertThat(persistedUser.getAddress()).isEqualTo(address);
-
-        entityManager.remove(user);
-    }
-
-    @Test
-    public void activate_shouldActivateUserAndClearActionToken() throws Exception {
-
-        User user = new User("activate1@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-
-        final UUID actionToken = UUID.randomUUID();
-        user.setActionToken(actionToken);
-        user.setActivated(false);
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-
-        service.activate(user.getLogin(), actionToken.toString());
-
-        final User modifiedUser = entityManager.find(User.class, user.getId());
-        assertThat(modifiedUser).isNotNull();
-        assertThat(modifiedUser.getActivated()).isTrue();
-        assertThat(modifiedUser.getActionToken()).isNull();
-
-    }
-
-
-    @Test
-    public void activate_shouldThrowNotFoundExWhenUserIsNotFound() throws Exception {
-
-        try {
-            service.activate("unknown_login", UUID.randomUUID().toString());
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-
-    }
-
-
-    @Test
-    public void sendResetPasswordMail_shouldGenerateActionTokenAndSendResetPasswordMail() throws Exception {
-
-        entityManager.getTransaction().begin();
-        service.sendResetPasswordMail(testUser.firstUser().getLogin());
-        entityManager.getTransaction().commit();
-
-        verify(mailerMock).sendMail(testMailTemplate.resetPasswordMailTemplate().getSubject(), testUser.firstUser().getLogin(), "<html><body>Here is the link to reset your password</body></html>");
-
-        User persistedUser = entityManager.find(User.class, testUser.firstUser().getId());
-        assertThat(persistedUser).isNotNull();
-
-        entityManager.getTransaction().begin();
-        persistedUser.setActionToken(null);
-        entityManager.getTransaction().commit();
-
-    }
-
-    @Test
-    public void sendResetPasswordMail_shouldThrowNotFoundEX_WhenUserIsNotFound() throws Exception {
-
-        try {
-            service.sendResetPasswordMail("unknown_login");
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-
-    }
-
-    @Test
-    public void resetPassword_shouldUpdateUserPasswordWhenActionTokenMatchesUserActionToken() throws Exception {
-
-        User user = notActivatedTestUser();
-
-        service.resetPassword(sessionContextMock, user.getLogin(), user.getActionToken().toString(), "newPassword");
-
-        final User updatedUser = entityManager.find(User.class, user.getId());
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
-        assertThat(updatedUser.getActionToken()).isNull();
-
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
-
-        removeTestUser(user);
-
-    }
-
-    @Test
-    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedUser() throws Exception {
-
-        User user = notActivatedTestUser();
-
-        when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
-        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(user.getLogin()));
-        service.resetPassword(sessionContextMock, user.getLogin(), null, "newPassword");
-
-        final User updatedUser = entityManager.find(User.class, user.getId());
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
-
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
-
-        removeTestUser(user);
-    }
-
-    @Test
-    public void resetPassword_shouldUpdateUserPasswordForAuthenticatedADMINUser() throws Exception {
-
-        User user = notActivatedTestUser();
-
-        when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(true);
-        service.resetPassword(sessionContextMock, user.getLogin(), null, "newPassword");
-
-        final User updatedUser = entityManager.find(User.class, user.getId());
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassword()).isEqualTo(BcryptUtil.bcryptHash("newPassword", 10, "jeeshopisgoooood".getBytes()));
-
-        verify(mailerMock).sendMail(testMailTemplate.changePasswordMailTpl().getSubject(), user.getLogin(), testMailTemplate.changePasswordMailTpl().getContent());
-
-        removeTestUser(user);
-    }
-
-    @Test
-    public void resetPassword_shouldReturnNotFoundResponse_whenUserIsNotFound() throws Exception {
-
-        try {
-            service.resetPassword(sessionContextMock, "unknown_login", null, null);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-    }
-
-    @Test
-    public void resetPassword_shouldReturnUnauthorizedResponse_whenAuthenticatedUserDoesNotMatchLogin() throws Exception {
-
-        try {
-            when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
-            when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
-
-            service.resetPassword(sessionContextMock, "not_matching_login", null, null);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
-        }
-    }
-
-    @Test
-    public void modifyUser_ShouldModifyUser() {
-        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-
-        detachedUserToModify.setId(testUser.firstUser().getId());
-
-        service.modify(sessionContextMock, detachedUserToModify);
-
-    }
-
-    @Test
-    public void modifyUnknownUser_ShouldThrowNotFoundException() {
-        User detachedUser = new User("test3@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-
-        detachedUser.setId(9999L);
-        try {
-            service.modify(sessionContextMock, detachedUser);
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-    }
-
-    @Test
-    public void modify_ShouldThrowUnauthorizedError_WhenAuthenticatedUserDoesNotMatchLogin() throws Exception {
-
-        User detachedUserToModify = new User("test2@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-
-        try {
-            when(sessionContextMock.isUserInRole(JeeshopRoles.USER)).thenReturn(true);
-            when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
-
-            service.modify(sessionContextMock, detachedUserToModify);
-
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.UNAUTHORIZED);
-        }
-    }
-
-    @Test
-    public void delete_shouldRemove() {
-        entityManager.getTransaction().begin();
-        User user = new User("test4@test.com", "test", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-
-        entityManager.getTransaction().begin();
-        service.delete(user.getId());
-        entityManager.getTransaction().commit();
-
-        assertThat(entityManager.find(User.class, user.getId())).isNull();
-    }
-
-    @Test
-    public void delete_NotExistingEntry_shouldThrowNotFoundEx() {
-        try {
-            entityManager.getTransaction().begin();
-            service.delete(666L);
-            entityManager.getTransaction().commit();
-            fail("should have thrown ex");
-        } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatusInfo()).isEqualTo(Response.Status.NOT_FOUND);
-        }
-    }
-
-
-    @Test
-    public void findCurrentUser_shouldReturnCurrentAuthenticatedUser() throws Exception {
-        when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testUser.firstUser().getLogin()));
-
-        assertThat(service.findCurrentUser(sessionContextMock)).isEqualTo(testUser.firstUser());
-    }
-
-    private User notActivatedTestUser() {
-        User user = new User("reset1@test.com", "password", "John", "Doe", "+33616161616", null, new Date(), "fr_FR", null);
-        user.setGender("M.");
-
-        final UUID actionToken = UUID.randomUUID();
-        user.setActionToken(actionToken);
-        user.setActivated(false);
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-        return user;
-    }
-
-    private void removeTestUser(User user) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(user);
-        entityManager.getTransaction().commit();
-    }
-
 }
