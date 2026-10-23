@@ -27,6 +27,7 @@
   <properties>
     <!-- Compiler plugin version -->
     <compiler-plugin.version>3.16.0</compiler-plugin.version>
+    <kotlin.version>2.4.21</kotlin.version>
     <maven.compiler.release>25</maven.compiler.release>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <!-- Quarkus versions -->
@@ -114,6 +115,11 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
@@ -185,6 +191,41 @@
     </dependency>
   </dependencies>
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>kotlin-compile</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <jvmTarget>${maven.compiler.release}</jvmTarget>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+              </sourceDirs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>kotlin-test-compile</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <jvmTarget>${maven.compiler.release}</jvmTarget>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+              </sourceDirs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
 
