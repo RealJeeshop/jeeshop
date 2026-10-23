@@ -1,12 +1,11 @@
 <template>
     <div class="page-content column">
-        <v-toolbar color="#484848" dark flat>
-            <v-tabs class="sub-header-menu" align-with-title>
-                <v-tabs-slider color="yellow"></v-tabs-slider>
+        <v-toolbar color="#484848" theme="dark" variant="flat">
+            <v-tabs class="sub-header-menu">
                 <v-tab to="/emails">Templates</v-tab>
                 <v-tab to="/emails/operations">Operations</v-tab>
             </v-tabs>
-            <v-btn color="primary" dark @click="createMailTemplate">New mail template</v-btn>
+            <v-btn color="primary" @click="createMailTemplate">New mail template</v-btn>
         </v-toolbar>
         <div class="content">
             <MailTemplateTable :headers="headers" :items="mails"

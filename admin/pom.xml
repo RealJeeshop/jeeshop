@@ -64,32 +64,32 @@
             </configuration>
             <executions>
                 <execution>
-                    <id>install-node-and-yarn</id>
+                    <id>install-node-and-npm</id>
                     <phase>generate-resources</phase>
                     <goals>
-                        <goal>install-node-and-yarn</goal>
+                        <goal>install-node-and-npm</goal>
                     </goals>
                     <configuration>
-                        <nodeVersion>v14.21.3</nodeVersion>
-                        <yarnVersion>v1.22.22</yarnVersion>
+                        <nodeVersion>v22.22.1</nodeVersion>
+                        <npmVersion>10.9.4</npmVersion>
                     </configuration>
                 </execution>
                 <execution>
-                    <id>yarn-install</id>
+                    <id>npm-install</id>
                     <phase>generate-resources</phase>
                     <goals>
-                        <goal>yarn</goal>
+                        <goal>npm</goal>
                     </goals>
                     <configuration>
                         <workingDirectory>src/main/webapp</workingDirectory>
-                        <arguments>install --frozen-lockfile</arguments>
+                        <arguments>ci</arguments>
                     </configuration>
                 </execution>
                 <execution>
-                    <id>yarn-build</id>
+                    <id>npm-build</id>
                     <phase>generate-resources</phase>
                     <goals>
-                        <goal>yarn</goal>
+                        <goal>npm</goal>
                     </goals>
                     <configuration>
                         <workingDirectory>src/main/webapp</workingDirectory>
@@ -132,7 +132,6 @@
 <!--                                    <exclude>**/node/**</exclude>-->
 <!--                                    <exclude>**/.idea/**</exclude>-->
 <!--                                    <exclude>**/WEB-INF/**</exclude>-->
-<!--                                    <exclude>webpack.config.js</exclude>-->
 <!--                                    <exclude>package.json</exclude>-->
 <!--                                    <exclude>package-lock.json</exclude>-->
 <!--                                </excludes>-->

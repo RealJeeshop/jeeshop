@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" persistent max-width="290">
+    <v-dialog :model-value="dialog" persistent max-width="290">
         <v-card>
             <v-card-title class="headline">
                {{title}}
@@ -7,10 +7,10 @@
             <v-card-text>{{message}}</v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="black darken-1" text @click="disagree()">
+                <v-btn color="black" variant="text" @click="disagree()">
                     No
                 </v-btn>
-                <v-btn color="red darken-1" text @click="agree()">
+                <v-btn color="red" variant="text" @click="agree()">
                     Yes
                 </v-btn>
             </v-card-actions>

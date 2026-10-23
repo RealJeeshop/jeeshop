@@ -6,7 +6,7 @@
                 v-model="insideValue"
                 :placeholder="placeholder"
                 :hint="hint"
-                @input="update"
+                @update:model-value="update"
                 :disabled="disabled"
                 :dense="dense"
                 :error="error"
@@ -23,7 +23,7 @@
         name: 'Input',
         data() {
             return {
-              insideValue: this.value ? this.value : this.value,
+              insideValue: this.value,
               insideType: this.type ? this.type : "text"
             }
         },

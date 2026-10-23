@@ -1,6 +1,6 @@
 <template>
     <div class="field-container">
-            <v-textarea v-model="insideValue" :label="label" rows="3" @input="update"/>
+            <v-textarea v-model="insideValue" :label="label" rows="3" @update:model-value="update"/>
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
     <div class="table-container">
-        <v-data-table :search="search" :headers="headers" :items="items.map(item => {
+        <v-data-table :search="search" :headers="normalizedHeaders" :items="items.map(item => {
             item.login = item.customer.login
             item.reference = 'itemref'
             item.creationDate = formatDate(item.creationDate)
@@ -29,20 +29,26 @@
 <script>
 
     import DateUtils from '../lib/dateUtils'
+    import { normalizeDataTableHeaders } from '../lib/vuetifyUtils'
 
     export default {
         name: "OrderTable",
         props: {
-            headers: Array[Object],
-            items: Array[Object]
+            headers: Array,
+            items: Array
         },
         data: () => {
             return {
                 search: ""
             }
         },
+        computed: {
+            normalizedHeaders() {
+                return normalizeDataTableHeaders(this.headers)
+            }
+        },
         methods: {
-            onRowClick(item) {
+            onRowClick(_, { item }) {
                 this.$emit('item-selected', item.id)
             },
             formatDate(date) {

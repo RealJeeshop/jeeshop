@@ -1,18 +1,18 @@
 <template>
     <div v-if="loggedIn" class="welcome">
         <span>Welcome to Jeeshop !</span>
-        <v-menu left bottom>
-            <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
+        <v-menu location="bottom">
+            <template #activator="{ props }">
+                <v-btn icon v-bind="props">
                     <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
             </template>
 
             <v-list>
-                <v-list-item @click="this.$router.push('/settings')">
+                <v-list-item @click="$router.push('/settings')">
                     <v-list-item-title>Settings</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="this.$router.push('/help')">
+                <v-list-item @click="$router.push('/help')">
                     <v-list-item-title>Help</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="logOut()">

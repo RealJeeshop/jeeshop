@@ -1,7 +1,7 @@
 <template>
     <div class="page-content column">
-        <v-toolbar color="#484848" dark flat>
-            <v-btn color="primary" dark @click="createUser">New user</v-btn>
+        <v-toolbar color="#484848" theme="dark" variant="flat">
+            <v-btn color="primary" @click="createUser">New user</v-btn>
         </v-toolbar>
         <div class="content">
             <UserTable :headers="headers" :items="users"

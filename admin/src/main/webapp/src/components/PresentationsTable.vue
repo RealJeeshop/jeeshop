@@ -4,15 +4,15 @@
             <label>Presentations per locale</label>
             <div class="clickable" @click="addNewLocale()">Add new</div>
         </div>
-        <v-simple-table class="presentation-table">
+        <v-table class="presentation-table">
             <tbody>
                 <tr v-for="(presentation, i) in presentations" :key="`presentation-${i}`" class="clickable"
                     @click="editLocale(presentation)">
                   <td class="full-width">{{ presentation }}</td>
-                  <td class="clickable"><i class="fa fa-trash"/></td>
+                  <td class="clickable"><v-icon icon="mdi-delete"/></td>
                 </tr>
             </tbody>
-        </v-simple-table>
+        </v-table>
     </div>
 
 </template>

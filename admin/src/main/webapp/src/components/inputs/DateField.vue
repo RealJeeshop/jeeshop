@@ -1,24 +1,23 @@
 <template>
     <div class="field-container">
         <label>
-            <v-dialog ref="dialog" :return-value.sync="insideValue" v-model="show" max-width="500">
-                <template v-slot:activator="{ on, attrs }">
+            <v-dialog v-model="show" max-width="500">
+                <template #activator="{ props }">
                     <v-text-field
-                            @click="togglePicker()"
                             :label="label"
-                            :value="insideValue"
+                            :model-value="insideValue"
                             :placeholder="placeholder"
-                            v-bind="attrs" v-on="on"/>
+                            readonly
+                            v-bind="props"/>
                 </template>
                 <v-date-picker v-if="show"
                                :full-width="true"
                                elevation="12"
-                               @click="togglePicker()"
                                v-model="insideValue">
 
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="togglePicker()">Cancel</v-btn>
-                    <v-btn text color="primary" @click="update">OK</v-btn>
+                    <v-btn variant="text" color="primary" @click="show = false">Cancel</v-btn>
+                    <v-btn variant="text" color="primary" @click="update">OK</v-btn>
                 </v-date-picker>
 
             </v-dialog>
@@ -52,8 +51,8 @@
                 return DateUtils.formatDate(date)
             },
             update() {
-                this.$refs.dialog.save(this.insideValue)
                 this.$emit('on-update', {key: this.name, value: this.insideValue})
+                this.show = false
             }
         }
     }

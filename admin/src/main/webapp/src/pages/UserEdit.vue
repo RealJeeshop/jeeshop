@@ -9,9 +9,12 @@
         <div class="form-container">
             <div class="fields-container">
 
-                <v-checkbox label="Activated" :value="user.activated" @on-update="update" />
-                <v-checkbox label="Disabled" :value="user.disabled" @on-update="update" />
-                <v-checkbox label="Newsletter" :value="user.newslettersSubscribed" @on-update="update" />
+                <v-checkbox label="Activated" :model-value="user.activated"
+                            @update:model-value="update({key: 'activated', value: $event})" />
+                <v-checkbox label="Disabled" :model-value="user.disabled"
+                            @update:model-value="update({key: 'disabled', value: $event})" />
+                <v-checkbox label="Newsletter" :model-value="user.newslettersSubscribed"
+                            @update:model-value="update({key: 'newslettersSubscribed', value: $event})" />
             </div>
             <div class="fields-container">
                 <Input label="Email" :value="user.login" placeholder="" @on-update="update" />

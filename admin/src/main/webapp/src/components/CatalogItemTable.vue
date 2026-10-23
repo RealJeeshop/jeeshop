@@ -1,6 +1,6 @@
 <template>
     <div class="table-container">
-        <v-data-table :search="search" :headers="headers" :items="items.map(item => {
+        <v-data-table :search="search" :headers="normalizedHeaders" :items="items.map(item => {
             item.visible = item.visible ? 'Yes' : 'No'
             item.disabled = item.disabled ? 'Yes' : 'No'
             item.startDate = formatDate(item.startDate)
@@ -18,7 +18,7 @@
                    </v-text-field>
                </v-toolbar>
            </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[actionsSlot]="{ item }">
                 <slot name="actions" :item="item"></slot>
             </template>
         </v-data-table>
@@ -29,21 +29,28 @@
 <script>
 
     import DateUtils from '../lib/dateUtils'
+    import { normalizeDataTableHeaders } from '../lib/vuetifyUtils'
 
     export default {
         name: "CatalogItemTable",
         props: {
-            headers: Array[Object],
-            items: Array[Object],
+            headers: Array,
+            items: Array,
             of: String
         },
         data: () => {
             return {
-                search: ""
+                search: "",
+                actionsSlot: "item.actions"
+            }
+        },
+        computed: {
+            normalizedHeaders() {
+                return normalizeDataTableHeaders(this.headers)
             }
         },
         methods: {
-            onRowClick(item) {
+            onRowClick(_, { item }) {
                this.$emit('item-selected', item.id)
             },
             formatDate(date) {

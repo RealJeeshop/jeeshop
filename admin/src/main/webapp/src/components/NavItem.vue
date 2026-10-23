@@ -1,5 +1,8 @@
 <template>
-    <v-tab :to="to">{{text}}</v-tab>
+    <v-tab :to="to">
+        <v-icon v-if="icon" :icon="icon"></v-icon>
+        {{text}}
+    </v-tab>
 </template>
 
 <script>

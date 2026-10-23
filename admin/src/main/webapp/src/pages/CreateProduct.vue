@@ -49,7 +49,8 @@
             <Select label="Trigger threshold rules" name="triggerRule" :items="thresholdRules" :value="discount.triggerRule" @on-update="updateDiscount" />
             <Input label="Threshold" name="triggerValue" :value="discount.triggerValue" placeholder="Enter a number..." hint="Trigger threshold (amount or quantity)" @on-update="updateDiscount" />
             <Input label="Number of use per customer" name="usesPerCustomer" :value="discount.usesPerCustomer" placeholder="Enter a number ..." @on-update="updateDiscount" />
-            <v-checkbox label="Cumulative" name="uniqueUse" :value="discount.uniqueUse"  @on-update="updateDiscount" />
+            <v-checkbox label="Cumulative" :model-value="discount.uniqueUse"
+                        @update:model-value="updateDiscount({key: 'uniqueUse', value: $event})" />
           </v-flex>
 
           <v-flex flex-column>
@@ -211,9 +212,10 @@ export default {
   },
   methods: {
 
-    saveItem() {
+    async saveItem() {
 
-      if (this.$refs.form.validate()) {
+      const { valid } = await this.$refs.form.validate()
+      if (valid) {
 
         this.$store.dispatch("catalogs/insertCatalogItem", {
           itemType: this.itemType,
@@ -317,7 +319,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "edit-form";
+  @use "./edit-form";
 
   .error-block {
     text-align: center;

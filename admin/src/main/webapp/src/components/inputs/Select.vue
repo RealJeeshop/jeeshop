@@ -1,9 +1,11 @@
 <template>
     <div class="field-container">
         <v-select :items="items"
+                  item-title="text"
+                  item-value="value"
                   :label="label"
-                  v-model="value"
-                  @input="update"
+                  v-model="selectedValue"
+                  @update:model-value="update"
                   :rules="rules"
                   :placeholder="placeholder" />
     </div>
@@ -15,25 +17,23 @@
         props: {
             label: String,
             name: String,
-            items: Array[Object],
+            items: Array,
             placeholder: String,
-            value: String,
+            value: [String, Number],
             rules: Array
         },
+      data() {
+        return { selectedValue: this.value }
+      },
+      watch: {
+        value(value) {
+          this.selectedValue = value
+        }
+      },
       methods: {
         update() {
-          this.$emit('on-update', {key: this.name, value: this.value})
+          this.$emit('on-update', {key: this.name, value: this.selectedValue})
         }
       }
-        // data() {
-        //     return {
-        //         selected: this.value ? this.value : undefined
-        //     }
-        // },
-        // watch: {
-        //     value() {
-        //         this.selected = this.value ? this.value : undefined
-        //     }
-        // }
     }
 </script>

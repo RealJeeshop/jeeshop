@@ -10,26 +10,16 @@
             v-model="selectedItems"
             :items="items"
             :label="placeholder"
-            item-text="name"
+            item-title="name"
             item-value="id"
             multiple chips>
-          <template v-slot:selection="data">
-            <v-chip
-                v-bind="data.attrs"
-                :input-value="data.selected"
-                close
-                @click="data.select"
-                @click:close="remove('categories', data.item)">{{ data.item.name }}</v-chip>
+          <template #selection="{ item }">
+            <v-chip closable @click:close="remove(item.raw)">
+              {{ item.title }}
+            </v-chip>
           </template>
-          <template v-slot:item="data">
-            <template v-if="typeof data.item !== 'object'">
-              <v-list-item-content v-text="data.item"></v-list-item-content>
-            </template>
-            <template v-else>
-              <v-list-item-content>
-                <v-list-item-title v-html="data.item.name"></v-list-item-title>
-              </v-list-item-content>
-            </template>
+          <template #item="{ item, props }">
+            <v-list-item v-bind="props" :title="item.title"></v-list-item>
           </template>
         </v-autocomplete>
       </v-flex>
@@ -59,8 +49,8 @@
     },
     methods: {
       remove(item) {
-          let index = this.selectedItems.findIndex(c => c.id === item.id)
-          this.selectedItems.splice(index, 1)
+          const index = this.selectedItems.indexOf(item.id)
+          if (index !== -1) this.selectedItems.splice(index, 1)
       }
     }
   }

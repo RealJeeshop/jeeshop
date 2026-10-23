@@ -5,7 +5,7 @@
             <div class="clickable" @click="addNewRelationship()">Add new</div>
         </div>
 
-        <v-simple-table v-if="relationships.length > 0">
+        <v-table v-if="relationships.length > 0">
             <thead>
             <tr>
                 <th class="text-left">Id</th>
@@ -18,10 +18,10 @@
                     <td class="">{{rel.id}}</td>
                     <td class="half-width">{{rel.name}}</td>
                     <td class="full-width">{{rel.visible ? 'Yes' : 'No'}}</td>
-                    <td class="clickable"><i class="fa fa-trash"/></td>
+                    <td class="clickable"><v-icon icon="mdi-delete"/></td>
                 </tr>
             </tbody>
-        </v-simple-table>
+        </v-table>
     </div>
 </template>
 
@@ -31,7 +31,7 @@
         props: {
             label: String,
             itemType: String,
-            values: Array[Object]
+            values: Array
         },
         data() {
             return {

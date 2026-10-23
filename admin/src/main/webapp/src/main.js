@@ -1,11 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import VueI18n from "vue-i18n";
-
-Vue.use(VueRouter)
-Vue.use(VueI18n)
+import { createI18n } from 'vue-i18n'
 
 import App from './App.vue'
 import Settings from './pages/Settings.vue'
@@ -32,8 +29,7 @@ import CatalogEdit from "./pages/CatalogEdit";
 import CreateProduct from "./pages/CreateProduct";
 import StoreAdmin from "./pages/StoreAdmin";
 import StoreAdminSettings from "./pages/StoreAdminSettings";
-
-Vue.config.productionTip = false
+import LegacyFlex from './components/LegacyFlex'
 
 import EnglishTrad from './assets/english'
 import FrenchTrad from './assets/french'
@@ -45,14 +41,16 @@ const messages = {
 }
 
 // Create VueI18n instance with options
-const i18n = new VueI18n({
+const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
   locale: 'en',
   messages,
 })
 
 
-const router = new VueRouter({
-  base: __dirname,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', component: HomePage, meta: { protected: true } },
     { path: '/login', component: LoginPage },
@@ -159,11 +157,10 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  vuetify,
-  i18n,
-  render: h => h(App)
-})
+const app = createApp(App)
+app.component('v-flex', LegacyFlex)
+app.use(router)
+app.use(store)
+app.use(vuetify)
+app.use(i18n)
+app.mount('#app')

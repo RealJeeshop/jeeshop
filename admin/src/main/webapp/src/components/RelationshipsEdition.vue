@@ -1,18 +1,18 @@
 <template>
-    <v-dialog v-model="open" persistent max-width="900">
+    <v-dialog :model-value="open" persistent max-width="900">
         <v-card>
             <v-card-title class="headline">Select items</v-card-title>
             <v-card-text>
                 <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected">
-                    <template v-slot:actions="{ item }">
-                        <v-checkbox input-value="false" :value="selectedIds.indexOf(item.id) === -1" />
+                    <template #actions="{ item }">
+                        <v-checkbox :model-value="selectedIds.indexOf(item.id) !== -1" />
                     </template>
                 </Table>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="black darken-1" text @click="addRelationship()">Add</v-btn>
-                <v-btn color="red darken-1" text @click="cancel()">Cancel</v-btn>
+                <v-btn color="black" variant="text" @click="addRelationship()">Add</v-btn>
+                <v-btn color="red" variant="text" @click="cancel()">Cancel</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -44,11 +44,11 @@
         props: {
             open: Boolean,
             itemType: String,
-            selectedRelationships: Array[Number]
+            selectedRelationships: Array
         },
         watch: {
             selectedRelationships() {
-                this.selectedIds = this.selectedRelationships.splice(0, 0)
+                this.selectedIds = [...(this.selectedRelationships || [])]
             }
         },
         computed: {

@@ -197,9 +197,10 @@ export default {
     uploadFile() {
 
     },
-    saveItem() {
+    async saveItem() {
 
-      if (this.$refs.form.validate()) {
+      const { valid } = await this.$refs.form.validate()
+      if (valid) {
 
         this.$store.dispatch('catalogs/upsert', {itemType: this.itemType, item: this.item})
         this.close()

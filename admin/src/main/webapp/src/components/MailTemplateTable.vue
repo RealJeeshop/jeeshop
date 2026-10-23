@@ -1,6 +1,6 @@
 <template>
     <div class="table-container">
-        <v-data-table :search="search" :headers="headers" :items="items.map(user => {
+        <v-data-table :search="search" :headers="normalizedHeaders" :items="items.map(user => {
             user.creationDate = formatDate(user.creationDate)
             user.updateDate = formatDate(user.updateDate)
             return user
@@ -23,20 +23,26 @@
 
 <script>
     import DateUtils from "../lib/dateUtils";
+    import { normalizeDataTableHeaders } from '../lib/vuetifyUtils'
 
     export default {
         name: 'MailTemplateTable',
         props: {
-            headers: Array[Object],
-            items: Array[Object]
+            headers: Array,
+            items: Array
         },
         data() {
             return {
                 search: ""
             }
         },
+        computed: {
+            normalizedHeaders() {
+                return normalizeDataTableHeaders(this.headers)
+            }
+        },
         methods: {
-            onRowClick(user) {
+            onRowClick(_, { item: user }) {
                 this.$emit('item-selected', user.id)
             },
             formatDate(date) {

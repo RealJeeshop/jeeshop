@@ -1,8 +1,7 @@
 <template>
     <div class="page-content column">
-        <v-toolbar color="#484848" dark flat>
-            <v-tabs class="sub-header-menu" align-with-title>
-                <v-tabs-slider color="yellow"></v-tabs-slider>
+        <v-toolbar color="#484848" theme="dark" variant="flat">
+            <v-tabs class="sub-header-menu">
                 <v-tab v-if="isAdmin" to="/stores">Stores</v-tab>
                 <v-tab to="/catalogs">Catalogs</v-tab>
                 <v-tab to="/categories">Categories</v-tab>
@@ -11,7 +10,7 @@
                 <v-tab to="/discounts">Discounts</v-tab>
             </v-tabs>
 
-            <v-btn color="primary" dark @click="createItem()">New {{itemType.slice(0, -1)}}</v-btn>
+            <v-btn color="primary" @click="createItem()">New {{itemType.slice(0, -1)}}</v-btn>
         </v-toolbar>
         <div class="content">
             <Dialog :dialog="showWarningDialog"
@@ -145,4 +144,3 @@ export default {
     }
 
 </style>
-

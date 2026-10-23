@@ -27,7 +27,7 @@
             <Input label="N° et nom de rue" name="street" :value="address.street" :rules="required" @on-update="updateAddress"/>
             <Input label="Code postal" name="zipCode" :value="address.zipCode" placeholder="Code postal" @on-update="updateAddress"/>
             <Input label="Ville" name="city" :value="address.city" placeholder="Ville" @on-update="updateAddress" />
-            <v-btn color="primary" @click="saveAddress"><i class="fas fa-check"></i> </v-btn>
+            <v-btn color="primary" @click="saveAddress"><v-icon icon="mdi-check"></v-icon></v-btn>
           </v-flex>
         </v-flex>
 

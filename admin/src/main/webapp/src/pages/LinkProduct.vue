@@ -19,26 +19,16 @@
               :items="categories"
               chips
               label="Select one or categories"
-              item-text="name"
+              item-title="name"
               item-value="name"
               multiple>
-            <template v-slot:selection="data">
-              <v-chip
-                  v-bind="data.attrs"
-                  :input-value="data.selected"
-                  close
-                  @click="data.select"
-                  @click:close="remove(data.item)">{{ data.item.name }}</v-chip>
+            <template #selection="{ item }">
+              <v-chip closable @click:close="remove(selectedCategories, item.raw)">
+                {{ item.title }}
+              </v-chip>
             </template>
-            <template v-slot:item="data">
-              <template v-if="typeof data.item !== 'object'">
-                <v-list-item-content v-text="data.item"></v-list-item-content>
-              </template>
-              <template v-else>
-                <v-list-item-content>
-                  <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                </v-list-item-content>
-              </template>
+            <template #item="{ item, props }">
+              <v-list-item v-bind="props" :title="item.title"></v-list-item>
             </template>
           </v-autocomplete>
         </v-flex>
@@ -51,30 +41,21 @@
           <v-flex v-if="addDiscount" flex-wrap>
 
             <v-autocomplete
-                v-model="selectedCategories"
+                v-model="selectedDiscounts"
                 :disabled="isUpdating"
                 :items="discounts"
                 chips
                 label="Select one or more discounts"
-                item-text="name"
+                item-title="name"
                 item-value="name"
                 multiple>
-              <template v-slot:selection="data">
-                <v-chip v-bind="data.attrs"
-                        :input-value="data.selected"
-                        close
-                        @click="data.select"
-                        @click:close="remove(data.item)">{{ data.item.name }}</v-chip>
+              <template #selection="{ item }">
+              <v-chip closable @click:close="remove(selectedDiscounts, item.raw)">
+                {{ item.title }}
+              </v-chip>
               </template>
-              <template v-slot:item="data">
-                <template v-if="typeof data.item !== 'object'">
-                  <v-list-item-content v-text="data.item"></v-list-item-content>
-                </template>
-                <template v-else>
-                  <v-list-item-content>
-                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                  </v-list-item-content>
-                </template>
+              <template #item="{ item, props }">
+              <v-list-item v-bind="props" :title="item.title"></v-list-item>
               </template>
             </v-autocomplete>
 
@@ -124,13 +105,15 @@ export default {
     saveItem() {
       this.$router.push("/create/product/link")
     },
-    remove() {
-
+    remove(selection, selectedItem) {
+      const value = selectedItem.name
+      const index = selection.indexOf(value)
+      if (index !== -1) selection.splice(index, 1)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "edit-form";
+@use "./edit-form";
 </style>

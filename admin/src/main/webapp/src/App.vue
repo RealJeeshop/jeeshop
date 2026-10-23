@@ -1,26 +1,25 @@
 <template>
     <v-app id="app">
             <v-main class="page-content">
-                <v-app-bar color="#272727" dark flat app>
+                <v-app-bar color="#272727" theme="dark" variant="flat">
                   <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
                   <v-toolbar-title>Jeeshop Admin</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <LoggedMenu/>
-                  <template v-if="loggedIn" v-slot:extension>
-                    <v-tabs align-with-title>
-                      <v-tabs-slider color="yellow"></v-tabs-slider>
-                      <SideNavItem icon="fas fa-home" text="Overview" to="/"/>
-                      <SideNavItem v-if="isStoreAdmin" icon="fas fa-home" text="My Store" to="/store/info"/>
-                      <SideNavItem icon="fas fa-book" text="Catalog" to="/catalogs"/>
-                      <SideNavItem icon="fas fa-shopping-cart" text="Orders" to="/orders"/>
-                      <SideNavItem icon="fas fa-chart-bar" text="Stats" to="/stats"/>
-                      <SideNavItem v-if="isAdmin" icon="fas fa-user" text="Users" to="/users"/>
-                      <SideNavItem icon="fas fa-envelope" text="Emails, Newsletters" to="/emails"/>
+                  <template v-if="loggedIn" #extension>
+                    <v-tabs>
+                      <SideNavItem icon="mdi-home" text="Overview" to="/"/>
+                      <SideNavItem v-if="isStoreAdmin" icon="mdi-store" text="My Store" to="/store/info"/>
+                      <SideNavItem icon="mdi-book" text="Catalog" to="/catalogs"/>
+                      <SideNavItem icon="mdi-cart" text="Orders" to="/orders"/>
+                      <SideNavItem icon="mdi-chart-bar" text="Stats" to="/stats"/>
+                      <SideNavItem v-if="isAdmin" icon="mdi-account" text="Users" to="/users"/>
+                      <SideNavItem icon="mdi-email" text="Emails, Newsletters" to="/emails"/>
                     </v-tabs>
                   </template>
                 </v-app-bar>
                 <router-view :key="$route.fullPath"></router-view>
-                <v-footer color="#272727" dark>
+                <v-footer color="#272727" theme="dark">
                     Real Jeeshop &copy; 2020
                 </v-footer>
             </v-main>

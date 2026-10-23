@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="open" persistent max-width="900">
+  <v-dialog :model-value="open" persistent max-width="900">
     <v-card>
       <v-card-title v-if="presentation.locale">Edit presentation for locale {{ presentation.locale }}</v-card-title>
       <v-card-title v-else class="headline">Add new presentation</v-card-title>
@@ -34,9 +34,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn v-if="presentation" color="black darken-1" text @click="addLocale()">Add</v-btn>
-        <v-btn v-else color="black darken-1" text @click="updateLocale()">Update</v-btn>
-        <v-btn color="red darken-1" text @click="cancel()">Cancel</v-btn>
+        <v-btn v-if="presentation" color="black" variant="text" @click="addLocale()">Add</v-btn>
+        <v-btn v-else color="black" variant="text" @click="updateLocale()">Update</v-btn>
+        <v-btn color="red" variant="text" @click="cancel()">Cancel</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
