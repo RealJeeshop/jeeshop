@@ -1,7 +1,7 @@
 <template>
     <v-dialog :model-value="open" persistent max-width="900">
         <v-card>
-            <v-card-title class="headline">Select items</v-card-title>
+            <v-card-title class="text-title-large">Select items</v-card-title>
             <v-card-text>
                 <Table :of="itemType" :headers="headers" :items="items" @item-selected="onItemSelected">
                     <template #actions="{ item }">

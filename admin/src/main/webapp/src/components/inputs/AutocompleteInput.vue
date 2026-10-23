@@ -13,13 +13,13 @@
             item-title="name"
             item-value="id"
             multiple chips>
-          <template #selection="{ item }">
-            <v-chip closable @click:close="remove(item.raw)">
-              {{ item.title }}
+          <template #selection="{ internalItem }">
+            <v-chip closable @click:close="remove(internalItem.raw)">
+              {{ internalItem.title }}
             </v-chip>
           </template>
-          <template #item="{ item, props }">
-            <v-list-item v-bind="props" :title="item.title"></v-list-item>
+          <template #item="{ internalItem, props }">
+            <v-list-item v-bind="props" :title="internalItem.title"></v-list-item>
           </template>
         </v-autocomplete>
       </v-flex>

@@ -1,7 +1,7 @@
 <template>
     <v-dialog :model-value="dialog" persistent max-width="290">
         <v-card>
-            <v-card-title class="headline">
+            <v-card-title class="text-title-large">
                {{title}}
             </v-card-title>
             <v-card-text>{{message}}</v-card-text>

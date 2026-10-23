@@ -2,7 +2,7 @@
   <v-dialog :model-value="open" persistent max-width="900">
     <v-card>
       <v-card-title v-if="presentation.locale">Edit presentation for locale {{ presentation.locale }}</v-card-title>
-      <v-card-title v-else class="headline">Add new presentation</v-card-title>
+      <v-card-title v-else class="text-title-large">Add new presentation</v-card-title>
       <v-card-text>
         <div v-if="!presentation.locale" class="fields-container">
           <Select label="Select a locale" name="locale" :items="availableLocales" @on-update="update"/>

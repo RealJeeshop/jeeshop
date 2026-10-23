@@ -22,13 +22,13 @@
               item-title="name"
               item-value="name"
               multiple>
-            <template #selection="{ item }">
-              <v-chip closable @click:close="remove(selectedCategories, item.raw)">
-                {{ item.title }}
+            <template #selection="{ internalItem }">
+              <v-chip closable @click:close="remove(selectedCategories, internalItem.raw)">
+                {{ internalItem.title }}
               </v-chip>
             </template>
-            <template #item="{ item, props }">
-              <v-list-item v-bind="props" :title="item.title"></v-list-item>
+            <template #item="{ internalItem, props }">
+              <v-list-item v-bind="props" :title="internalItem.title"></v-list-item>
             </template>
           </v-autocomplete>
         </v-flex>
@@ -49,13 +49,13 @@
                 item-title="name"
                 item-value="name"
                 multiple>
-              <template #selection="{ item }">
-              <v-chip closable @click:close="remove(selectedDiscounts, item.raw)">
-                {{ item.title }}
+              <template #selection="{ internalItem }">
+              <v-chip closable @click:close="remove(selectedDiscounts, internalItem.raw)">
+                {{ internalItem.title }}
               </v-chip>
               </template>
-              <template #item="{ item, props }">
-              <v-list-item v-bind="props" :title="item.title"></v-list-item>
+              <template #item="{ internalItem, props }">
+              <v-list-item v-bind="props" :title="internalItem.title"></v-list-item>
               </template>
             </v-autocomplete>
 

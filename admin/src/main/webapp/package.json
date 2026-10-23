@@ -15,7 +15,7 @@
     "vue": "^3.5.22",
     "vue-i18n": "^11.4.16",
     "vue-router": "^4.5.1",
-    "vuetify": "^3.13.7",
+    "vuetify": "^4.3.0",
     "vuex-persistedstate": "^4.1.0",
     "weekstart": "^1.0.1"
   },
