@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 import java.util.HashMap;
 import java.util.UUID;
 

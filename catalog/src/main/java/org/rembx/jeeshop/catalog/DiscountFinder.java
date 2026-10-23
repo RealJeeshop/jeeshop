@@ -6,8 +6,8 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.Discount.ApplicableTo;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 

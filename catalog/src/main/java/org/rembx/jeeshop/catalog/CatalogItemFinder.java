@@ -8,16 +8,15 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
 import org.rembx.jeeshop.role.JeeshopRoles;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +30,6 @@ import java.util.stream.Collectors;
 public class CatalogItemFinder {
 
     private EntityManager entityManager;
-    EntityManagerFactory m;
-
     CatalogItemFinder(@PersistenceUnit(value = CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }

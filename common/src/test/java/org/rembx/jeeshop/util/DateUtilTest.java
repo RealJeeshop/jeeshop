@@ -1,7 +1,6 @@
 package org.rembx.jeeshop.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

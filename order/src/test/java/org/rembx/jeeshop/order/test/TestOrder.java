@@ -9,8 +9,8 @@ import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 import org.rembx.jeeshop.user.test.TestUser;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
 
 /**
  * Created by remi on 30/11/14.

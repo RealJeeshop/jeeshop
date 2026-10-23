@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import org.assertj.core.api.AbstractAssert;
 import org.rembx.jeeshop.catalog.model.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -25,9 +25,9 @@ public class TestCatalog {
     private static TestCatalog instance;
 
     // Date are initialized with java.sql.Timestamp as JPA get a Timestamp instance
-    private final static Date now = Timestamp.from(ZonedDateTime.now().toInstant());
-    private final static Date tomorrow = Timestamp.from(ZonedDateTime.now().plusDays(1).toInstant());
-    private final static Date yesterday = Timestamp.from(ZonedDateTime.now().minusDays(1).toInstant());
+    private final static Date now = toDatabaseTimestamp(ZonedDateTime.now());
+    private final static Date tomorrow = toDatabaseTimestamp(ZonedDateTime.now().plusDays(1));
+    private final static Date yesterday = toDatabaseTimestamp(ZonedDateTime.now().minusDays(1));
 
     public final static String OWNER = "777@test.com";
 
@@ -61,6 +61,12 @@ public class TestCatalog {
     private static SKU sku5;
 
     private static Discount discount1;
+
+    private static Timestamp toDatabaseTimestamp(ZonedDateTime dateTime) {
+        Timestamp timestamp = Timestamp.from(dateTime.toInstant());
+        timestamp.setNanos(timestamp.getNanos() / 1_000 * 1_000);
+        return timestamp;
+    }
 
 
     public static TestCatalog getInstance() {

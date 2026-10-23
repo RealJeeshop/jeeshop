@@ -1,26 +1,24 @@
 package org.rembx.jeeshop.media;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.rembx.jeeshop.rest.WebApplicationException;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
@@ -40,27 +38,31 @@ public class Medias {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{type}/{id}/{locale}/upload")
-    public void upload(@Context HttpServletRequest request,
+    public void upload(MultipartFormDataInput multipart,
                        @NotNull @PathParam("type") String itemType,
                        @NotNull @PathParam("id") Long itemId,
                        @NotNull @PathParam("locale") String locale) {
 
         try {
-            ServletFileUpload upload = new ServletFileUpload();
-            FileItemIterator iterator = upload.getItemIterator(request);
+            for (List<InputPart> parts : multipart.getFormDataMap().values()) {
+                for (InputPart part : parts) {
+                    String fileName = part.getFileName();
+                    if (fileName == null) {
+                        continue;
+                    }
 
-            while (iterator.hasNext()) {
-                FileItemStream item = iterator.next();
-                java.nio.file.Path itemBasePath = getBasePath().resolve(itemType).resolve(itemId.toString()).resolve(locale);
-                if (!Files.exists(itemBasePath))
+                    java.nio.file.Path itemBasePath = getBasePath().resolve(itemType).resolve(itemId.toString()).resolve(locale);
                     Files.createDirectories(itemBasePath);
-                java.nio.file.Path filePath = itemBasePath.resolve(item.getName());
-                Files.copy(item.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                LOG.info("File written to " + filePath);
+                    java.nio.file.Path filePath = itemBasePath.resolve(fileName);
+                    try (InputStream stream = part.getBody(InputStream.class, null)) {
+                        Files.copy(stream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    LOG.info("File written to " + filePath);
+                }
             }
 
 
-        } catch (IOException | FileUploadException e) {
+        } catch (IOException e) {
             LOG.error("Could not handle upload of file with type: " + itemType + " and id: " + itemId, e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -95,4 +97,3 @@ public class Medias {
         return path;
     }
 }
-

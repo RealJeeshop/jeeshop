@@ -3,10 +3,10 @@ package org.rembx.jeeshop.user;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.persistence.EntityManagerFactory;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Produces;
+import jakarta.persistence.EntityManagerFactory;
 
 public class Producers {
 

@@ -6,16 +6,16 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Presentation;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import javax.transaction.UserTransaction;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.Dependent;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.UserTransaction;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
-import static javax.transaction.Transactional.TxType.REQUIRES_NEW;
+import static jakarta.transaction.Transactional.TxType.REQUIRES_NEW;
 import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
 import static org.rembx.jeeshop.role.JeeshopRoles.STORE_ADMIN;
 
@@ -24,7 +24,7 @@ import static org.rembx.jeeshop.role.JeeshopRoles.STORE_ADMIN;
  *
  * @author remi
  */
-@ApplicationScoped
+@Dependent
 public class PresentationResource<T extends CatalogItem> {
 
     private Presentation presentation;

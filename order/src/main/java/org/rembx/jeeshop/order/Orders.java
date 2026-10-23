@@ -1,10 +1,10 @@
 package org.rembx.jeeshop.order;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.apache.commons.collections.CollectionUtils;
 import org.rembx.jeeshop.catalog.CatalogItemFinder;
 
 import org.rembx.jeeshop.catalog.model.Store;
+import org.apache.commons.collections4.CollectionUtils;
 import org.rembx.jeeshop.mail.Mailer;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
@@ -14,15 +14,15 @@ import org.rembx.jeeshop.user.UserFinder;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

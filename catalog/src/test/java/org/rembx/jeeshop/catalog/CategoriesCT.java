@@ -9,7 +9,7 @@ import org.rembx.jeeshop.catalog.test.PresentationTexts;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.rest.WebApplicationException;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;

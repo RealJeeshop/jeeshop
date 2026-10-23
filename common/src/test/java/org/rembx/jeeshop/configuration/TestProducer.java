@@ -1,6 +1,6 @@
 package org.rembx.jeeshop.configuration;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 

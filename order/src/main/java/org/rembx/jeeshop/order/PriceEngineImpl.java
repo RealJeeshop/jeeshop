@@ -1,7 +1,7 @@
 package org.rembx.jeeshop.order;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.rembx.jeeshop.catalog.DiscountFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
@@ -10,9 +10,9 @@ import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderDiscount;
 import org.rembx.jeeshop.order.model.OrderItem;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
+import jakarta.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 
