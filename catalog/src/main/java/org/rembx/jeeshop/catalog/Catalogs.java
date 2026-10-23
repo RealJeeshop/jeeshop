@@ -28,15 +28,15 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
-@Path("/rs/catalogs")
+@Path("/catalogs")
 @ApplicationScoped
 public class Catalogs implements CatalogItemService<Catalog> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Catalog> presentationResource;
 
-    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Catalogs(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Catalog> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -53,6 +53,14 @@ public class Catalogs implements CatalogItemService<Catalog> {
         return search != null
                 ? catalogItemFinder.findBySearchCriteria(catalog, search, start, size, orderBy, isDesc, locale)
                 : catalogItemFinder.findAll(catalog, start, size, orderBy, isDesc, locale);
+    }
+
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Catalog> findManagedCatalogs(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(catalog, context.getUserPrincipal().getName());
     }
 
     @GET
@@ -139,6 +147,30 @@ public class Catalogs implements CatalogItemService<Catalog> {
         return entityManager.merge(catalogToModify);
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{catalogId}/categories")
+    public Catalog attachCategories(@PathParam("catalogId") Long catalogId, List<Long> categoriesIds) {
+
+        Catalog catalog = entityManager.find(Catalog.class, catalogId);
+        checkNotNull(catalog);
+
+        List<Category> newCategory = new ArrayList<>();
+        categoriesIds.forEach(categoryId -> newCategory.add(entityManager.find(Category.class, categoryId)));
+
+        if (catalog.getRootCategories() != null) {
+            catalog.getRootCategories().addAll(newCategory);
+        } else {
+            catalog.setRootCategories(newCategory);
+        }
+
+        return entityManager.merge(catalog);
+    }
+
+
     @GET
     @Path("/{catalogId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
@@ -159,7 +191,7 @@ public class Catalogs implements CatalogItemService<Catalog> {
         Catalog catalog = entityManager.find(Catalog.class, catalogId);
         checkNotNull(catalog);
         Presentation presentation = catalog.getPresentationByLocale().get(locale);
-        return presentationResource.init(catalog, locale, presentation);
+        return presentationResource.init(Catalog.class, catalog, locale, presentation);
     }
 
     @GET

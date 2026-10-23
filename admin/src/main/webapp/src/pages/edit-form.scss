@@ -1,0 +1,64 @@
+.item-edit-container {
+  background-color: #efefef;
+  flex: 2 0;
+  border-left: 1px solid #e0e0e0;
+  padding-bottom: 2em;
+  max-width: 1024px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2em;
+  }
+}
+
+.close-icon {
+
+  cursor: pointer;
+  position: relative;
+
+  width: 32px;
+  height: 25px;
+  opacity: 0.3;
+}
+
+.close-icon:hover {
+  opacity: 1;
+}
+
+.close-icon:before, .close-icon:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 25px;
+  width: 2px;
+  background-color: #333;
+}
+.close-icon:before {
+  transform: rotate(45deg);
+}
+
+.close-icon:after {
+  transform: rotate(-45deg);
+}
+
+@media only screen and (max-width: 737px) {
+
+
+}
+
+@media only screen and (min-width: 1500px) {
+
+
+}
+
+@media only screen and (min-width: 2000px) {
+
+  .item-edit-container {
+    padding: 4em;
+    max-width: 1536px;
+  }
+
+}
+

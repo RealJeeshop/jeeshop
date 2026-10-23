@@ -20,7 +20,10 @@ public class ConfigurationProducerCT {
 
     @BeforeAll
     public static void init() {
-        weld = new Weld();
+        weld = new Weld().disableDiscovery().addBeanClasses(
+                ConfigurationProducer.class,
+                NamedConfigurationUse.class,
+                NamedConfigurationWithoutConfigurationFile.class);
         container = weld.initialize();
     }
 

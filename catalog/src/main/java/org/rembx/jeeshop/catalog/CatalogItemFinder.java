@@ -8,7 +8,6 @@ import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.quarkus.hibernate.orm.PersistenceUnit;
-import io.quarkus.security.identity.SecurityIdentity;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.rembx.jeeshop.catalog.model.*;
 import org.rembx.jeeshop.rest.WebApplicationException;
@@ -24,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.rembx.jeeshop.catalog.model.QStore.store;
-
 /**
  * Utility class for common finders on CatalogItem entities
  */
@@ -33,7 +30,6 @@ import static org.rembx.jeeshop.catalog.model.QStore.store;
 public class CatalogItemFinder {
 
     private EntityManager entityManager;
-
     CatalogItemFinder(@PersistenceUnit(value = CatalogPersistenceUnit.NAME) EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -57,6 +53,14 @@ public class CatalogItemFinder {
 
         return results;
 
+    }
+
+    public <T extends CatalogItem> List<T> findByOwner(EntityPath<T> entityPath, String owner) {
+        QCatalogItem qCatalogItem = new QCatalogItem(entityPath);
+        return new JPAQueryFactory(entityManager)
+                .selectFrom(entityPath)
+                .where(qCatalogItem.owner.eq(owner))
+                .fetch();
     }
 
     public <T extends CatalogItem> List<T> findAll(EntityPath<T> entityPath, Integer offset, Integer limit, String orderBy, Boolean isDesc, String locale) {

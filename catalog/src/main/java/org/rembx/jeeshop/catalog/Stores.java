@@ -28,15 +28,15 @@ import static org.rembx.jeeshop.role.AuthorizationUtils.isAdminUser;
 import static org.rembx.jeeshop.role.AuthorizationUtils.isOwner;
 import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
-@Path("/rs/stores")
+@Path("/stores")
 @ApplicationScoped
 public class Stores implements CatalogItemService<Store> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Store> presentationResource;
 
-    Stores(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource) {
+    Stores(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Store> presentationResource) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -58,6 +58,14 @@ public class Stores implements CatalogItemService<Store> {
     }
 
     @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Store> findManagedStores(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(store, context.getUserPrincipal().getName());
+    }
+
+    @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({ADMIN, ADMIN_READONLY})
@@ -74,6 +82,7 @@ public class Stores implements CatalogItemService<Store> {
     @PermitAll
     public Store find(@Context SecurityContext securityContext, @PathParam("storeId") @NotNull Long itemId, @QueryParam("locale") String locale) {
         Store store = entityManager.find(Store.class, itemId);
+        store.getPremisses();
 
         if (isAdminUser(securityContext) || isOwner(securityContext, store.getOwner()))
             return store;
@@ -135,6 +144,29 @@ public class Stores implements CatalogItemService<Store> {
         return entityManager.merge(store);
     }
 
+    @PUT
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
+    @Path("/{storeId}/categories")
+    public Store attachCatalogs(@PathParam("storeId") Long storeId, List<Long> catalogsIds) {
+
+        Store store = entityManager.find(Store.class, storeId);
+        checkNotNull(store);
+
+        List<Catalog> newCatalogs = new ArrayList<>();
+        catalogsIds.forEach(catalogId -> newCatalogs.add(entityManager.find(Catalog.class, catalogId)));
+
+        if (store.getCatalogs() != null) {
+            store.getCatalogs().addAll(newCatalogs);
+        } else {
+            store.setCatalogs(newCatalogs);
+        }
+
+        return entityManager.merge(store);
+    }
+
     @GET
     @Path("/{storeId}/presentationslocales")
     @Produces(MediaType.APPLICATION_JSON)
@@ -151,11 +183,11 @@ public class Stores implements CatalogItemService<Store> {
 
     @Path("/{storeId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("storedId") @NotNull Long storeId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Store> findPresentationByLocale(@NotNull @PathParam("storeId") Long storeId, @NotNull @PathParam("locale") String locale) {
         Store store = entityManager.find(Store.class, storeId);
         checkNotNull(store);
         Presentation presentation = store.getPresentationByLocale().get(locale);
-        return presentationResource.init(store, locale, presentation);
+        return presentationResource.init(Store.class, store, locale, presentation);
     }
 
     @GET

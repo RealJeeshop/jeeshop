@@ -10,14 +10,13 @@ import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.model.Discount;
 import org.rembx.jeeshop.catalog.model.Product;
 import org.rembx.jeeshop.catalog.model.SKU;
+import org.rembx.jeeshop.catalog.model.Store;
 import org.rembx.jeeshop.order.model.Order;
 import org.rembx.jeeshop.order.model.OrderStatus;
 import org.rembx.jeeshop.user.model.User;
 import org.rembx.jeeshop.user.model.UserPersistenceUnit;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +41,8 @@ public class OrderFinder {
 
     private static final Map<String, ComparableExpressionBase<?>> sortProperties = new HashMap<>() {{
         put("id", order.id);
-        put("owner", order.user.lastname);
-        put("login", order.user.login);
+        put("owner", order.customer.lastname);
+        put("login", order.customer.login);
         put("status", order.status);
         put("creationDate", order.creationDate);
         put("updateDate", order.updateDate);
@@ -53,7 +52,7 @@ public class OrderFinder {
         return new JPAQueryFactory(entityManager)
                 .selectFrom(order)
                 .where(
-                        order.user.eq(user),
+                        order.customer.eq(user),
                         order.status.notIn(OrderStatus.CREATED, OrderStatus.CANCELLED, OrderStatus.RETURNED))
                 .fetchCount();
     }
@@ -84,10 +83,27 @@ public class OrderFinder {
 
     }
 
-    public List<Order> findByUser(User user, Integer offset, Integer limit, String orderby, Boolean isDesc, OrderStatus status) {
+    public List<Order> findByCustomer(User user, Integer offset, Integer limit, String orderby, Boolean isDesc, OrderStatus status) {
         JPAQuery<Order> query = new JPAQueryFactory(entityManager).selectFrom(order)
                 .where(
-                        order.user.eq(user),
+                        order.customer.eq(user),
+                        status != null && status.equals(OrderStatus.CREATED) ? null : order.status.ne(OrderStatus.CREATED),
+                        status != null ? order.status.eq(status) : null);
+
+        if (offset != null)
+            query.offset(offset);
+        if (limit != null)
+            query.limit(limit);
+
+        sortBy(orderby, isDesc, query);
+
+        return query.fetch();
+    }
+
+    public List<Order> findByOwner(Store store, Integer offset, Integer limit, String orderby, Boolean isDesc, OrderStatus status) {
+        JPAQuery<Order> query = new JPAQueryFactory(entityManager).selectFrom(order)
+                .where(
+                        order.storeId.eq(store.getId()),
                         status != null && status.equals(OrderStatus.CREATED) ? null : order.status.ne(OrderStatus.CREATED),
                         status != null ? order.status.eq(status) : null);
 
@@ -129,9 +145,9 @@ public class OrderFinder {
     }
 
     private BooleanExpression matchesSearchCriteria(String search) {
-        BooleanExpression searchExpression = order.user.login.containsIgnoreCase(search)
-                .or(order.user.firstname.containsIgnoreCase(search))
-                .or(order.user.lastname.containsIgnoreCase(search))
+        BooleanExpression searchExpression = order.customer.login.containsIgnoreCase(search)
+                .or(order.customer.firstname.containsIgnoreCase(search))
+                .or(order.customer.lastname.containsIgnoreCase(search))
                 .or(order.transactionId.containsIgnoreCase(search));
 
         if (NumberUtils.isNumber(search)) {
@@ -150,7 +166,7 @@ public class OrderFinder {
      * @param order the order to enhance
      */
     public void enhanceOrder(Order order) {
-        User user = order.getUser();
+        User user = order.getCustomer();
         order.getItems().forEach(orderItem -> {
             Product product = catalogEntityManager.find(Product.class, orderItem.getProductId());
             SKU sku = catalogEntityManager.find(SKU.class, orderItem.getSkuId());

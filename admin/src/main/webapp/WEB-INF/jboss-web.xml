@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure usage of the security domain "other" -->
+<jboss-web>
+    <security-domain>jeeshop</security-domain>
+</jboss-web>

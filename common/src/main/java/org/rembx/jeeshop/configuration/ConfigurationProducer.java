@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.Properties;
  * <p/>
  * User: remi
  */
+@ApplicationScoped
 public class ConfigurationProducer {
 
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationProducer.class);

@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import java.io.StringWriter;
 import java.util.Date;
@@ -79,7 +77,7 @@ public class DefaultPaymentTransactionEngine implements PaymentTransactionEngine
 
     protected void sendOrderConfirmationMail(Order order) {
 
-        User user = order.getUser();
+        User user = order.getCustomer();
 
         MailTemplate mailTemplate = mailTemplateFinder.findByNameAndLocale(orderValidated.name(), user.getPreferredLocale());
 

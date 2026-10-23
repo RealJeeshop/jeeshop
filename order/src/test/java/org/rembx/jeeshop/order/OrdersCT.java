@@ -4,6 +4,7 @@ import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.rembx.jeeshop.catalog.CatalogItemFinder;
 import org.rembx.jeeshop.catalog.model.CatalogPersistenceUnit;
 import org.rembx.jeeshop.catalog.test.TestCatalog;
 import org.rembx.jeeshop.mail.Mailer;
@@ -50,6 +51,7 @@ public class OrdersCT {
     private PriceEngine priceEngineMock;
     private PaymentTransactionEngine paymentTransactionEngine;
     private Orders service;
+    private CatalogItemFinder catalogItemFinder;
 
     @BeforeAll
     public static void beforeClass() {
@@ -69,13 +71,14 @@ public class OrdersCT {
         catalogEntityManager = catalogEmf.createEntityManager();
         sessionContextMock = mock(SecurityContext.class);
         priceEngineMock = mock(PriceEngine.class);
+        catalogItemFinder = mock(CatalogItemFinder.class);
         final MailTemplateFinder mailTemplateFinder = MailTemplateFinder.getInstance(entityManager);
         paymentTransactionEngine = new DefaultPaymentTransactionEngine(
                 new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("20", "3")),
                 mailTemplateFinder, new Mailer(), catalogEntityManager);
 
         service = new Orders(entityManager, new OrderFinder(entityManager, catalogEntityManager, new OrderConfiguration("11.0", "20.0")), new UserFinder(entityManager),
-                mailTemplateFinder, null, priceEngineMock, paymentTransactionEngine);
+                mailTemplateFinder, null, priceEngineMock, paymentTransactionEngine, catalogItemFinder);
     }
 
     @Test
@@ -139,7 +142,7 @@ public class OrdersCT {
 
     @Test
     public void findAll_ByLogin_shouldReturnSearchedOrder() {
-        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getCustomer().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -194,7 +197,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        assertThat(service.findAll(sessionContextMock,null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
+        assertThat(service.findManaged(sessionContextMock,null, null, null, null, null, null, null, null)).containsExactly(testOrder.firstOrder());
     }
 
     @Test
@@ -215,7 +218,7 @@ public class OrdersCT {
         when(sessionContextMock.isUserInRole(JeeshopRoles.ADMIN)).thenReturn(false);
         when(sessionContextMock.getUserPrincipal()).thenReturn(new BasicUserPrincipal(testOrder.firstOrdersUser().getLogin()));
 
-        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getUser().getLogin(), 0, 1, null, null, null, null, null);
+        List<Order> orders = service.findAll(sessionContextMock, testOrder.firstOrder().getCustomer().getLogin(), 0, 1, null, null, null, null, null);
         assertThat(orders).isNotEmpty();
         assertThat(orders).containsExactly(testOrder.firstOrder());
     }
@@ -297,7 +300,7 @@ public class OrdersCT {
 
         entityManager.getTransaction().begin();
         Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("8 Rue Toto", "Paris", "75001", "John", "Doe", "M.", null, "FRA"));
-
+        order.setStoreId(1L);
         order.setOrderDiscounts(new HashSet<>());
 
         service.create(sessionContextMock, order, null);
@@ -311,7 +314,7 @@ public class OrdersCT {
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
-        assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
+        assertThat(persistedOrder.getCustomer()).isEqualTo(testOrder.firstOrdersUser());
 
         deliveryAddress.setId(persistedOrder.getDeliveryAddress().getId());
         billingAddress.setId(persistedOrder.getBillingAddress().getId());
@@ -338,7 +341,7 @@ public class OrdersCT {
         entityManager.getTransaction().begin();
         Order order = new Order(orderItems, new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
         order.setOrderDiscounts(new HashSet<>());
-
+        order.setStoreId(1L);
         service.create(sessionContextMock, order, null);
         entityManager.getTransaction().commit();
 
@@ -351,7 +354,7 @@ public class OrdersCT {
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
-        assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
+        assertThat(persistedOrder.getCustomer()).isEqualTo(testOrder.firstOrdersUser());
 
         assertThat(persistedOrder.getItems()).hasSize(2);
 
@@ -369,6 +372,7 @@ public class OrdersCT {
 
         entityManager.getTransaction().begin();
         Order order = new Order(new HashSet<>(), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"), new Address("7 Rue des arbres", "Paris", "92800", "John", "Doe", "M.", null, "USA"));
+        order.setStoreId(1L);
         order.setOrderDiscounts(new HashSet<>());
 
         service.create(sessionContextMock, order, "test@test.com");
@@ -382,7 +386,7 @@ public class OrdersCT {
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getStatus()).isEqualTo(PAYMENT_VALIDATED);
 
-        assertThat(persistedOrder.getUser()).isEqualTo(testOrder.firstOrdersUser());
+        assertThat(persistedOrder.getCustomer()).isEqualTo(testOrder.firstOrdersUser());
 
         entityManager.getTransaction().begin();
         entityManager.remove(order);
@@ -396,7 +400,8 @@ public class OrdersCT {
 
         entityManager.getTransaction().begin();
         Order order = new Order();
-        order.setUser(testUser.firstUser());
+        order.setStoreId(1L);
+        order.setCustomer(testUser.firstUser());
         order.setStatus(OrderStatus.VALIDATED);
         entityManager.persist(order);
         entityManager.getTransaction().commit();
