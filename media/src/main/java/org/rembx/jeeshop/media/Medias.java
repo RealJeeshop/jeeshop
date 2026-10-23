@@ -20,13 +20,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN;
-import static org.rembx.jeeshop.role.JeeshopRoles.ADMIN_READONLY;
+import static org.rembx.jeeshop.role.JeeshopRoles.*;
 
 /**
  * TODO file location base folder to be accessible by web server
  */
-@Path("/rs/medias")
+@Path("/medias")
 public class Medias {
 
     static final String JEESHOP_MEDIA_DIR = "jeeshop-media";
@@ -37,7 +36,7 @@ public class Medias {
     @POST
     @Consumes("multipart/form-data")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(ADMIN)
+    @RolesAllowed({ADMIN, STORE_ADMIN})
     @Path("/{type}/{id}/{locale}/upload")
     public void upload(MultipartFormDataInput multipart,
                        @NotNull @PathParam("type") String itemType,

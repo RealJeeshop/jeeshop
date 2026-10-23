@@ -16,4 +16,4 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package -Dquarkus.package.type=fast-jar --file pom.xml
+        run: mvn -B package -Dquarkus.package.jar.type=fast-jar --file pom.xml

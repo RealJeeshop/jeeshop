@@ -1,5 +1,6 @@
 package org.rembx.jeeshop.catalog.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +19,8 @@ public class Catalog extends CatalogItem {
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(joinColumns = @JoinColumn(name = "catalogId"),
             inverseJoinColumns = @JoinColumn(name = "categoryId"))
-    @OrderColumn(name="orderIdx")
+    @OrderColumn(name = "orderIdx")
+    @JsonbTransient
     private List<Category> rootCategories;
 
     @Transient

@@ -50,7 +50,7 @@ Create a specific jeeshop database and a jeeshop database applicative user (See 
 ### Build
 
   ```shell script
-    mvn package -Dquarkus.package.type=fast-jar
+    mvn package -Dquarkus.package.jar.type=fast-jar
     docker build -t jeeshop/admin .
   ```
 The first command build Jeeshop Admin with prod environment.

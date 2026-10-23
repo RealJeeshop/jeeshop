@@ -70,12 +70,12 @@
                         <goal>install-node-and-npm</goal>
                     </goals>
                     <configuration>
-                        <nodeVersion>v14.21.3</nodeVersion>
-                        <npmVersion>6.14.18</npmVersion>
+                        <nodeVersion>v22.22.1</nodeVersion>
+                        <npmVersion>10.9.4</npmVersion>
                     </configuration>
                 </execution>
                 <execution>
-                    <id>npm-ci</id>
+                    <id>npm-install</id>
                     <phase>generate-resources</phase>
                     <goals>
                         <goal>npm</goal>
@@ -132,7 +132,6 @@
 <!--                                    <exclude>**/node/**</exclude>-->
 <!--                                    <exclude>**/.idea/**</exclude>-->
 <!--                                    <exclude>**/WEB-INF/**</exclude>-->
-<!--                                    <exclude>webpack.config.js</exclude>-->
 <!--                                    <exclude>package.json</exclude>-->
 <!--                                    <exclude>package-lock.json</exclude>-->
 <!--                                </excludes>-->

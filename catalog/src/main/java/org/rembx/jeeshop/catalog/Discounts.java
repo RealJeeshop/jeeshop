@@ -29,16 +29,16 @@ import static org.rembx.jeeshop.role.JeeshopRoles.*;
  * @author remi
  */
 
-@Path("/rs/discounts")
+@Path("/discounts")
 @ApplicationScoped
 public class Discounts implements CatalogItemService<Discount> {
 
     private final EntityManager entityManager;
     private final CatalogItemFinder catalogItemFinder;
-    private final PresentationResource presentationResource;
+    private final PresentationResource<Discount> presentationResource;
     private DiscountFinder discountFinder;
 
-    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource presentationResource, DiscountFinder discountFinder) {
+    Discounts(@PersistenceUnit(CatalogPersistenceUnit.NAME) EntityManager entityManager, CatalogItemFinder catalogItemFinder, PresentationResource<Discount> presentationResource, DiscountFinder discountFinder) {
         this.entityManager = entityManager;
         this.catalogItemFinder = catalogItemFinder;
         this.presentationResource = presentationResource;
@@ -112,6 +112,13 @@ public class Discounts implements CatalogItemService<Discount> {
             return catalogItemFinder.findAll(discount, start, size, orderBy, isDesc, locale);
     }
 
+    @GET
+    @Path("/managed")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({STORE_ADMIN})
+    public List<Discount> findManagedDiscounts(@Context SecurityContext context) {
+        return catalogItemFinder.findByOwner(discount, context.getUserPrincipal().getName());
+    }
 
     @GET
     @Path("/visible")
@@ -164,11 +171,11 @@ public class Discounts implements CatalogItemService<Discount> {
 
     @Path("/{discountId}/presentations/{locale}")
     @PermitAll
-    public PresentationResource findPresentationByLocale(@PathParam("discountId") @NotNull Long discountId, @NotNull @PathParam("locale") String locale) {
+    public PresentationResource<Discount> findPresentationByLocale(@PathParam("discountId") @NotNull Long discountId, @NotNull @PathParam("locale") String locale) {
         Discount discount = entityManager.find(Discount.class, discountId);
         checkNotNull(discount);
         Presentation presentation = discount.getPresentationByLocale().get(locale);
-        return presentationResource.init(discount, locale, presentation);
+        return presentationResource.init(Discount.class, discount, locale, presentation);
     }
 
     private void checkNotNull(Discount discount) {
