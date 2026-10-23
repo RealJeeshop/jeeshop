@@ -1,15 +1,15 @@
 package org.rembx.jeeshop.mail;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.rembx.jeeshop.configuration.NamedConfiguration;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import java.util.Date;
 import java.util.Properties;
 
@@ -56,7 +56,7 @@ public class Mailer {
         props.put("mail.smtp.port", port);
         props.put("mail.smtp.socketFactory.port", port);
         props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
+                "jakarta.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.connectiontimeout",connectTimeout);
         props.put("mail.smtp.timeout",readTimeout);
 

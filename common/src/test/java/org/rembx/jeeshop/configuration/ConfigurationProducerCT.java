@@ -2,13 +2,13 @@ package org.rembx.jeeshop.configuration;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Injection test using weld container
@@ -18,20 +18,20 @@ public class ConfigurationProducerCT {
     protected static Weld weld;
     protected static WeldContainer container;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         weld = new Weld();
         container = weld.initialize();
     }
 
-    @AfterClass
+    @AfterAll
     public static void close() {
         weld.shutdown();
     }
 
     @Test
     public void withConfiguredFileProperty_shouldBeInjectedAsConfiguredValue() throws Exception {
-        NamedConfigurationUse injected = container.instance().select(NamedConfigurationUse.class).get();
+        NamedConfigurationUse injected = container.select(NamedConfigurationUse.class).get();
         assertNotNull(injected);
         assertEquals("dummyHost", injected.getHostName());
         assertEquals("dummyTimeout", injected.getTimeout());
@@ -39,7 +39,7 @@ public class ConfigurationProducerCT {
 
     @Test
     public void withNotConfiguredFileProperty_shouldBeInjectedAsNull() throws Exception {
-        NamedConfigurationUse injected = container.instance().select(NamedConfigurationUse.class).get();
+        NamedConfigurationUse injected = container.select(NamedConfigurationUse.class).get();
         assertNotNull(injected);
         assertNull(injected.getPort());
     }
@@ -47,12 +47,8 @@ public class ConfigurationProducerCT {
     @Test
     public void withUnknownFile_shouldThrowException() throws Exception {
 
-        try{
-            NamedConfigurationWithoutConfigurationFile injected = container.instance().select(NamedConfigurationWithoutConfigurationFile.class).get();
-            fail();
-        }catch (IllegalStateException e){
-
-        }
+        assertThrows(IllegalStateException.class,
+                () -> container.select(NamedConfigurationWithoutConfigurationFile.class).get());
     }
 
 }
